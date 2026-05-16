@@ -318,7 +318,7 @@ function Index() {
     setMistakes([]);
     setSteps(buildSteps());
     setStartedAt(null);
-    setTimer(0);
+    
     setSubmitted(false);
     setReport(null);
   };
