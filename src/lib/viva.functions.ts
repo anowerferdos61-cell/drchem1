@@ -39,7 +39,6 @@ export const generateViva = createServerFn({ method: "POST" })
       const { object } = await generateObject({
         model,
         schema: GenerateSchema,
-        mode: "json",
         prompt: `You are a high-school chemistry teacher. Generate exactly ${data.count} concise viva (oral exam) questions about: "${data.topic}". Focus on acid-base titration concepts (HCl + NaOH, indicators, equivalence point, calculations). For each, return an object with "q" (question) and "expected" (one-sentence model answer). Return JSON: { "questions": [ { "q": "...", "expected": "..." }, ... ] }.`,
       });
       return { questions: object.questions, error: null as string | null };
@@ -98,7 +97,6 @@ export const gradeViva = createServerFn({ method: "POST" })
       const { object } = await generateObject({
         model,
         schema: GradeSchema,
-        mode: "json",
         prompt: `Grade the following chemistry viva. Be fair but rigorous. For each question return { correct: boolean, score: 0-1, feedback: string }. Then overallScore (0-100), gaps (array of strings), summary (one paragraph).\n\n${transcript}`,
       });
       return { result: object, error: null as string | null };
