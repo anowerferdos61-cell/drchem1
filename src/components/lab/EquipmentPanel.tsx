@@ -1,14 +1,24 @@
 import { Card } from "@/components/ui/card";
-import { FlaskConical, TestTube, Beaker, Droplet, Pipette, Sparkles } from "lucide-react";
+import {
+  FlaskConical,
+  TestTube,
+  Beaker,
+  Droplet,
+  Pipette,
+  Sparkles,
+  Wind,
+  Flame,
+  type LucideIcon,
+} from "lucide-react";
 import type { EquipmentId } from "./types";
 
-interface Item {
-  id: EquipmentId | "clamp";
+export interface EquipmentItem {
+  id: EquipmentId;
   label: string;
-  icon: typeof FlaskConical;
+  icon: LucideIcon;
 }
 
-const ITEMS: Item[] = [
+const TITRATION_ITEMS: EquipmentItem[] = [
   { id: "clamp", label: "Stand & Clamp · স্ট্যান্ড", icon: TestTube },
   { id: "burette", label: "Burette · বিউরেট", icon: TestTube },
   { id: "flask", label: "Conical Flask · কনিক্যাল ফ্লাস্ক", icon: FlaskConical },
@@ -20,19 +30,21 @@ const ITEMS: Item[] = [
 ];
 
 interface Props {
-  onSelect: (id: Item["id"]) => void;
-  disabled?: (id: Item["id"]) => boolean;
-  highlight?: Item["id"] | null;
+  onSelect: (id: EquipmentId) => void;
+  disabled?: (id: EquipmentId) => boolean;
+  highlight?: EquipmentId | null;
+  items?: EquipmentItem[];
 }
 
-export default function EquipmentPanel({ onSelect, disabled, highlight }: Props) {
+export default function EquipmentPanel({ onSelect, disabled, highlight, items }: Props) {
+  const list = items ?? TITRATION_ITEMS;
   return (
     <Card className="p-4">
       <h3 className="mb-3 text-sm font-semibold tracking-wide uppercase text-muted-foreground">
         Equipment · যন্ত্রপাতি
       </h3>
       <div className="grid grid-cols-2 gap-2">
-        {ITEMS.map((item) => {
+        {list.map((item) => {
           const Icon = item.icon;
           const isDisabled = disabled?.(item.id) ?? false;
           const isHighlighted = highlight === item.id;
@@ -61,3 +73,14 @@ export default function EquipmentPanel({ onSelect, disabled, highlight }: Props)
     </Card>
   );
 }
+
+export const OXYGEN_ITEMS: EquipmentItem[] = [
+  { id: "clamp", label: "Retort Stand · স্ট্যান্ড", icon: TestTube },
+  { id: "test_tube_reaction", label: "Reaction Flask · বিক্রিয়া ফ্লাস্ক", icon: FlaskConical },
+  { id: "manganese_dioxide", label: "MnO₂ Catalyst · ম্যাঙ্গানিজ ডাইঅক্সাইড", icon: Sparkles },
+  { id: "delivery_tube", label: "Delivery Tube · ডেলিভারি টিউব", icon: Wind },
+  { id: "water_trough", label: "Water Trough · ওয়াটার ট্রাফ", icon: Beaker },
+  { id: "test_tube_collection", label: "Collection Tube · সংগ্রহ টিউব", icon: TestTube },
+  { id: "hydrogen_peroxide", label: "H₂O₂ Solution · হাইড্রোজেন পারঅক্সাইড", icon: Droplet },
+  { id: "glowing_splint", label: "Glowing Splint · আধা-জ্বলা কাঠি", icon: Flame },
+];
