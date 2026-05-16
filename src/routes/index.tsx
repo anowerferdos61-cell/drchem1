@@ -518,7 +518,6 @@ function ModeToggle({ mode, setMode }: { mode: Mode; setMode: (m: Mode) => void 
   const opts: Array<{ id: Mode; label: string; icon: typeof Play }> = [
     { id: "guide", label: "Guide", icon: Eye },
     { id: "student", label: "Student", icon: GraduationCap },
-    { id: "classroom", label: "Classroom", icon: Projector },
   ];
   return (
     <div className="flex rounded-md border bg-muted p-0.5 text-xs">
