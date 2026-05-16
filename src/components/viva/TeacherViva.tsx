@@ -1,0 +1,97 @@
+import { useState } from "react";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { useServerFn } from "@tanstack/react-start";
+import { Sparkles, Send } from "lucide-react";
+import { toast } from "sonner";
+import { generateViva } from "@/lib/viva.functions";
+
+export interface VivaQuestion {
+  q: string;
+  expected: string;
+}
+
+interface Props {
+  onPublish: (questions: VivaQuestion[]) => void;
+}
+
+export default function TeacherViva({ onPublish }: Props) {
+  const [topic, setTopic] = useState("HCl + NaOH titration: indicators and equivalence point");
+  const [count, setCount] = useState(6);
+  const [loading, setLoading] = useState(false);
+  const [questions, setQuestions] = useState<VivaQuestion[]>([]);
+  const gen = useServerFn(generateViva);
+
+  const handleGenerate = async () => {
+    setLoading(true);
+    try {
+      const res = await gen({ data: { topic, count } });
+      if (res.error) {
+        toast.error(res.error);
+      } else {
+        setQuestions(res.questions);
+        toast.success(`Generated ${res.questions.length} questions`);
+      }
+    } catch (e) {
+      toast.error("Failed to generate. Try again.");
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePublish = () => {
+    if (questions.length === 0) {
+      toast.error("Generate questions first");
+      return;
+    }
+    onPublish(questions);
+    window.dispatchEvent(new CustomEvent("viva:update", { detail: { questions } }));
+    toast.success("Viva published to students");
+  };
+
+  return (
+    <Card className="p-4 space-y-3">
+      <h3 className="text-sm font-semibold uppercase text-muted-foreground">
+        Teacher Viva · শিক্ষকের প্রশ্ন
+      </h3>
+      <div className="space-y-2">
+        <Label className="text-xs">Topic</Label>
+        <Input value={topic} onChange={(e) => setTopic(e.target.value)} />
+      </div>
+      <div className="space-y-2">
+        <Label className="text-xs">Number of questions ({count})</Label>
+        <Input
+          type="range"
+          min={3}
+          max={10}
+          value={count}
+          onChange={(e) => setCount(parseInt(e.target.value))}
+        />
+      </div>
+      <div className="flex gap-2">
+        <Button onClick={handleGenerate} disabled={loading} size="sm" className="flex-1">
+          <Sparkles className="mr-1 h-4 w-4" />
+          {loading ? "Generating..." : "Generate · তৈরি করুন"}
+        </Button>
+        <Button
+          onClick={handlePublish}
+          disabled={questions.length === 0}
+          size="sm"
+          variant="default"
+        >
+          <Send className="mr-1 h-4 w-4" /> Publish
+        </Button>
+      </div>
+      {questions.length > 0 && (
+        <ol className="max-h-48 list-decimal space-y-1 overflow-auto pl-5 text-xs">
+          {questions.map((q, i) => (
+            <li key={i}>{q.q}</li>
+          ))}
+        </ol>
+      )}
+    </Card>
+  );
+}
