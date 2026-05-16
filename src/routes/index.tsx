@@ -13,7 +13,6 @@ import {
   RotateCcw,
   Eye,
   EyeOff,
-  Projector,
   Trophy,
   GraduationCap,
 } from "lucide-react";
