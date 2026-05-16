@@ -8,7 +8,7 @@ interface Props {
   Ma: number;
   Va: number;
   Mb: number;
-  timer: number;
+  timer?: number;
 }
 
 function fmt(n: number, d = 2) {
