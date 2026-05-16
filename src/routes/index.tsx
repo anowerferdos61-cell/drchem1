@@ -347,7 +347,7 @@ function Index() {
   }, [placed]);
 
   // ── Render ─────────────────────────────────────────────────
-  const classroom = mode === "classroom";
+  const classroom = false;
   const guide = mode === "guide";
 
   return (
