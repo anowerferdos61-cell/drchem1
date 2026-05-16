@@ -8,17 +8,15 @@ interface Props {
   Ma: number;
   Va: number;
   Mb: number;
-  timer: number;
+  timer?: number;
 }
 
 function fmt(n: number, d = 2) {
   return n.toFixed(d);
 }
 
-export default function StatusPanel({ Vb, Ve, pH, Ma, Va, Mb, timer }: Props) {
+export default function StatusPanel({ Vb, Ve, pH, Ma, Va, Mb }: Props) {
   const pct = Math.min(100, (Vb / Math.max(Ve * 1.2, 1)) * 100);
-  const min = Math.floor(timer / 60);
-  const sec = timer % 60;
   return (
     <Card className="p-4 space-y-3">
       <h3 className="text-sm font-semibold tracking-wide uppercase text-muted-foreground">
@@ -43,11 +41,6 @@ export default function StatusPanel({ Vb, Ve, pH, Ma, Va, Mb, timer }: Props) {
         <Stat label="Va" value={`${fmt(Va, 1)} mL`} />
         <Stat label="Mb" value={`${fmt(Mb, 3)} M`} />
         <Stat label="Ve" value={`${fmt(Ve, 2)} mL`} />
-      </div>
-
-      <div className="flex items-center justify-between rounded bg-muted px-3 py-2 text-xs">
-        <span>Timer · সময়</span>
-        <span className="font-mono">{`${String(min).padStart(2, "0")}:${String(sec).padStart(2, "0")}`}</span>
       </div>
     </Card>
   );

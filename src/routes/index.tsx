@@ -13,7 +13,6 @@ import {
   RotateCcw,
   Eye,
   EyeOff,
-  Projector,
   Trophy,
   GraduationCap,
 } from "lucide-react";
@@ -100,7 +99,7 @@ function Index() {
   const [mistakes, setMistakes] = useState<Mistake[]>([]);
   const [steps, setSteps] = useState<Step[]>(buildSteps);
   const [startedAt, setStartedAt] = useState<number | null>(null);
-  const [timer, setTimer] = useState(0);
+  const [timer] = useState(0);
   const [submitted, setSubmitted] = useState(false);
   const [report, setReport] = useState<Report | null>(null);
   const [showPanels, setShowPanels] = useState(true);
@@ -282,14 +281,7 @@ function Index() {
     }
   }, [Vb, Ve, stopcockOpen, completeStep]);
 
-  // ── Timer ──────────────────────────────────────────────────
-  useEffect(() => {
-    if (!startedAt || submitted) return;
-    const id = setInterval(() => {
-      setTimer(Math.floor((Date.now() - startedAt) / 1000));
-    }, 1000);
-    return () => clearInterval(id);
-  }, [startedAt, submitted]);
+  // ── Timer disabled per request ─────────────────────────────
 
   // ── Submit / reset ─────────────────────────────────────────
   const submit = () => {
@@ -326,7 +318,7 @@ function Index() {
     setMistakes([]);
     setSteps(buildSteps());
     setStartedAt(null);
-    setTimer(0);
+    
     setSubmitted(false);
     setReport(null);
   };
@@ -355,7 +347,7 @@ function Index() {
   }, [placed]);
 
   // ── Render ─────────────────────────────────────────────────
-  const classroom = mode === "classroom";
+  const classroom = false;
   const guide = mode === "guide";
 
   return (
@@ -479,7 +471,7 @@ function Index() {
                 Ma={config.Ma}
                 Va={config.Va}
                 Mb={config.Mb}
-                timer={timer}
+                
               />
               <StepsPanel
                 steps={steps}
@@ -519,7 +511,6 @@ function ModeToggle({ mode, setMode }: { mode: Mode; setMode: (m: Mode) => void 
   const opts: Array<{ id: Mode; label: string; icon: typeof Play }> = [
     { id: "guide", label: "Guide", icon: Eye },
     { id: "student", label: "Student", icon: GraduationCap },
-    { id: "classroom", label: "Classroom", icon: Projector },
   ];
   return (
     <div className="flex rounded-md border bg-muted p-0.5 text-xs">

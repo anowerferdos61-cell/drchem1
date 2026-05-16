@@ -149,6 +149,16 @@ export default function LabWorkspace({
         {/* === Flask === */}
         {placed.flask && (
           <g transform="translate(220 340)">
+            {stirring && (
+              <animateTransform
+                attributeName="transform"
+                type="translate"
+                values="220 340; 218 340; 222 340; 219 341; 221 339; 220 340"
+                dur="0.4s"
+                repeatCount="indefinite"
+                additive="replace"
+              />
+            )}
             {/* Flask outline (Erlenmeyer) */}
             <path
               d="M68 0 L92 0 L92 35 L150 130 L150 145 Q150 155 140 155 L20 155 Q10 155 10 145 L10 130 L68 35 Z"
