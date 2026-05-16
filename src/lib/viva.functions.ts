@@ -1,6 +1,6 @@
 // Server functions powering the AI viva (oral exam) for the chemistry lab.
 import { createServerFn } from "@tanstack/react-start";
-import { generateText, Output } from "ai";
+import { generateObject } from "ai";
 import { z } from "zod";
 import { createLovableAiGatewayProvider } from "./ai-gateway";
 
@@ -8,11 +8,11 @@ const MODEL_ID = "google/gemini-3-flash-preview";
 
 const QuestionSchema = z.object({
   q: z.string().describe("The viva question"),
-  expected: z.string().describe("A concise model answer / rubric (1-2 sentences)"),
+  expected: z.string().describe("A concise model answer (1-2 sentences)"),
 });
 
 const GenerateSchema = z.object({
-  questions: z.array(QuestionSchema).min(3).max(10),
+  questions: z.array(QuestionSchema),
 });
 
 export const generateViva = createServerFn({ method: "POST" })
@@ -36,12 +36,13 @@ export const generateViva = createServerFn({ method: "POST" })
     const model = gateway(MODEL_ID);
 
     try {
-      const { experimental_output } = await generateText({
+      const { object } = await generateObject({
         model,
-        experimental_output: Output.object({ schema: GenerateSchema }),
-        prompt: `You are a high-school chemistry teacher. Generate ${data.count} concise viva (oral exam) questions about: "${data.topic}". Focus on acid-base titration concepts (HCl + NaOH, indicators, equivalence point, calculations). Return both the question and a one-sentence expected answer for grading.`,
+        schema: GenerateSchema,
+        mode: "json",
+        prompt: `You are a high-school chemistry teacher. Generate exactly ${data.count} concise viva (oral exam) questions about: "${data.topic}". Focus on acid-base titration concepts (HCl + NaOH, indicators, equivalence point, calculations). For each, return an object with "q" (question) and "expected" (one-sentence model answer). Return JSON: { "questions": [ { "q": "...", "expected": "..." }, ... ] }.`,
       });
-      return { questions: experimental_output.questions, error: null as string | null };
+      return { questions: object.questions, error: null as string | null };
     } catch (e) {
       console.error("generateViva failed", e);
       return { questions: [], error: "Failed to generate questions. Try again." };
@@ -49,15 +50,13 @@ export const generateViva = createServerFn({ method: "POST" })
   });
 
 const GradeSchema = z.object({
-  perQuestion: z
-    .array(
-      z.object({
-        correct: z.boolean(),
-        score: z.number().min(0).max(1),
-        feedback: z.string(),
-      }),
-    )
-    .min(1),
+  perQuestion: z.array(
+    z.object({
+      correct: z.boolean(),
+      score: z.number().min(0).max(1),
+      feedback: z.string(),
+    }),
+  ),
   overallScore: z.number().min(0).max(100),
   gaps: z.array(z.string()),
   summary: z.string(),
@@ -96,12 +95,13 @@ export const gradeViva = createServerFn({ method: "POST" })
       .join("\n\n");
 
     try {
-      const { experimental_output } = await generateText({
+      const { object } = await generateObject({
         model,
-        experimental_output: Output.object({ schema: GradeSchema }),
-        prompt: `Grade the following chemistry viva. Be fair but rigorous. For each question return a boolean correct, a 0-1 score, and a short feedback. Then give an overallScore (0-100), a list of concept gaps, and a one-paragraph summary.\n\n${transcript}`,
+        schema: GradeSchema,
+        mode: "json",
+        prompt: `Grade the following chemistry viva. Be fair but rigorous. For each question return { correct: boolean, score: 0-1, feedback: string }. Then overallScore (0-100), gaps (array of strings), summary (one paragraph).\n\n${transcript}`,
       });
-      return { result: experimental_output, error: null as string | null };
+      return { result: object, error: null as string | null };
     } catch (e) {
       console.error("gradeViva failed", e);
       return { result: null, error: "Grading failed. Try again." };
