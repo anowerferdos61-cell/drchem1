@@ -340,6 +340,7 @@ function TitrationLab({ onBack }: { onBack: () => void }) {
     const accuracy =
       Ve > 0 ? Math.max(0, 100 - (Math.abs(Vb - Ve) / Ve) * 100) : 0;
     const r: Report = {
+      experiment: "titration",
       Vb_final: Vb,
       Ve,
       accuracy,
