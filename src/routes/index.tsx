@@ -31,7 +31,10 @@ import {
   grade as gradeFn,
   type TitrationConfig,
 } from "@/lib/chemistry";
-import type { Mistake, Mode, Placed, Report, Step } from "@/components/lab/types";
+import type { ExperimentId, Mistake, Mode, Placed, Report, Step } from "@/components/lab/types";
+import ExperimentPicker from "@/components/lab/ExperimentPicker";
+import OxygenLab from "@/components/lab/OxygenLab";
+import { ArrowLeft } from "lucide-react";
 
 // 3D scene is heavy — lazy load.
 const LabWorkspace = lazy(() => import("@/components/lab/LabWorkspace"));
