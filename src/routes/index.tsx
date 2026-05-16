@@ -1,26 +1,26 @@
 import { createFileRoute } from "@tanstack/react-router";
+import TitrationLab from "@/components/TitrationLab";
+import { Toaster } from "sonner";
 
 export const Route = createFileRoute("/")({
   component: Index,
+  head: () => ({
+    meta: [
+      { title: "Virtual Chemistry Lab — Acid-Base Titration" },
+      {
+        name: "description",
+        content:
+          "Interactive 3D-isometric virtual chemistry lab. Perform an acid-base titration with realistic drag-and-drop apparatus, live volume tracking, and color-change endpoint.",
+      },
+    ],
+  }),
 });
 
-// IMPORTANT: Replace this placeholder. For sites with multiple pages (About, Services, Contact, etc.),
-// create separate route files (about.tsx, services.tsx, contact.tsx) — don't put all pages in this file.
-function PlaceholderIndex() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
-  );
-}
-
 function Index() {
-  return <PlaceholderIndex />;
+  return (
+    <>
+      <TitrationLab />
+      <Toaster position="top-center" richColors />
+    </>
+  );
 }
