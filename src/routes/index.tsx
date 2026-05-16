@@ -180,9 +180,10 @@ function TitrationLab({ onBack }: { onBack: () => void }) {
 
   // ── Equipment placement handler (drag/click) ───────────────
   const handleSelect = useCallback(
-    (id: EquipmentSelectId) => {
+    (rawId: import("@/components/lab/types").EquipmentId) => {
       if (submitted) return;
       if (!startedAt) setStartedAt(Date.now());
+      const id = rawId as EquipmentSelectId;
 
       switch (id) {
         case "clamp":
