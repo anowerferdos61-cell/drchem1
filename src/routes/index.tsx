@@ -281,14 +281,7 @@ function Index() {
     }
   }, [Vb, Ve, stopcockOpen, completeStep]);
 
-  // ── Timer ──────────────────────────────────────────────────
-  useEffect(() => {
-    if (!startedAt || submitted) return;
-    const id = setInterval(() => {
-      setTimer(Math.floor((Date.now() - startedAt) / 1000));
-    }, 1000);
-    return () => clearInterval(id);
-  }, [startedAt, submitted]);
+  // ── Timer disabled per request ─────────────────────────────
 
   // ── Submit / reset ─────────────────────────────────────────
   const submit = () => {
