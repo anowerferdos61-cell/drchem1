@@ -63,7 +63,25 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
+  --background: oklch(0.96 0.01 230);
+  --lab-wood: oklch(0.55 0.08 50);
+  --lab-wood-dark: oklch(0.38 0.07 45);
+  --lab-mat: oklch(0.97 0.005 230);
+  --lab-metal: oklch(0.78 0.01 240);
+  --lab-metal-dark: oklch(0.45 0.015 240);
+  --lab-shelf: oklch(0.82 0.015 230);
+  --lab-glass: oklch(0.95 0.01 220 / 0.35);
+  --lab-glass-edge: oklch(0.7 0.02 220);
+  --lab-lcd-bg: oklch(0.25 0.04 145);
+  --lab-lcd-text: oklch(0.92 0.18 145);
+  --lab-paper: oklch(0.98 0.015 90);
+  --lab-paper-line: oklch(0.78 0.04 230);
+  --lab-naoh: oklch(0.92 0.02 220);
+  --lab-hcl: oklch(0.93 0.015 200);
+  --lab-pink-faint: oklch(0.88 0.08 0);
+  --lab-pink-vivid: oklch(0.62 0.27 350);
+  --lab-amber: oklch(0.72 0.16 60);
+  --background-original: oklch(1 0 0);
   --foreground: oklch(0.129 0.042 264.695);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.129 0.042 264.695);
