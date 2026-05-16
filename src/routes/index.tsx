@@ -473,12 +473,14 @@ function Index() {
                 Mb={config.Mb}
                 
               />
-              <StepsPanel
-                steps={steps}
-                mistakes={mistakes}
-                guideMode={guide}
-                nextHint={guide ? nextHint : undefined}
-              />
+              {mode !== "student" && (
+                <StepsPanel
+                  steps={steps}
+                  mistakes={mistakes}
+                  guideMode={guide}
+                  nextHint={guide ? nextHint : undefined}
+                />
+              )}
             </div>
           )}
         </div>
