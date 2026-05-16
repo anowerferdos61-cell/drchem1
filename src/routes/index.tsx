@@ -402,6 +402,9 @@ function TitrationLab({ onBack }: { onBack: () => void }) {
         {/* Top bar */}
         <header className="mb-4 flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
+            <Button variant="ghost" size="sm" onClick={onBack}>
+              <ArrowLeft className="mr-1 h-4 w-4" /> Experiments
+            </Button>
             <FlaskConical className="h-6 w-6 text-primary" />
             <div>
               <h1 className="text-lg font-bold leading-tight">
