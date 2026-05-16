@@ -89,6 +89,46 @@ type EquipmentSelectId =
   | "clamp";
 
 function Index() {
+  const [activeExperiment, setActiveExperiment] = useState<ExperimentId | null>(null);
+
+  // Hydrate from localStorage
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("lab:activeExperiment");
+      if (raw === "titration" || raw === "oxygen_prep") setActiveExperiment(raw);
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  const pick = useCallback((id: ExperimentId) => {
+    setActiveExperiment(id);
+    try {
+      localStorage.setItem("lab:activeExperiment", id);
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  const back = useCallback(() => {
+    setActiveExperiment(null);
+    try {
+      localStorage.removeItem("lab:activeExperiment");
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  if (activeExperiment === null) {
+    return <ExperimentPicker onPick={pick} />;
+  }
+  if (activeExperiment === "oxygen_prep") {
+    return <OxygenLab onBack={back} />;
+  }
+  return <TitrationLab onBack={back} />;
+}
+
+function TitrationLab({ onBack }: { onBack: () => void }) {
   // ── Core state ──────────────────────────────────────────────
   const [mode, setMode] = useState<Mode>("guide");
   const [config, setConfig] = useState<TitrationConfig>(DEFAULT_CONFIG);
