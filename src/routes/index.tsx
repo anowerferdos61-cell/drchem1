@@ -471,7 +471,7 @@ function Index() {
                 Ma={config.Ma}
                 Va={config.Va}
                 Mb={config.Mb}
-                timer={timer}
+                
               />
               <StepsPanel
                 steps={steps}
