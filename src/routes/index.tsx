@@ -99,7 +99,7 @@ function Index() {
   const [mistakes, setMistakes] = useState<Mistake[]>([]);
   const [steps, setSteps] = useState<Step[]>(buildSteps);
   const [startedAt, setStartedAt] = useState<number | null>(null);
-  const [timer, setTimer] = useState(0);
+  const [timer] = useState(0);
   const [submitted, setSubmitted] = useState(false);
   const [report, setReport] = useState<Report | null>(null);
   const [showPanels, setShowPanels] = useState(true);
