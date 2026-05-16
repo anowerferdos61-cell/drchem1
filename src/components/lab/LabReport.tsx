@@ -11,13 +11,17 @@ interface Props {
 export default function LabReport({ report, onReset }: Props) {
   const min = Math.floor(report.durationSec / 60);
   const sec = report.durationSec % 60;
+  const isOxygen = report.experiment === "oxygen_prep";
+
   return (
-    <Card className="p-6 space-y-4 print:shadow-none print:border-0">
+    <Card className="space-y-4 p-6 print:border-0 print:shadow-none">
       <header className="flex items-center justify-between">
         <div>
           <h2 className="text-xl font-bold">Lab Report · ল্যাব রিপোর্ট</h2>
           <p className="text-xs text-muted-foreground">
-            Acid–Base Titration · অ্যাসিড-ক্ষার টাইট্রেশন
+            {isOxygen
+              ? "Preparation of Oxygen · অক্সিজেন প্রস্তুতি"
+              : "Acid–Base Titration · অ্যাসিড-ক্ষার টাইট্রেশন"}
           </p>
         </div>
         <div className="text-right">
@@ -26,11 +30,31 @@ export default function LabReport({ report, onReset }: Props) {
         </div>
       </header>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
-        <Metric label="Final Vb" value={`${report.Vb_final.toFixed(2)} mL`} />
-        <Metric label="Equivalence Ve" value={`${report.Ve.toFixed(2)} mL`} />
-        <Metric label="Accuracy" value={`${report.accuracy.toFixed(1)}%`} />
-        <Metric label="Duration" value={`${min}m ${sec}s`} />
+      <div className="grid grid-cols-2 gap-3 text-sm md:grid-cols-4">
+        {isOxygen ? (
+          <>
+            <Metric label="O₂ Collected" value={`${(report.VO2_final ?? 0).toFixed(1)} mL`} />
+            <Metric label="Target" value={`${(report.VO2_target ?? 0).toFixed(0)} mL`} />
+            <Metric
+              label="Splint test"
+              value={
+                report.splintResult === "pass"
+                  ? "✓ Passed"
+                  : report.splintResult === "early"
+                    ? "Too early"
+                    : "Not tested"
+              }
+            />
+            <Metric label="Accuracy" value={`${report.accuracy.toFixed(1)}%`} />
+          </>
+        ) : (
+          <>
+            <Metric label="Final Vb" value={`${(report.Vb_final ?? 0).toFixed(2)} mL`} />
+            <Metric label="Equivalence Ve" value={`${(report.Ve ?? 0).toFixed(2)} mL`} />
+            <Metric label="Accuracy" value={`${report.accuracy.toFixed(1)}%`} />
+            <Metric label="Duration" value={`${min}m ${sec}s`} />
+          </>
+        )}
       </div>
 
       <section>
