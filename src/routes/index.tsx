@@ -31,7 +31,10 @@ import {
   grade as gradeFn,
   type TitrationConfig,
 } from "@/lib/chemistry";
-import type { Mistake, Mode, Placed, Report, Step } from "@/components/lab/types";
+import type { ExperimentId, Mistake, Mode, Placed, Report, Step } from "@/components/lab/types";
+import ExperimentPicker from "@/components/lab/ExperimentPicker";
+import OxygenLab from "@/components/lab/OxygenLab";
+import { ArrowLeft } from "lucide-react";
 
 // 3D scene is heavy — lazy load.
 const LabWorkspace = lazy(() => import("@/components/lab/LabWorkspace"));
@@ -89,6 +92,46 @@ type EquipmentSelectId =
   | "clamp";
 
 function Index() {
+  const [activeExperiment, setActiveExperiment] = useState<ExperimentId | null>(null);
+
+  // Hydrate from localStorage
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("lab:activeExperiment");
+      if (raw === "titration" || raw === "oxygen_prep") setActiveExperiment(raw);
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  const pick = useCallback((id: ExperimentId) => {
+    setActiveExperiment(id);
+    try {
+      localStorage.setItem("lab:activeExperiment", id);
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  const back = useCallback(() => {
+    setActiveExperiment(null);
+    try {
+      localStorage.removeItem("lab:activeExperiment");
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  if (activeExperiment === null) {
+    return <ExperimentPicker onPick={pick} />;
+  }
+  if (activeExperiment === "oxygen_prep") {
+    return <OxygenLab onBack={back} />;
+  }
+  return <TitrationLab onBack={back} />;
+}
+
+function TitrationLab({ onBack }: { onBack: () => void }) {
   // ── Core state ──────────────────────────────────────────────
   const [mode, setMode] = useState<Mode>("guide");
   const [config, setConfig] = useState<TitrationConfig>(DEFAULT_CONFIG);
@@ -137,9 +180,10 @@ function Index() {
 
   // ── Equipment placement handler (drag/click) ───────────────
   const handleSelect = useCallback(
-    (id: EquipmentSelectId) => {
+    (rawId: import("@/components/lab/types").EquipmentId) => {
       if (submitted) return;
       if (!startedAt) setStartedAt(Date.now());
+      const id = rawId as EquipmentSelectId;
 
       switch (id) {
         case "clamp":
@@ -297,6 +341,7 @@ function Index() {
     const accuracy =
       Ve > 0 ? Math.max(0, 100 - (Math.abs(Vb - Ve) / Ve) * 100) : 0;
     const r: Report = {
+      experiment: "titration",
       Vb_final: Vb,
       Ve,
       accuracy,
@@ -357,6 +402,9 @@ function Index() {
         {/* Top bar */}
         <header className="mb-4 flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
+            <Button variant="ghost" size="sm" onClick={onBack}>
+              <ArrowLeft className="mr-1 h-4 w-4" /> Experiments
+            </Button>
             <FlaskConical className="h-6 w-6 text-primary" />
             <div>
               <h1 className="text-lg font-bold leading-tight">

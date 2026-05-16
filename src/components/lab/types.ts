@@ -1,23 +1,44 @@
 // Shared types for the chemistry lab.
 
+export type ExperimentId = "titration" | "oxygen_prep";
+
 export type Mode = "guide" | "student" | "classroom";
 
 export type EquipmentId =
+  // Titration
   | "flask"
   | "burette"
   | "beaker"
   | "pipette"
   | "hcl"
   | "naoh"
-  | "phenolphthalein";
+  | "phenolphthalein"
+  | "clamp"
+  // Oxygen prep
+  | "test_tube_reaction"
+  | "delivery_tube"
+  | "water_trough"
+  | "test_tube_collection"
+  | "hydrogen_peroxide"
+  | "manganese_dioxide"
+  | "glowing_splint";
 
 export interface Placed {
   flask: boolean;
   burette: boolean;
   clamp: boolean;
-  hcl: boolean; // HCl poured into flask
-  naoh: boolean; // NaOH filled in burette
-  indicator: boolean; // phenolphthalein added
+  hcl: boolean;
+  naoh: boolean;
+  indicator: boolean;
+}
+
+export interface OxygenPlaced {
+  reaction_tube: boolean;
+  manganese_dioxide: boolean;
+  delivery_tube: boolean;
+  water_trough: boolean;
+  collection_tube: boolean;
+  hydrogen_peroxide: boolean; // poured (reaction running)
 }
 
 export type MistakeType =
@@ -26,7 +47,11 @@ export type MistakeType =
   | "stopcock_before_indicator"
   | "no_flask"
   | "over_titration"
-  | "incomplete_submit";
+  | "incomplete_submit"
+  // Oxygen prep
+  | "no_manganese_dioxide"
+  | "missing_delivery_tube"
+  | "early_splint_test";
 
 export type Severity = "low" | "med" | "high";
 
@@ -44,8 +69,15 @@ export interface Step {
 }
 
 export interface Report {
-  Vb_final: number;
-  Ve: number;
+  experiment: ExperimentId;
+  // Titration
+  Vb_final?: number;
+  Ve?: number;
+  // Oxygen
+  VO2_final?: number;
+  VO2_target?: number;
+  splintResult?: "pass" | "early" | "none";
+
   accuracy: number; // %
   grade: "A" | "B" | "C" | "D" | "F";
   durationSec: number;

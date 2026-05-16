@@ -7,6 +7,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { Sparkles, Send } from "lucide-react";
 import { toast } from "sonner";
 import { generateViva } from "@/lib/viva.functions";
+import type { ExperimentId } from "@/components/lab/types";
 
 export interface VivaQuestion {
   q: string;
@@ -15,10 +16,16 @@ export interface VivaQuestion {
 
 interface Props {
   onPublish: (questions: VivaQuestion[]) => void;
+  experiment?: ExperimentId;
+  defaultTopic?: string;
 }
 
-export default function TeacherViva({ onPublish }: Props) {
-  const [topic, setTopic] = useState("HCl + NaOH titration: indicators and equivalence point");
+export default function TeacherViva({
+  onPublish,
+  experiment = "titration",
+  defaultTopic = "HCl + NaOH titration: indicators and equivalence point",
+}: Props) {
+  const [topic, setTopic] = useState(defaultTopic);
   const [count, setCount] = useState(6);
   const [loading, setLoading] = useState(false);
   const [questions, setQuestions] = useState<VivaQuestion[]>([]);
@@ -28,7 +35,7 @@ export default function TeacherViva({ onPublish }: Props) {
   const handleGenerate = async () => {
     setLoading(true);
     try {
-      const res = await gen({ data: { topic, count } });
+      const res = await gen({ data: { topic, count, experiment } });
       if (res.error) {
         toast.error(res.error);
       } else {
