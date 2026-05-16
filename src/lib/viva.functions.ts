@@ -15,12 +15,33 @@ const GenerateSchema = z.object({
   questions: z.array(QuestionSchema),
 });
 
+const ExperimentEnum = z.enum(["titration", "oxygen_prep"]);
+
+function experimentContext(exp: z.infer<typeof ExperimentEnum>): string {
+  if (exp === "oxygen_prep") {
+    return [
+      "the laboratory preparation of oxygen gas",
+      "Equation: 2 H2O2(aq) --[MnO2]--> 2 H2O(l) + O2(g).",
+      "Cover: role of MnO2 as a catalyst (not consumed), properties of O2 (colorless, odorless, supports combustion),",
+      "collection by downward displacement of water, the glowing-splint test (relights/bursts into flame),",
+      "and lab safety (eye protection, no open flame near H2O2, keep H2O2 away from organics).",
+    ].join(" ");
+  }
+  return [
+    "acid-base titration (HCl + NaOH)",
+    "Cover: indicators (phenolphthalein), equivalence point vs endpoint,",
+    "neutralization stoichiometry (Ma·Va = Mb·Vb), pH at endpoint for strong acid + strong base,",
+    "burette/pipette technique and sources of error.",
+  ].join(" ");
+}
+
 export const generateViva = createServerFn({ method: "POST" })
   .inputValidator((input) =>
     z
       .object({
         topic: z.string().trim().min(1).max(300),
         count: z.number().int().min(3).max(10).default(6),
+        experiment: ExperimentEnum.default("titration"),
       })
       .parse(input),
   )
@@ -35,11 +56,12 @@ export const generateViva = createServerFn({ method: "POST" })
     const gateway = createLovableAiGatewayProvider(key);
     const model = gateway(MODEL_ID);
 
+    const ctx = experimentContext(data.experiment);
     try {
       const { object } = await generateObject({
         model,
         schema: GenerateSchema,
-        prompt: `You are a high-school chemistry teacher. Generate exactly ${data.count} concise viva (oral exam) questions about: "${data.topic}". Focus on acid-base titration concepts (HCl + NaOH, indicators, equivalence point, calculations). For each, return an object with "q" (question) and "expected" (one-sentence model answer). Return JSON: { "questions": [ { "q": "...", "expected": "..." }, ... ] }.`,
+        prompt: `You are a high-school chemistry teacher. Generate exactly ${data.count} concise viva (oral exam) questions about: "${data.topic}". Context: ${ctx} For each, return an object with "q" (question) and "expected" (one-sentence model answer). Return JSON: { "questions": [ { "q": "...", "expected": "..." }, ... ] }.`,
       });
       return { questions: object.questions, error: null as string | null };
     } catch (e) {
