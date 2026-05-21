@@ -131,6 +131,13 @@ export default function CO2Lab({ onBack }: Props) {
   const [showPanels, setShowPanels] = useState(true);
   const [vivaQuestions, setVivaQuestions] = useState<VivaQuestion[]>([]);
   const [showViva, setShowViva] = useState(false);
+  // Identification-test interaction state
+  const [activeIdTool, setActiveIdTool] = useState<IdTool>(null);
+  const [cursor, setCursor] = useState<{ x: number; y: number } | null>(null);
+  const [splintExtinguished, setSplintExtinguished] = useState(false);
+  const [mgReacted, setMgReacted] = useState(false);
+  const [litmusReacted, setLitmusReacted] = useState(false);
+  const workspaceRef = useRef<HTMLElement>(null);
   const startedAtRef = useRef<number | null>(null);
 
   // Hydrate
