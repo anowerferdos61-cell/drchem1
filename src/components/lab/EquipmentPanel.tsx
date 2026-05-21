@@ -88,3 +88,18 @@ export const OXYGEN_ITEMS: EquipmentItem[] = [
   { id: "hydrogen_peroxide", label: "H₂O₂ Solution · হাইড্রোজেন পারঅক্সাইড", icon: Droplet },
   { id: "glowing_splint", label: "Glowing Splint · আধা-জ্বলা কাঠি", icon: Flame },
 ];
+
+export const CO2_ITEMS: EquipmentItem[] = [
+  { id: "clamp", label: "Stand & Clamp · স্ট্যান্ড", icon: TestTube },
+  { id: "round_bottom_flask", label: "Round-bottom Flask · গোলতলী ফ্লাস্ক", icon: FlaskRound },
+  { id: "calcium_carbonate", label: "CaCO₃ chips · ক্যালসিয়াম কার্বনেট", icon: Sparkles },
+  { id: "two_hole_cork", label: "Two-hole Cork · দ্বি-ছিদ্র কর্ক", icon: Beaker },
+  { id: "thistle_funnel", label: "Thistle Funnel · থিসল ফানেল", icon: Pipette },
+  { id: "bent_delivery_tube", label: "Bent Delivery Tube · বাঁকা কাচনল", icon: Wind },
+  { id: "gas_jar", label: "Gas Jar · গ্যাস জার", icon: TestTube2 },
+  { id: "dilute_hcl", label: "Dilute HCl · লঘু হাইড্রোক্লোরিক অ্যাসিড", icon: Droplet },
+  { id: "limewater", label: "Limewater · চুনের পানি", icon: Droplet },
+  { id: "burning_splint", label: "Burning Splint · জ্বলন্ত কাঠি", icon: Flame },
+  { id: "moist_blue_litmus", label: "Moist Blue Litmus · ভেজা নীল লিটমাস", icon: Leaf },
+  { id: "magnesium_ribbon", label: "Magnesium Ribbon · ম্যাগনেসিয়াম ফিতা", icon: Flame },
+];
