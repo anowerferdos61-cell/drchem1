@@ -28,7 +28,7 @@ import {
 import EquipmentPanel, { CO2_ITEMS } from "./EquipmentPanel";
 import StepsPanel from "./StepsPanel";
 import LabReport from "./LabReport";
-import CO2Workspace from "./workspaces/CO2Workspace";
+import CO2Workspace, { type IdTool } from "./workspaces/CO2Workspace";
 import TeacherViva, { type VivaQuestion } from "@/components/viva/TeacherViva";
 import StudentViva from "@/components/viva/StudentViva";
 import type {
@@ -131,6 +131,13 @@ export default function CO2Lab({ onBack }: Props) {
   const [showPanels, setShowPanels] = useState(true);
   const [vivaQuestions, setVivaQuestions] = useState<VivaQuestion[]>([]);
   const [showViva, setShowViva] = useState(false);
+  // Identification-test interaction state
+  const [activeIdTool, setActiveIdTool] = useState<IdTool>(null);
+  const [cursor, setCursor] = useState<{ x: number; y: number } | null>(null);
+  const [splintExtinguished, setSplintExtinguished] = useState(false);
+  const [mgReacted, setMgReacted] = useState(false);
+  const [litmusReacted, setLitmusReacted] = useState(false);
+  const workspaceRef = useRef<HTMLElement>(null);
   const startedAtRef = useRef<number | null>(null);
 
   // Hydrate
@@ -246,39 +253,40 @@ export default function CO2Lab({ onBack }: Props) {
           toast.success("Dilute HCl poured — reaction started");
           break;
         }
-        case "limewater":
-          setShowLimewater(true);
-          toast.info("Limewater tube positioned at delivery exit");
-          break;
-        case "burning_splint": {
-          if (collectedMl < JAR_CAPACITY_ML * 0.4) {
-            toast.warning("Not enough CO₂ yet to perform the splint test");
+        case "limewater": {
+          if (collectedMl <= 0) {
+            toast.warning("Collect CO₂ first · আগে CO₂ সংগ্রহ কর");
             return;
           }
-          // CO2 extinguishes a burning splint → "pass" means flame went OUT.
-          setTests((t) => ({ ...t, burning_splint: "pass" }));
-          completeStep("tests");
-          toast.success("Burning splint extinguished — confirms CO₂");
+          setShowLimewater(true);
+          toast.info("Limewater tube connected — bubbling started · চুনের পানিতে বুদবুদ");
+          break;
+        }
+        case "burning_splint": {
+          if (collectedMl <= 0) {
+            toast.warning("Collect CO₂ first · আগে CO₂ সংগ্রহ কর");
+            return;
+          }
+          setActiveIdTool("splint");
+          toast.info("Move the burning splint to the jar mouth · গ্যাস জারের মুখে নাও");
           break;
         }
         case "moist_blue_litmus": {
-          if (collectedMl < JAR_CAPACITY_ML * 0.3) {
-            toast.warning("Need more CO₂ for the litmus test");
+          if (collectedMl <= 0) {
+            toast.warning("Collect CO₂ first · আগে CO₂ সংগ্রহ কর");
             return;
           }
-          setTests((t) => ({ ...t, litmus: "pass" }));
-          completeStep("tests");
-          toast.success("Moist blue litmus turned faint red (H₂CO₃)");
+          setActiveIdTool("litmus");
+          toast.info("Move the moist blue litmus to the jar mouth · জারের মুখে নাও");
           break;
         }
         case "magnesium_ribbon": {
-          if (collectedMl < JAR_CAPACITY_ML * 0.5) {
-            toast.warning("Need more CO₂ for the magnesium test");
+          if (collectedMl <= 0) {
+            toast.warning("Collect CO₂ first · আগে CO₂ সংগ্রহ কর");
             return;
           }
-          setTests((t) => ({ ...t, magnesium: "pass" }));
-          completeStep("tests");
-          toast.success("Mg keeps burning in CO₂ — black carbon deposits formed");
+          setActiveIdTool("mg");
+          toast.info("Move the burning Mg ribbon into the jar · জ্বলন্ত Mg জারে নাও");
           break;
         }
         default:
@@ -401,6 +409,11 @@ export default function CO2Lab({ onBack }: Props) {
     setShowLimewater(false);
     setSubmitted(false);
     setReport(null);
+    setActiveIdTool(null);
+    setCursor(null);
+    setSplintExtinguished(false);
+    setMgReacted(false);
+    setLitmusReacted(false);
     startedAtRef.current = null;
   };
 
@@ -486,12 +499,59 @@ export default function CO2Lab({ onBack }: Props) {
 
           {/* Center */}
           <section
-            className="relative rounded-2xl border bg-card/60 shadow-xl backdrop-blur"
+            ref={workspaceRef}
+            className={[
+              "relative rounded-2xl border bg-card/60 shadow-xl backdrop-blur",
+              activeIdTool ? "cursor-none" : "",
+            ].join(" ")}
             style={{ minHeight: 480 }}
             onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => {
               const id = e.dataTransfer.getData("text/equipment") as EquipmentId;
               if (id) handleSelect(id);
+            }}
+            onMouseMove={(e) => {
+              if (!activeIdTool) return;
+              const rect = e.currentTarget.getBoundingClientRect();
+              setCursor({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+            }}
+            onMouseLeave={() => setCursor(null)}
+            onClick={(e) => {
+              if (!activeIdTool) return;
+              const rect = e.currentTarget.getBoundingClientRect();
+              const px = e.clientX - rect.left;
+              const py = e.clientY - rect.top;
+              // SVG viewBox 640×500 with preserveAspectRatio xMidYMid meet
+              const scale = Math.min(rect.width / 640, rect.height / 500);
+              const offX = (rect.width - 640 * scale) / 2;
+              const offY = (rect.height - 500 * scale) / 2;
+              // Jar mouth hit zone (JAR_X=470, JAR_TOP_Y=200, JAR_W=90)
+              const left = offX + (470 - 55) * scale;
+              const right = offX + (470 + 55) * scale;
+              const top = offY + (200 - 40) * scale;
+              const bottom = offY + (200 + 30) * scale;
+              const overMouth = px >= left && px <= right && py >= top && py <= bottom;
+              if (!overMouth) return;
+              if (!placed.gas_jar || !jarUpright) {
+                toast.warning("Place the gas jar upright first · গ্যাস জার সোজা করে বসাও");
+                return;
+              }
+              if (activeIdTool === "splint") {
+                setSplintExtinguished(true);
+                setTests((t) => ({ ...t, burning_splint: "pass" }));
+                toast.success("Splint extinguished — CO₂ doesn't support combustion");
+              } else if (activeIdTool === "mg") {
+                setMgReacted(true);
+                setTests((t) => ({ ...t, magnesium: "pass" }));
+                toast.success("Mg burns in CO₂ — black carbon + white MgO");
+              } else if (activeIdTool === "litmus") {
+                setLitmusReacted(true);
+                setTests((t) => ({ ...t, litmus: "pass" }));
+                toast.success("Blue litmus → faint red (H₂CO₃ is weakly acidic)");
+              }
+              completeStep("tests");
+              setActiveIdTool(null);
+              setCursor(null);
             }}
           >
             <div className="absolute inset-0 overflow-hidden rounded-2xl">
@@ -504,6 +564,11 @@ export default function CO2Lab({ onBack }: Props) {
                 jarUpright={jarUpright}
                 limewaterActive={showLimewater}
                 limewaterPhase={limewaterPhase(collectedMl)}
+                activeIdTool={activeIdTool}
+                cursor={cursor}
+                splintExtinguished={splintExtinguished}
+                mgReacted={mgReacted}
+                litmusReacted={litmusReacted}
               />
             </div>
 

@@ -11,19 +11,25 @@
  */
 import type { CO2Placed } from "../types";
 
+export type IdTool = "splint" | "mg" | "litmus" | null;
+
 interface Props {
   placed: CO2Placed;
-  /** mL of CO2 currently collected in the gas jar (capped by jar capacity in caller). */
   collectedMl: number;
   jarCapacityMl: number;
   reacting: boolean;
-  /** True if liquid level in flask covers the thistle funnel tip. */
   funnelSubmerged: boolean;
-  /** Visual override — true = upward displacement (correct), false = jar inverted. */
   jarUpright: boolean;
-  /** Limewater test active in a separate tube under the delivery exit. */
   limewaterActive?: boolean;
   limewaterPhase?: "clear" | "milky" | "redissolved";
+  /** Currently armed identification tool (follows cursor). */
+  activeIdTool?: IdTool;
+  /** Cursor position in CSS pixels relative to the workspace container. */
+  cursor?: { x: number; y: number } | null;
+  /** Persistent outcomes after a successful test on the jar mouth. */
+  splintExtinguished?: boolean;
+  mgReacted?: boolean;
+  litmusReacted?: boolean;
 }
 
 export default function CO2Workspace({
@@ -35,6 +41,11 @@ export default function CO2Workspace({
   jarUpright,
   limewaterActive = false,
   limewaterPhase = "clear",
+  activeIdTool = null,
+  cursor = null,
+  splintExtinguished = false,
+  mgReacted = false,
+  litmusReacted = false,
 }: Props) {
   const fillFrac = Math.max(0, Math.min(1, collectedMl / jarCapacityMl));
   // Gas jar geometry (upright mode): mouth at top, base at bottom.
@@ -406,6 +417,62 @@ export default function CO2Workspace({
           গোলতলী ফ্লাস্ক
         </text>
 
+        {/* ─── Persistent test outcomes at the jar mouth ─── */}
+        {placed.gas_jar && jarUpright && splintExtinguished && (
+          <g>
+            <rect x={JAR_X - 30} y={JAR_TOP_Y - 8} width="60" height="3" fill="#3f3f46" rx="1" />
+            <rect x={JAR_X + 22} y={JAR_TOP_Y - 9} width="10" height="5" fill="#111827" rx="1" />
+            {[0, 1, 2].map((i) => (
+              <circle key={i} cx={JAR_X - 8 + i * 8} r={4 + i} fill="rgba(148,163,184,0.55)">
+                <animate attributeName="cy" values={`${JAR_TOP_Y - 10};${JAR_TOP_Y - 60}`} dur={`${2 + i * 0.4}s`} repeatCount="indefinite" begin={`${i * 0.3}s`} />
+                <animate attributeName="opacity" values="0.7;0" dur={`${2 + i * 0.4}s`} repeatCount="indefinite" begin={`${i * 0.3}s`} />
+              </circle>
+            ))}
+            <text x={JAR_X} y={JAR_TOP_Y - 70} textAnchor="middle" fontSize="9" fill="#475569">
+              Flame extinguished · শিখা নিভে গেছে
+            </text>
+          </g>
+        )}
+
+        {placed.gas_jar && jarUpright && mgReacted && (
+          <g>
+            <rect x={JAR_X - 4} y={JAR_TOP_Y + 20} width="8" height="50" fill="#e5e7eb" stroke="#475569" strokeWidth="0.5" />
+            <circle cx={JAR_X} cy={JAR_TOP_Y + 15} r="10" fill="#fef9c3" opacity="0.95">
+              <animate attributeName="r" values="8;12;8" dur="0.6s" repeatCount="indefinite" />
+            </circle>
+            <circle cx={JAR_X} cy={JAR_TOP_Y + 15} r="5" fill="#ffffff">
+              <animate attributeName="opacity" values="0.9;1;0.9" dur="0.4s" repeatCount="indefinite" />
+            </circle>
+            {[0, 1, 2, 3].map((i) => (
+              <circle key={i} cx={JAR_X + (i % 2 ? 2 : -2)} cy={JAR_TOP_Y + 30 + i * 10} r="1.6" fill="#0a0a0a" />
+            ))}
+            <ellipse cx={JAR_X} cy={JAR_BOTTOM_Y - 4} rx="30" ry="4" fill="#f8fafc" />
+            <text x={JAR_X} y={JAR_TOP_Y - 8} textAnchor="middle" fontSize="9" fill="#475569">
+              Mg burns: C (black) + MgO (white)
+            </text>
+          </g>
+        )}
+
+        {placed.gas_jar && jarUpright && litmusReacted && (
+          <g>
+            <rect x={JAR_X - 12} y={JAR_TOP_Y - 22} width="24" height="18" fill="#fca5a5" stroke="#7f1d1d" strokeWidth="0.8" rx="1" />
+            <text x={JAR_X} y={JAR_TOP_Y - 30} textAnchor="middle" fontSize="9" fill="#7f1d1d">
+              Blue → faint red · নীল → হালকা লাল
+            </text>
+          </g>
+        )}
+
+        {/* ─── Labels ─── */}
+        <text x="252" y="48" textAnchor="middle" fontSize="10" fill="#334155">
+          Thistle Funnel · থিসল ফানেল
+        </text>
+        <text x="160" y="345" textAnchor="middle" fontSize="10" fill="#334155">
+          Round-bottom Flask
+        </text>
+        <text x="160" y="358" textAnchor="middle" fontSize="9" fill="#64748b">
+          গোলতলী ফ্লাস্ক
+        </text>
+
         {/* Empty-state helper */}
         {!placed.round_bottom_flask && (
           <text x="320" y="250" textAnchor="middle" fontSize="14" fill="#94a3b8">
@@ -413,6 +480,39 @@ export default function CO2Workspace({
           </text>
         )}
       </svg>
+
+      {/* ─── Cursor-following identification tool ─── */}
+      {activeIdTool && cursor && (
+        <div
+          className="pointer-events-none absolute z-20"
+          style={{ left: cursor.x, top: cursor.y, transform: "translate(-50%, -90%)" }}
+        >
+          {activeIdTool === "splint" && (
+            <svg width="44" height="64" viewBox="0 0 44 64">
+              <rect x="20" y="20" width="4" height="40" fill="#a16207" />
+              <ellipse cx="22" cy="14" rx="9" ry="14" fill="#fb923c">
+                <animate attributeName="ry" values="12;16;12" dur="0.4s" repeatCount="indefinite" />
+              </ellipse>
+              <ellipse cx="22" cy="12" rx="5" ry="9" fill="#fef08a" />
+            </svg>
+          )}
+          {activeIdTool === "mg" && (
+            <svg width="44" height="64" viewBox="0 0 44 64">
+              <rect x="19" y="22" width="6" height="40" fill="#e5e7eb" stroke="#475569" strokeWidth="0.5" />
+              <circle cx="22" cy="16" r="11" fill="#ffffff" opacity="0.95">
+                <animate attributeName="r" values="9;13;9" dur="0.35s" repeatCount="indefinite" />
+              </circle>
+              <circle cx="22" cy="16" r="5" fill="#fef9c3" />
+            </svg>
+          )}
+          {activeIdTool === "litmus" && (
+            <svg width="44" height="44" viewBox="0 0 44 44">
+              <rect x="10" y="14" width="24" height="18" fill="#60a5fa" stroke="#1e3a8a" strokeWidth="0.8" rx="1" />
+              <rect x="20" y="32" width="4" height="10" fill="#475569" />
+            </svg>
+          )}
+        </div>
+      )}
     </div>
   );
 }
