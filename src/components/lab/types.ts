@@ -1,6 +1,6 @@
 // Shared types for the chemistry lab.
 
-export type ExperimentId = "titration" | "oxygen_prep";
+export type ExperimentId = "titration" | "oxygen_prep" | "co2_prep";
 
 export type Mode = "guide" | "student" | "classroom";
 
@@ -21,7 +21,19 @@ export type EquipmentId =
   | "test_tube_collection"
   | "hydrogen_peroxide"
   | "manganese_dioxide"
-  | "glowing_splint";
+  | "glowing_splint"
+  // CO2 prep
+  | "round_bottom_flask"
+  | "thistle_funnel"
+  | "two_hole_cork"
+  | "bent_delivery_tube"
+  | "gas_jar"
+  | "calcium_carbonate"
+  | "dilute_hcl"
+  | "limewater"
+  | "magnesium_ribbon"
+  | "burning_splint"
+  | "moist_blue_litmus";
 
 export interface Placed {
   flask: boolean;
@@ -41,7 +53,21 @@ export interface OxygenPlaced {
   hydrogen_peroxide: boolean; // poured (reaction running)
 }
 
+export interface CO2Placed {
+  round_bottom_flask: boolean;
+  calcium_carbonate: boolean; // chips dropped in flask
+  cork: boolean; // two-hole cork sealed
+  thistle_funnel: boolean; // inserted (tip will submerge once liquid is present)
+  delivery_tube: boolean; // bent delivery tube connected
+  gas_jar: boolean; // upright gas jar ready
+  acid_poured: boolean; // dilute HCl added via thistle funnel (reaction running)
+}
+
+export type TestId = "limewater" | "burning_splint" | "litmus" | "magnesium";
+export type TestResult = "pass" | "fail" | "none";
+
 export type MistakeType =
+  // Titration
   | "burette_before_clamp"
   | "stopcock_before_naoh"
   | "stopcock_before_indicator"
@@ -51,7 +77,12 @@ export type MistakeType =
   // Oxygen prep
   | "no_manganese_dioxide"
   | "missing_delivery_tube"
-  | "early_splint_test";
+  | "early_splint_test"
+  // CO2 prep
+  | "funnel_not_submerged"
+  | "open_reaction_flask"
+  | "wrong_gas_displacement"
+  | "no_calcium_carbonate";
 
 export type Severity = "low" | "med" | "high";
 
@@ -77,6 +108,10 @@ export interface Report {
   VO2_final?: number;
   VO2_target?: number;
   splintResult?: "pass" | "early" | "none";
+  // CO2
+  VCO2_final?: number;
+  VCO2_target?: number;
+  tests?: Record<TestId, TestResult>;
 
   accuracy: number; // %
   grade: "A" | "B" | "C" | "D" | "F";
