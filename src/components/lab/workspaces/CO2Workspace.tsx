@@ -11,19 +11,25 @@
  */
 import type { CO2Placed } from "../types";
 
+export type IdTool = "splint" | "mg" | "litmus" | null;
+
 interface Props {
   placed: CO2Placed;
-  /** mL of CO2 currently collected in the gas jar (capped by jar capacity in caller). */
   collectedMl: number;
   jarCapacityMl: number;
   reacting: boolean;
-  /** True if liquid level in flask covers the thistle funnel tip. */
   funnelSubmerged: boolean;
-  /** Visual override — true = upward displacement (correct), false = jar inverted. */
   jarUpright: boolean;
-  /** Limewater test active in a separate tube under the delivery exit. */
   limewaterActive?: boolean;
   limewaterPhase?: "clear" | "milky" | "redissolved";
+  /** Currently armed identification tool (follows cursor). */
+  activeIdTool?: IdTool;
+  /** Cursor position in CSS pixels relative to the workspace container. */
+  cursor?: { x: number; y: number } | null;
+  /** Persistent outcomes after a successful test on the jar mouth. */
+  splintExtinguished?: boolean;
+  mgReacted?: boolean;
+  litmusReacted?: boolean;
 }
 
 export default function CO2Workspace({
