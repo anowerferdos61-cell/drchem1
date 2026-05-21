@@ -494,12 +494,59 @@ export default function CO2Lab({ onBack }: Props) {
 
           {/* Center */}
           <section
-            className="relative rounded-2xl border bg-card/60 shadow-xl backdrop-blur"
+            ref={workspaceRef}
+            className={[
+              "relative rounded-2xl border bg-card/60 shadow-xl backdrop-blur",
+              activeIdTool ? "cursor-none" : "",
+            ].join(" ")}
             style={{ minHeight: 480 }}
             onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => {
               const id = e.dataTransfer.getData("text/equipment") as EquipmentId;
               if (id) handleSelect(id);
+            }}
+            onMouseMove={(e) => {
+              if (!activeIdTool) return;
+              const rect = e.currentTarget.getBoundingClientRect();
+              setCursor({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+            }}
+            onMouseLeave={() => setCursor(null)}
+            onClick={(e) => {
+              if (!activeIdTool) return;
+              const rect = e.currentTarget.getBoundingClientRect();
+              const px = e.clientX - rect.left;
+              const py = e.clientY - rect.top;
+              // SVG viewBox 640×500 with preserveAspectRatio xMidYMid meet
+              const scale = Math.min(rect.width / 640, rect.height / 500);
+              const offX = (rect.width - 640 * scale) / 2;
+              const offY = (rect.height - 500 * scale) / 2;
+              // Jar mouth hit zone (JAR_X=470, JAR_TOP_Y=200, JAR_W=90)
+              const left = offX + (470 - 55) * scale;
+              const right = offX + (470 + 55) * scale;
+              const top = offY + (200 - 40) * scale;
+              const bottom = offY + (200 + 30) * scale;
+              const overMouth = px >= left && px <= right && py >= top && py <= bottom;
+              if (!overMouth) return;
+              if (!placed.gas_jar || !jarUpright) {
+                toast.warning("Place the gas jar upright first · গ্যাস জার সোজা করে বসাও");
+                return;
+              }
+              if (activeIdTool === "splint") {
+                setSplintExtinguished(true);
+                setTests((t) => ({ ...t, burning_splint: "pass" }));
+                toast.success("Splint extinguished — CO₂ doesn't support combustion");
+              } else if (activeIdTool === "mg") {
+                setMgReacted(true);
+                setTests((t) => ({ ...t, magnesium: "pass" }));
+                toast.success("Mg burns in CO₂ — black carbon + white MgO");
+              } else if (activeIdTool === "litmus") {
+                setLitmusReacted(true);
+                setTests((t) => ({ ...t, litmus: "pass" }));
+                toast.success("Blue litmus → faint red (H₂CO₃ is weakly acidic)");
+              }
+              completeStep("tests");
+              setActiveIdTool(null);
+              setCursor(null);
             }}
           >
             <div className="absolute inset-0 overflow-hidden rounded-2xl">
@@ -512,6 +559,11 @@ export default function CO2Lab({ onBack }: Props) {
                 jarUpright={jarUpright}
                 limewaterActive={showLimewater}
                 limewaterPhase={limewaterPhase(collectedMl)}
+                activeIdTool={activeIdTool}
+                cursor={cursor}
+                splintExtinguished={splintExtinguished}
+                mgReacted={mgReacted}
+                litmusReacted={litmusReacted}
               />
             </div>
 
