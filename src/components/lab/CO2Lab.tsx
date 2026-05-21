@@ -409,6 +409,11 @@ export default function CO2Lab({ onBack }: Props) {
     setShowLimewater(false);
     setSubmitted(false);
     setReport(null);
+    setActiveIdTool(null);
+    setCursor(null);
+    setSplintExtinguished(false);
+    setMgReacted(false);
+    setLitmusReacted(false);
     startedAtRef.current = null;
   };
 
