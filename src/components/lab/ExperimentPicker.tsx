@@ -50,7 +50,7 @@ export default function ExperimentPicker({ onPick }: Props) {
         </p>
       </div>
 
-      <div className="grid w-full gap-4 md:grid-cols-2">
+      <div className="grid w-full gap-4 md:grid-cols-3">
         {EXPERIMENTS.map((e) => {
           const Icon = e.icon;
           return (
