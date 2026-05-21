@@ -34,6 +34,8 @@ import {
 import type { ExperimentId, Mistake, Mode, Placed, Report, Step } from "@/components/lab/types";
 import ExperimentPicker from "@/components/lab/ExperimentPicker";
 import OxygenLab from "@/components/lab/OxygenLab";
+import CO2Lab from "@/components/lab/CO2Lab";
+
 import { ArrowLeft } from "lucide-react";
 
 // 3D scene is heavy — lazy load.
