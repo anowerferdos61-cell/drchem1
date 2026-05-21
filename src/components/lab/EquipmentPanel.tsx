@@ -8,8 +8,12 @@ import {
   Sparkles,
   Wind,
   Flame,
+  FlaskRound,
+  TestTube2,
+  Leaf,
   type LucideIcon,
 } from "lucide-react";
+
 import type { EquipmentId } from "./types";
 
 export interface EquipmentItem {
