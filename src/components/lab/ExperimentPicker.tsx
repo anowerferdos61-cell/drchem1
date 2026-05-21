@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FlaskConical, Wind } from "lucide-react";
+import { FlaskConical, Wind, FlaskRound } from "lucide-react";
 import type { ExperimentId } from "./types";
 
 interface Props {
