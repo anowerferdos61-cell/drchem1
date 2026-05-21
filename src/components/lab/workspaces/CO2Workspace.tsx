@@ -41,6 +41,11 @@ export default function CO2Workspace({
   jarUpright,
   limewaterActive = false,
   limewaterPhase = "clear",
+  activeIdTool = null,
+  cursor = null,
+  splintExtinguished = false,
+  mgReacted = false,
+  litmusReacted = false,
 }: Props) {
   const fillFrac = Math.max(0, Math.min(1, collectedMl / jarCapacityMl));
   // Gas jar geometry (upright mode): mouth at top, base at bottom.
