@@ -253,39 +253,40 @@ export default function CO2Lab({ onBack }: Props) {
           toast.success("Dilute HCl poured — reaction started");
           break;
         }
-        case "limewater":
-          setShowLimewater(true);
-          toast.info("Limewater tube positioned at delivery exit");
-          break;
-        case "burning_splint": {
-          if (collectedMl < JAR_CAPACITY_ML * 0.4) {
-            toast.warning("Not enough CO₂ yet to perform the splint test");
+        case "limewater": {
+          if (collectedMl <= 0) {
+            toast.warning("Collect CO₂ first · আগে CO₂ সংগ্রহ কর");
             return;
           }
-          // CO2 extinguishes a burning splint → "pass" means flame went OUT.
-          setTests((t) => ({ ...t, burning_splint: "pass" }));
-          completeStep("tests");
-          toast.success("Burning splint extinguished — confirms CO₂");
+          setShowLimewater(true);
+          toast.info("Limewater tube connected — bubbling started · চুনের পানিতে বুদবুদ");
+          break;
+        }
+        case "burning_splint": {
+          if (collectedMl <= 0) {
+            toast.warning("Collect CO₂ first · আগে CO₂ সংগ্রহ কর");
+            return;
+          }
+          setActiveIdTool("splint");
+          toast.info("Move the burning splint to the jar mouth · গ্যাস জারের মুখে নাও");
           break;
         }
         case "moist_blue_litmus": {
-          if (collectedMl < JAR_CAPACITY_ML * 0.3) {
-            toast.warning("Need more CO₂ for the litmus test");
+          if (collectedMl <= 0) {
+            toast.warning("Collect CO₂ first · আগে CO₂ সংগ্রহ কর");
             return;
           }
-          setTests((t) => ({ ...t, litmus: "pass" }));
-          completeStep("tests");
-          toast.success("Moist blue litmus turned faint red (H₂CO₃)");
+          setActiveIdTool("litmus");
+          toast.info("Move the moist blue litmus to the jar mouth · জারের মুখে নাও");
           break;
         }
         case "magnesium_ribbon": {
-          if (collectedMl < JAR_CAPACITY_ML * 0.5) {
-            toast.warning("Need more CO₂ for the magnesium test");
+          if (collectedMl <= 0) {
+            toast.warning("Collect CO₂ first · আগে CO₂ সংগ্রহ কর");
             return;
           }
-          setTests((t) => ({ ...t, magnesium: "pass" }));
-          completeStep("tests");
-          toast.success("Mg keeps burning in CO₂ — black carbon deposits formed");
+          setActiveIdTool("mg");
+          toast.info("Move the burning Mg ribbon into the jar · জ্বলন্ত Mg জারে নাও");
           break;
         }
         default:
