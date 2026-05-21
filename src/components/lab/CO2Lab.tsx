@@ -28,7 +28,7 @@ import {
 import EquipmentPanel, { CO2_ITEMS } from "./EquipmentPanel";
 import StepsPanel from "./StepsPanel";
 import LabReport from "./LabReport";
-import CO2Workspace from "./workspaces/CO2Workspace";
+import CO2Workspace, { type IdTool } from "./workspaces/CO2Workspace";
 import TeacherViva, { type VivaQuestion } from "@/components/viva/TeacherViva";
 import StudentViva from "@/components/viva/StudentViva";
 import type {
