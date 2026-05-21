@@ -15,7 +15,7 @@ const GenerateSchema = z.object({
   questions: z.array(QuestionSchema),
 });
 
-const ExperimentEnum = z.enum(["titration", "oxygen_prep"]);
+const ExperimentEnum = z.enum(["titration", "oxygen_prep", "co2_prep"]);
 
 function experimentContext(exp: z.infer<typeof ExperimentEnum>): string {
   if (exp === "oxygen_prep") {
@@ -27,6 +27,18 @@ function experimentContext(exp: z.infer<typeof ExperimentEnum>): string {
       "and lab safety (eye protection, no open flame near H2O2, keep H2O2 away from organics).",
     ].join(" ");
   }
+  if (exp === "co2_prep") {
+    return [
+      "the laboratory preparation of carbon dioxide gas",
+      "Equation: CaCO3(s) + 2 HCl(aq) --> CaCl2(aq) + H2O(l) + CO2(g).",
+      "Cover: apparatus (round-bottom flask, two-hole cork, thistle funnel with submerged tip, twice-bent delivery tube, gas jar),",
+      "why CO2 is collected by upward displacement of air (denser than air), and identification tests:",
+      "(a) limewater turns milky [Ca(OH)2 + CO2 -> CaCO3 + H2O], excess CO2 re-dissolves it as Ca(HCO3)2,",
+      "(b) a burning splint is extinguished, (c) moist blue litmus turns faint red (H2CO3),",
+      "(d) burning magnesium ribbon continues to burn producing black carbon (2 Mg + CO2 -> 2 MgO + C),",
+      "and safety (handle dilute HCl carefully, ventilation).",
+    ].join(" ");
+  }
   return [
     "acid-base titration (HCl + NaOH)",
     "Cover: indicators (phenolphthalein), equivalence point vs endpoint,",
@@ -34,6 +46,7 @@ function experimentContext(exp: z.infer<typeof ExperimentEnum>): string {
     "burette/pipette technique and sources of error.",
   ].join(" ");
 }
+
 
 export const generateViva = createServerFn({ method: "POST" })
   .inputValidator((input) =>

@@ -12,17 +12,20 @@ export default function LabReport({ report, onReset }: Props) {
   const min = Math.floor(report.durationSec / 60);
   const sec = report.durationSec % 60;
   const isOxygen = report.experiment === "oxygen_prep";
+  const isCO2 = report.experiment === "co2_prep";
+
+  const title = isCO2
+    ? "Preparation of CO₂ · কার্বন ডাইঅক্সাইড প্রস্তুতি"
+    : isOxygen
+      ? "Preparation of Oxygen · অক্সিজেন প্রস্তুতি"
+      : "Acid–Base Titration · অ্যাসিড-ক্ষার টাইট্রেশন";
 
   return (
     <Card className="space-y-4 p-6 print:border-0 print:shadow-none">
       <header className="flex items-center justify-between">
         <div>
           <h2 className="text-xl font-bold">Lab Report · ল্যাব রিপোর্ট</h2>
-          <p className="text-xs text-muted-foreground">
-            {isOxygen
-              ? "Preparation of Oxygen · অক্সিজেন প্রস্তুতি"
-              : "Acid–Base Titration · অ্যাসিড-ক্ষার টাইট্রেশন"}
-          </p>
+          <p className="text-xs text-muted-foreground">{title}</p>
         </div>
         <div className="text-right">
           <div className="text-5xl font-bold text-primary">{report.grade}</div>
@@ -31,7 +34,21 @@ export default function LabReport({ report, onReset }: Props) {
       </header>
 
       <div className="grid grid-cols-2 gap-3 text-sm md:grid-cols-4">
-        {isOxygen ? (
+        {isCO2 ? (
+          <>
+            <Metric label="CO₂ Collected" value={`${(report.VCO2_final ?? 0).toFixed(1)} mL`} />
+            <Metric label="Target" value={`${(report.VCO2_target ?? 0).toFixed(0)} mL`} />
+            <Metric
+              label="Tests passed"
+              value={`${
+                report.tests
+                  ? Object.values(report.tests).filter((r) => r === "pass").length
+                  : 0
+              } / 4`}
+            />
+            <Metric label="Accuracy" value={`${report.accuracy.toFixed(1)}%`} />
+          </>
+        ) : isOxygen ? (
           <>
             <Metric label="O₂ Collected" value={`${(report.VO2_final ?? 0).toFixed(1)} mL`} />
             <Metric label="Target" value={`${(report.VO2_target ?? 0).toFixed(0)} mL`} />
@@ -56,6 +73,7 @@ export default function LabReport({ report, onReset }: Props) {
           </>
         )}
       </div>
+
 
       <section>
         <h3 className="mb-2 text-sm font-semibold uppercase text-muted-foreground">Steps</h3>

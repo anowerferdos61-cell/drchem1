@@ -34,6 +34,8 @@ import {
 import type { ExperimentId, Mistake, Mode, Placed, Report, Step } from "@/components/lab/types";
 import ExperimentPicker from "@/components/lab/ExperimentPicker";
 import OxygenLab from "@/components/lab/OxygenLab";
+import CO2Lab from "@/components/lab/CO2Lab";
+
 import { ArrowLeft } from "lucide-react";
 
 // 3D scene is heavy — lazy load.
@@ -98,7 +100,8 @@ function Index() {
   useEffect(() => {
     try {
       const raw = localStorage.getItem("lab:activeExperiment");
-      if (raw === "titration" || raw === "oxygen_prep") setActiveExperiment(raw);
+      if (raw === "titration" || raw === "oxygen_prep" || raw === "co2_prep")
+        setActiveExperiment(raw);
     } catch {
       /* ignore */
     }
@@ -128,8 +131,12 @@ function Index() {
   if (activeExperiment === "oxygen_prep") {
     return <OxygenLab onBack={back} />;
   }
+  if (activeExperiment === "co2_prep") {
+    return <CO2Lab onBack={back} />;
+  }
   return <TitrationLab onBack={back} />;
 }
+
 
 function TitrationLab({ onBack }: { onBack: () => void }) {
   // ── Core state ──────────────────────────────────────────────
