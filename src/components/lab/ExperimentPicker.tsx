@@ -28,7 +28,15 @@ const EXPERIMENTS: Array<{
     icon: Wind,
     gradient: "from-sky-100 via-cyan-50 to-emerald-100",
   },
+  {
+    id: "co2_prep",
+    title: "Preparation of CO₂ · কার্বন ডাইঅক্সাইড প্রস্তুতি",
+    subtitle: "CaCO₃ + 2 HCl → CaCl₂ + H₂O + CO₂ — upward displacement of air",
+    icon: FlaskRound,
+    gradient: "from-emerald-100 via-lime-50 to-amber-100",
+  },
 ];
+
 
 export default function ExperimentPicker({ onPick }: Props) {
   return (
