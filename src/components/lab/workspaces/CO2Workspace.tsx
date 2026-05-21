@@ -462,6 +462,17 @@ export default function CO2Workspace({
           </g>
         )}
 
+        {/* ─── Labels ─── */}
+        <text x="252" y="48" textAnchor="middle" fontSize="10" fill="#334155">
+          Thistle Funnel · থিসল ফানেল
+        </text>
+        <text x="160" y="345" textAnchor="middle" fontSize="10" fill="#334155">
+          Round-bottom Flask
+        </text>
+        <text x="160" y="358" textAnchor="middle" fontSize="9" fill="#64748b">
+          গোলতলী ফ্লাস্ক
+        </text>
+
         {/* Empty-state helper */}
         {!placed.round_bottom_flask && (
           <text x="320" y="250" textAnchor="middle" fontSize="14" fill="#94a3b8">
