@@ -128,17 +128,39 @@ function Index() {
     }
   }, []);
 
+  let content: React.ReactNode;
   if (activeExperiment === null) {
-    return <ExperimentPicker onPick={pick} />;
+    content = <ExperimentPicker onPick={pick} />;
+  } else if (activeExperiment === "oxygen_prep") {
+    content = <OxygenLab onBack={back} />;
+  } else if (activeExperiment === "co2_prep") {
+    content = <CO2Lab onBack={back} />;
+  } else {
+    content = <TitrationLab onBack={back} />;
   }
-  if (activeExperiment === "oxygen_prep") {
-    return <OxygenLab onBack={back} />;
-  }
-  if (activeExperiment === "co2_prep") {
-    return <CO2Lab onBack={back} />;
-  }
-  return <TitrationLab onBack={back} />;
+
+  // Reset assistant context when on picker
+  useEffect(() => {
+    if (activeExperiment === null) {
+      setAIContext({
+        experimentId: "none",
+        mode: "guide",
+        currentStep: 0,
+        mistakesMade: [],
+        goal: "Choose an experiment to begin",
+      });
+    }
+  }, [activeExperiment]);
+
+  const aiCtx = useAIContext();
+  return (
+    <>
+      {content}
+      <LabAIAssistant context={aiCtx} />
+    </>
+  );
 }
+
 
 
 function TitrationLab({ onBack }: { onBack: () => void }) {
