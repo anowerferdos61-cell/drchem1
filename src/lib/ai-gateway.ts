@@ -34,9 +34,9 @@ export async function chatComplete({
   model = DEFAULT_CHAT_MODEL,
 }: ChatCallOptions): Promise<string> {
   const provider = createLovableAiGatewayProvider(apiKey);
-  const messages: CoreMessage[] = [
+  const messages: ModelMessage[] = [
     { role: "system", content: systemPrompt },
-    ...history.map((m) => ({ role: m.role, content: m.content }) as CoreMessage),
+    ...history.map((m) => ({ role: m.role, content: m.content }) as ModelMessage),
   ];
   const { text } = await generateText({ model: provider(model), messages });
   return text;
@@ -50,9 +50,9 @@ export async function* chatStream({
   model = DEFAULT_CHAT_MODEL,
 }: ChatCallOptions): AsyncGenerator<string> {
   const provider = createLovableAiGatewayProvider(apiKey);
-  const messages: CoreMessage[] = [
+  const messages: ModelMessage[] = [
     { role: "system", content: systemPrompt },
-    ...history.map((m) => ({ role: m.role, content: m.content }) as CoreMessage),
+    ...history.map((m) => ({ role: m.role, content: m.content }) as ModelMessage),
   ];
   const result = streamText({ model: provider(model), messages });
   for await (const delta of result.textStream) {
