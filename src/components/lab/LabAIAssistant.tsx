@@ -255,7 +255,7 @@ export default function LabAIAssistant({ context }: Props) {
               </div>
             )}
           </div>
-        </ScrollArea>
+        </div>
 
         {/* Input */}
         <form
