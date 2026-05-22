@@ -93,6 +93,25 @@ export interface Mistake {
   message: string;
 }
 
+// ── AI Chat Assistant ──────────────────────────────────────
+export type ChatMessage = {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  timestamp: number;
+};
+
+export type AIContext = {
+  experimentId: string;
+  mode: "guide" | "student" | "classroom";
+  currentStep: number;
+  mistakesMade: string[];
+  currentChemicals?: string[];
+  currentEquipment?: string[];
+  goal?: string;
+};
+
+
 export interface Step {
   id: string;
   label: string; // bilingual
