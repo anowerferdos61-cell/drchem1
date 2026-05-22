@@ -181,6 +181,29 @@ function TitrationLab({ onBack }: { onBack: () => void }) {
   const [vivaQuestions, setVivaQuestions] = useState<VivaQuestion[]>([]);
   const [showViva, setShowViva] = useState(false);
 
+  // Publish AI assistant context
+  useEffect(() => {
+    const stepIdx = steps.findIndex((s) => !s.done);
+    const chemicals: string[] = [];
+    if (placed.hcl) chemicals.push("HCl");
+    if (placed.naoh) chemicals.push("NaOH");
+    if (placed.indicator) chemicals.push("phenolphthalein");
+    const equipment: string[] = [];
+    if (placed.clamp) equipment.push("stand & clamp");
+    if (placed.burette) equipment.push("burette");
+    if (placed.flask) equipment.push("conical flask");
+    setAIContext({
+      experimentId: "titration",
+      mode,
+      currentStep: stepIdx < 0 ? steps.length : stepIdx,
+      mistakesMade: mistakes.map((m) => m.message),
+      currentChemicals: chemicals,
+      currentEquipment: equipment,
+      goal: "Acid-base titration of HCl with NaOH to find the endpoint",
+    });
+  }, [mode, steps, placed, mistakes]);
+
+
   // Hydrate config from localStorage on mount
   useEffect(() => {
     try {
