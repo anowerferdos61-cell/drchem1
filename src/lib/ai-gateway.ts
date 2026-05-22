@@ -1,5 +1,5 @@
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
-import { generateText, streamText, type CoreMessage } from "ai";
+import { generateText, streamText, type ModelMessage } from "ai";
 
 const GATEWAY_BASE = "https://ai.gateway.lovable.dev/v1";
 export const DEFAULT_CHAT_MODEL = "google/gemini-3-flash-preview";
