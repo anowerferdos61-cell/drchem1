@@ -3,7 +3,7 @@
  * Central brain: holds ALL state and orchestrates the lab + viva.
  */
 import { createFileRoute } from "@tanstack/react-router";
-import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Toaster, toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
