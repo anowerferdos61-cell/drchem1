@@ -9,8 +9,8 @@ import { Bot, Loader2, MessageCircle, Send, Trash2, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+
 import { chatWithAssistant } from "@/lib/chat.functions";
 import type { AIContext, ChatMessage } from "@/components/lab/types";
 
@@ -199,7 +199,7 @@ export default function LabAIAssistant({ context }: Props) {
         </div>
 
         {/* Messages */}
-        <ScrollArea className="flex-1" viewportRef={scrollRef}>
+        <div ref={scrollRef} className="flex-1 overflow-y-auto">
           <div className="space-y-3 p-3">
             {messages.length === 0 && (
               <div className="space-y-3 py-6 text-center">
