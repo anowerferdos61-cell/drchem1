@@ -3,7 +3,7 @@
  * Central brain: holds ALL state and orchestrates the lab + viva.
  */
 import { createFileRoute } from "@tanstack/react-router";
-import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Toaster, toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -35,6 +35,9 @@ import type { ExperimentId, Mistake, Mode, Placed, Report, Step } from "@/compon
 import ExperimentPicker from "@/components/lab/ExperimentPicker";
 import OxygenLab from "@/components/lab/OxygenLab";
 import CO2Lab from "@/components/lab/CO2Lab";
+import LabAIAssistant from "@/components/lab/LabAIAssistant";
+import { setAIContext, useAIContext } from "@/lib/ai-context-store";
+
 
 import { ArrowLeft } from "lucide-react";
 
@@ -125,17 +128,39 @@ function Index() {
     }
   }, []);
 
+  let content: React.ReactNode;
   if (activeExperiment === null) {
-    return <ExperimentPicker onPick={pick} />;
+    content = <ExperimentPicker onPick={pick} />;
+  } else if (activeExperiment === "oxygen_prep") {
+    content = <OxygenLab onBack={back} />;
+  } else if (activeExperiment === "co2_prep") {
+    content = <CO2Lab onBack={back} />;
+  } else {
+    content = <TitrationLab onBack={back} />;
   }
-  if (activeExperiment === "oxygen_prep") {
-    return <OxygenLab onBack={back} />;
-  }
-  if (activeExperiment === "co2_prep") {
-    return <CO2Lab onBack={back} />;
-  }
-  return <TitrationLab onBack={back} />;
+
+  // Reset assistant context when on picker
+  useEffect(() => {
+    if (activeExperiment === null) {
+      setAIContext({
+        experimentId: "none",
+        mode: "guide",
+        currentStep: 0,
+        mistakesMade: [],
+        goal: "Choose an experiment to begin",
+      });
+    }
+  }, [activeExperiment]);
+
+  const aiCtx = useAIContext();
+  return (
+    <>
+      {content}
+      <LabAIAssistant context={aiCtx} />
+    </>
+  );
 }
+
 
 
 function TitrationLab({ onBack }: { onBack: () => void }) {
@@ -155,6 +180,29 @@ function TitrationLab({ onBack }: { onBack: () => void }) {
   const [showPanels, setShowPanels] = useState(true);
   const [vivaQuestions, setVivaQuestions] = useState<VivaQuestion[]>([]);
   const [showViva, setShowViva] = useState(false);
+
+  // Publish AI assistant context
+  useEffect(() => {
+    const stepIdx = steps.findIndex((s) => !s.done);
+    const chemicals: string[] = [];
+    if (placed.hcl) chemicals.push("HCl");
+    if (placed.naoh) chemicals.push("NaOH");
+    if (placed.indicator) chemicals.push("phenolphthalein");
+    const equipment: string[] = [];
+    if (placed.clamp) equipment.push("stand & clamp");
+    if (placed.burette) equipment.push("burette");
+    if (placed.flask) equipment.push("conical flask");
+    setAIContext({
+      experimentId: "titration",
+      mode,
+      currentStep: stepIdx < 0 ? steps.length : stepIdx,
+      mistakesMade: mistakes.map((m) => m.message),
+      currentChemicals: chemicals,
+      currentEquipment: equipment,
+      goal: "Acid-base titration of HCl with NaOH to find the endpoint",
+    });
+  }, [mode, steps, placed, mistakes]);
+
 
   // Hydrate config from localStorage on mount
   useEffect(() => {

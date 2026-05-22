@@ -35,6 +35,8 @@ import type {
   Report,
   Step,
 } from "./types";
+import { setAIContext } from "@/lib/ai-context-store";
+
 import {
   computeOxygenGeneration,
   maxOxygenVolumeMl,
@@ -109,6 +111,29 @@ export default function OxygenLab({ onBack }: Props) {
   const [showPanels, setShowPanels] = useState(true);
   const [vivaQuestions, setVivaQuestions] = useState<VivaQuestion[]>([]);
   const [showViva, setShowViva] = useState(false);
+
+  // Publish AI assistant context
+  useEffect(() => {
+    const stepIdx = steps.findIndex((s) => !s.done);
+    const chemicals: string[] = [];
+    if (placed.hydrogen_peroxide) chemicals.push("H₂O₂");
+    if (placed.manganese_dioxide) chemicals.push("MnO₂ (catalyst)");
+    const equipment: string[] = [];
+    if (placed.reaction_tube) equipment.push("reaction test tube");
+    if (placed.delivery_tube) equipment.push("delivery tube");
+    if (placed.water_trough) equipment.push("water trough");
+    if (placed.collection_tube) equipment.push("collection tube");
+    setAIContext({
+      experimentId: "oxygen_prep",
+      mode,
+      currentStep: stepIdx < 0 ? steps.length : stepIdx,
+      mistakesMade: mistakes.map((m) => m.message),
+      currentChemicals: chemicals,
+      currentEquipment: equipment,
+      goal: "Prepare O₂ via H₂O₂ + MnO₂ and confirm with glowing-splint test",
+    });
+  }, [mode, steps, placed, mistakes]);
+
   const startedAtRef = useRef<number | null>(null);
 
   // Hydrate config

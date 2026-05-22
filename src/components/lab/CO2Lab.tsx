@@ -41,6 +41,8 @@ import type {
   TestId,
   TestResult,
 } from "./types";
+import { setAIContext } from "@/lib/ai-context-store";
+
 import {
   co2Grade,
   collectionEfficiency,
@@ -131,6 +133,30 @@ export default function CO2Lab({ onBack }: Props) {
   const [showPanels, setShowPanels] = useState(true);
   const [vivaQuestions, setVivaQuestions] = useState<VivaQuestion[]>([]);
   const [showViva, setShowViva] = useState(false);
+
+  // Publish AI assistant context
+  useEffect(() => {
+    const stepIdx = steps.findIndex((s) => !s.done);
+    const chemicals: string[] = [];
+    if (placed.calcium_carbonate) chemicals.push("CaCO₃ chips");
+    if (placed.acid_poured) chemicals.push("dilute HCl");
+    const equipment: string[] = [];
+    if (placed.round_bottom_flask) equipment.push("round-bottom flask");
+    if (placed.thistle_funnel) equipment.push("thistle funnel");
+    if (placed.cork) equipment.push("two-hole cork");
+    if (placed.delivery_tube) equipment.push("bent delivery tube");
+    if (placed.gas_jar) equipment.push("gas jar (upward displacement)");
+    setAIContext({
+      experimentId: "co2_prep",
+      mode,
+      currentStep: stepIdx < 0 ? steps.length : stepIdx,
+      mistakesMade: mistakes.map((m) => m.message),
+      currentChemicals: chemicals,
+      currentEquipment: equipment,
+      goal: "Prepare CO₂ via CaCO₃ + dilute HCl and identify with the four tests",
+    });
+  }, [mode, steps, placed, mistakes]);
+
   // Identification-test interaction state
   const [activeIdTool, setActiveIdTool] = useState<IdTool>(null);
   const [cursor, setCursor] = useState<{ x: number; y: number } | null>(null);
