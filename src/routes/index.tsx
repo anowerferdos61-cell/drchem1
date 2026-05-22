@@ -35,6 +35,9 @@ import type { ExperimentId, Mistake, Mode, Placed, Report, Step } from "@/compon
 import ExperimentPicker from "@/components/lab/ExperimentPicker";
 import OxygenLab from "@/components/lab/OxygenLab";
 import CO2Lab from "@/components/lab/CO2Lab";
+import LabAIAssistant from "@/components/lab/LabAIAssistant";
+import { setAIContext, useAIContext } from "@/lib/ai-context-store";
+
 
 import { ArrowLeft } from "lucide-react";
 
