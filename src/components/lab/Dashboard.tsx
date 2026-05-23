@@ -211,7 +211,15 @@ export default function Dashboard({
           {CARD_META.map((meta, idx) => {
             const card = t.cards[meta.key];
             const isExperiments = meta.key === "experiments";
+            const isAiTutor = meta.key === "aiTutor";
+            const isActive = isExperiments || isAiTutor;
             const Icon = meta.icon;
+
+            const onClickCard = () => {
+              if (isExperiments) onEnterExperiments();
+              else if (isAiTutor) goTutor();
+              else handleComingSoon();
+            };
 
             return (
               <Card
@@ -223,10 +231,7 @@ export default function Dashboard({
                   idx === 0 ? "sm:col-span-2 lg:col-span-2" : "",
                   idx === 4 ? "sm:col-span-2 lg:col-span-1" : "",
                 ].join(" ")}
-                onClick={() => {
-                  if (isExperiments) onEnterExperiments();
-                  else handleComingSoon();
-                }}
+                onClick={onClickCard}
               >
                 {/* Shine effect */}
                 <div className="pointer-events-none absolute -inset-px opacity-0 transition-opacity duration-500 group-hover:opacity-100">
