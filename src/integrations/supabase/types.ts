@@ -14,13 +14,72 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      kb_documents: {
+        Row: {
+          chapter: string | null
+          chunk_index: number | null
+          class: string
+          content: string
+          created_at: string
+          embedding: string
+          id: string
+          metadata: Json
+          page: number | null
+          source: string
+          subject: string
+        }
+        Insert: {
+          chapter?: string | null
+          chunk_index?: number | null
+          class?: string
+          content: string
+          created_at?: string
+          embedding: string
+          id?: string
+          metadata?: Json
+          page?: number | null
+          source?: string
+          subject?: string
+        }
+        Update: {
+          chapter?: string | null
+          chunk_index?: number | null
+          class?: string
+          content?: string
+          created_at?: string
+          embedding?: string
+          id?: string
+          metadata?: Json
+          page?: number | null
+          source?: string
+          subject?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      match_kb_documents: {
+        Args: {
+          filter_source?: string
+          filter_subject?: string
+          match_count?: number
+          query_embedding: string
+        }
+        Returns: {
+          chapter: string
+          class: string
+          content: string
+          id: string
+          metadata: Json
+          page: number
+          similarity: number
+          source: string
+          subject: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
