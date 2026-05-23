@@ -44,7 +44,7 @@ function MessageBubbleImpl({ message }: Props) {
       <div className="min-w-0 flex-1">
         <div className="mb-1 flex items-center justify-between">
           <span className="text-xs font-semibold text-muted-foreground">
-            {isUser ? "আপনি" : "রসায়ন স্যার"}
+            {isUser ? "আপনি" : "Dr. Chem"}
           </span>
           {!isUser && message.content && !message.streaming && (
             <Button
