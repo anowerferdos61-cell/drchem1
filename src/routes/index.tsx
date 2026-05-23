@@ -33,6 +33,7 @@ import {
 } from "@/lib/chemistry";
 import type { ExperimentId, Mistake, Mode, Placed, Report, Step } from "@/components/lab/types";
 import ExperimentPicker from "@/components/lab/ExperimentPicker";
+import Dashboard from "@/components/lab/Dashboard";
 import OxygenLab from "@/components/lab/OxygenLab";
 import CO2Lab from "@/components/lab/CO2Lab";
 import LabAIAssistant from "@/components/lab/LabAIAssistant";
@@ -48,11 +49,11 @@ export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
     meta: [
-      { title: "Virtual Chemistry Lab · AI-Powered Acid-Base Titration" },
+      { title: "Virtual Chemistry Lab · AI-Powered Portal" },
       {
         name: "description",
         content:
-          "Interactive 3D chemistry lab simulating HCl + NaOH titration. Teacher config, AI viva, mistake tracking, printable report.",
+          "Virtual Chemistry Lab Portal — interactive experiments, AI tutoring, smart notes, video lessons & live support for Bangladeshi students.",
       },
     ],
   }),
@@ -98,13 +99,16 @@ type EquipmentSelectId =
 
 function Index() {
   const [activeExperiment, setActiveExperiment] = useState<ExperimentId | null>(null);
+  const [showExperiments, setShowExperiments] = useState(false);
 
   // Hydrate from localStorage
   useEffect(() => {
     try {
       const raw = localStorage.getItem("lab:activeExperiment");
-      if (raw === "titration" || raw === "oxygen_prep" || raw === "co2_prep")
+      if (raw === "titration" || raw === "oxygen_prep" || raw === "co2_prep") {
         setActiveExperiment(raw);
+        setShowExperiments(true);
+      }
     } catch {
       /* ignore */
     }
@@ -121,6 +125,7 @@ function Index() {
 
   const back = useCallback(() => {
     setActiveExperiment(null);
+    setShowExperiments(false);
     try {
       localStorage.removeItem("lab:activeExperiment");
     } catch {
@@ -129,7 +134,14 @@ function Index() {
   }, []);
 
   let content: React.ReactNode;
-  if (activeExperiment === null) {
+  if (activeExperiment === null && !showExperiments) {
+    content = (
+      <Dashboard
+        onEnterExperiments={() => setShowExperiments(true)}
+        onPickExperiment={pick}
+      />
+    );
+  } else if (activeExperiment === null && showExperiments) {
     content = <ExperimentPicker onPick={pick} />;
   } else if (activeExperiment === "oxygen_prep") {
     content = <OxygenLab onBack={back} />;
@@ -139,9 +151,9 @@ function Index() {
     content = <TitrationLab onBack={back} />;
   }
 
-  // Reset assistant context when on picker
+  // Reset assistant context when on dashboard
   useEffect(() => {
-    if (activeExperiment === null) {
+    if (activeExperiment === null && !showExperiments) {
       setAIContext({
         experimentId: "none",
         mode: "guide",
@@ -150,7 +162,7 @@ function Index() {
         goal: "Choose an experiment to begin",
       });
     }
-  }, [activeExperiment]);
+  }, [activeExperiment, showExperiments]);
 
   const aiCtx = useAIContext();
   return (
