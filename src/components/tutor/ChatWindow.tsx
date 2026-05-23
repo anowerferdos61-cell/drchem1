@@ -171,7 +171,7 @@ export default function ChatWindow() {
             <div className="mb-4 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 p-4">
               <Sparkles className="h-8 w-8 text-primary" />
             </div>
-            <h2 className="text-xl font-bold">রসায়ন স্যার-কে জিজ্ঞেস করুন</h2>
+            <h2 className="text-xl font-bold">Dr. Chem-কে জিজ্ঞেস করুন</h2>
             <p className="mt-2 max-w-md text-sm text-muted-foreground">
               Class 9-10 ও HSC chemistry concept, equation, experiment — সব
               ব্যাখ্যা পাবেন বাংলায়।
