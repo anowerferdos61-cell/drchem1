@@ -165,10 +165,12 @@ function Index() {
   }, [activeExperiment, showExperiments]);
 
   const aiCtx = useAIContext();
+  // Floating AI assistant: ONLY inside an active experiment (not on dashboard / picker).
+  const showFloatingAI = activeExperiment !== null;
   return (
     <>
       {content}
-      <LabAIAssistant context={aiCtx} />
+      {showFloatingAI && <LabAIAssistant context={aiCtx} />}
     </>
   );
 }

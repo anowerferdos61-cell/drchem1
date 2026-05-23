@@ -155,10 +155,10 @@ export default function ChatWindow() {
           </div>
           <div>
             <h1 className="text-sm font-semibold leading-none">
-              {active?.title || "রসায়ন স্যার"}
+              {active?.title || "Dr. Chem"}
             </h1>
             <p className="mt-0.5 text-[10px] text-muted-foreground">
-              {ragMode ? "📚 বই থেকে উত্তর" : "Chemistry AI · bilingual"}
+              {ragMode ? "📚 বই থেকে উত্তর · Class 9-10" : "Chemistry Tutor · Class 9-10 · bilingual"}
             </p>
           </div>
         </div>
@@ -171,7 +171,7 @@ export default function ChatWindow() {
             <div className="mb-4 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 p-4">
               <Sparkles className="h-8 w-8 text-primary" />
             </div>
-            <h2 className="text-xl font-bold">রসায়ন স্যার-কে জিজ্ঞেস করুন</h2>
+            <h2 className="text-xl font-bold">Dr. Chem-কে জিজ্ঞেস করুন</h2>
             <p className="mt-2 max-w-md text-sm text-muted-foreground">
               Class 9-10 ও HSC chemistry concept, equation, experiment — সব
               ব্যাখ্যা পাবেন বাংলায়।

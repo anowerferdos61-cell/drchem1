@@ -11,17 +11,17 @@ export const Route = createFileRoute("/tutor")({
   component: TutorPage,
   head: () => ({
     meta: [
-      { title: "রসায়ন স্যার · AI Chemistry Tutor" },
+      { title: "Dr. Chem · AI Chemistry Tutor" },
       {
         name: "description",
         content:
-          "ChatGPT-style bilingual Chemistry tutor for Bangladeshi students. Ask questions about Class 9-10 & HSC chemistry, get streaming answers grounded in your textbook.",
+          "ChatGPT-style bilingual Chemistry tutor (Dr. Chem) for Bangladeshi Class 9-10 students. Streaming answers, KaTeX equations, and book-grounded RAG mode.",
       },
-      { property: "og:title", content: "রসায়ন স্যার · AI Chemistry Tutor" },
+      { property: "og:title", content: "Dr. Chem · AI Chemistry Tutor" },
       {
         property: "og:description",
         content:
-          "Bilingual AI tutor with KaTeX equations and book-grounded answers.",
+          "Formal bilingual AI teacher for NCTB Class 9-10 chemistry with streaming and RAG.",
       },
     ],
   }),
