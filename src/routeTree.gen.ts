@@ -9,9 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TutorRouteImport } from './routes/tutor'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiTutorStreamRouteImport } from './routes/api/tutor/stream'
 
+const TutorRoute = TutorRouteImport.update({
+  id: '/tutor',
+  path: '/tutor',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -25,32 +31,43 @@ const ApiTutorStreamRoute = ApiTutorStreamRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/tutor': typeof TutorRoute
   '/api/tutor/stream': typeof ApiTutorStreamRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/tutor': typeof TutorRoute
   '/api/tutor/stream': typeof ApiTutorStreamRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/tutor': typeof TutorRoute
   '/api/tutor/stream': typeof ApiTutorStreamRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/tutor/stream'
+  fullPaths: '/' | '/tutor' | '/api/tutor/stream'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/tutor/stream'
-  id: '__root__' | '/' | '/api/tutor/stream'
+  to: '/' | '/tutor' | '/api/tutor/stream'
+  id: '__root__' | '/' | '/tutor' | '/api/tutor/stream'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  TutorRoute: typeof TutorRoute
   ApiTutorStreamRoute: typeof ApiTutorStreamRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/tutor': {
+      id: '/tutor'
+      path: '/tutor'
+      fullPath: '/tutor'
+      preLoaderRoute: typeof TutorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -70,8 +87,19 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  TutorRoute: TutorRoute,
   ApiTutorStreamRoute: ApiTutorStreamRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
