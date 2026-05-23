@@ -159,6 +159,7 @@ export default function Dashboard({
 }: DashboardProps) {
   const [lang, setLang] = useState<Lang>("en");
   const t = COPY[lang];
+  const navigate = useNavigate();
 
   const toggleLang = useCallback(() => {
     setLang((prev) => (prev === "en" ? "bn" : "en"));
@@ -170,6 +171,10 @@ export default function Dashboard({
       duration: 4000,
     });
   }, [t]);
+
+  const goTutor = useCallback(() => {
+    navigate({ to: "/tutor" });
+  }, [navigate]);
 
   return (
     <div className="min-h-screen w-full">
