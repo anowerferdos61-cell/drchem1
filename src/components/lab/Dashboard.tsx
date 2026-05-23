@@ -1,11 +1,10 @@
 import { useState, useCallback } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@components/ui/button";
+import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import type { ExperimentId } from "./types";
 import {
-  FlaskConical,
   Atom,
   Bot,
   BookOpen,
@@ -23,11 +22,30 @@ interface DashboardProps {
 
 type Lang = "en" | "bn";
 
-const COPY = {
+type ExperimentCard = { title: string; desc: string; cta: string };
+type ComingSoonCard = { title: string; desc: string; badge: string };
+
+type CopySet = {
+  title: string;
+  subtitle: string;
+  tagline: string;
+  cards: {
+    experiments: ExperimentCard;
+    aiTutor: ComingSoonCard;
+    notes: ComingSoonCard;
+    videos: ComingSoonCard;
+    support: ComingSoonCard;
+  };
+  toastMsg: string;
+  footer: string;
+};
+
+const COPY: Record<Lang, CopySet> = {
   en: {
     title: "Virtual Chemistry Lab",
     subtitle: "Your AI-powered science portal",
-    tagline: "Explore experiments, AI tutoring, notes, video lessons & live support — all in one place.",
+    tagline:
+      "Explore experiments, AI tutoring, notes, video lessons & live support — all in one place.",
     cards: {
       experiments: {
         title: "Virtual Experiments",
@@ -55,13 +73,15 @@ const COPY = {
         badge: "Coming Soon",
       },
     },
-    toastMsg: "This feature is coming soon! We are indexing textbooks and video lessons.",
+    toastMsg:
+      "This feature is coming soon! We are indexing textbooks and video lessons.",
     footer: "Built for Bangladeshi students · Made with AI",
   },
   bn: {
     title: "ভার্চুয়াল রসায়ন ল্যাব",
     subtitle: "আপনার AI-চালিত বিজ্ঞান পোর্টাল",
-    tagline: "পরীক্ষণ, AI টিউটর, নোট, ভিডিও লেসন এবং লাইভ সাপোর্ট — সব এক জায়গায়।",
+    tagline:
+      "পরীক্ষণ, AI টিউটর, নোট, ভিডিও লেসন এবং লাইভ সাপোর্ট — সব এক জায়গায়।",
     cards: {
       experiments: {
         title: "ভার্চুয়াল পরীক্ষণ",
@@ -89,14 +109,15 @@ const COPY = {
         badge: "শীঘ্রই আসছে",
       },
     },
-    toastMsg: "এই ফিচারটি দ্রুতই আসছে! বই এবং ভিডিও লেসন যুক্ত করার কাজ চলছে।",
+    toastMsg:
+      "এই ফিচারটি দ্রুতই আসছে! বই এবং ভিডিও লেসন যুক্ত করার কাজ চলছে।",
     footer: "বাংলাদেশী শিক্ষার্থীদের জন্য · AI দিয়ে তৈরি",
   },
 };
 
 const CARD_META: Array<{
-  key: "experiments" | "aiTutor" | "notes" | "videos" | "support";
-  icon: typeof FlaskConical;
+  key: keyof CopySet["cards"];
+  icon: typeof Atom;
   gradient: string;
   accent: string;
 }> = [
@@ -132,7 +153,9 @@ const CARD_META: Array<{
   },
 ];
 
-export default function Dashboard({ onEnterExperiments }: DashboardProps) {
+export default function Dashboard({
+  onEnterExperiments,
+}: DashboardProps) {
   const [lang, setLang] = useState<Lang>("en");
   const t = COPY[lang];
 
@@ -154,7 +177,9 @@ export default function Dashboard({ onEnterExperiments }: DashboardProps) {
         {/* Floating badge */}
         <div className="mb-4 inline-flex items-center gap-2 rounded-full border bg-background/80 px-4 py-1.5 text-xs font-medium shadow-sm backdrop-blur">
           <Sparkles className="h-3.5 w-3.5 text-primary" />
-          <span>{lang === "en" ? "AI-Powered · Bilingual" : "AI-চালিত · দ্বিভাষিক"}</span>
+          <span>
+            {lang === "en" ? "AI-Powered · Bilingual" : "AI-চালিত · দ্বিভাষিক"}
+          </span>
           <button
             onClick={toggleLang}
             className="ml-2 rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide transition hover:bg-muted/80"
@@ -217,7 +242,7 @@ export default function Dashboard({ onEnterExperiments }: DashboardProps) {
                         variant="secondary"
                         className="border bg-background/70 text-xs backdrop-blur"
                       >
-                        {card.badge}
+                        {(card as ComingSoonCard).badge}
                       </Badge>
                     )}
                     {isExperiments && (
@@ -244,12 +269,12 @@ export default function Dashboard({ onEnterExperiments }: DashboardProps) {
                       <Button
                         size="sm"
                         className="w-full gap-1 font-semibold"
-                        onClick={(e) => {
+                        onClick={(e: React.MouseEvent) => {
                           e.stopPropagation();
                           onEnterExperiments();
                         }}
                       >
-                        {card.cta}
+                        {(card as ExperimentCard).cta}
                         <ArrowRight className="h-4 w-4" />
                       </Button>
                     ) : (
@@ -257,7 +282,7 @@ export default function Dashboard({ onEnterExperiments }: DashboardProps) {
                         size="sm"
                         variant="outline"
                         className="w-full gap-1 font-medium"
-                        onClick={(e) => {
+                        onClick={(e: React.MouseEvent) => {
                           e.stopPropagation();
                           handleComingSoon();
                         }}
@@ -276,13 +301,26 @@ export default function Dashboard({ onEnterExperiments }: DashboardProps) {
         {/* Quick stats row */}
         <div className="mt-8 grid grid-cols-3 gap-3 rounded-2xl border bg-card/50 p-4 backdrop-blur sm:grid-cols-3 md:gap-4 md:p-6">
           {[
-            { value: "3", label: lang === "en" ? "Experiments" : "পরীক্ষণ" },
-            { value: "2", label: lang === "en" ? "Languages" : "ভাষা" },
-            { value: "AI", label: lang === "en" ? "Assistant" : "সহায়ক" },
+            {
+              value: "3",
+              label: lang === "en" ? "Experiments" : "পরীক্ষণ",
+            },
+            {
+              value: "2",
+              label: lang === "en" ? "Languages" : "ভাষা",
+            },
+            {
+              value: "AI",
+              label: lang === "en" ? "Assistant" : "সহায়ক",
+            },
           ].map((s) => (
             <div key={s.label} className="text-center">
-              <div className="text-xl font-extrabold tracking-tight md:text-2xl">{s.value}</div>
-              <div className="text-xs text-muted-foreground md:text-sm">{s.label}</div>
+              <div className="text-xl font-extrabold tracking-tight md:text-2xl">
+                {s.value}
+              </div>
+              <div className="text-xs text-muted-foreground md:text-sm">
+                {s.label}
+              </div>
             </div>
           ))}
         </div>
