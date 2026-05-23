@@ -248,7 +248,7 @@ export default function Dashboard({
                     >
                       <Icon className="h-7 w-7" />
                     </div>
-                    {!isExperiments && (
+                    {!isActive && (
                       <Badge
                         variant="secondary"
                         className="border bg-background/70 text-xs backdrop-blur"
@@ -256,7 +256,7 @@ export default function Dashboard({
                         {(card as ComingSoonCard).badge}
                       </Badge>
                     )}
-                    {isExperiments && (
+                    {isActive && (
                       <Badge
                         variant="default"
                         className="bg-primary text-primary-foreground text-xs"
@@ -276,16 +276,20 @@ export default function Dashboard({
                   </div>
 
                   <div className="mt-auto pt-2">
-                    {isExperiments ? (
+                    {isActive ? (
                       <Button
                         size="sm"
                         className="w-full gap-1 font-semibold"
                         onClick={(e: React.MouseEvent) => {
                           e.stopPropagation();
-                          onEnterExperiments();
+                          onClickCard();
                         }}
                       >
-                        {(card as ExperimentCard).cta}
+                        {isExperiments
+                          ? (card as ExperimentCard).cta
+                          : lang === "en"
+                            ? "Open Tutor"
+                            : "চ্যাট শুরু করুন"}
                         <ArrowRight className="h-4 w-4" />
                       </Button>
                     ) : (
