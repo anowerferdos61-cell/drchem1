@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -158,6 +159,7 @@ export default function Dashboard({
 }: DashboardProps) {
   const [lang, setLang] = useState<Lang>("en");
   const t = COPY[lang];
+  const navigate = useNavigate();
 
   const toggleLang = useCallback(() => {
     setLang((prev) => (prev === "en" ? "bn" : "en"));
@@ -169,6 +171,10 @@ export default function Dashboard({
       duration: 4000,
     });
   }, [t]);
+
+  const goTutor = useCallback(() => {
+    navigate({ to: "/tutor" });
+  }, [navigate]);
 
   return (
     <div className="min-h-screen w-full">
@@ -205,7 +211,15 @@ export default function Dashboard({
           {CARD_META.map((meta, idx) => {
             const card = t.cards[meta.key];
             const isExperiments = meta.key === "experiments";
+            const isAiTutor = meta.key === "aiTutor";
+            const isActive = isExperiments || isAiTutor;
             const Icon = meta.icon;
+
+            const onClickCard = () => {
+              if (isExperiments) onEnterExperiments();
+              else if (isAiTutor) goTutor();
+              else handleComingSoon();
+            };
 
             return (
               <Card
@@ -217,10 +231,7 @@ export default function Dashboard({
                   idx === 0 ? "sm:col-span-2 lg:col-span-2" : "",
                   idx === 4 ? "sm:col-span-2 lg:col-span-1" : "",
                 ].join(" ")}
-                onClick={() => {
-                  if (isExperiments) onEnterExperiments();
-                  else handleComingSoon();
-                }}
+                onClick={onClickCard}
               >
                 {/* Shine effect */}
                 <div className="pointer-events-none absolute -inset-px opacity-0 transition-opacity duration-500 group-hover:opacity-100">
@@ -237,7 +248,7 @@ export default function Dashboard({
                     >
                       <Icon className="h-7 w-7" />
                     </div>
-                    {!isExperiments && (
+                    {!isActive && (
                       <Badge
                         variant="secondary"
                         className="border bg-background/70 text-xs backdrop-blur"
@@ -245,7 +256,7 @@ export default function Dashboard({
                         {(card as ComingSoonCard).badge}
                       </Badge>
                     )}
-                    {isExperiments && (
+                    {isActive && (
                       <Badge
                         variant="default"
                         className="bg-primary text-primary-foreground text-xs"
@@ -265,16 +276,20 @@ export default function Dashboard({
                   </div>
 
                   <div className="mt-auto pt-2">
-                    {isExperiments ? (
+                    {isActive ? (
                       <Button
                         size="sm"
                         className="w-full gap-1 font-semibold"
                         onClick={(e: React.MouseEvent) => {
                           e.stopPropagation();
-                          onEnterExperiments();
+                          onClickCard();
                         }}
                       >
-                        {(card as ExperimentCard).cta}
+                        {isExperiments
+                          ? (card as ExperimentCard).cta
+                          : lang === "en"
+                            ? "Open Tutor"
+                            : "চ্যাট শুরু করুন"}
                         <ArrowRight className="h-4 w-4" />
                       </Button>
                     ) : (

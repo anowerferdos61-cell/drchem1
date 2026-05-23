@@ -1,108 +1,148 @@
-# Plan: Experiment 2 — Preparation of Oxygen Gas
 
-Extend the Virtual Chemistry Lab to support multiple experiments without breaking the existing Titration flow. Add Oxygen Preparation (2H₂O₂ →[MnO₂] 2H₂O + O₂) as the second experiment, with its own SVG scene, equipment, steps, mistakes, config, status, and viva context.
+# Chemistry AI Tutor — ChatGPT-style Full Page Chat
 
----
-
-## 1. Architecture: multi-experiment shell
-
-**New file: `src/lib/experiments/registry.ts`**
-- Define `ExperimentId = "titration" | "oxygen_prep"`.
-- Export an `EXPERIMENTS` registry with metadata per experiment: `id`, `title` (bilingual), `description`, `icon`, `equipmentIds[]`, `stepsTemplate`, default config.
-- This becomes the single source of truth so adding Experiment 3 later is a one-file change.
-
-**`src/components/lab/types.ts`**
-- Extend `EquipmentId` union with: `test_tube_reaction`, `delivery_tube`, `water_trough`, `test_tube_collection`, `hydrogen_peroxide`, `manganese_dioxide`, `glowing_splint`.
-- Extend `MistakeType` with: `no_manganese_dioxide`, `missing_delivery_tube`, `early_splint_test`.
-- Make `Placed` a discriminated record keyed per experiment, or split into `TitrationPlaced` and `OxygenPlaced` and use `Placed = TitrationPlaced | OxygenPlaced`.
-- Add `ExperimentId` re-export.
-
-**`src/routes/index.tsx`**
-- Add `activeExperiment` state (default `"titration"`, persisted to `localStorage`).
-- Add an **Experiment Picker**: shown on first load as a centered card grid (2 cards with icon + bilingual title + short description). Also accessible later via a "Change Experiment · এক্সপেরিমেন্ট পরিবর্তন" button in the header.
-- When `activeExperiment` changes: reset `placed`, `steps`, `mistakes`, `Vb/VO2`, `published` viva state. Wire the new experiment's defaults from the registry.
-- Conditionally render `<TitrationWorkspace>` vs `<OxygenWorkspace>` (split out of current `LabWorkspace`).
-
-## 2. Chemistry engine
-
-**`src/lib/chemistry.ts`** — add (do not touch existing titration helpers):
-- `computeOxygenGeneration({ h2o2ConcPct, h2o2VolumeMl, mno2MassG, timeElapsedSec })` returning `{ totalMolesO2, rateMolPerSec, volumeMlAtSTP }`.
-  - Moles H₂O₂ = (volume_mL × density × conc%/100) / 34.
-  - Theoretical O₂ moles = molesH₂O₂ / 2; volume at STP = moles × 22400 mL.
-  - Rate: first-order approximation `k = k0 × min(mno2Mass, saturation)`, then `dV/dt = k × remainingMoles × 22400`.
-- `waterLevelPercent(VO2_collected_mL, tubeCapacity_mL)` → returns 100 − min(100, V/cap×100).
-
-## 3. Workspace split
-
-**Refactor** `src/components/lab/LabWorkspace.tsx` into:
-- `src/components/lab/workspaces/TitrationWorkspace.tsx` — current SVG, unchanged.
-- `src/components/lab/workspaces/OxygenWorkspace.tsx` — new SVG (viewBox 600×560).
-- `src/components/lab/LabWorkspace.tsx` becomes a thin switcher on `activeExperiment`.
-
-**Oxygen SVG scene:**
-- Left: retort stand + clamp holding a vertical reaction test tube (or Erlenmeyer flask) with black `MnO₂` pellets at bottom.
-- Curved glass delivery tube arcing right and down into a water trough (light-blue water with subtle wave).
-- Inverted collection test tube standing inside the trough, initially full of water.
-- Animations:
-  - Bubbles inside reaction tube when H₂O₂ added (SVG `<circle>` + `animate cy` loop, opacity fade).
-  - Bubbles travel up the delivery tube path (`animateMotion` on a path).
-  - Bubbles emerge inside inverted tube; water level inside the tube drops with `VO2` (animated `<rect>` height + Y).
-  - Glowing splint: draggable element (HTML overlay using pointer events, or SVG `<g>` with onPointerDown). When dropped near the inverted tube mouth AND `VO2 ≥ threshold`, splint bursts into a bright flame (radial-gradient flame `<path>` + scale pulse). If dropped early, fires `early_splint_test` mistake.
-
-## 4. Panels
-
-**`ConfigPanel.tsx`**: switch field set by `activeExperiment`.
-- Titration: existing Ma/Va/Mb.
-- Oxygen: `h2o2ConcPct`, `h2o2VolumeMl`, `mno2MassG`. Validate >0, conc 0–50.
-
-**`EquipmentPanel.tsx`**: accept `items: EquipmentItem[]` prop and render from the registry instead of the hardcoded `ITEMS`.
-
-**`StatusPanel.tsx`**: render different live blocks per experiment.
-- Titration: Vb / pH / Ve (current).
-- Oxygen: Reaction Rate (mL/s), O₂ Collected (mL), Water Level (%), with `<Progress>` for fill.
-
-**`StepsPanel.tsx`**: already generic — just feed it the experiment-specific steps. Keep student-mode hide rule.
-
-## 5. Mistake detection
-
-In `src/routes/index.tsx` (or a small `useOxygenMachine` hook in `src/lib/experiments/oxygen.ts`):
-- Adding H₂O₂ while `placed.manganese_dioxide === false` → log `no_manganese_dioxide` (high).
-- Reaction running while `placed.delivery_tube === false` → log `missing_delivery_tube` (high), bubbles vent at flask mouth.
-- Splint dropped on tube while `VO2 < 0.6 × tubeCapacity` → log `early_splint_test` (med), splint dims instead of igniting.
-
-## 6. AI Viva
-
-**`src/lib/viva.functions.ts`**:
-- Add `experiment: ExperimentId` to the `generateViva` input schema.
-- Branch the prompt: for `oxygen_prep`, instruct the model to ask high-school level questions on H₂O₂ decomposition, role of MnO₂ as catalyst, properties of O₂ (colorless, supports combustion), collection by downward displacement of water, glowing splint test, and safety (eye protection, no open flame near H₂O₂).
-- `TeacherViva.tsx` & `StudentViva.tsx`: pass current `activeExperiment` through.
-
-## 7. Lab Report
-
-**`LabReport.tsx`**: branch render on experiment.
-- Oxygen metrics: target O₂ volume vs collected, time taken, splint-test result (pass/early/none), mistakes list, grade based on (collected/target × 100) − 5 × highMistakes.
-
-## 8. Persistence & reset
-
-- `localStorage` keys: `lab:activeExperiment`, `titration:config`, `oxygen:config`.
-- "Change Experiment" prompts a confirm dialog if a run is in progress.
+## 🎯 লক্ষ্য
+বর্তমান floating bubble (`LabAIAssistant`) থাকবে শুধু lab-এর ভিতরে contextual help-এর জন্য। নতুন একটা **dedicated `/tutor` route** তৈরি হবে — সেখানে ChatGPT-এর মতো sidebar + main chat + streaming + RAG থাকবে।
 
 ---
 
-## Technical notes
+## 📐 আর্কিটেকচার
 
-- **No new dependencies**; everything is SVG + existing shadcn primitives.
-- **File additions:**
-  - `src/lib/experiments/registry.ts`
-  - `src/lib/experiments/oxygen.ts` (state machine + mistake rules)
-  - `src/components/lab/workspaces/TitrationWorkspace.tsx` (extracted)
-  - `src/components/lab/workspaces/OxygenWorkspace.tsx`
-  - `src/components/lab/ExperimentPicker.tsx`
-- **File edits:**
-  - `src/components/lab/types.ts`, `LabWorkspace.tsx`, `ConfigPanel.tsx`, `EquipmentPanel.tsx`, `StatusPanel.tsx`, `LabReport.tsx`
-  - `src/lib/chemistry.ts`, `src/lib/viva.functions.ts`
-  - `src/routes/index.tsx`
-- **Backwards compatibility:** all existing titration code paths remain; new code is additive and gated on `activeExperiment`.
-- **Bilingual labels** maintained throughout ("English · বাংলা").
+```text
+/tutor
+├─ Sidebar (left, 280px)
+│   ├─ [+ নতুন চ্যাট] button
+│   ├─ "Ask from Book 📚" toggle (RAG mode)
+│   ├─ Search input
+│   └─ Conversation list (rename / delete on hover)
+│
+└─ Main chat area
+    ├─ Header: conversation title + model picker + clear
+    ├─ Message stream (markdown + KaTeX rendering)
+    │   ├─ User bubble (right)
+    │   ├─ Assistant bubble (left, with copy/regenerate)
+    │   └─ Source citations (RAG mode — page references)
+    ├─ "AI is thinking…" / streaming cursor
+    └─ Composer
+        ├─ Auto-grow textarea
+        ├─ Stop generating button (during stream)
+        └─ Send (Enter / Shift+Enter for newline)
+```
 
-Confirm and I'll implement.
+---
+
+## 🚀 Phase 1 — Core Chat (localStorage)
+
+কোনো login ছাড়াই কাজ শুরু — সব data browser-এ থাকবে।
+
+**নতুন ফাইল:**
+- `src/routes/tutor.tsx` — main route with SEO head()
+- `src/components/tutor/TutorLayout.tsx` — sidebar + outlet layout
+- `src/components/tutor/ChatSidebar.tsx` — conversation list
+- `src/components/tutor/ChatWindow.tsx` — message stream
+- `src/components/tutor/MessageBubble.tsx` — markdown + KaTeX
+- `src/components/tutor/Composer.tsx` — textarea + send/stop
+- `src/lib/tutor-store.ts` — Zustand-like store (conversations, active id, persist to localStorage)
+- `src/lib/tutor-stream.functions.ts` — streaming server route (see Phase 2 note)
+
+**Streaming setup:**
+- `src/routes/api/tutor/stream.ts` — server route that proxies Lovable AI Gateway with `stream: true`, returns SSE
+- Frontend: `fetch('/api/tutor/stream', { signal: abortController.signal })`, parse SSE line-by-line, append tokens to last assistant message
+- Stop button calls `abortController.abort()`
+
+**Dependencies to add:**
+- `katex` + `rehype-katex` + `remark-math` — equation rendering
+- `nanoid` — conversation IDs
+
+**Auto title generation:**
+First user message-এর পর একটা separate non-streaming call → "Generate a 3-5 word Bangla title for this chat". Conversation title-এ save।
+
+---
+
+## 🧠 Phase 2 — RAG "Ask from Book" Toggle
+
+**যা আছে:** `kb_documents` table + `match_kb_documents` RPC। **যা লাগবে:**
+
+1. **Ingestion finish** — পুরো Class 9-10 PDF (313 pages) batched embed করে DB-তে। আমি একটা resumable Python script বানাব যা `processed_page` track করে।
+2. **`src/lib/rag.functions.ts`:**
+   - `embedQuery(text)` — Lovable AI Gateway `/v1/embeddings`
+   - `retrieveContext(query, k=6)` — RPC call, return top chunks with page+chapter
+3. **Streaming endpoint update:** যখন RAG mode on:
+   - User query embed → retrieve → context inject into system prompt
+   - Strict prompt: *"শুধু এই context থেকে উত্তর দাও। না থাকলে বলো 'বইয়ে এই বিষয়ে সরাসরি কিছু পাইনি, তবে general knowledge থেকে বলতে পারি…'"*
+   - Response-এ source citations attach (page numbers shown as chips below message)
+
+**ভবিষ্যতে বই যোগ:** একই table-এ `source` ও `class` field আছে। নতুন বইয়ের জন্য শুধু ingestion script-এ source name বদলে চালাবেন। RAG retrieval-এ optionally filter দেওয়া যাবে।
+
+---
+
+## 🔐 Phase 3 — Auth + Cloud Sync (publish-এর আগে)
+
+**Database migration:**
+```sql
+-- conversations
+id uuid pk, user_id uuid fk auth.users, title text,
+mode text ('general'|'book'), created_at, updated_at
+
+-- messages
+id uuid pk, conversation_id uuid fk, role text, content text,
+sources jsonb (RAG citations), created_at
+
+-- RLS: user_id = auth.uid() for both
+```
+
+**Auth flow:** Email/password + Google sign-in (Lovable broker)। `_authenticated/tutor` layout-এ move করা হবে। localStorage থেকে cloud-এ one-time migration banner থাকবে।
+
+---
+
+## 🎨 প্রম্প্ট তৈরির গাইড — Step by Step
+
+আমি ৪টা ধাপে আপনার সাথে interactively prompt design করব। প্রতি ধাপে আমি আপনাকে questions জিজ্ঞেস করব, আপনি উত্তর দিলে আমি draft বানাব, আপনি tweak করবেন।
+
+**ধাপ ১ — Identity & Audience**
+- Tutor-এর persona নাম কী? (যেমন "রসায়ন স্যার", "ChemBot")
+- Target audience: শুধু class 9-10? নাকি HSC + Honors-ও cover করবে?
+- Teacher নাকি tutor tone? (formal vs friendly)
+
+**ধাপ ২ — Teaching Style**
+- Always Socratic (প্রশ্ন করে শেখানো)? নাকি direct answer + explanation?
+- ভুল করলে কেমন response? (gentle correction / quiz back / explain why wrong)
+- Real-life example দেবে কি? (যেমন CO₂ → fire extinguisher)
+
+**ধাপ ৩ — Language & Format**
+- Bangla:English ratio কেমন? (আমার ধারণা 70:30, scientific terms English-এ)
+- Response length: short (3-4 lines) / medium (paragraph) / detailed (with headings)?
+- Equation format: KaTeX (`$CaCO_3$`), code blocks, tables — কোনটা priority?
+
+**ধাপ ৪ — Boundaries & Safety**
+- Off-topic প্রশ্ন (যেমন physics, math) — answer দেবে নাকি redirect?
+- Homework "exact answer" চাইলে কী করবে? (give hint vs full answer)
+- Religious / political / inappropriate — কীভাবে decline?
+
+প্রতি ধাপ শেষে আমি system prompt-এর সেই অংশ লিখব, শেষে পুরোটা assemble করে `chat.functions.ts`-এ বসাব।
+
+---
+
+## 📋 Implementation Order
+
+1. **Phase 1 setup** (1 turn): dependencies install + route + layout skeleton
+2. **Streaming + composer** (1 turn): SSE proxy + token-by-token render + stop
+3. **Sidebar + persistence** (1 turn): conversation CRUD + localStorage
+4. **KaTeX + markdown polish** (1 turn): chemistry equation rendering
+5. **Prompt design** (interactive, 4 mini-turns): ধাপ ১-৪ একসাথে আলোচনা করে finalize
+6. **RAG ingestion + toggle** (2 turns): batched ingest script + retrieval logic
+7. **Auth + DB migration** (publish-এর আগে, 2 turns)
+
+---
+
+## 🔧 Technical Notes
+
+- Streaming: TanStack server route `/api/tutor/stream` returns `text/event-stream` (server fn returns plain DTO, not streams)
+- Abort: `AbortController` on client, signal passed to fetch
+- KaTeX: server-side rendering safe, no `window` dependency
+- ChatGPT-like UX: virtualization (`@tanstack/react-virtual`) only if conversation > 200 messages
+- Existing `LabAIAssistant` floating bubble থাকবে — lab-এর ভিতরে quick contextual Q&A-এর জন্য। `/tutor` হবে deep learning hub।
+
+---
+
+**পরের step:** এই plan approve করার পর Phase 1 দিয়ে শুরু করব, তারপর প্রম্প্ট তৈরির ধাপ ১ এর প্রশ্ন দিয়ে interactive design শুরু হবে।
