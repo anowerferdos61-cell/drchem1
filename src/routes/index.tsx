@@ -49,11 +49,11 @@ export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
     meta: [
-      { title: "Virtual Chemistry Lab · AI-Powered Acid-Base Titration" },
+      { title: "Virtual Chemistry Lab · AI-Powered Portal" },
       {
         name: "description",
         content:
-          "Interactive 3D chemistry lab simulating HCl + NaOH titration. Teacher config, AI viva, mistake tracking, printable report.",
+          "Virtual Chemistry Lab Portal — interactive experiments, AI tutoring, smart notes, video lessons & live support for Bangladeshi students.",
       },
     ],
   }),
