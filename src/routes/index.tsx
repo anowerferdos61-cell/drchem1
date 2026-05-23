@@ -33,6 +33,7 @@ import {
 } from "@/lib/chemistry";
 import type { ExperimentId, Mistake, Mode, Placed, Report, Step } from "@/components/lab/types";
 import ExperimentPicker from "@/components/lab/ExperimentPicker";
+import Dashboard from "@/components/lab/Dashboard";
 import OxygenLab from "@/components/lab/OxygenLab";
 import CO2Lab from "@/components/lab/CO2Lab";
 import LabAIAssistant from "@/components/lab/LabAIAssistant";
