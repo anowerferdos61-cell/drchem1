@@ -151,6 +151,8 @@ function Index() {
     content = <CO2Lab onBack={back} />;
   } else if (activeExperiment === "nacl_crystal") {
     content = <NaClLab onBack={back} />;
+  } else if (activeExperiment === "ionic_covalent") {
+    content = <IonicLab onBack={back} />;
   } else {
     content = <TitrationLab onBack={back} />;
   }
