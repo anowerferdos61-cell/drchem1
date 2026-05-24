@@ -52,7 +52,21 @@ export type EquipmentId =
   | "bunsen_burner"
   | "evaporating_dish"
   | "seed_crystal"
-  | "glass_rod";
+  | "glass_rod"
+  // Ionic vs Covalent
+  | "nacl_solid"
+  | "sugar_solid"
+  | "naphthalene_solid"
+  | "cuso4_solid"
+  | "water_bottle"
+  | "test_beaker"
+  | "battery"
+  | "bulb"
+  | "wires"
+  | "carbon_electrode"
+  | "copper_electrode"
+  | "electrolysis_cell"
+  | "spatula";
 
 export interface Placed {
   flask: boolean;
