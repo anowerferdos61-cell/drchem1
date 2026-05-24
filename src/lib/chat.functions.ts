@@ -49,7 +49,9 @@ function buildContextBlock(ctx: z.infer<typeof ContextSchema>): string {
           ? "Preparation of CO₂ Gas (CaCO₃ + dilute HCl)"
           : ctx.experimentId === "nacl_crystal"
             ? "Preparation of pure NaCl crystals from impure salt (dissolve → filter → evaporate to সম্পৃক্ত দ্রবণ → slow cooling → বীজ কেলাস → ঘনকীয় কেলাস)"
-            : ctx.experimentId || "general chemistry";
+            : ctx.experimentId === "ionic_covalent"
+              ? "Properties of Ionic vs Covalent compounds (solubility, electrical conductivity, melting point) and Electrolysis of CuSO₄ (Cu²⁺ migrates to cathode → copper deposit; SO₄²⁻/H₂O at anode)"
+              : ctx.experimentId || "general chemistry";
 
   const lines = [
     `Active experiment: ${expName}`,

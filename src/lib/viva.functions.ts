@@ -15,7 +15,7 @@ const GenerateSchema = z.object({
   questions: z.array(QuestionSchema),
 });
 
-const ExperimentEnum = z.enum(["titration", "oxygen_prep", "co2_prep", "nacl_crystal"]);
+const ExperimentEnum = z.enum(["titration", "oxygen_prep", "co2_prep", "nacl_crystal", "ionic_covalent"]);
 
 function experimentContext(exp: z.infer<typeof ExperimentEnum>): string {
   if (exp === "oxygen_prep") {
@@ -50,6 +50,17 @@ function experimentContext(exp: z.infer<typeof ExperimentEnum>): string {
       "why rapid cooling produces small/irregular crystals while slow cooling yields well-formed cubic crystals,",
       "role of the seed crystal, cubic geometry of NaCl (face-centred ionic lattice),",
       "why distilled water (not tap water) is used, and lab safety with the Bunsen burner and hot evaporating dish.",
+    ].join(" ");
+  }
+  if (exp === "ionic_covalent") {
+    return [
+      "properties of ionic vs covalent compounds and the electrolysis of CuSO4 (Class 9-10, Bangladesh NCTB).",
+      "Substances tested: NaCl (ionic), sugar (polar covalent), naphthalene (non-polar covalent), CuSO4 (ionic).",
+      "Cover: (a) Solubility — NaCl and CuSO4 dissolve in water, sugar dissolves, naphthalene is insoluble (like dissolves like).",
+      "(b) Electrical conductivity — solid NaCl does NOT conduct (ions locked in lattice), but aqueous NaCl/CuSO4 conduct due to free mobile ions; sugar and naphthalene solutions do not conduct (no ions).",
+      "(c) Melting point — ionic compounds have high melting points (strong electrostatic lattice), covalent (naphthalene/sugar) have low melting points; overheating naphthalene causes sublimation/vaporization.",
+      "(d) Electrolysis of CuSO4(aq) with carbon/copper electrodes: Cu2+ migrates to the cathode and is reduced (Cu2+ + 2e- -> Cu, reddish-brown deposit); at the anode either SO4^2- stays in solution and water is oxidized (2 H2O -> O2 + 4H+ + 4e-) or, with a copper anode, Cu is oxidized (Cu -> Cu2+ + 2e-).",
+      "Discuss why reversing the electrodes deposits Cu on the wrong side, the role of free ions in conduction, and lab safety (handle CuSO4 carefully, avoid skin contact, ventilation, do not overheat naphthalene over an open flame).",
     ].join(" ");
   }
   return [

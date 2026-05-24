@@ -50,7 +50,7 @@ const COPY: Record<Lang, CopySet> = {
     cards: {
       experiments: {
         title: "Virtual Experiments",
-        desc: "Acid-Base Titration, Oxygen & CO₂ Preparation — interactive simulations with real-time feedback.",
+        desc: "Titration, O₂ & CO₂ Preparation, NaCl Crystallisation, Ionic vs Covalent + Electrolysis — interactive SVG simulations.",
         cta: "Enter Lab",
       },
       aiTutor: {
@@ -86,7 +86,7 @@ const COPY: Record<Lang, CopySet> = {
     cards: {
       experiments: {
         title: "ভার্চুয়াল পরীক্ষণ",
-        desc: "অ্যাসিড-ক্ষার টাইট্রেশন, অক্সিজেন এবং CO₂ প্রস্তুতি — বাস্তব-সময় প্রতিক্রিয়াসহ ইন্টারঅ্যাক্টিভ সিমুলেশন।",
+        desc: "টাইট্রেশন, O₂ ও CO₂ প্রস্তুতি, NaCl কেলাস, আয়নিক বনাম সমযোজী + তড়িৎ বিশ্লেষণ — ইন্টারঅ্যাক্টিভ সিমুলেশন।",
         cta: "ল্যাবে প্রবেশ করুন",
       },
       aiTutor: {
@@ -317,7 +317,7 @@ export default function Dashboard({
         <div className="mt-8 grid grid-cols-3 gap-3 rounded-2xl border bg-card/50 p-4 backdrop-blur sm:grid-cols-3 md:gap-4 md:p-6">
           {[
             {
-              value: "4",
+              value: "5",
               label: lang === "en" ? "Experiments" : "পরীক্ষণ",
             },
             {

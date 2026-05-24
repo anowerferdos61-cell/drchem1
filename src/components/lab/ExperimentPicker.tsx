@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FlaskConical, Wind, FlaskRound, Gem } from "lucide-react";
+import { FlaskConical, Wind, FlaskRound, Gem, Zap } from "lucide-react";
 import type { ExperimentId } from "./types";
 
 interface Props {
@@ -43,6 +43,14 @@ const EXPERIMENTS: Array<{
     icon: Gem,
     gradient: "from-indigo-100 via-sky-50 to-cyan-100",
   },
+  {
+    id: "ionic_covalent",
+    title: "Ionic vs Covalent · আয়নিক ও সমযোজী যৌগ",
+    subtitle:
+      "দ্রবণীয়তা · তড়িৎ পরিবাহিতা · গলনাঙ্ক · CuSO₄ এর তড়িৎ বিশ্লেষণ",
+    icon: Zap,
+    gradient: "from-violet-100 via-purple-50 to-fuchsia-100",
+  },
 ];
 
 
@@ -58,7 +66,7 @@ export default function ExperimentPicker({ onPick }: Props) {
         </p>
       </div>
 
-      <div className="grid w-full gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid w-full gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {EXPERIMENTS.map((e) => {
           const Icon = e.icon;
           return (

@@ -139,6 +139,12 @@ export default function LabAIAssistant({ context }: Props) {
         "Equivalence point আর endpoint এর পার্থক্য?",
         "Phenolphthalein কেন use করি?",
       ];
+    if (context.experimentId === "ionic_covalent")
+      return [
+        "আয়নিক ও সমযোজী যৌগের মৌলিক পার্থক্য?",
+        "কঠিন NaCl কেন তড়িৎ পরিবহন করে না?",
+        "CuSO₄ এর electrolysis-এ ক্যাথোডে কী জমা হয়?",
+      ];
     return ["এই experiment-এর উদ্দেশ্য কী?", "পরের ধাপ কী?"];
   }, [context.experimentId]);
 

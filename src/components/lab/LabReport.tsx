@@ -14,14 +14,17 @@ export default function LabReport({ report, onReset }: Props) {
   const isOxygen = report.experiment === "oxygen_prep";
   const isCO2 = report.experiment === "co2_prep";
   const isNaCl = report.experiment === "nacl_crystal";
+  const isIonic = report.experiment === "ionic_covalent";
 
-  const title = isNaCl
-    ? "NaCl Crystallisation · সোডিয়াম ক্লোরাইডের কেলাস"
-    : isCO2
-      ? "Preparation of CO₂ · কার্বন ডাইঅক্সাইড প্রস্তুতি"
-      : isOxygen
-        ? "Preparation of Oxygen · অক্সিজেন প্রস্তুতি"
-        : "Acid–Base Titration · অ্যাসিড-ক্ষার টাইট্রেশন";
+  const title = isIonic
+    ? "Ionic vs Covalent · আয়নিক ও সমযোজী যৌগ"
+    : isNaCl
+      ? "NaCl Crystallisation · সোডিয়াম ক্লোরাইডের কেলাস"
+      : isCO2
+        ? "Preparation of CO₂ · কার্বন ডাইঅক্সাইড প্রস্তুতি"
+        : isOxygen
+          ? "Preparation of Oxygen · অক্সিজেন প্রস্তুতি"
+          : "Acid–Base Titration · অ্যাসিড-ক্ষার টাইট্রেশন";
 
   return (
     <Card className="space-y-4 p-6 print:border-0 print:shadow-none">
@@ -37,7 +40,14 @@ export default function LabReport({ report, onReset }: Props) {
       </header>
 
       <div className="grid grid-cols-2 gap-3 text-sm md:grid-cols-4">
-        {isNaCl ? (
+        {isIonic ? (
+          <>
+            <Metric label="Solubility" value={`${(report.solubilityScore ?? 0).toFixed(0)}%`} />
+            <Metric label="Conductivity" value={`${(report.conductivityScore ?? 0).toFixed(0)}%`} />
+            <Metric label="Melting" value={`${(report.meltingScore ?? 0).toFixed(0)}%`} />
+            <Metric label="Cu deposit" value={`${(report.copperDepositPct ?? 0).toFixed(0)}%`} />
+          </>
+        ) : isNaCl ? (
           <>
             <Metric label="বাষ্পীভবন" value={`${report.volumeReductionPct ?? 0}%`} />
             <Metric label="Crystal quality" value={`${(report.crystalQuality ?? 0).toFixed(0)}%`} />
