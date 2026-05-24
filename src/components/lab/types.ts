@@ -4,7 +4,8 @@ export type ExperimentId =
   | "titration"
   | "oxygen_prep"
   | "co2_prep"
-  | "nacl_crystal";
+  | "nacl_crystal"
+  | "ionic_covalent";
 
 export type Mode = "guide" | "student" | "classroom";
 
@@ -51,7 +52,21 @@ export type EquipmentId =
   | "bunsen_burner"
   | "evaporating_dish"
   | "seed_crystal"
-  | "glass_rod";
+  | "glass_rod"
+  // Ionic vs Covalent
+  | "nacl_solid"
+  | "sugar_solid"
+  | "naphthalene_solid"
+  | "cuso4_solid"
+  | "water_bottle"
+  | "test_beaker"
+  | "battery"
+  | "bulb"
+  | "wires"
+  | "carbon_electrode"
+  | "copper_electrode"
+  | "electrolysis_cell"
+  | "spatula";
 
 export interface Placed {
   flask: boolean;
@@ -79,6 +94,29 @@ export interface CO2Placed {
   delivery_tube: boolean; // bent delivery tube connected
   gas_jar: boolean; // upright gas jar ready
   acid_poured: boolean; // dilute HCl added via thistle funnel (reaction running)
+}
+
+export type IonicSubstance = "nacl" | "sugar" | "naphthalene" | "cuso4";
+
+export interface IonicPlaced {
+  // Stage 1: solubility
+  beakersReady: boolean;
+  waterAdded: boolean;
+  solubility: Record<IonicSubstance, "dissolved" | "insoluble" | null>;
+  // Stage 2: conductivity
+  circuitReady: boolean;
+  conductivityTested: Record<IonicSubstance, "on" | "off" | null>;
+  // Stage 3: melting point
+  meltingReady: boolean;
+  meltResult: Record<IonicSubstance, "melted" | "solid" | "vaporized" | null>;
+  // Stage 4: electrolysis
+  cellReady: boolean;
+  cuso4InCell: boolean;
+  electrodesPlaced: boolean;
+  batteryConnected: boolean;
+  polarityCorrect: boolean;
+  electrolysisRun: boolean;
+  copperDeposit: number; // 0-1
 }
 
 export interface NaClPlaced {
@@ -123,7 +161,13 @@ export type MistakeType =
   | "over_evaporation"
   | "rapid_cooling"
   | "no_seed_crystal"
-  | "no_distilled_water";
+  | "no_distilled_water"
+  // Ionic vs Covalent + Electrolysis
+  | "naphthalene_overheated"
+  | "conductivity_solid_salt"
+  | "reversed_electrodes"
+  | "no_water_for_conductivity"
+  | "skipped_stage";
 
 export type Severity = "low" | "med" | "high";
 
@@ -176,6 +220,13 @@ export interface Report {
   volumeReductionPct?: number; // how much the filtrate was reduced (target ≈ 50%)
   crystalQuality?: number;     // 0-100, cubic geometry quality
   seedUsed?: boolean;
+  // Ionic vs Covalent
+  solubilityScore?: number;
+  conductivityScore?: number;
+  meltingScore?: number;
+  electrolysisScore?: number;
+  copperDepositPct?: number;
+
 
   accuracy: number; // %
   grade: "A" | "B" | "C" | "D" | "F";
