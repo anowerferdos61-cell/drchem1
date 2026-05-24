@@ -220,6 +220,13 @@ export interface Report {
   volumeReductionPct?: number; // how much the filtrate was reduced (target ≈ 50%)
   crystalQuality?: number;     // 0-100, cubic geometry quality
   seedUsed?: boolean;
+  // Ionic vs Covalent
+  solubilityScore?: number;
+  conductivityScore?: number;
+  meltingScore?: number;
+  electrolysisScore?: number;
+  copperDepositPct?: number;
+
 
   accuracy: number; // %
   grade: "A" | "B" | "C" | "D" | "F";
