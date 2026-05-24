@@ -161,7 +161,13 @@ export type MistakeType =
   | "over_evaporation"
   | "rapid_cooling"
   | "no_seed_crystal"
-  | "no_distilled_water";
+  | "no_distilled_water"
+  // Ionic vs Covalent + Electrolysis
+  | "naphthalene_overheated"
+  | "conductivity_solid_salt"
+  | "reversed_electrodes"
+  | "no_water_for_conductivity"
+  | "skipped_stage";
 
 export type Severity = "low" | "med" | "high";
 
