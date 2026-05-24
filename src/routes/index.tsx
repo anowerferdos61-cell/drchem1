@@ -36,6 +36,7 @@ import ExperimentPicker from "@/components/lab/ExperimentPicker";
 import Dashboard from "@/components/lab/Dashboard";
 import OxygenLab from "@/components/lab/OxygenLab";
 import CO2Lab from "@/components/lab/CO2Lab";
+import NaClLab from "@/components/lab/NaClLab";
 import LabAIAssistant from "@/components/lab/LabAIAssistant";
 import { setAIContext, useAIContext } from "@/lib/ai-context-store";
 
@@ -105,7 +106,7 @@ function Index() {
   useEffect(() => {
     try {
       const raw = localStorage.getItem("lab:activeExperiment");
-      if (raw === "titration" || raw === "oxygen_prep" || raw === "co2_prep") {
+      if (raw === "titration" || raw === "oxygen_prep" || raw === "co2_prep" || raw === "nacl_crystal") {
         setActiveExperiment(raw);
         setShowExperiments(true);
       }
@@ -147,6 +148,8 @@ function Index() {
     content = <OxygenLab onBack={back} />;
   } else if (activeExperiment === "co2_prep") {
     content = <CO2Lab onBack={back} />;
+  } else if (activeExperiment === "nacl_crystal") {
+    content = <NaClLab onBack={back} />;
   } else {
     content = <TitrationLab onBack={back} />;
   }

@@ -11,6 +11,12 @@ import {
   FlaskRound,
   TestTube2,
   Leaf,
+  Hammer,
+  Filter,
+  Layers,
+  Box,
+  Gem,
+  Minus,
   type LucideIcon,
 } from "lucide-react";
 
@@ -102,4 +108,20 @@ export const CO2_ITEMS: EquipmentItem[] = [
   { id: "burning_splint", label: "Burning Splint · জ্বলন্ত কাঠি", icon: Flame },
   { id: "moist_blue_litmus", label: "Moist Blue Litmus · ভেজা নীল লিটমাস", icon: Leaf },
   { id: "magnesium_ribbon", label: "Magnesium Ribbon · ম্যাগনেসিয়াম ফিতা", icon: Flame },
+];
+
+export const NACL_ITEMS: EquipmentItem[] = [
+  { id: "mortar_pestle", label: "Mortar & Pestle · হামানদিস্তা", icon: Hammer },
+  { id: "impure_salt", label: "Impure Salt · অবিশুদ্ধ লবণ", icon: Sparkles },
+  { id: "distilled_water", label: "Distilled Water · পাতিত পানি", icon: Droplet },
+  { id: "beaker_1", label: "Beaker-1 · বিকার-১", icon: Beaker },
+  { id: "glass_rod", label: "Glass Rod · কাচদণ্ড", icon: Minus },
+  { id: "funnel", label: "Funnel · ফানেল", icon: Filter },
+  { id: "filter_paper", label: "Filter Paper · ফিল্টার পেপার", icon: Layers },
+  { id: "beaker_2", label: "Beaker-2 · বিকার-২", icon: Beaker },
+  { id: "tripod_stand", label: "Tripod Stand · ত্রিপদী স্ট্যান্ড", icon: TestTube },
+  { id: "wire_gauze", label: "Wire Gauze · তারজালি", icon: Layers },
+  { id: "bunsen_burner", label: "Bunsen Burner · বুনসেন বার্নার", icon: Flame },
+  { id: "evaporating_dish", label: "Evaporating Dish · বাষ্পীভবন পাত্র", icon: Box },
+  { id: "seed_crystal", label: "Seed Crystal · বীজ কেলাস", icon: Gem },
 ];

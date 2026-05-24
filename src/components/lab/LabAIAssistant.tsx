@@ -128,6 +128,12 @@ export default function LabAIAssistant({ context }: Props) {
         "Limewater কেন ঘোলা হয়?",
         "CO₂ upward displacement এ কেন collect করি?",
       ];
+    if (context.experimentId === "nacl_crystal")
+      return [
+        "ফিল্টার না করলে কী হবে?",
+        "সম্পৃক্ত দ্রবণ কেন দরকার?",
+        "বীজ কেলাস কেন যোগ করি?",
+      ];
     if (context.experimentId === "titration")
       return [
         "Equivalence point আর endpoint এর পার্থক্য?",

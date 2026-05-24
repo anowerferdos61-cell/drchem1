@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FlaskConical, Wind, FlaskRound } from "lucide-react";
+import { FlaskConical, Wind, FlaskRound, Gem } from "lucide-react";
 import type { ExperimentId } from "./types";
 
 interface Props {
@@ -35,6 +35,14 @@ const EXPERIMENTS: Array<{
     icon: FlaskRound,
     gradient: "from-emerald-100 via-lime-50 to-amber-100",
   },
+  {
+    id: "nacl_crystal",
+    title: "NaCl Crystallisation · সোডিয়াম ক্লোরাইডের কেলাস",
+    subtitle:
+      "অবিশুদ্ধ লবণ → পরিশ্রবণ → সম্পৃক্ত দ্রবণ → ঠান্ডা → ঘনকীয় কেলাস",
+    icon: Gem,
+    gradient: "from-indigo-100 via-sky-50 to-cyan-100",
+  },
 ];
 
 
@@ -50,7 +58,7 @@ export default function ExperimentPicker({ onPick }: Props) {
         </p>
       </div>
 
-      <div className="grid w-full gap-4 md:grid-cols-3">
+      <div className="grid w-full gap-4 md:grid-cols-2 lg:grid-cols-4">
         {EXPERIMENTS.map((e) => {
           const Icon = e.icon;
           return (
