@@ -1,6 +1,10 @@
 // Shared types for the chemistry lab.
 
-export type ExperimentId = "titration" | "oxygen_prep" | "co2_prep";
+export type ExperimentId =
+  | "titration"
+  | "oxygen_prep"
+  | "co2_prep"
+  | "nacl_crystal";
 
 export type Mode = "guide" | "student" | "classroom";
 
@@ -33,7 +37,21 @@ export type EquipmentId =
   | "limewater"
   | "magnesium_ribbon"
   | "burning_splint"
-  | "moist_blue_litmus";
+  | "moist_blue_litmus"
+  // NaCl crystallization
+  | "mortar_pestle"
+  | "impure_salt"
+  | "distilled_water"
+  | "beaker_1"
+  | "beaker_2"
+  | "funnel"
+  | "filter_paper"
+  | "tripod_stand"
+  | "wire_gauze"
+  | "bunsen_burner"
+  | "evaporating_dish"
+  | "seed_crystal"
+  | "glass_rod";
 
 export interface Placed {
   flask: boolean;
@@ -63,6 +81,23 @@ export interface CO2Placed {
   acid_poured: boolean; // dilute HCl added via thistle funnel (reaction running)
 }
 
+export interface NaClPlaced {
+  mortar: boolean;       // mortar & pestle ready
+  beaker_1: boolean;     // dissolving beaker present
+  salt: boolean;         // impure salt added (crushed)
+  water: boolean;        // distilled water poured
+  dissolved: boolean;    // salt fully stirred into water
+  filter_setup: boolean; // funnel + filter paper + Beaker-2 set up
+  beaker_2: boolean;
+  filtered: boolean;     // filtration complete (filtrate in Beaker-2)
+  evaporating_dish: boolean;
+  heat_setup: boolean;   // tripod + wire gauze + bunsen burner placed
+  burning: boolean;      // burner currently on
+  cooling: boolean;      // burner off, cooling stage
+  seeded: boolean;       // seed crystal introduced
+  crystallized: boolean; // crystals fully grown
+}
+
 export type TestId = "limewater" | "burning_splint" | "litmus" | "magnesium";
 export type TestResult = "pass" | "fail" | "none";
 
@@ -82,7 +117,13 @@ export type MistakeType =
   | "funnel_not_submerged"
   | "open_reaction_flask"
   | "wrong_gas_displacement"
-  | "no_calcium_carbonate";
+  | "no_calcium_carbonate"
+  // NaCl crystallization
+  | "heat_before_filter"
+  | "over_evaporation"
+  | "rapid_cooling"
+  | "no_seed_crystal"
+  | "no_distilled_water";
 
 export type Severity = "low" | "med" | "high";
 
@@ -131,6 +172,10 @@ export interface Report {
   VCO2_final?: number;
   VCO2_target?: number;
   tests?: Record<TestId, TestResult>;
+  // NaCl
+  volumeReductionPct?: number; // how much the filtrate was reduced (target ≈ 50%)
+  crystalQuality?: number;     // 0-100, cubic geometry quality
+  seedUsed?: boolean;
 
   accuracy: number; // %
   grade: "A" | "B" | "C" | "D" | "F";
