@@ -17,7 +17,11 @@ import {
   Snowflake,
   Flame,
   Sparkles,
+  GraduationCap,
 } from "lucide-react";
+import TeacherViva, { type VivaQuestion } from "@/components/viva/TeacherViva";
+import StudentViva from "@/components/viva/StudentViva";
+
 
 import EquipmentPanel, { NACL_ITEMS } from "./EquipmentPanel";
 import StepsPanel from "./StepsPanel";
@@ -115,6 +119,9 @@ export default function NaClLab({ onBack }: Props) {
   const [submitted, setSubmitted] = useState(false);
   const [report, setReport] = useState<Report | null>(null);
   const [showPanels, setShowPanels] = useState(true);
+  const [vivaQuestions, setVivaQuestions] = useState<VivaQuestion[]>([]);
+  const [showViva, setShowViva] = useState(false);
+
   const startedAtRef = useRef<number | null>(null);
 
   const guide = mode === "guide";
@@ -497,8 +504,13 @@ export default function NaClLab({ onBack }: Props) {
               {showPanels ? <EyeOff className="mr-1 h-4 w-4" /> : <Eye className="mr-1 h-4 w-4" />}
               {showPanels ? "Hide" : "Show"} panels
             </Button>
+            <Button variant="outline" size="sm" onClick={() => setShowViva((v) => !v)}>
+              <GraduationCap className="mr-1 h-4 w-4" />
+              {showViva ? "Hide Viva" : "AI Viva"}
+            </Button>
           </div>
         </header>
+
 
         <div
           className={[
@@ -592,10 +604,27 @@ export default function NaClLab({ onBack }: Props) {
             <LabReport report={report} onReset={reset} />
           </div>
         )}
+
+        {showViva && (
+          <div className="mt-6 grid gap-4 lg:grid-cols-2">
+            <TeacherViva
+              onPublish={setVivaQuestions}
+              experiment="nacl_crystal"
+              defaultTopic="অবিশুদ্ধ লবণ থেকে বিশুদ্ধ NaCl কেলাস প্রস্তুতি · Crystallisation of pure NaCl"
+            />
+            <StudentViva />
+            {vivaQuestions.length === 0 && (
+              <p className="col-span-full text-center text-xs text-muted-foreground">
+                শিক্ষক প্রশ্ন তৈরি করে Publish করবেন · ছাত্র উত্তর দিলে AI গ্রেড করবে।
+              </p>
+            )}
+          </div>
+        )}
       </div>
     </>
   );
 }
+
 
 function ModeToggle({ mode, setMode }: { mode: Mode; setMode: (m: Mode) => void }) {
   const opts: Array<{ id: Mode; label: string }> = [

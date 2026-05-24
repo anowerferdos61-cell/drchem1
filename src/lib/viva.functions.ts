@@ -15,7 +15,7 @@ const GenerateSchema = z.object({
   questions: z.array(QuestionSchema),
 });
 
-const ExperimentEnum = z.enum(["titration", "oxygen_prep", "co2_prep"]);
+const ExperimentEnum = z.enum(["titration", "oxygen_prep", "co2_prep", "nacl_crystal"]);
 
 function experimentContext(exp: z.infer<typeof ExperimentEnum>): string {
   if (exp === "oxygen_prep") {
@@ -39,6 +39,19 @@ function experimentContext(exp: z.infer<typeof ExperimentEnum>): string {
       "and safety (handle dilute HCl carefully, ventilation).",
     ].join(" ");
   }
+  if (exp === "nacl_crystal") {
+    return [
+      "preparation of pure cubic NaCl crystals from impure salt (Class 9-10, Bangladesh NCTB).",
+      "Procedure: crush 20-25 g impure salt, dissolve in ~100 mL distilled water, filter through funnel + filter paper into Beaker-2,",
+      "transfer filtrate to an evaporating dish on tripod + wire gauze, heat with Bunsen burner until volume reduces to ~50% (saturated solution),",
+      "turn off the burner, allow natural slow cooling, optionally add a seed crystal (বীজ কেলাস) for uniform cubic geometry.",
+      "Cover: why filtration must precede heating (removes insoluble impurities like sand/dust),",
+      "meaning of saturated solution (সম্পৃক্ত দ্রবণ) and why ~50% volume reduction is the target,",
+      "why rapid cooling produces small/irregular crystals while slow cooling yields well-formed cubic crystals,",
+      "role of the seed crystal, cubic geometry of NaCl (face-centred ionic lattice),",
+      "why distilled water (not tap water) is used, and lab safety with the Bunsen burner and hot evaporating dish.",
+    ].join(" ");
+  }
   return [
     "acid-base titration (HCl + NaOH)",
     "Cover: indicators (phenolphthalein), equivalence point vs endpoint,",
@@ -46,6 +59,7 @@ function experimentContext(exp: z.infer<typeof ExperimentEnum>): string {
     "burette/pipette technique and sources of error.",
   ].join(" ");
 }
+
 
 
 export const generateViva = createServerFn({ method: "POST" })
