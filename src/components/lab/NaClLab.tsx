@@ -119,6 +119,9 @@ export default function NaClLab({ onBack }: Props) {
   const [submitted, setSubmitted] = useState(false);
   const [report, setReport] = useState<Report | null>(null);
   const [showPanels, setShowPanels] = useState(true);
+  const [vivaQuestions, setVivaQuestions] = useState<VivaQuestion[]>([]);
+  const [showViva, setShowViva] = useState(false);
+
   const startedAtRef = useRef<number | null>(null);
 
   const guide = mode === "guide";
