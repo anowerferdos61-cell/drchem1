@@ -317,7 +317,7 @@ export default function Dashboard({
         <div className="mt-8 grid grid-cols-3 gap-3 rounded-2xl border bg-card/50 p-4 backdrop-blur sm:grid-cols-3 md:gap-4 md:p-6">
           {[
             {
-              value: "3",
+              value: "4",
               label: lang === "en" ? "Experiments" : "পরীক্ষণ",
             },
             {

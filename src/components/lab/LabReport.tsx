@@ -13,12 +13,15 @@ export default function LabReport({ report, onReset }: Props) {
   const sec = report.durationSec % 60;
   const isOxygen = report.experiment === "oxygen_prep";
   const isCO2 = report.experiment === "co2_prep";
+  const isNaCl = report.experiment === "nacl_crystal";
 
-  const title = isCO2
-    ? "Preparation of CO₂ · কার্বন ডাইঅক্সাইড প্রস্তুতি"
-    : isOxygen
-      ? "Preparation of Oxygen · অক্সিজেন প্রস্তুতি"
-      : "Acid–Base Titration · অ্যাসিড-ক্ষার টাইট্রেশন";
+  const title = isNaCl
+    ? "NaCl Crystallisation · সোডিয়াম ক্লোরাইডের কেলাস"
+    : isCO2
+      ? "Preparation of CO₂ · কার্বন ডাইঅক্সাইড প্রস্তুতি"
+      : isOxygen
+        ? "Preparation of Oxygen · অক্সিজেন প্রস্তুতি"
+        : "Acid–Base Titration · অ্যাসিড-ক্ষার টাইট্রেশন";
 
   return (
     <Card className="space-y-4 p-6 print:border-0 print:shadow-none">
@@ -34,7 +37,14 @@ export default function LabReport({ report, onReset }: Props) {
       </header>
 
       <div className="grid grid-cols-2 gap-3 text-sm md:grid-cols-4">
-        {isCO2 ? (
+        {isNaCl ? (
+          <>
+            <Metric label="বাষ্পীভবন" value={`${report.volumeReductionPct ?? 0}%`} />
+            <Metric label="Crystal quality" value={`${(report.crystalQuality ?? 0).toFixed(0)}%`} />
+            <Metric label="Seed crystal" value={report.seedUsed ? "✓ Added" : "✗ None"} />
+            <Metric label="Accuracy" value={`${report.accuracy.toFixed(1)}%`} />
+          </>
+        ) : isCO2 ? (
           <>
             <Metric label="CO₂ Collected" value={`${(report.VCO2_final ?? 0).toFixed(1)} mL`} />
             <Metric label="Target" value={`${(report.VCO2_target ?? 0).toFixed(0)} mL`} />

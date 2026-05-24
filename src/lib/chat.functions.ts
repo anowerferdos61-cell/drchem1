@@ -47,7 +47,9 @@ function buildContextBlock(ctx: z.infer<typeof ContextSchema>): string {
         ? "Preparation of Oxygen Gas (H₂O₂ + MnO₂)"
         : ctx.experimentId === "co2_prep"
           ? "Preparation of CO₂ Gas (CaCO₃ + dilute HCl)"
-          : ctx.experimentId || "general chemistry";
+          : ctx.experimentId === "nacl_crystal"
+            ? "Preparation of pure NaCl crystals from impure salt (dissolve → filter → evaporate to সম্পৃক্ত দ্রবণ → slow cooling → বীজ কেলাস → ঘনকীয় কেলাস)"
+            : ctx.experimentId || "general chemistry";
 
   const lines = [
     `Active experiment: ${expName}`,
