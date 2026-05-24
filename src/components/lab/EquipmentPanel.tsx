@@ -129,3 +129,21 @@ export const NACL_ITEMS: EquipmentItem[] = [
   { id: "evaporating_dish", label: "Evaporating Dish · বাষ্পীভবন পাত্র", icon: Box },
   { id: "seed_crystal", label: "Seed Crystal · বীজ কেলাস", icon: Gem },
 ];
+
+export const IONIC_ITEMS: EquipmentItem[] = [
+  { id: "test_beaker", label: "4× Test Beaker · ৪টি বিকার", icon: Beaker },
+  { id: "water_bottle", label: "Distilled Water · পাতিত পানি", icon: Droplet },
+  { id: "nacl_solid", label: "NaCl · সোডিয়াম ক্লোরাইড", icon: Sparkles },
+  { id: "sugar_solid", label: "Sugar · চিনি", icon: Sparkles },
+  { id: "naphthalene_solid", label: "Naphthalene · ন্যাপথালিন", icon: Sparkles },
+  { id: "cuso4_solid", label: "CuSO₄ · কপার সালফেট", icon: Gem },
+  { id: "battery", label: "Battery · ব্যাটারি", icon: Battery },
+  { id: "bulb", label: "Bulb · বাল্ব", icon: Lightbulb },
+  { id: "wires", label: "Wires · তার", icon: Cable },
+  { id: "carbon_electrode", label: "Carbon Electrode · কার্বন তড়িৎদ্বার", icon: Minus },
+  { id: "copper_electrode", label: "Cu Electrode · কপার তড়িৎদ্বার", icon: Minus },
+  { id: "electrolysis_cell", label: "Electrolysis Cell · তড়িৎ কোষ", icon: Box },
+  { id: "spatula", label: "Spatula + Burner · স্প্যাচুলা", icon: Flame },
+  { id: "bunsen_burner", label: "Bunsen Burner · বুনসেন বার্নার", icon: Zap },
+];
+
