@@ -37,6 +37,7 @@ import Dashboard from "@/components/lab/Dashboard";
 import OxygenLab from "@/components/lab/OxygenLab";
 import CO2Lab from "@/components/lab/CO2Lab";
 import NaClLab from "@/components/lab/NaClLab";
+import IonicLab from "@/components/lab/IonicLab";
 import LabAIAssistant from "@/components/lab/LabAIAssistant";
 import { setAIContext, useAIContext } from "@/lib/ai-context-store";
 
