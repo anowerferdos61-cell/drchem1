@@ -504,8 +504,13 @@ export default function NaClLab({ onBack }: Props) {
               {showPanels ? <EyeOff className="mr-1 h-4 w-4" /> : <Eye className="mr-1 h-4 w-4" />}
               {showPanels ? "Hide" : "Show"} panels
             </Button>
+            <Button variant="outline" size="sm" onClick={() => setShowViva((v) => !v)}>
+              <GraduationCap className="mr-1 h-4 w-4" />
+              {showViva ? "Hide Viva" : "AI Viva"}
+            </Button>
           </div>
         </header>
+
 
         <div
           className={[
