@@ -4,7 +4,8 @@ export type ExperimentId =
   | "titration"
   | "oxygen_prep"
   | "co2_prep"
-  | "nacl_crystal";
+  | "nacl_crystal"
+  | "ionic_covalent";
 
 export type Mode = "guide" | "student" | "classroom";
 
