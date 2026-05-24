@@ -1,148 +1,58 @@
+## NaCl Crystallization Lab — Plan
 
-# Chemistry AI Tutor — ChatGPT-style Full Page Chat
+Add a 4th interactive 2D SVG experiment "Preparation of Pure NaCl Crystals" alongside Titration / O₂ / CO₂, following the exact same architecture.
 
-## 🎯 লক্ষ্য
-বর্তমান floating bubble (`LabAIAssistant`) থাকবে শুধু lab-এর ভিতরে contextual help-এর জন্য। নতুন একটা **dedicated `/tutor` route** তৈরি হবে — সেখানে ChatGPT-এর মতো sidebar + main chat + streaming + RAG থাকবে।
+### Scope
+- New experiment id: `nacl_crystal`
+- Same UX as OxygenLab/CO2Lab: equipment drag, steps panel, status panel, mistake tracking, lab report, AI assistant context, bilingual labels.
+- Engine thresholds match the spec (20–25g salt + 100mL H₂O, filter before heat, evaporate to ~50%, natural cooling, optional seed crystal → cubic NaCl).
 
----
+### Files to create
+1. `src/lib/nacl.ts` — pure simulation logic (state machine, step advancement, mistake detection, accuracy/grade calculation). Mirrors `oxygen.ts` / `co2.ts`.
+2. `src/components/lab/workspaces/NaClWorkspace.tsx` — 2D SVG scene: Beaker-1 (dissolving), Beaker-2 (filtrate), funnel + filter paper, tripod + wire gauze + Bunsen burner, evaporating dish, optional seed crystal, animated crystallization growth.
+3. `src/components/lab/NaClLab.tsx` — top-level lab component wiring Equipment / Steps / Status / Config / Workspace / Report panels and publishing AI context. Mirrors `OxygenLab.tsx`.
 
-## 📐 আর্কিটেকচার
+### Files to edit
+- `src/components/lab/types.ts`
+  - Extend `ExperimentId` with `"nacl_crystal"`.
+  - Add new `EquipmentId`s: `mortar_pestle`, `impure_salt`, `distilled_water`, `beaker_1`, `beaker_2`, `funnel`, `filter_paper`, `tripod_stand`, `wire_gauze`, `bunsen_burner`, `evaporating_dish`, `seed_crystal`.
+  - Add `NaClPlaced` interface (crushed, dissolved, filter_setup, filtered, on_heat, saturated, cooling, seeded, crystallized).
+  - Add `MistakeType`s: `heat_before_filter` (high), `over_evaporation` (med), `rapid_cooling` (low), `no_seed_crystal` (low).
+  - Extend `Report` with `crystal_quality?: number`.
+- `src/components/lab/ExperimentPicker.tsx` — add 4th card for NaCl experiment (bilingual title/description, icon).
+- `src/routes/index.tsx` — route the new id to `<NaClLab />`.
+- `src/components/lab/EquipmentPanel.tsx` — register new equipment items (icon + bilingual label) under a `nacl_crystal` group.
+- `src/components/lab/StepsPanel.tsx` / `StatusPanel.tsx` — accept new step list & status fields (already props-driven; just ensure copy works for new keys).
+- `src/components/lab/LabReport.tsx` — handle the new experiment's report fields (volume reduction %, crystal quality, seed used).
+- `src/components/lab/LabAIAssistant.tsx` — system prompt branch for `nacl_crystal` so Dr. Chem gives hint-based guidance using the bilingual terminology mapping (অবিশুদ্ধ লবণ, পরিশ্রুত দ্রবণ, সম্পৃক্ত দ্রবণ, বীজ কেলাস, তারজালি, বুনসেন বার্নার).
+- `src/components/lab/Dashboard.tsx` — mark NaCl card as active and route to the experiment.
 
-```text
-/tutor
-├─ Sidebar (left, 280px)
-│   ├─ [+ নতুন চ্যাট] button
-│   ├─ "Ask from Book 📚" toggle (RAG mode)
-│   ├─ Search input
-│   └─ Conversation list (rename / delete on hover)
-│
-└─ Main chat area
-    ├─ Header: conversation title + model picker + clear
-    ├─ Message stream (markdown + KaTeX rendering)
-    │   ├─ User bubble (right)
-    │   ├─ Assistant bubble (left, with copy/regenerate)
-    │   └─ Source citations (RAG mode — page references)
-    ├─ "AI is thinking…" / streaming cursor
-    └─ Composer
-        ├─ Auto-grow textarea
-        ├─ Stop generating button (during stream)
-        └─ Send (Enter / Shift+Enter for newline)
-```
+### Simulation state machine (nacl.ts)
+Steps map 1:1 to the 6-step checklist. Key transitions:
+- Crush + dissolve → requires `mortar_pestle` + `impure_salt` + `distilled_water` + `beaker_1`.
+- Filtration → requires `funnel` + `filter_paper` + `beaker_2`; produces `filtered=true`.
+- Heating → enabling burner with `filtered=false` triggers `heat_before_filter` (high severity).
+- Saturation tracked as `volumeFrac` decreasing from 1.0 toward 0.5; continuing past 0.2 triggers `over_evaporation` (medium).
+- Cooling: a "Fast cool" action before natural cooling completes triggers `rapid_cooling` (low).
+- Seed crystal optional: if added → `crystal_quality = 100`; otherwise 70 with note.
+- Grade computed from `100 − Σ penalties` mapped to A/B/C/D/F like other labs.
 
----
+### Visual (NaClWorkspace.tsx)
+- Bench backdrop matching existing labs.
+- Beaker-1 with swirling cloudy solution while crushing/dissolving.
+- Filtration column: funnel with filter paper, drips into Beaker-2; opacity of filtrate clears as filtration progresses.
+- Heating setup: Bunsen flame SVG animation, rising steam particles, liquid level animates down with `volumeFrac`.
+- Cooling stage: hot solution color fades; small cubic crystals appear and grow over time (SVG `<rect>` ghost cubes scaling up).
+- Empty state hint identical to existing workspaces.
 
-## 🚀 Phase 1 — Core Chat (localStorage)
+### Bilingual copy
+All labels use the exact terminology from the spec (70% Bangla / 30% English term ratio): অবিশুদ্ধ লবণ, পাতিত পানি ($H_2O$), পরিশ্রুত দ্রবণ, সম্পৃক্ত দ্রবণ, বীজ কেলাস, নিয়তাকার ঘনকীয় জ্যামিতি, বুনসেন বার্নার, তারজালি.
 
-কোনো login ছাড়াই কাজ শুরু — সব data browser-এ থাকবে।
+### Out of scope (later phases)
+- Database persistence of NaCl reports (Phase 3 auth/cloud sync).
+- RAG "Ask from Book" coverage of crystallization chapter (Phase 2 ingestion).
+- A standalone Viva mode for this experiment — current StudentViva/TeacherViva are generic; can be extended later.
 
-**নতুন ফাইল:**
-- `src/routes/tutor.tsx` — main route with SEO head()
-- `src/components/tutor/TutorLayout.tsx` — sidebar + outlet layout
-- `src/components/tutor/ChatSidebar.tsx` — conversation list
-- `src/components/tutor/ChatWindow.tsx` — message stream
-- `src/components/tutor/MessageBubble.tsx` — markdown + KaTeX
-- `src/components/tutor/Composer.tsx` — textarea + send/stop
-- `src/lib/tutor-store.ts` — Zustand-like store (conversations, active id, persist to localStorage)
-- `src/lib/tutor-stream.functions.ts` — streaming server route (see Phase 2 note)
-
-**Streaming setup:**
-- `src/routes/api/tutor/stream.ts` — server route that proxies Lovable AI Gateway with `stream: true`, returns SSE
-- Frontend: `fetch('/api/tutor/stream', { signal: abortController.signal })`, parse SSE line-by-line, append tokens to last assistant message
-- Stop button calls `abortController.abort()`
-
-**Dependencies to add:**
-- `katex` + `rehype-katex` + `remark-math` — equation rendering
-- `nanoid` — conversation IDs
-
-**Auto title generation:**
-First user message-এর পর একটা separate non-streaming call → "Generate a 3-5 word Bangla title for this chat". Conversation title-এ save।
-
----
-
-## 🧠 Phase 2 — RAG "Ask from Book" Toggle
-
-**যা আছে:** `kb_documents` table + `match_kb_documents` RPC। **যা লাগবে:**
-
-1. **Ingestion finish** — পুরো Class 9-10 PDF (313 pages) batched embed করে DB-তে। আমি একটা resumable Python script বানাব যা `processed_page` track করে।
-2. **`src/lib/rag.functions.ts`:**
-   - `embedQuery(text)` — Lovable AI Gateway `/v1/embeddings`
-   - `retrieveContext(query, k=6)` — RPC call, return top chunks with page+chapter
-3. **Streaming endpoint update:** যখন RAG mode on:
-   - User query embed → retrieve → context inject into system prompt
-   - Strict prompt: *"শুধু এই context থেকে উত্তর দাও। না থাকলে বলো 'বইয়ে এই বিষয়ে সরাসরি কিছু পাইনি, তবে general knowledge থেকে বলতে পারি…'"*
-   - Response-এ source citations attach (page numbers shown as chips below message)
-
-**ভবিষ্যতে বই যোগ:** একই table-এ `source` ও `class` field আছে। নতুন বইয়ের জন্য শুধু ingestion script-এ source name বদলে চালাবেন। RAG retrieval-এ optionally filter দেওয়া যাবে।
-
----
-
-## 🔐 Phase 3 — Auth + Cloud Sync (publish-এর আগে)
-
-**Database migration:**
-```sql
--- conversations
-id uuid pk, user_id uuid fk auth.users, title text,
-mode text ('general'|'book'), created_at, updated_at
-
--- messages
-id uuid pk, conversation_id uuid fk, role text, content text,
-sources jsonb (RAG citations), created_at
-
--- RLS: user_id = auth.uid() for both
-```
-
-**Auth flow:** Email/password + Google sign-in (Lovable broker)। `_authenticated/tutor` layout-এ move করা হবে। localStorage থেকে cloud-এ one-time migration banner থাকবে।
-
----
-
-## 🎨 প্রম্প্ট তৈরির গাইড — Step by Step
-
-আমি ৪টা ধাপে আপনার সাথে interactively prompt design করব। প্রতি ধাপে আমি আপনাকে questions জিজ্ঞেস করব, আপনি উত্তর দিলে আমি draft বানাব, আপনি tweak করবেন।
-
-**ধাপ ১ — Identity & Audience**
-- Tutor-এর persona নাম কী? (যেমন "রসায়ন স্যার", "ChemBot")
-- Target audience: শুধু class 9-10? নাকি HSC + Honors-ও cover করবে?
-- Teacher নাকি tutor tone? (formal vs friendly)
-
-**ধাপ ২ — Teaching Style**
-- Always Socratic (প্রশ্ন করে শেখানো)? নাকি direct answer + explanation?
-- ভুল করলে কেমন response? (gentle correction / quiz back / explain why wrong)
-- Real-life example দেবে কি? (যেমন CO₂ → fire extinguisher)
-
-**ধাপ ৩ — Language & Format**
-- Bangla:English ratio কেমন? (আমার ধারণা 70:30, scientific terms English-এ)
-- Response length: short (3-4 lines) / medium (paragraph) / detailed (with headings)?
-- Equation format: KaTeX (`$CaCO_3$`), code blocks, tables — কোনটা priority?
-
-**ধাপ ৪ — Boundaries & Safety**
-- Off-topic প্রশ্ন (যেমন physics, math) — answer দেবে নাকি redirect?
-- Homework "exact answer" চাইলে কী করবে? (give hint vs full answer)
-- Religious / political / inappropriate — কীভাবে decline?
-
-প্রতি ধাপ শেষে আমি system prompt-এর সেই অংশ লিখব, শেষে পুরোটা assemble করে `chat.functions.ts`-এ বসাব।
-
----
-
-## 📋 Implementation Order
-
-1. **Phase 1 setup** (1 turn): dependencies install + route + layout skeleton
-2. **Streaming + composer** (1 turn): SSE proxy + token-by-token render + stop
-3. **Sidebar + persistence** (1 turn): conversation CRUD + localStorage
-4. **KaTeX + markdown polish** (1 turn): chemistry equation rendering
-5. **Prompt design** (interactive, 4 mini-turns): ধাপ ১-৪ একসাথে আলোচনা করে finalize
-6. **RAG ingestion + toggle** (2 turns): batched ingest script + retrieval logic
-7. **Auth + DB migration** (publish-এর আগে, 2 turns)
-
----
-
-## 🔧 Technical Notes
-
-- Streaming: TanStack server route `/api/tutor/stream` returns `text/event-stream` (server fn returns plain DTO, not streams)
-- Abort: `AbortController` on client, signal passed to fetch
-- KaTeX: server-side rendering safe, no `window` dependency
-- ChatGPT-like UX: virtualization (`@tanstack/react-virtual`) only if conversation > 200 messages
-- Existing `LabAIAssistant` floating bubble থাকবে — lab-এর ভিতরে quick contextual Q&A-এর জন্য। `/tutor` হবে deep learning hub।
-
----
-
-**পরের step:** এই plan approve করার পর Phase 1 দিয়ে শুরু করব, তারপর প্রম্প্ট তৈরির ধাপ ১ এর প্রশ্ন দিয়ে interactive design শুরু হবে।
+### Verification
+- Build passes (TypeScript strict).
+- Manually exercise: pick experiment → drag all equipment → run correct flow → see crystals + A grade. Then run "skip filter" path → see high-severity mistake in report.
