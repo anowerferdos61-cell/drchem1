@@ -107,7 +107,7 @@ function Index() {
   useEffect(() => {
     try {
       const raw = localStorage.getItem("lab:activeExperiment");
-      if (raw === "titration" || raw === "oxygen_prep" || raw === "co2_prep" || raw === "nacl_crystal") {
+      if (raw === "titration" || raw === "oxygen_prep" || raw === "co2_prep" || raw === "nacl_crystal" || raw === "ionic_covalent") {
         setActiveExperiment(raw);
         setShowExperiments(true);
       }
