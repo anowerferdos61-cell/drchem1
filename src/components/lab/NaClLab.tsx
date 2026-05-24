@@ -604,10 +604,27 @@ export default function NaClLab({ onBack }: Props) {
             <LabReport report={report} onReset={reset} />
           </div>
         )}
+
+        {showViva && (
+          <div className="mt-6 grid gap-4 lg:grid-cols-2">
+            <TeacherViva
+              onPublish={setVivaQuestions}
+              experiment="nacl_crystal"
+              defaultTopic="অবিশুদ্ধ লবণ থেকে বিশুদ্ধ NaCl কেলাস প্রস্তুতি · Crystallisation of pure NaCl"
+            />
+            <StudentViva />
+            {vivaQuestions.length === 0 && (
+              <p className="col-span-full text-center text-xs text-muted-foreground">
+                শিক্ষক প্রশ্ন তৈরি করে Publish করবেন · ছাত্র উত্তর দিলে AI গ্রেড করবে।
+              </p>
+            )}
+          </div>
+        )}
       </div>
     </>
   );
 }
+
 
 function ModeToggle({ mode, setMode }: { mode: Mode; setMode: (m: Mode) => void }) {
   const opts: Array<{ id: Mode; label: string }> = [
