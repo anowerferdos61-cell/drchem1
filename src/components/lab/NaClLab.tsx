@@ -17,7 +17,11 @@ import {
   Snowflake,
   Flame,
   Sparkles,
+  GraduationCap,
 } from "lucide-react";
+import TeacherViva, { type VivaQuestion } from "@/components/viva/TeacherViva";
+import StudentViva from "@/components/viva/StudentViva";
+
 
 import EquipmentPanel, { NACL_ITEMS } from "./EquipmentPanel";
 import StepsPanel from "./StepsPanel";
