@@ -96,6 +96,29 @@ export interface CO2Placed {
   acid_poured: boolean; // dilute HCl added via thistle funnel (reaction running)
 }
 
+export type IonicSubstance = "nacl" | "sugar" | "naphthalene" | "cuso4";
+
+export interface IonicPlaced {
+  // Stage 1: solubility
+  beakersReady: boolean;
+  waterAdded: boolean;
+  solubility: Record<IonicSubstance, "dissolved" | "insoluble" | null>;
+  // Stage 2: conductivity
+  circuitReady: boolean;
+  conductivityTested: Record<IonicSubstance, "on" | "off" | null>;
+  // Stage 3: melting point
+  meltingReady: boolean;
+  meltResult: Record<IonicSubstance, "melted" | "solid" | "vaporized" | null>;
+  // Stage 4: electrolysis
+  cellReady: boolean;
+  cuso4InCell: boolean;
+  electrodesPlaced: boolean;
+  batteryConnected: boolean;
+  polarityCorrect: boolean;
+  electrolysisRun: boolean;
+  copperDeposit: number; // 0-1
+}
+
 export interface NaClPlaced {
   mortar: boolean;       // mortar & pestle ready
   beaker_1: boolean;     // dissolving beaker present
