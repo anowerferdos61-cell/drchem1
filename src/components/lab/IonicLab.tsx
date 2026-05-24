@@ -198,7 +198,7 @@ export default function IonicLab({ onBack }: Props) {
           }
           break;
         case "nacl_solid":
-        case "sugar":
+        case "sugar_solid":
         case "naphthalene_solid":
           // simple hint — pick via the test buttons below
           toast.info(`Sample ready — নিচের stage buttons ব্যবহার করো.`);
