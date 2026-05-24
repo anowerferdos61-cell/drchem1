@@ -17,6 +17,10 @@ import {
   Box,
   Gem,
   Minus,
+  Zap,
+  Lightbulb,
+  Cable,
+  Battery,
   type LucideIcon,
 } from "lucide-react";
 
