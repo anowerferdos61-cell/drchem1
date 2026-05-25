@@ -151,6 +151,12 @@ export default function LabAIAssistant({ context }: Props) {
         "Lower meniscus কেন পড়তে হয়?",
         "Warm water ব্যবহার করলে কী সমস্যা হবে?",
       ];
+    if (context.experimentId === "cuso4_water")
+      return [
+        "নীল রং হারিয়ে যায় কেন?",
+        "Desiccator কেন ব্যবহার করি?",
+        "Anhydrous CuSO₄ খোলা বাতাসে রাখলে কী হবে?",
+      ];
     return ["এই experiment-এর উদ্দেশ্য কী?", "পরের ধাপ কী?"];
   }, [context.experimentId]);
 

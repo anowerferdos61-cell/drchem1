@@ -39,6 +39,7 @@ import CO2Lab from "@/components/lab/CO2Lab";
 import NaClLab from "@/components/lab/NaClLab";
 import IonicLab from "@/components/lab/IonicLab";
 import Na2CO3Lab from "@/components/lab/Na2CO3Lab";
+import CopperSulfateLab from "@/components/lab/CopperSulfateLab";
 import LabAIAssistant from "@/components/lab/LabAIAssistant";
 import { setAIContext, useAIContext } from "@/lib/ai-context-store";
 
@@ -114,7 +115,8 @@ function Index() {
         raw === "co2_prep" ||
         raw === "nacl_crystal" ||
         raw === "ionic_covalent" ||
-        raw === "na2co3_standard"
+        raw === "na2co3_standard" ||
+        raw === "cuso4_water"
       ) {
         setActiveExperiment(raw);
         setShowExperiments(true);
@@ -163,6 +165,8 @@ function Index() {
     content = <IonicLab onBack={back} />;
   } else if (activeExperiment === "na2co3_standard") {
     content = <Na2CO3Lab onBack={back} />;
+  } else if (activeExperiment === "cuso4_water") {
+    content = <CopperSulfateLab onBack={back} />;
   } else {
     content = <TitrationLab onBack={back} />;
   }

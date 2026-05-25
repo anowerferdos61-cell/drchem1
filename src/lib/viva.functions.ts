@@ -15,7 +15,7 @@ const GenerateSchema = z.object({
   questions: z.array(QuestionSchema),
 });
 
-const ExperimentEnum = z.enum(["titration", "oxygen_prep", "co2_prep", "nacl_crystal", "ionic_covalent", "na2co3_standard"]);
+const ExperimentEnum = z.enum(["titration", "oxygen_prep", "co2_prep", "nacl_crystal", "ionic_covalent", "na2co3_standard", "cuso4_water"]);
 
 function experimentContext(exp: z.infer<typeof ExperimentEnum>): string {
   if (exp === "oxygen_prep") {
@@ -76,6 +76,20 @@ function experimentContext(exp: z.infer<typeof ExperimentEnum>): string {
       "(e) Why the LOWER MENISCUS is read at eye level — water wets glass and curves downward; reading the lower meniscus at eye level eliminates parallax error and gives accurate volume.",
       "(f) Why use ROOM TEMPERATURE (~25 °C) distilled water — warm water expands, so when it cools the actual volume becomes less than 250 mL and concentration becomes higher than expected; volumetric flasks are calibrated at 20-25 °C.",
       "(g) Safety: handle Na2CO3 carefully (mild irritant), use distilled water (not tap), do not shake before reaching the mark.",
+    ].join(" ");
+  }
+  if (exp === "cuso4_water") {
+    return [
+      "determination of crystallization water in copper(II) sulfate pentahydrate, CuSO4·5H2O (blue vitriol / নীল তুঁতে), Class 9-10 NCTB.",
+      "Molar masses: hydrated 249.5 g/mol, anhydrous CuSO4 159.5 g/mol, 5H2O = 90.0 g/mol; theoretical water percentage = 90.0/249.5 × 100 = 36.07 %.",
+      "Procedure: weigh empty porcelain crucible (x), add 3-5 g pulverized blue vitriol and reweigh (y), heat over a Bunsen burner on a tripod + wire gauze, stir gently with a glass rod until colour changes blue → pale blue → white (anhydrous), cool in a DESICCATOR to room temperature, reweigh (z).",
+      "Calculation: %H2O = (y − z)/(y − x) × 100. Tolerance ±1.5 % around 36.07 %.",
+      "Concepts to cover: (a) why the blue colour disappears — water of crystallization (coordination + lattice water in [Cu(H2O)4]SO4·H2O) is the chromophore; loss of water breaks the d-orbital ligand field and gives white anhydrous CuSO4; reaction is REVERSIBLE, so anhydrous CuSO4 is used as a moisture test (turns blue with water).",
+      "(b) Efflorescence — slow loss of water of crystallization in dry air.",
+      "(c) Why a DESICCATOR is required for cooling — open-air cooling lets anhydrous CuSO4 re-absorb atmospheric moisture (hygroscopic) → z becomes too large → %H2O reads too LOW; silica gel keeps the chamber dry.",
+      "(d) Why we never weigh a HOT crucible — rising convection air currents push the pan up and produce a falsely LOW reading, and thermal expansion can damage the balance; also rapid temperature change makes the analytical balance drift.",
+      "(e) Use crucible TONGS, never bare hands (burn risk + skin oil/moisture adds mass).",
+      "(f) Sample viva: 'Why does the blue colour disappear on heating?', 'What happens if anhydrous CuSO4 is left in open air?', 'Why a desiccator instead of cooling in the open room?', 'Why must heating be sustained until the powder is fully white?', 'Coordination water vs lattice water — how many of each in CuSO4·5H2O?' (4 coordinated to Cu²⁺, 1 lattice H-bonded to sulfate).",
     ].join(" ");
   }
   return [
