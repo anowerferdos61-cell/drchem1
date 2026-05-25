@@ -145,6 +145,12 @@ export default function LabAIAssistant({ context }: Props) {
         "কঠিন NaCl কেন তড়িৎ পরিবহন করে না?",
         "CuSO₄ এর electrolysis-এ ক্যাথোডে কী জমা হয়?",
       ];
+    if (context.experimentId === "na2co3_standard")
+      return [
+        "Na₂CO₃ কেন primary standard substance?",
+        "Lower meniscus কেন পড়তে হয়?",
+        "Warm water ব্যবহার করলে কী সমস্যা হবে?",
+      ];
     return ["এই experiment-এর উদ্দেশ্য কী?", "পরের ধাপ কী?"];
   }, [context.experimentId]);
 

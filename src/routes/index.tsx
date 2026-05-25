@@ -38,6 +38,7 @@ import OxygenLab from "@/components/lab/OxygenLab";
 import CO2Lab from "@/components/lab/CO2Lab";
 import NaClLab from "@/components/lab/NaClLab";
 import IonicLab from "@/components/lab/IonicLab";
+import Na2CO3Lab from "@/components/lab/Na2CO3Lab";
 import LabAIAssistant from "@/components/lab/LabAIAssistant";
 import { setAIContext, useAIContext } from "@/lib/ai-context-store";
 
@@ -107,7 +108,14 @@ function Index() {
   useEffect(() => {
     try {
       const raw = localStorage.getItem("lab:activeExperiment");
-      if (raw === "titration" || raw === "oxygen_prep" || raw === "co2_prep" || raw === "nacl_crystal" || raw === "ionic_covalent") {
+      if (
+        raw === "titration" ||
+        raw === "oxygen_prep" ||
+        raw === "co2_prep" ||
+        raw === "nacl_crystal" ||
+        raw === "ionic_covalent" ||
+        raw === "na2co3_standard"
+      ) {
         setActiveExperiment(raw);
         setShowExperiments(true);
       }
@@ -153,6 +161,8 @@ function Index() {
     content = <NaClLab onBack={back} />;
   } else if (activeExperiment === "ionic_covalent") {
     content = <IonicLab onBack={back} />;
+  } else if (activeExperiment === "na2co3_standard") {
+    content = <Na2CO3Lab onBack={back} />;
   } else {
     content = <TitrationLab onBack={back} />;
   }
