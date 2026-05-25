@@ -143,6 +143,7 @@ export default function LabReport({ report, onReset }: Props) {
         </section>
       )}
 
+      <section>
         <h3 className="mb-2 text-sm font-semibold uppercase text-muted-foreground">Steps</h3>
         <ul className="space-y-1 text-sm">
           {report.steps.map((s) => (
