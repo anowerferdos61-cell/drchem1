@@ -16,18 +16,21 @@ export default function LabReport({ report, onReset }: Props) {
   const isNaCl = report.experiment === "nacl_crystal";
   const isIonic = report.experiment === "ionic_covalent";
   const isNa2CO3 = report.experiment === "na2co3_standard";
+  const isCuSO4 = report.experiment === "cuso4_water";
 
-  const title = isNa2CO3
-    ? "0.1 M Na₂CO₃ Standard Solution · প্রমাণ দ্রবণ"
-    : isIonic
-      ? "Ionic vs Covalent · আয়নিক ও সমযোজী যৌগ"
-      : isNaCl
-        ? "NaCl Crystallisation · সোডিয়াম ক্লোরাইডের কেলাস"
-        : isCO2
-          ? "Preparation of CO₂ · কার্বন ডাইঅক্সাইড প্রস্তুতি"
-          : isOxygen
-            ? "Preparation of Oxygen · অক্সিজেন প্রস্তুতি"
-            : "Acid–Base Titration · অ্যাসিড-ক্ষার টাইট্রেশন";
+  const title = isCuSO4
+    ? "Crystallization Water in CuSO₄·5H₂O · কেলাস পানি"
+    : isNa2CO3
+      ? "0.1 M Na₂CO₃ Standard Solution · প্রমাণ দ্রবণ"
+      : isIonic
+        ? "Ionic vs Covalent · আয়নিক ও সমযোজী যৌগ"
+        : isNaCl
+          ? "NaCl Crystallisation · সোডিয়াম ক্লোরাইডের কেলাস"
+          : isCO2
+            ? "Preparation of CO₂ · কার্বন ডাইঅক্সাইড প্রস্তুতি"
+            : isOxygen
+              ? "Preparation of Oxygen · অক্সিজেন প্রস্তুতি"
+              : "Acid–Base Titration · অ্যাসিড-ক্ষার টাইট্রেশন";
 
   return (
     <Card className="space-y-4 p-6 print:border-0 print:shadow-none">
@@ -43,7 +46,14 @@ export default function LabReport({ report, onReset }: Props) {
       </header>
 
       <div className="grid grid-cols-2 gap-3 text-sm md:grid-cols-4">
-        {isNa2CO3 ? (
+        {isCuSO4 ? (
+          <>
+            <Metric label="x (empty)" value={`${(report.cuEmptyMass ?? 0).toFixed(3)} g`} />
+            <Metric label="y (hydrated)" value={`${(report.cuHydratedMass ?? 0).toFixed(3)} g`} />
+            <Metric label="z (anhydrous)" value={`${(report.cuAnhydrousMass ?? 0).toFixed(3)} g`} />
+            <Metric label="%H₂O" value={`${(report.cuWaterPct ?? 0).toFixed(2)}%`} />
+          </>
+        ) : isNa2CO3 ? (
           <>
             <Metric label="Mass (W)" value={`${(report.actualMassG ?? 0).toFixed(3)} g`} />
             <Metric label="Volume (V)" value={`${(report.actualVolumeMl ?? 0).toFixed(1)} mL`} />
@@ -103,6 +113,43 @@ export default function LabReport({ report, onReset }: Props) {
           </>
         )}
       </div>
+
+      {isCuSO4 && (
+        <section className="rounded-xl border bg-gradient-to-br from-sky-50 to-blue-50 p-4">
+          <h3 className="mb-2 text-sm font-semibold uppercase text-muted-foreground">
+            Crystallization Water Calculation · কেলাস পানি গণনা
+          </h3>
+          <div className="space-y-2 text-center">
+            <div className="text-base italic text-slate-700">
+              %H₂O =
+              <span className="mx-2 inline-flex flex-col">
+                <span className="border-b border-slate-400 px-2 font-mono">y − z</span>
+                <span className="px-2 font-mono">y − x</span>
+              </span>
+              × 100 =
+              <span className="mx-2 inline-flex flex-col">
+                <span className="border-b border-slate-400 px-2 font-mono">
+                  {((report.cuHydratedMass ?? 0) - (report.cuAnhydrousMass ?? 0)).toFixed(3)}
+                </span>
+                <span className="px-2 font-mono">
+                  {((report.cuHydratedMass ?? 0) - (report.cuEmptyMass ?? 0)).toFixed(3)}
+                </span>
+              </span>
+              × 100 =
+              <span className="ml-2 font-mono font-bold text-sky-700">
+                {(report.cuWaterPct ?? 0).toFixed(2)}%
+              </span>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Theoretical: <span className="font-mono">{(report.cuTheoreticalPct ?? 36.07).toFixed(2)}%</span>{" "}
+              · Δ ={" "}
+              <span className="font-mono">
+                {Math.abs((report.cuWaterPct ?? 0) - (report.cuTheoreticalPct ?? 36.07)).toFixed(2)}%
+              </span>
+            </p>
+          </div>
+        </section>
+      )}
 
       {isNa2CO3 && (
         <section className="rounded-xl border bg-gradient-to-br from-emerald-50 to-sky-50 p-4">

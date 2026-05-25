@@ -160,3 +160,15 @@ export const NA2CO3_ITEMS: EquipmentItem[] = [
   { id: "stopper", label: "Stopper · ছিপি", icon: Box },
 ];
 
+export const CUSO4_ITEMS: EquipmentItem[] = [
+  { id: "balance", label: "Analytical Balance · ব্যালান্স", icon: Scale },
+  { id: "crucible", label: "Porcelain Crucible · ক্রুসিবল", icon: Box },
+  { id: "cuso4_hydrated", label: "CuSO₄·5H₂O · নীল তুঁতে", icon: Gem },
+  { id: "tripod_stand", label: "Tripod Stand · ত্রিপদী", icon: TestTube },
+  { id: "wire_gauze", label: "Wire Gauze · তারজালি", icon: Layers },
+  { id: "bunsen_burner", label: "Bunsen Burner · বুনসেন বার্নার", icon: Flame },
+  { id: "glass_rod", label: "Glass Rod · কাচদণ্ড", icon: Minus },
+  { id: "desiccator", label: "Desiccator · ডেসিকেটর", icon: Circle },
+  { id: "tongs", label: "Crucible Tongs · চিমটা", icon: Hammer },
+];
+

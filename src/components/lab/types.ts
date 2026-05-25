@@ -6,7 +6,8 @@ export type ExperimentId =
   | "co2_prep"
   | "nacl_crystal"
   | "ionic_covalent"
-  | "na2co3_standard";
+  | "na2co3_standard"
+  | "cuso4_water";
 
 export type Mode = "guide" | "student" | "classroom";
 
@@ -74,7 +75,12 @@ export type EquipmentId =
   | "na2co3_solid"
   | "volumetric_flask_250"
   | "wash_bottle"
-  | "stopper";
+  | "stopper"
+  // CuSO4·5H2O crystallization water
+  | "crucible"
+  | "cuso4_hydrated"
+  | "desiccator"
+  | "tongs";
 
 export interface Placed {
   flask: boolean;
@@ -144,6 +150,33 @@ export interface NaClPlaced {
   crystallized: boolean; // crystals fully grown
 }
 
+export interface CuSO4Placed {
+  // Weighing
+  balanceOn: boolean;
+  crucibleOnBalance: boolean;
+  emptyCrucibleMass: number;     // x (g) ~20
+  weighedEmpty: boolean;
+  tared: boolean;
+  hydratedSampleMass: number;    // sample added (y - x)
+  weighedHydrated: boolean;
+  // Heating
+  tripodReady: boolean;
+  crucibleOnTripod: boolean;
+  burnerOn: boolean;
+  heatingTime: number;           // accumulated seconds
+  dehydrationFraction: number;   // 0..1
+  stirred: number;               // gentle stir count
+  spilled: boolean;
+  // Cooling
+  inDesiccator: boolean;
+  cooledTime: number;
+  cooled: boolean;
+  touchedBare: boolean;
+  // Final weigh
+  weighedAnhydrous: boolean;
+  finalCrucibleMass: number;     // z (g)
+}
+
 export interface Na2CO3Placed {
   balanceOn: boolean;
   watchGlassOnBalance: boolean;
@@ -198,7 +231,13 @@ export type MistakeType =
   | "overfill_meniscus"
   | "not_tared"
   | "not_washed_down"
-  | "shaken_early";
+  | "shaken_early"
+  // CuSO4·5H2O
+  | "not_weighed_empty"
+  | "spilled_crystals"
+  | "under_heated"
+  | "touched_hot_crucible"
+  | "weighed_hot";
 
 export type Severity = "low" | "med" | "high";
 
@@ -263,6 +302,14 @@ export interface Report {
   finalMolarity?: number;
   massError?: number;
   volumeError?: number;
+  // CuSO4·5H2O crystallization water
+  cuEmptyMass?: number;        // x
+  cuHydratedMass?: number;     // y
+  cuAnhydrousMass?: number;    // z
+  cuWaterPct?: number;
+  cuTheoreticalPct?: number;
+
+
 
 
 

@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FlaskConical, Wind, FlaskRound, Gem, Zap, Beaker } from "lucide-react";
+import { FlaskConical, Wind, FlaskRound, Gem, Zap, Beaker, Droplet } from "lucide-react";
 import type { ExperimentId } from "./types";
 
 interface Props {
@@ -59,6 +59,14 @@ const EXPERIMENTS: Array<{
     icon: Beaker,
     gradient: "from-emerald-100 via-teal-50 to-sky-100",
   },
+  {
+    id: "cuso4_water",
+    title: "Crystallization Water · CuSO₄·5H₂O",
+    subtitle:
+      "%H₂O = (y − z)/(y − x) × 100 · নীল → সাদা · theoretical 36.07%",
+    icon: Droplet,
+    gradient: "from-sky-100 via-blue-50 to-indigo-100",
+  },
 ];
 
 
@@ -74,7 +82,7 @@ export default function ExperimentPicker({ onPick }: Props) {
         </p>
       </div>
 
-      <div className="grid w-full gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+      <div className="grid w-full gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {EXPERIMENTS.map((e) => {
           const Icon = e.icon;
           return (
