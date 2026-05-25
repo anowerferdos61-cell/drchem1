@@ -192,7 +192,13 @@ export type MistakeType =
   | "conductivity_solid_salt"
   | "reversed_electrodes"
   | "no_water_for_conductivity"
-  | "skipped_stage";
+  | "skipped_stage"
+  // Na2CO3 standard solution
+  | "no_funnel_pour"
+  | "overfill_meniscus"
+  | "not_tared"
+  | "not_washed_down"
+  | "shaken_early";
 
 export type Severity = "low" | "med" | "high";
 
