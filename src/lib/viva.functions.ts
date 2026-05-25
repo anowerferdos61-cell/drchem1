@@ -15,7 +15,7 @@ const GenerateSchema = z.object({
   questions: z.array(QuestionSchema),
 });
 
-const ExperimentEnum = z.enum(["titration", "oxygen_prep", "co2_prep", "nacl_crystal", "ionic_covalent"]);
+const ExperimentEnum = z.enum(["titration", "oxygen_prep", "co2_prep", "nacl_crystal", "ionic_covalent", "na2co3_standard"]);
 
 function experimentContext(exp: z.infer<typeof ExperimentEnum>): string {
   if (exp === "oxygen_prep") {
@@ -61,6 +61,21 @@ function experimentContext(exp: z.infer<typeof ExperimentEnum>): string {
       "(c) Melting point — ionic compounds have high melting points (strong electrostatic lattice), covalent (naphthalene/sugar) have low melting points; overheating naphthalene causes sublimation/vaporization.",
       "(d) Electrolysis of CuSO4(aq) with carbon/copper electrodes: Cu2+ migrates to the cathode and is reduced (Cu2+ + 2e- -> Cu, reddish-brown deposit); at the anode either SO4^2- stays in solution and water is oxidized (2 H2O -> O2 + 4H+ + 4e-) or, with a copper anode, Cu is oxidized (Cu -> Cu2+ + 2e-).",
       "Discuss why reversing the electrodes deposits Cu on the wrong side, the role of free ions in conduction, and lab safety (handle CuSO4 carefully, avoid skin contact, ventilation, do not overheat naphthalene over an open flame).",
+    ].join(" ");
+  }
+  if (exp === "na2co3_standard") {
+    return [
+      "preparation of 250 mL of 0.1 M sodium carbonate (Na2CO3) standard solution (Class 9-10, Bangladesh NCTB).",
+      "Theoretical mass formula: W = (S × M × V)/1000 where S = molarity, M = molar mass (106 g/mol for Na2CO3), V = volume in mL.",
+      "For 0.1 M × 250 mL: W = (0.1 × 106 × 250)/1000 = 2.650 g.",
+      "Final molarity: S = (1000 × W_actual)/(106 × V_actual).",
+      "Cover: (a) PRIMARY STANDARD vs secondary standard substance — Na2CO3 qualifies as primary standard (high purity ≥99.9%, stable in air, non-hygroscopic, accurately known molar mass, easily soluble, no water of crystallization in anhydrous form). NaOH is NOT primary standard (hygroscopic, absorbs CO2).",
+      "(b) Equivalent weight of Na2CO3 = M/2 = 53 g/eq (since it provides 2 H+ equivalents in acid-base reactions).",
+      "(c) Definition of molarity: moles of solute per litre of solution.",
+      "(d) Procedure rationale: tare the watch glass first to read solute mass only; transfer through a FUNNEL to prevent spillage of analyte; rinse watch glass and funnel with a fine jet of distilled water to ensure quantitative transfer (no loss = correct concentration); dilute only to the calibration mark, never beyond.",
+      "(e) Why the LOWER MENISCUS is read at eye level — water wets glass and curves downward; reading the lower meniscus at eye level eliminates parallax error and gives accurate volume.",
+      "(f) Why use ROOM TEMPERATURE (~25 °C) distilled water — warm water expands, so when it cools the actual volume becomes less than 250 mL and concentration becomes higher than expected; volumetric flasks are calibrated at 20-25 °C.",
+      "(g) Safety: handle Na2CO3 carefully (mild irritant), use distilled water (not tap), do not shake before reaching the mark.",
     ].join(" ");
   }
   return [

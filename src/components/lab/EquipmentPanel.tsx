@@ -21,6 +21,8 @@ import {
   Lightbulb,
   Cable,
   Battery,
+  Scale,
+  Circle,
   type LucideIcon,
 } from "lucide-react";
 
@@ -145,5 +147,16 @@ export const IONIC_ITEMS: EquipmentItem[] = [
   { id: "electrolysis_cell", label: "Electrolysis Cell · তড়িৎ কোষ", icon: Box },
   { id: "spatula", label: "Spatula + Burner · স্প্যাচুলা", icon: Flame },
   { id: "bunsen_burner", label: "Bunsen Burner · বুনসেন বার্নার", icon: Zap },
+];
+
+export const NA2CO3_ITEMS: EquipmentItem[] = [
+  { id: "balance", label: "Digital Balance · ডিজিটাল ব্যালান্স", icon: Scale },
+  { id: "watch_glass", label: "Watch Glass · ওয়াচ গ্লাস", icon: Circle },
+  { id: "spatula", label: "Spatula · স্প্যাচুলা", icon: Minus },
+  { id: "na2co3_solid", label: "Na₂CO₃ · সোডিয়াম কার্বনেট", icon: Sparkles },
+  { id: "volumetric_flask_250", label: "250 mL Volumetric Flask · আয়তনিক ফ্লাস্ক", icon: FlaskConical },
+  { id: "funnel", label: "Funnel · ফানেল", icon: Filter },
+  { id: "wash_bottle", label: "Wash Bottle (H₂O) · ওয়াশ বটল", icon: Droplet },
+  { id: "stopper", label: "Stopper · ছিপি", icon: Box },
 ];
 

@@ -15,16 +15,19 @@ export default function LabReport({ report, onReset }: Props) {
   const isCO2 = report.experiment === "co2_prep";
   const isNaCl = report.experiment === "nacl_crystal";
   const isIonic = report.experiment === "ionic_covalent";
+  const isNa2CO3 = report.experiment === "na2co3_standard";
 
-  const title = isIonic
-    ? "Ionic vs Covalent · আয়নিক ও সমযোজী যৌগ"
-    : isNaCl
-      ? "NaCl Crystallisation · সোডিয়াম ক্লোরাইডের কেলাস"
-      : isCO2
-        ? "Preparation of CO₂ · কার্বন ডাইঅক্সাইড প্রস্তুতি"
-        : isOxygen
-          ? "Preparation of Oxygen · অক্সিজেন প্রস্তুতি"
-          : "Acid–Base Titration · অ্যাসিড-ক্ষার টাইট্রেশন";
+  const title = isNa2CO3
+    ? "0.1 M Na₂CO₃ Standard Solution · প্রমাণ দ্রবণ"
+    : isIonic
+      ? "Ionic vs Covalent · আয়নিক ও সমযোজী যৌগ"
+      : isNaCl
+        ? "NaCl Crystallisation · সোডিয়াম ক্লোরাইডের কেলাস"
+        : isCO2
+          ? "Preparation of CO₂ · কার্বন ডাইঅক্সাইড প্রস্তুতি"
+          : isOxygen
+            ? "Preparation of Oxygen · অক্সিজেন প্রস্তুতি"
+            : "Acid–Base Titration · অ্যাসিড-ক্ষার টাইট্রেশন";
 
   return (
     <Card className="space-y-4 p-6 print:border-0 print:shadow-none">
@@ -40,7 +43,14 @@ export default function LabReport({ report, onReset }: Props) {
       </header>
 
       <div className="grid grid-cols-2 gap-3 text-sm md:grid-cols-4">
-        {isIonic ? (
+        {isNa2CO3 ? (
+          <>
+            <Metric label="Mass (W)" value={`${(report.actualMassG ?? 0).toFixed(3)} g`} />
+            <Metric label="Volume (V)" value={`${(report.actualVolumeMl ?? 0).toFixed(1)} mL`} />
+            <Metric label="Final Molarity" value={`${(report.finalMolarity ?? 0).toFixed(3)} M`} />
+            <Metric label="Accuracy" value={`${report.accuracy.toFixed(1)}%`} />
+          </>
+        ) : isIonic ? (
           <>
             <Metric label="Solubility" value={`${(report.solubilityScore ?? 0).toFixed(0)}%`} />
             <Metric label="Conductivity" value={`${(report.conductivityScore ?? 0).toFixed(0)}%`} />
@@ -94,6 +104,44 @@ export default function LabReport({ report, onReset }: Props) {
         )}
       </div>
 
+      {isNa2CO3 && (
+        <section className="rounded-xl border bg-gradient-to-br from-emerald-50 to-sky-50 p-4">
+          <h3 className="mb-2 text-sm font-semibold uppercase text-muted-foreground">
+            Molarity Calculation · মোলারিটি গণনা
+          </h3>
+          <div className="space-y-2 text-center">
+            <div className="text-lg italic text-slate-700">
+              <span className="font-serif">S</span>
+              <span className="mx-2">=</span>
+              <span className="inline-flex flex-col text-base">
+                <span className="border-b border-slate-400 px-2 font-mono">1000 × W</span>
+                <span className="px-2 font-mono">106 × V</span>
+              </span>
+              <span className="mx-2">=</span>
+              <span className="inline-flex flex-col text-base">
+                <span className="border-b border-slate-400 px-2 font-mono">
+                  1000 × {(report.actualMassG ?? 0).toFixed(3)}
+                </span>
+                <span className="px-2 font-mono">
+                  106 × {(report.actualVolumeMl ?? 250).toFixed(1)}
+                </span>
+              </span>
+              <span className="mx-2">=</span>
+              <span className="font-mono font-bold text-emerald-700">
+                {(report.finalMolarity ?? 0).toFixed(3)} M
+              </span>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Your final solution concentration is{" "}
+              <span className="font-mono font-semibold text-foreground">
+                {(report.finalMolarity ?? 0).toFixed(3)} M
+              </span>{" "}
+              (target 0.100 M · Δm = {(report.massError ?? 0).toFixed(3)} g · ΔV ={" "}
+              {(report.volumeError ?? 0).toFixed(1)} mL).
+            </p>
+          </div>
+        </section>
+      )}
 
       <section>
         <h3 className="mb-2 text-sm font-semibold uppercase text-muted-foreground">Steps</h3>

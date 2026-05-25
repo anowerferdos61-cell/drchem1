@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FlaskConical, Wind, FlaskRound, Gem, Zap } from "lucide-react";
+import { FlaskConical, Wind, FlaskRound, Gem, Zap, Beaker } from "lucide-react";
 import type { ExperimentId } from "./types";
 
 interface Props {
@@ -50,6 +50,14 @@ const EXPERIMENTS: Array<{
       "দ্রবণীয়তা · তড়িৎ পরিবাহিতা · গলনাঙ্ক · CuSO₄ এর তড়িৎ বিশ্লেষণ",
     icon: Zap,
     gradient: "from-violet-100 via-purple-50 to-fuchsia-100",
+  },
+  {
+    id: "na2co3_standard",
+    title: "0.1 M Na₂CO₃ Standard · প্রমাণ দ্রবণ",
+    subtitle:
+      "W = (S × M × V)/1000 = 2.650 g · 250 mL volumetric flask, meniscus alignment",
+    icon: Beaker,
+    gradient: "from-emerald-100 via-teal-50 to-sky-100",
   },
 ];
 

@@ -5,7 +5,8 @@ export type ExperimentId =
   | "oxygen_prep"
   | "co2_prep"
   | "nacl_crystal"
-  | "ionic_covalent";
+  | "ionic_covalent"
+  | "na2co3_standard";
 
 export type Mode = "guide" | "student" | "classroom";
 
@@ -66,7 +67,14 @@ export type EquipmentId =
   | "carbon_electrode"
   | "copper_electrode"
   | "electrolysis_cell"
-  | "spatula";
+  | "spatula"
+  // Na2CO3 standard solution
+  | "balance"
+  | "watch_glass"
+  | "na2co3_solid"
+  | "volumetric_flask_250"
+  | "wash_bottle"
+  | "stopper";
 
 export interface Placed {
   flask: boolean;
@@ -136,6 +144,23 @@ export interface NaClPlaced {
   crystallized: boolean; // crystals fully grown
 }
 
+export interface Na2CO3Placed {
+  balanceOn: boolean;
+  watchGlassOnBalance: boolean;
+  watchGlassMass: number;   // initial tare mass (~26 g)
+  tared: boolean;
+  actualAddedMass: number;  // grams of Na2CO3 on watch glass
+  flaskReady: boolean;
+  funnelOnFlask: boolean;
+  soluteTransferred: boolean;
+  washedDown: boolean;
+  initialDissolved: boolean;
+  addedWaterVolume: number; // mL in flask (0-260)
+  meniscusChecked: boolean;
+  stoppered: boolean;
+  shaken: boolean;
+}
+
 export type TestId = "limewater" | "burning_splint" | "litmus" | "magnesium";
 export type TestResult = "pass" | "fail" | "none";
 
@@ -167,7 +192,13 @@ export type MistakeType =
   | "conductivity_solid_salt"
   | "reversed_electrodes"
   | "no_water_for_conductivity"
-  | "skipped_stage";
+  | "skipped_stage"
+  // Na2CO3 standard solution
+  | "no_funnel_pour"
+  | "overfill_meniscus"
+  | "not_tared"
+  | "not_washed_down"
+  | "shaken_early";
 
 export type Severity = "low" | "med" | "high";
 
@@ -226,6 +257,14 @@ export interface Report {
   meltingScore?: number;
   electrolysisScore?: number;
   copperDepositPct?: number;
+  // Na2CO3 standard solution
+  actualMassG?: number;
+  actualVolumeMl?: number;
+  finalMolarity?: number;
+  massError?: number;
+  volumeError?: number;
+
+
 
 
   accuracy: number; // %

@@ -49,9 +49,11 @@ function buildContextBlock(ctx: z.infer<typeof ContextSchema>): string {
           ? "Preparation of CO₂ Gas (CaCO₃ + dilute HCl)"
           : ctx.experimentId === "nacl_crystal"
             ? "Preparation of pure NaCl crystals from impure salt (dissolve → filter → evaporate to সম্পৃক্ত দ্রবণ → slow cooling → বীজ কেলাস → ঘনকীয় কেলাস)"
-            : ctx.experimentId === "ionic_covalent"
+          : ctx.experimentId === "ionic_covalent"
               ? "Properties of Ionic vs Covalent compounds (solubility, electrical conductivity, melting point) and Electrolysis of CuSO₄ (Cu²⁺ migrates to cathode → copper deposit; SO₄²⁻/H₂O at anode)"
-              : ctx.experimentId || "general chemistry";
+              : ctx.experimentId === "na2co3_standard"
+                ? "Preparation of 250 mL of 0.1 M Na₂CO₃ standard solution. Theoretical mass W = (S × M × V)/1000 = (0.1 × 106 × 250)/1000 = 2.650 g. Na₂CO₃ is a PRIMARY STANDARD substance (high purity, stable, non-hygroscopic, accurate molar mass, soluble in water). Procedure: tare watch glass on digital analytical balance → weigh exactly 2.650 g → transfer through funnel into 250 mL volumetric flask → wash watch glass & funnel with distilled water → swirl to dissolve → add water close to the calibration mark → align the LOWER meniscus exactly at the 250 mL ring at eye level → stopper and invert to homogenize. Final molarity S = (1000 × W)/(106 × V). Always use room-temperature (~25 °C) distilled water — warm water expands and volume reading becomes incorrect."
+                : ctx.experimentId || "general chemistry";
 
   const lines = [
     `Active experiment: ${expName}`,
