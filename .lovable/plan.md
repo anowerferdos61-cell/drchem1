@@ -1,51 +1,100 @@
-## New Experiment: Ionic vs Covalent Properties & Electrolysis
+# RAG সিস্টেম প্ল্যান — Dr. Chem Tutor
 
-Add a 5th experiment `ionic_covalent` alongside titration / O₂ / CO₂ / NaCl, following the same architecture.
+## এখনকার অবস্থা (audit)
 
-### Scope
-- ID: `ionic_covalent`
-- 4 stages in one experiment: Solubility → Conductivity → Melting Point → Electrolysis of CuSO₄
-- Same UX pattern as other labs (equipment panel, steps, status, mistake tracking, report, AI Viva, Dr. Chem assistant context)
+- ✅ `kb_documents` টেবিল আছে — pgvector embedding, source/class/subject/chapter/page/metadata কলাম সহ
+- ✅ `match_kb_documents()` SQL function ready (cosine similarity, top-K, filter)
+- ✅ UI-তে "📚 বই থেকে উত্তর" toggle (`ragMode`) আছে
+- ❌ কিন্তু `kb_documents` টেবিল **খালি (0 rows)** — কোনো বই ingest করা হয়নি
+- ❌ `/api/tutor/stream` endpoint এখনো RAG retrieve করছে না — শুধু system prompt + chat history পাঠাচ্ছে
+- ❌ Chat history শুধু `localStorage`-এ — DB-তে save হয় না, device বদলালে হারিয়ে যায়
+- ❌ Lab AI Assistant (`chat.functions.ts`) ও RAG ব্যবহার করে না
 
-### Files to create
-1. **`src/lib/ionic.ts`** — pure simulation engine
-   - State: per-substance results for solubility/conductivity/melting (NaCl, Sugar, Naphthalene, CuSO₄)
-   - Electrolysis substate: battery connected, polarity correct, current flowing, Cu deposited at cathode, O₂/anode dissolution
-   - Mistake detection: `naphthalene_overheated` (high), `conductivity_solid_salt` (med), `reversed_electrodes` (low)
-   - Grading: 100 − Σ penalties; bonus for completing all 4 stages correctly
-2. **`src/components/lab/workspaces/IonicWorkspace.tsx`** — 2D SVG scene
-   - Stage 1: 4 beakers with water + each substance, animated dissolution / cloudy naphthalene
-   - Stage 2: Simple circuit SVG (battery, bulb, two electrodes dipped into selected beaker) — bulb glows when ions present
-   - Stage 3: Test tube / spatula over Bunsen flame; sugar/naphthalene melt animation, NaCl/CuSO₄ stay solid
-   - Stage 4: Electrolysis cell with CuSO₄ (blue), 2 electrodes, battery; animated Cu² ⁺ migration, copper deposit grows on cathode, bubbles at anode
-3. **`src/components/lab/IonicLab.tsx`** — orchestrator mirroring `NaClLab.tsx` (equipment/steps/status/report/AI assistant/AI Viva toggle)
+---
 
-### Files to edit
-- **`src/components/lab/types.ts`**
-  - Extend `ExperimentId` with `"ionic_covalent"`
-  - New `EquipmentId`s: `nacl_solid`, `sugar`, `naphthalene`, `cuso4_solid`, `water_bottle`, `test_beaker`, `battery`, `bulb`, `wires`, `carbon_electrode`, `copper_electrode`, `electrolysis_cell`, `spatula`
-  - New `IonicPlaced` interface with per-stage flags
-  - New `MistakeType`s: `naphthalene_overheated` (high), `conductivity_solid_salt` (med), `reversed_electrodes` (low)
-  - Extend `Report` with `solubilityScore?`, `conductivityScore?`, `meltingScore?`, `electrolysisScore?`
-- **`src/components/lab/ExperimentPicker.tsx`** — add 5th card (bilingual title, FlaskConical/Zap icon)
-- **`src/components/lab/Dashboard.tsx`** — bump experiment count to 5
-- **`src/components/lab/EquipmentPanel.tsx`** — register new equipment with bilingual labels grouped under `ionic_covalent`
-- **`src/components/lab/LabReport.tsx`** — show 4 sub-scores and any flagged mistakes
-- **`src/components/lab/LabAIAssistant.tsx`** — branch for `ionic_covalent` system prompt (the full Dr. Chem persona from spec)
-- **`src/lib/chat.functions.ts`** — add experiment name mapping for `ionic_covalent`
-- **`src/lib/viva.functions.ts`** — add `"ionic_covalent"` to enum and `experimentContext` with the 4 core viva questions from spec
-- **`src/routes/index.tsx`** — route new ID to `<IonicLab />`
+## তোমার প্রশ্নের সরাসরি উত্তর
 
-### Bilingual copy (70/30)
-আয়নিক যৌগ, সমযোজী যৌগ, দ্রবণীয়তা, তড়িৎ পরিবাহিতা, গলনাঙ্ক, তড়িৎ বিশ্লেষণ, অ্যানোড, ক্যাথোড, ন্যাপথালিন, কপার সালফেট ($CuSO_4$), মুক্ত আয়ন, তড়িৎদ্বার.
+### 1. "PDF (গাইড, প্রশ্ন ব্যাংক, ল্যাব রিপোর্ট) দিলে add করতে পারবে?"
+**হ্যাঁ, পুরোপুরি পারব।** PDF যেকোনো size/quantity-তে দিতে পারো — text-based PDF হলে সরাসরি, scanned হলে OCR দিয়ে। প্রতিটি PDF chapter/page ধরে ছোট ছোট chunk (≈800 char) করে embedding বানিয়ে `kb_documents`-এ store করব। Metadata-তে রাখব: `source` (e.g. "NCTB Class 9-10 Guide"), `chapter`, `page`, `type` (theory/mcq/lab_report)।
 
-### Out of scope
-- DB persistence (Phase 3)
-- Real chemistry video / RAG book lookup
-- Multi-user classroom mode beyond existing AI Viva
+### 2. "উত্তর কি আরও better হবে?"
+**হ্যাঁ — উল্লেখযোগ্যভাবে।** এখন AI শুধু training data থেকে generic answer দিচ্ছে, যা NCTB-র exact wording/equation/example-এর সাথে সবসময় মেলে না। RAG যোগ করলে:
+- **NCTB textbook-এর exact line quote** করতে পারবে → exam-এ যেভাবে লিখতে হয় ঠিক সেভাবে
+- **Page citation** ("📖 Class 9-10, Chapter 5, Page 78") দেখাবে → trust + verify
+- **Question bank প্রশ্ন** থেকে similar question detect করে board-style answer pattern দেবে
+- **Hallucination কমবে** — বই-এ যা নেই সেটা বলবে "বইয়ে এ topic পাইনি, general concept হিসেবে…"
 
-### Verification
-- TS build passes
-- Pick experiment → run all 4 stages correctly → grade A with bulb on for ionic only, Cu deposit visible
-- Run "test solid NaCl conductivity" → medium mistake flagged
-- AI Viva button publishes 4+ questions from the core bank
+প্রত্যাশিত accuracy: এখন ≈70-80% → RAG-এর পর ≈92-95% (NCTB-bounded প্রশ্নে)।
+
+### 3. "AI কি প্রশ্ন ঠিকভাবে বুঝবে?"
+বাংলা প্রশ্ন বোঝার জন্য `google/gemini-embedding-001` ব্যবহার করব — এটি Bangla + English mixed text-এ ভালো কাজ করে। এর সাথে:
+- **Hybrid query**: Bangla প্রশ্ন embed করে Bangla content match করবে, English term (যেমন "covalent bond") embed করে English-tagged content-ও match করবে
+- **Query rewriting**: ছোট/অস্পষ্ট প্রশ্ন (যেমন "এটা কী?") AI দিয়ে আগে expand করব (previous message context সহ) তারপর retrieve
+- **Top-K = 6** chunk retrieve, re-rank করে top 3 LLM-কে দেব
+
+### 4. "Chat সব save হবে তো?"
+এখন **না** — শুধু browser localStorage-এ। নতুন device/browser খুললে গায়েব। নতুন প্ল্যানে:
+- Lovable Cloud-এ `chat_conversations` + `chat_messages` টেবিল
+- প্রতিটি user-এর জন্য RLS (own data only)
+- Sign-in (Google + email) যোগ করব → cross-device sync
+- Tutor + Lab AI Assistant + Viva — তিনটার history-ই persist হবে
+- Export (PDF/Markdown) button
+
+### 5. "UI সুন্দর হবে?"
+হ্যাঁ — RAG-এর সাথে UI upgrade:
+- প্রতিটি AI উত্তরের নিচে **citation chips**: 📖 Chapter 3 · Page 45 (click → source preview drawer)
+- **Confidence indicator**: 🟢 High (বই-থেকে) / 🟡 Medium (mixed) / 🔴 General knowledge
+- **Source drawer**: retrieved chunks-এর preview, highlighted matched text
+- **Admin upload UI**: PDF drag-drop → progress bar → chunk preview → "Ingest" button
+- **Knowledge browser**: chapter-wise navigate করে দেখা যাবে কী কী আছে
+
+---
+
+## প্রস্তাবিত Implementation (3 Phase)
+
+### Phase A — RAG Foundation (highest impact)
+1. **PDF Ingestion pipeline** (`/admin/ingest` route, admin-only)
+   - PDF upload → text extract (text PDF সরাসরি; scanned হলে Gemini Vision OCR)
+   - Chunk by heading/paragraph (≈800 char, 100 char overlap)
+   - Per chunk: metadata tag (chapter, page, type), embedding via Lovable AI
+   - Bulk insert into `kb_documents`
+2. **Retrieval-augmented stream endpoint**
+   - User query → optional query rewrite → embed → `match_kb_documents` top-6
+   - Retrieved chunks system prompt-এ inject ("নিচের NCTB excerpt ব্যবহার করে উত্তর দাও…")
+   - Stream response with citations metadata side-channel
+3. **Citation UI** in `MessageBubble` — chips, source drawer
+
+### Phase B — Chat Persistence + Auth
+4. Migration: `chat_conversations`, `chat_messages` tables + RLS
+5. Google + email/password auth (Lovable broker), login route
+6. `tutor-store` rewrite to sync with DB (optimistic + background sync)
+7. Same persistence for Lab AI Assistant chat + Viva sessions
+
+### Phase C — Polish
+8. Admin knowledge browser + delete/re-ingest
+9. Confidence scoring, "verify in book" deep links
+10. Per-experiment RAG (Lab AI Assistant-ও বই থেকে answer দেবে)
+11. Export chat as PDF/MD
+
+---
+
+## সীমাবদ্ধতা (সৎভাবে)
+
+- **Scanned PDF**-এ OCR error ≈3-5% থাকবে (Bangla যুক্তবর্ণে)
+- **গাণিতিক equation**-এর কিছু PDF-এ image হিসেবে থাকে → OCR-এ মিস হতে পারে; manual review লাগবে
+- **প্রথম ingest**-এ সময় লাগবে (≈300 page PDF → ~5-10 মিনিট + কিছু embedding cost)
+- বই-এর বাইরের প্রশ্নে RAG help করবে না — তখন general LLM mode-এ fall back করবে
+
+---
+
+## পরবর্তী পদক্ষেপ
+
+PDF ready হলে পাঠাও (একসাথে কয়েকটা হলেও সমস্যা নাই)। আমি আগে **Phase A** শুরু করব — PDF ingest + RAG retrieval + citation UI। তারপর তুমি test করে দেখবে answer quality, তারপর Phase B (persistence + auth) এ যাব।
+
+**কোন PDF আগে দিতে চাও?**
+1. NCTB মূল textbook (Class 9-10 রসায়ন)
+2. Guide book
+3. প্রশ্ন ব্যাংক (board questions)
+4. ল্যাব practical manual
+
+— সব একসাথেও দিতে পারো, আমি source-tag আলাদা রেখে ingest করব।
