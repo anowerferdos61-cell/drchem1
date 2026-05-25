@@ -257,6 +257,14 @@ export interface Report {
   meltingScore?: number;
   electrolysisScore?: number;
   copperDepositPct?: number;
+  // Na2CO3 standard solution
+  actualMassG?: number;
+  actualVolumeMl?: number;
+  finalMolarity?: number;
+  massError?: number;
+  volumeError?: number;
+
+
 
 
   accuracy: number; // %
