@@ -86,7 +86,7 @@ export default function ChatWindow() {
         const res = await fetch(STREAM_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ messages: history }),
+          body: JSON.stringify({ messages: history, ragMode }),
           signal: ctrl.signal,
         });
 
@@ -118,6 +118,13 @@ export default function ChatWindow() {
             }
             try {
               const parsed = JSON.parse(data);
+              // Sources sentinel sent by our /api/tutor/stream wrapper.
+              if (parsed?.type === "sources" && Array.isArray(parsed.sources)) {
+                updateMessage(convoId, assistant.id, {
+                  sources: parsed.sources,
+                });
+                continue;
+              }
               const delta = parsed.choices?.[0]?.delta?.content as
                 | string
                 | undefined;
