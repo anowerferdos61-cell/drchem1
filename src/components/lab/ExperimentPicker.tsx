@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FlaskConical, Wind, FlaskRound, Gem, Zap, Beaker, Droplet } from "lucide-react";
+import { FlaskConical, Wind, FlaskRound, Gem, Zap, Beaker, Droplet, Activity } from "lucide-react";
 import type { ExperimentId } from "./types";
 
 interface Props {
@@ -66,6 +66,14 @@ const EXPERIMENTS: Array<{
       "%H₂O = (y − z)/(y − x) × 100 · নীল → সাদা · theoretical 36.07%",
     icon: Droplet,
     gradient: "from-sky-100 via-blue-50 to-indigo-100",
+  },
+  {
+    id: "ph_scale",
+    title: "pH Scale · pH স্কেল",
+    subtitle:
+      "Interactive Universal Indicator · pH = −log[H⁺] · 0 → 14 (acidic ↔ basic)",
+    icon: Activity,
+    gradient: "from-rose-100 via-yellow-50 to-indigo-100",
   },
 ];
 

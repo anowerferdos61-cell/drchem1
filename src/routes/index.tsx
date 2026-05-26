@@ -40,6 +40,7 @@ import NaClLab from "@/components/lab/NaClLab";
 import IonicLab from "@/components/lab/IonicLab";
 import Na2CO3Lab from "@/components/lab/Na2CO3Lab";
 import CopperSulfateLab from "@/components/lab/CopperSulfateLab";
+import PHScaleLab from "@/components/lab/PHScaleLab";
 import LabAIAssistant from "@/components/lab/LabAIAssistant";
 import { setAIContext, useAIContext } from "@/lib/ai-context-store";
 
@@ -116,7 +117,8 @@ function Index() {
         raw === "nacl_crystal" ||
         raw === "ionic_covalent" ||
         raw === "na2co3_standard" ||
-        raw === "cuso4_water"
+        raw === "cuso4_water" ||
+        raw === "ph_scale"
       ) {
         setActiveExperiment(raw);
         setShowExperiments(true);
@@ -167,6 +169,8 @@ function Index() {
     content = <Na2CO3Lab onBack={back} />;
   } else if (activeExperiment === "cuso4_water") {
     content = <CopperSulfateLab onBack={back} />;
+  } else if (activeExperiment === "ph_scale") {
+    content = <PHScaleLab onBack={back} />;
   } else {
     content = <TitrationLab onBack={back} />;
   }
