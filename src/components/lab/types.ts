@@ -7,7 +7,8 @@ export type ExperimentId =
   | "nacl_crystal"
   | "ionic_covalent"
   | "na2co3_standard"
-  | "cuso4_water";
+  | "cuso4_water"
+  | "ph_scale";
 
 export type Mode = "guide" | "student" | "classroom";
 
