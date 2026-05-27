@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FlaskConical, Wind, FlaskRound, Gem, Zap, Beaker, Droplet, Activity, TestTubes, Layers, Atom } from "lucide-react";
+import { FlaskConical, Wind, FlaskRound, Gem, Zap, Beaker, Droplet, Activity, TestTubes, Layers, Atom, Sparkles } from "lucide-react";
 import type { ExperimentId } from "./types";
 
 interface Props {
@@ -98,6 +98,14 @@ const EXPERIMENTS: Array<{
       "K → Au reactivity ladder · Displacement simulator · NCTB Chapter 8",
     icon: Atom,
     gradient: "from-rose-100 via-amber-50 to-emerald-100",
+  },
+  {
+    id: "bonding_basics",
+    title: "Chemical Bonding · রাসায়নিক বন্ধন",
+    subtitle:
+      "Ionic transfer (Na→Cl) vs Covalent sharing (Cl₂) · Drag valence electrons",
+    icon: Sparkles,
+    gradient: "from-violet-100 via-rose-50 to-sky-100",
   },
 ];
 

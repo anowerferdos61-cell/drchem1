@@ -44,6 +44,7 @@ import PHScaleLab from "@/components/lab/PHScaleLab";
 import IndicatorLab from "@/components/lab/IndicatorLab";
 import SolubilityLab from "@/components/lab/SolubilityLab";
 import ElectrochemicalSeriesLab from "@/components/lab/ElectrochemicalSeriesLab";
+import BondingLab from "@/components/lab/BondingLab";
 
 import LabAIAssistant from "@/components/lab/LabAIAssistant";
 import { setAIContext, useAIContext } from "@/lib/ai-context-store";
@@ -125,8 +126,10 @@ function Index() {
         raw === "ph_scale" ||
         raw === "indicator_compare" ||
         raw === "solubility_rules" ||
-        raw === "electrochemical_series"
+        raw === "electrochemical_series" ||
+        raw === "bonding_basics"
       ) {
+
 
         setActiveExperiment(raw);
         setShowExperiments(true);
@@ -185,6 +188,8 @@ function Index() {
     content = <SolubilityLab onBack={back} />;
   } else if (activeExperiment === "electrochemical_series") {
     content = <ElectrochemicalSeriesLab onBack={back} />;
+  } else if (activeExperiment === "bonding_basics") {
+    content = <BondingLab onBack={back} />;
   } else {
     content = <TitrationLab onBack={back} />;
   }

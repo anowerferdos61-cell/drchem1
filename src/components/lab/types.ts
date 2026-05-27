@@ -11,7 +11,8 @@ export type ExperimentId =
   | "ph_scale"
   | "indicator_compare"
   | "solubility_rules"
-  | "electrochemical_series";
+  | "electrochemical_series"
+  | "bonding_basics";
 
 
 export type Mode = "guide" | "student" | "classroom";
