@@ -126,8 +126,8 @@ function Index() {
         raw === "ph_scale" ||
         raw === "indicator_compare" ||
         raw === "solubility_rules" ||
-        raw === "electrochemical_series"
-      ) {
+        raw === "electrochemical_series" ||
+        raw === "bonding_basics"
 
         setActiveExperiment(raw);
         setShowExperiments(true);
