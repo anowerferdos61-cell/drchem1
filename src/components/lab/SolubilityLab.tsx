@@ -162,12 +162,20 @@ export default function SolubilityLab({ onBack }: Props) {
                           : "cursor-grab border-slate-200 bg-white hover:border-primary/60 hover:shadow-sm active:cursor-grabbing"
                     }`}
                   >
-                    <div className="rounded-lg bg-gradient-to-br from-slate-100 to-slate-200 px-3 py-2 text-base font-bold text-slate-800">
-                      {md(`$${ex.formula}$`)}
+                    <div className="relative w-full overflow-hidden rounded-lg bg-gradient-to-br from-slate-700 to-slate-900 px-3 py-3">
+                      {ex.textureVisual && <SaltTexture visual={ex.textureVisual} />}
+                      <div className="relative z-10 text-center text-base font-bold text-white drop-shadow">
+                        {md(`$${ex.formula}$`)}
+                      </div>
                     </div>
                     <div className="mt-1.5 text-center text-[10px] leading-tight text-muted-foreground">
                       {ex.name}
                     </div>
+                    {ex.appearance && (
+                      <div className="mt-0.5 text-center text-[9px] italic leading-tight text-slate-400">
+                        {ex.appearance}
+                      </div>
+                    )}
                   </button>
                 );
               })}
