@@ -42,6 +42,8 @@ import Na2CO3Lab from "@/components/lab/Na2CO3Lab";
 import CopperSulfateLab from "@/components/lab/CopperSulfateLab";
 import PHScaleLab from "@/components/lab/PHScaleLab";
 import IndicatorLab from "@/components/lab/IndicatorLab";
+import SolubilityLab from "@/components/lab/SolubilityLab";
+
 import LabAIAssistant from "@/components/lab/LabAIAssistant";
 import { setAIContext, useAIContext } from "@/lib/ai-context-store";
 
@@ -120,8 +122,10 @@ function Index() {
         raw === "na2co3_standard" ||
         raw === "cuso4_water" ||
         raw === "ph_scale" ||
-        raw === "indicator_compare"
+        raw === "indicator_compare" ||
+        raw === "solubility_rules"
       ) {
+
         setActiveExperiment(raw);
         setShowExperiments(true);
       }
@@ -175,9 +179,12 @@ function Index() {
     content = <PHScaleLab onBack={back} />;
   } else if (activeExperiment === "indicator_compare") {
     content = <IndicatorLab onBack={back} />;
+  } else if (activeExperiment === "solubility_rules") {
+    content = <SolubilityLab onBack={back} />;
   } else {
     content = <TitrationLab onBack={back} />;
   }
+
 
   // Reset assistant context when on dashboard
   useEffect(() => {
