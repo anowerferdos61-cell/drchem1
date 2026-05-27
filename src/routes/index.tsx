@@ -41,6 +41,7 @@ import IonicLab from "@/components/lab/IonicLab";
 import Na2CO3Lab from "@/components/lab/Na2CO3Lab";
 import CopperSulfateLab from "@/components/lab/CopperSulfateLab";
 import PHScaleLab from "@/components/lab/PHScaleLab";
+import IndicatorLab from "@/components/lab/IndicatorLab";
 import LabAIAssistant from "@/components/lab/LabAIAssistant";
 import { setAIContext, useAIContext } from "@/lib/ai-context-store";
 
@@ -118,7 +119,8 @@ function Index() {
         raw === "ionic_covalent" ||
         raw === "na2co3_standard" ||
         raw === "cuso4_water" ||
-        raw === "ph_scale"
+        raw === "ph_scale" ||
+        raw === "indicator_compare"
       ) {
         setActiveExperiment(raw);
         setShowExperiments(true);
@@ -171,6 +173,8 @@ function Index() {
     content = <CopperSulfateLab onBack={back} />;
   } else if (activeExperiment === "ph_scale") {
     content = <PHScaleLab onBack={back} />;
+  } else if (activeExperiment === "indicator_compare") {
+    content = <IndicatorLab onBack={back} />;
   } else {
     content = <TitrationLab onBack={back} />;
   }

@@ -8,7 +8,8 @@ export type ExperimentId =
   | "ionic_covalent"
   | "na2co3_standard"
   | "cuso4_water"
-  | "ph_scale";
+  | "ph_scale"
+  | "indicator_compare";
 
 export type Mode = "guide" | "student" | "classroom";
 
