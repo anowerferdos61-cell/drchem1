@@ -188,6 +188,8 @@ function Index() {
     content = <SolubilityLab onBack={back} />;
   } else if (activeExperiment === "electrochemical_series") {
     content = <ElectrochemicalSeriesLab onBack={back} />;
+  } else if (activeExperiment === "bonding_basics") {
+    content = <BondingLab onBack={back} />;
   } else {
     content = <TitrationLab onBack={back} />;
   }
