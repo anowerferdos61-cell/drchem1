@@ -161,6 +161,7 @@ export default function IndicatorLab({ onBack }: Props) {
             <div className="grid grid-cols-3 gap-2">
               {INDICATORS.map((ind) => {
                 const active = selected === ind.id;
+                const isLitmus = ind.id === "litmus";
                 return (
                   <button
                     key={ind.id}
@@ -171,21 +172,47 @@ export default function IndicatorLab({ onBack }: Props) {
                         : "border-transparent bg-muted hover:border-muted-foreground/30"
                     }`}
                   >
-                    {/* Dropper SVG */}
-                    <svg viewBox="0 0 40 80" className="h-16 w-10">
-                      <rect x="14" y="2" width="12" height="14" rx="3" fill="#475569" />
-                      <rect x="16" y="16" width="8" height="38" fill="#e2e8f0" stroke="#64748b" />
-                      <rect
-                        x="17"
-                        y="22"
-                        width="6"
-                        height="30"
-                        fill={ind.drop_color}
-                        opacity="0.85"
-                      />
-                      <path d="M16 54 L24 54 L22 70 Q20 76 18 70 Z" fill={ind.drop_color} />
-                      <circle cx="20" cy="78" r="2" fill={ind.drop_color} />
-                    </svg>
+                    {isLitmus ? (
+                      /* Litmus paper strip */
+                      <svg viewBox="0 0 40 80" className="h-16 w-10">
+                        <defs>
+                          <linearGradient id="litmus-strip" x1="0" x2="0" y1="0" y2="1">
+                            <stop offset="0" stopColor="#C7B8E8" />
+                            <stop offset="0.5" stopColor="#A855F7" />
+                            <stop offset="1" stopColor="#8B5CF6" />
+                          </linearGradient>
+                        </defs>
+                        <rect
+                          x="13"
+                          y="6"
+                          width="14"
+                          height="68"
+                          rx="1.5"
+                          fill="url(#litmus-strip)"
+                          stroke="#64748b"
+                          strokeWidth="1"
+                        />
+                        <line x1="13" y1="24" x2="27" y2="24" stroke="#fff" strokeOpacity="0.35" />
+                        <line x1="13" y1="42" x2="27" y2="42" stroke="#fff" strokeOpacity="0.35" />
+                        <line x1="13" y1="60" x2="27" y2="60" stroke="#fff" strokeOpacity="0.35" />
+                      </svg>
+                    ) : (
+                      /* Dropper SVG */
+                      <svg viewBox="0 0 40 80" className="h-16 w-10">
+                        <rect x="14" y="2" width="12" height="14" rx="3" fill="#475569" />
+                        <rect x="16" y="16" width="8" height="38" fill="#e2e8f0" stroke="#64748b" />
+                        <rect
+                          x="17"
+                          y="22"
+                          width="6"
+                          height="30"
+                          fill={ind.drop_color}
+                          opacity="0.85"
+                        />
+                        <path d="M16 54 L24 54 L22 70 Q20 76 18 70 Z" fill={ind.drop_color} />
+                        <circle cx="20" cy="78" r="2" fill={ind.drop_color} />
+                      </svg>
+                    )}
                     <div className="mt-1 text-center text-[11px] font-semibold leading-tight">
                       {ind.name_bn}
                     </div>
@@ -196,9 +223,12 @@ export default function IndicatorLab({ onBack }: Props) {
             </div>
             <p className="mt-3 text-xs text-muted-foreground">
               {selected
-                ? `✅ ${currentIndicator?.name_bn} সিলেক্ট হয়েছে — এখন যেকোনো বিকারে ক্লিক করুন।`
-                : "👆 একটি ড্রপার সিলেক্ট করুন, তারপর নিচের বিকারে ক্লিক করে ফোঁটা দিন।"}
+                ? selected === "litmus"
+                  ? `✅ ${currentIndicator?.name_bn} সিলেক্ট হয়েছে — বিকারে ক্লিক করে পেপারটি ডুবান।`
+                  : `✅ ${currentIndicator?.name_bn} সিলেক্ট হয়েছে — এখন যেকোনো বিকারে ক্লিক করুন।`
+                : "👆 একটি ড্রপার বা পেপার সিলেক্ট করুন, তারপর বিকারে ক্লিক করুন।"}
             </p>
+
           </Card>
 
           {/* Beakers */}
