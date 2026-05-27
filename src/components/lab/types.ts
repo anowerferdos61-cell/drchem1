@@ -9,7 +9,9 @@ export type ExperimentId =
   | "na2co3_standard"
   | "cuso4_water"
   | "ph_scale"
-  | "indicator_compare";
+  | "indicator_compare"
+  | "solubility_rules";
+
 
 export type Mode = "guide" | "student" | "classroom";
 
