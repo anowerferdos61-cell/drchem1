@@ -240,9 +240,43 @@ export default function IndicatorLab({ onBack }: Props) {
               {MEDIA.map((m) => {
                 const droppedId = drops[m.id];
                 const droppedInd = INDICATORS.find((i) => i.id === droppedId) ?? null;
-                const fill = droppedInd ? colorFor(droppedInd, m.id) : "#E0F2FE";
-                const label = droppedInd ? labelFor(droppedInd, m.id) : "—";
+                const isLitmusDropped = droppedId === "litmus";
+
+                // Native solution tint (when litmus is dipped OR nothing dropped)
+                const nativeTint =
+                  m.id === "acid"
+                    ? "#EAF6FF"
+                    : m.id === "base"
+                      ? "#FFFBEA"
+                      : "#E0F2FE";
+
+                // Liquid colour: native if litmus (paper doesn't recolor solution)
+                const fill =
+                  droppedInd && !isLitmusDropped
+                    ? colorFor(droppedInd, m.id)
+                    : droppedInd
+                      ? nativeTint
+                      : "#E0F2FE";
                 const isWhite = fill.toUpperCase() === "#FFFFFF";
+
+                // Litmus submerged-half colour by pH of medium
+                const litmusSubmergedColor =
+                  m.id === "acid" ? "#EF4444" : m.id === "base" ? "#3B82F6" : "#A855F7";
+                const litmusSubmergedLabel =
+                  m.id === "acid"
+                    ? "পেপার লাল হবে (Paper turns Red)"
+                    : m.id === "base"
+                      ? "পেপার নীল হবে (Paper turns Blue)"
+                      : "পেপার বেগুনি হবে (Paper turns Purple)";
+
+                const subtext = !droppedInd
+                  ? selected
+                    ? "ক্লিক করুন"
+                    : ""
+                  : isLitmusDropped
+                    ? `→ ${litmusSubmergedLabel}`
+                    : `→ ${labelFor(droppedInd, m.id)}`;
+
                 return (
                   <button
                     key={m.id}
@@ -267,6 +301,19 @@ export default function IndicatorLab({ onBack }: Props) {
                           <stop offset="0" stopColor="#ffffff" stopOpacity="0.7" />
                           <stop offset="0.5" stopColor="#ffffff" stopOpacity="0.2" />
                           <stop offset="1" stopColor="#ffffff" stopOpacity="0.55" />
+                        </linearGradient>
+                        <linearGradient
+                          id={`litmus-${m.id}`}
+                          x1="0"
+                          x2="0"
+                          y1="0"
+                          y2="1"
+                        >
+                          {/* upper half: native neutral, lower half: pH-reactive colour */}
+                          <stop offset="0%" stopColor="#C7B8E8" />
+                          <stop offset="49%" stopColor="#A855F7" />
+                          <stop offset="51%" stopColor={litmusSubmergedColor} />
+                          <stop offset="100%" stopColor={litmusSubmergedColor} />
                         </linearGradient>
                       </defs>
                       {/* Liquid */}
@@ -303,17 +350,41 @@ export default function IndicatorLab({ onBack }: Props) {
                       >
                         {m.formula}
                       </text>
+                      {/* Litmus strip dipped in (angled) — only when litmus is dropped */}
+                      {isLitmusDropped && (
+                        <g
+                          className="origin-center animate-fade-in"
+                          transform="rotate(-12 65 90)"
+                        >
+                          <rect
+                            x="58"
+                            y="20"
+                            width="14"
+                            height="95"
+                            rx="1.5"
+                            fill={`url(#litmus-${m.id})`}
+                            stroke="#475569"
+                            strokeWidth="1"
+                            style={{ transition: "fill 0.4s" }}
+                          />
+                          <line x1="58" y1="40" x2="72" y2="40" stroke="#fff" strokeOpacity="0.3" />
+                          <line x1="58" y1="78" x2="72" y2="78" stroke="#fff" strokeOpacity="0.3" />
+                          {/* meniscus ripple at liquid surface */}
+                          <ellipse cx="65" cy="68" rx="9" ry="1.5" fill="#fff" fillOpacity="0.5" />
+                        </g>
+                      )}
                     </svg>
                     <div className="text-center text-[11px] font-semibold leading-tight">
                       {m.name_bn} · {m.name_en}
                     </div>
                     <div className="mt-0.5 min-h-[16px] text-center text-[10px] text-muted-foreground">
-                      {droppedInd ? `→ ${label}` : selected ? "ক্লিক করুন" : ""}
+                      {subtext}
                     </div>
                   </button>
                 );
               })}
             </div>
+
           </Card>
 
           {/* Comparison Table */}
