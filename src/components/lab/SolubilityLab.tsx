@@ -497,3 +497,101 @@ function DropBin({
     </div>
   );
 }
+
+/* ─── SaltTexture — decorative grain backdrop for compound cards ─── */
+function SaltTexture({ visual }: { visual: TextureVisual }) {
+  const { type, count, color, size } = visual;
+
+  // Deterministic pseudo-random positions based on index
+  const rand = (i: number, seed: number) => {
+    const x = Math.sin(i * 9.73 + seed * 3.17) * 10000;
+    return x - Math.floor(x);
+  };
+
+  const sizeScale =
+    size === "tiny" ? 0.5 : size === "small" ? 1 : size === "small-medium" ? 1.4 : 1.8;
+
+  return (
+    <svg
+      viewBox="0 0 100 60"
+      preserveAspectRatio="none"
+      className="pointer-events-none absolute inset-0 h-full w-full opacity-80"
+      aria-hidden="true"
+    >
+      {Array.from({ length: count }).map((_, i) => {
+        const cx = rand(i, 1) * 100;
+        const cy = rand(i, 2) * 60;
+
+        if (type === "crystals") {
+          // small rotated squares (cubic salt crystals)
+          const s = (1.6 + rand(i, 3) * 1.2) * sizeScale;
+          const rot = rand(i, 4) * 45;
+          return (
+            <rect
+              key={i}
+              x={cx - s / 2}
+              y={cy - s / 2}
+              width={s}
+              height={s}
+              fill={color}
+              opacity={0.7 + rand(i, 5) * 0.3}
+              stroke="#cbd5e1"
+              strokeWidth="0.15"
+              transform={`rotate(${rot} ${cx} ${cy})`}
+            />
+          );
+        }
+
+        if (type === "needles") {
+          // thin elongated rectangles (prismatic needles)
+          const len = (4 + rand(i, 3) * 4) * sizeScale;
+          const w = 0.7 * sizeScale;
+          const rot = rand(i, 4) * 160 - 80;
+          return (
+            <rect
+              key={i}
+              x={cx - len / 2}
+              y={cy - w / 2}
+              width={len}
+              height={w}
+              rx={w / 2}
+              fill={color}
+              opacity={0.85}
+              stroke="#94a3b8"
+              strokeWidth="0.1"
+              transform={`rotate(${rot} ${cx} ${cy})`}
+            />
+          );
+        }
+
+        if (type === "cloudy-grains") {
+          // soft fuzzy blobs (curdy precipitate)
+          const r = (1.2 + rand(i, 3) * 1.4) * sizeScale;
+          return (
+            <circle
+              key={i}
+              cx={cx}
+              cy={cy}
+              r={r}
+              fill={color}
+              opacity={0.45 + rand(i, 5) * 0.35}
+            />
+          );
+        }
+
+        // powder — many tiny dots
+        const r = (0.4 + rand(i, 3) * 0.5) * sizeScale;
+        return (
+          <circle
+            key={i}
+            cx={cx}
+            cy={cy}
+            r={r}
+            fill={color}
+            opacity={0.6 + rand(i, 5) * 0.3}
+          />
+        );
+      })}
+    </svg>
+  );
+}
