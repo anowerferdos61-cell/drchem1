@@ -250,7 +250,7 @@ export default function IndicatorLab({ onBack }: Props) {
                       {/* Glass overlay */}
                       <path
                         d="M18 30 L102 30 L102 42 L98 42 L98 122 Q98 134 86 134 L34 134 Q22 134 22 122 L22 42 L18 42 Z"
-                        fill="url(#glass-${m.id})"
+                        fill={`url(#glass-${m.id})`}
                         stroke="#475569"
                         strokeWidth="2"
                       />
