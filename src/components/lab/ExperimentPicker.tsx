@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FlaskConical, Wind, FlaskRound, Gem, Zap, Beaker, Droplet, Activity, TestTubes, Layers } from "lucide-react";
+import { FlaskConical, Wind, FlaskRound, Gem, Zap, Beaker, Droplet, Activity, TestTubes, Layers, Atom } from "lucide-react";
 import type { ExperimentId } from "./types";
 
 interface Props {
@@ -90,6 +90,14 @@ const EXPERIMENTS: Array<{
       "Drag-and-drop game · NAG SAG · Soluble vs Insoluble · অধঃক্ষেপ চেনা",
     icon: Layers,
     gradient: "from-sky-100 via-blue-50 to-rose-100",
+  },
+  {
+    id: "electrochemical_series",
+    title: "Electrochemical Series · তড়িৎ-রাসায়নিক সারি",
+    subtitle:
+      "K → Au reactivity ladder · Displacement simulator · NCTB Chapter 8",
+    icon: Atom,
+    gradient: "from-rose-100 via-amber-50 to-emerald-100",
   },
 ];
 
