@@ -128,6 +128,8 @@ function Index() {
         raw === "solubility_rules" ||
         raw === "electrochemical_series" ||
         raw === "bonding_basics"
+      ) {
+
 
         setActiveExperiment(raw);
         setShowExperiments(true);
