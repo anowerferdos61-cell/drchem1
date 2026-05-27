@@ -44,6 +44,7 @@ import PHScaleLab from "@/components/lab/PHScaleLab";
 import IndicatorLab from "@/components/lab/IndicatorLab";
 import SolubilityLab from "@/components/lab/SolubilityLab";
 import ElectrochemicalSeriesLab from "@/components/lab/ElectrochemicalSeriesLab";
+import BondingLab from "@/components/lab/BondingLab";
 
 import LabAIAssistant from "@/components/lab/LabAIAssistant";
 import { setAIContext, useAIContext } from "@/lib/ai-context-store";
