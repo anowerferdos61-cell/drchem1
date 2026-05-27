@@ -24,8 +24,11 @@ import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
 import {
   SOLUBILITY_DATA,
+import {
+  SOLUBILITY_DATA,
   type SolubilityExample,
   type SolubilityStatus,
+  type TextureVisual,
 } from "@/lib/solubility-rules";
 
 interface Props {
