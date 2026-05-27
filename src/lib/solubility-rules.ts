@@ -14,11 +14,23 @@ export interface SolubilityException {
 
 export type SolubilityStatus = "Soluble" | "Insoluble";
 
+export type TextureType = "crystals" | "cloudy-grains" | "needles" | "powder";
+export type TextureSize = "tiny" | "small" | "small-medium" | "medium";
+
+export interface TextureVisual {
+  type: TextureType;
+  count: number;
+  color: string;
+  size: TextureSize;
+}
+
 export interface SolubilityExample {
   id: string;
   formula: string; // KaTeX math (no $)
   name: string;
   status: SolubilityStatus;
+  appearance?: string;
+  textureVisual?: TextureVisual;
   note: string;
 }
 
@@ -74,15 +86,19 @@ export const SOLUBILITY_DATA: SolubilityData = {
     {
       id: "ex1",
       formula: "NaCl",
-      name: "সোডিয়াম ক্লোরাইড",
+      name: "সোডিয়াম ক্লোরাইড (খাবার লবণ)",
       status: "Soluble",
-      note: "গ্রুপ-১ এর লবণ, তাই দ্রবণীয়।",
+      appearance: "সাদা স্ফটিক দানা (White Crystals)",
+      textureVisual: { type: "crystals", count: 8, color: "#FFFFFF", size: "small" },
+      note: "গ্রুপ-১ এর লবণ, তাই পানিতে সম্পূর্ণ দ্রবণীয়।",
     },
     {
       id: "ex2",
       formula: "AgCl",
       name: "সিলভার ক্লোরাইড",
       status: "Insoluble",
+      appearance: "সাদা দইয়ের মতো অধঃক্ষেপ (White Curdy PPt)",
+      textureVisual: { type: "cloudy-grains", count: 12, color: "#F0F0F0", size: "small" },
       note: "ক্লোরাইড হলেও এটি ব্যতিক্রম, নিচে সাদা অধঃক্ষেপ পড়বে।",
     },
     {
@@ -90,6 +106,8 @@ export const SOLUBILITY_DATA: SolubilityData = {
       formula: "KNO_3",
       name: "পটাশিয়াম নাইট্রেট",
       status: "Soluble",
+      appearance: "সাদা সুঁচালো ক্রিস্টাল (White Prismatic Crystals)",
+      textureVisual: { type: "needles", count: 6, color: "#F8F8FF", size: "small-medium" },
       note: "নাইট্রেট লবণ সবসময় দ্রবণীয়।",
     },
     {
@@ -97,6 +115,8 @@ export const SOLUBILITY_DATA: SolubilityData = {
       formula: "CaCO_3",
       name: "ক্যালসিয়াম কার্বনেট",
       status: "Insoluble",
+      appearance: "সাদা পাউডার (White Powder)",
+      textureVisual: { type: "powder", count: 15, color: "#E8E8E8", size: "tiny" },
       note: "অধিকাংশ কার্বনেট অদ্রবণীয়।",
     },
   ],
