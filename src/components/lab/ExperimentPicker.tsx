@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FlaskConical, Wind, FlaskRound, Gem, Zap, Beaker, Droplet, Activity } from "lucide-react";
+import { FlaskConical, Wind, FlaskRound, Gem, Zap, Beaker, Droplet, Activity, TestTubes } from "lucide-react";
 import type { ExperimentId } from "./types";
 
 interface Props {
@@ -74,6 +74,14 @@ const EXPERIMENTS: Array<{
       "Interactive Universal Indicator · pH = −log[H⁺] · 0 → 14 (acidic ↔ basic)",
     icon: Activity,
     gradient: "from-rose-100 via-yellow-50 to-indigo-100",
+  },
+  {
+    id: "indicator_compare",
+    title: "Indicator Comparison · নির্দেশক তুলনা",
+    subtitle:
+      "Litmus · Phenolphthalein · Methyl Orange — HCl / H₂O / NaOH ড্রপ টেস্ট",
+    icon: TestTubes,
+    gradient: "from-pink-100 via-orange-50 to-yellow-100",
   },
 ];
 
