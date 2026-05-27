@@ -14,11 +14,23 @@ export interface SolubilityException {
 
 export type SolubilityStatus = "Soluble" | "Insoluble";
 
+export type TextureType = "crystals" | "cloudy-grains" | "needles" | "powder";
+export type TextureSize = "tiny" | "small" | "small-medium" | "medium";
+
+export interface TextureVisual {
+  type: TextureType;
+  count: number;
+  color: string;
+  size: TextureSize;
+}
+
 export interface SolubilityExample {
   id: string;
   formula: string; // KaTeX math (no $)
   name: string;
   status: SolubilityStatus;
+  appearance?: string;
+  textureVisual?: TextureVisual;
   note: string;
 }
 
