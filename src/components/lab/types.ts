@@ -10,7 +10,8 @@ export type ExperimentId =
   | "cuso4_water"
   | "ph_scale"
   | "indicator_compare"
-  | "solubility_rules";
+  | "solubility_rules"
+  | "electrochemical_series";
 
 
 export type Mode = "guide" | "student" | "classroom";
