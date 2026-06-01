@@ -1,100 +1,225 @@
-# RAG সিস্টেম প্ল্যান — Dr. Chem Tutor
+# Dr. Chem — Market-Ready Launch Plan
 
-## এখনকার অবস্থা (audit)
-
-- ✅ `kb_documents` টেবিল আছে — pgvector embedding, source/class/subject/chapter/page/metadata কলাম সহ
-- ✅ `match_kb_documents()` SQL function ready (cosine similarity, top-K, filter)
-- ✅ UI-তে "📚 বই থেকে উত্তর" toggle (`ragMode`) আছে
-- ❌ কিন্তু `kb_documents` টেবিল **খালি (0 rows)** — কোনো বই ingest করা হয়নি
-- ❌ `/api/tutor/stream` endpoint এখনো RAG retrieve করছে না — শুধু system prompt + chat history পাঠাচ্ছে
-- ❌ Chat history শুধু `localStorage`-এ — DB-তে save হয় না, device বদলালে হারিয়ে যায়
-- ❌ Lab AI Assistant (`chat.functions.ts`) ও RAG ব্যবহার করে না
+লক্ষ্য: অ্যাপটিকে publish-ready বানানো — Landing Page + Auth + Roles + Collaborative Notes + Google Sheets sync। কোনো নতুন experiment add হবে না আপাতত. ভবিষ্যতে আমি অ্যাড করতে পারি. 
 
 ---
 
-## তোমার প্রশ্নের সরাসরি উত্তর
+## ১। নতুন রুট স্ট্রাকচার
 
-### 1. "PDF (গাইড, প্রশ্ন ব্যাংক, ল্যাব রিপোর্ট) দিলে add করতে পারবে?"
-**হ্যাঁ, পুরোপুরি পারব।** PDF যেকোনো size/quantity-তে দিতে পারো — text-based PDF হলে সরাসরি, scanned হলে OCR দিয়ে। প্রতিটি PDF chapter/page ধরে ছোট ছোট chunk (≈800 char) করে embedding বানিয়ে `kb_documents`-এ store করব। Metadata-তে রাখব: `source` (e.g. "NCTB Class 9-10 Guide"), `chapter`, `page`, `type` (theory/mcq/lab_report)।
+```text
+/                       → নতুন Marketing Landing Page (পাবলিক)
+/lab                    → বর্তমান Dashboard + ExperimentPicker (auth-প্রোটেক্টেড)
+/tutor                  → AI Tutor (auth-প্রোটেক্টেড)
+/notes                  → ডেডিকেটেড Notes page (auth-প্রোটেক্টেড)
+/login  /signup         → Email + Google, signup-এ role select (Student/Teacher)
+/reset-password         → পাসওয়ার্ড রিসেট
+/teacher                → Teacher Dashboard (শুধু teacher role)
+/api/public/sheets-sync → Google Sheets-এ rows sync (cron-callable)
+```
 
-### 2. "উত্তর কি আরও better হবে?"
-**হ্যাঁ — উল্লেখযোগ্যভাবে।** এখন AI শুধু training data থেকে generic answer দিচ্ছে, যা NCTB-র exact wording/equation/example-এর সাথে সবসময় মেলে না। RAG যোগ করলে:
-- **NCTB textbook-এর exact line quote** করতে পারবে → exam-এ যেভাবে লিখতে হয় ঠিক সেভাবে
-- **Page citation** ("📖 Class 9-10, Chapter 5, Page 78") দেখাবে → trust + verify
-- **Question bank প্রশ্ন** থেকে similar question detect করে board-style answer pattern দেবে
-- **Hallucination কমবে** — বই-এ যা নেই সেটা বলবে "বইয়ে এ topic পাইনি, general concept হিসেবে…"
-
-প্রত্যাশিত accuracy: এখন ≈70-80% → RAG-এর পর ≈92-95% (NCTB-bounded প্রশ্নে)।
-
-### 3. "AI কি প্রশ্ন ঠিকভাবে বুঝবে?"
-বাংলা প্রশ্ন বোঝার জন্য `google/gemini-embedding-001` ব্যবহার করব — এটি Bangla + English mixed text-এ ভালো কাজ করে। এর সাথে:
-- **Hybrid query**: Bangla প্রশ্ন embed করে Bangla content match করবে, English term (যেমন "covalent bond") embed করে English-tagged content-ও match করবে
-- **Query rewriting**: ছোট/অস্পষ্ট প্রশ্ন (যেমন "এটা কী?") AI দিয়ে আগে expand করব (previous message context সহ) তারপর retrieve
-- **Top-K = 6** chunk retrieve, re-rank করে top 3 LLM-কে দেব
-
-### 4. "Chat সব save হবে তো?"
-এখন **না** — শুধু browser localStorage-এ। নতুন device/browser খুললে গায়েব। নতুন প্ল্যানে:
-- Lovable Cloud-এ `chat_conversations` + `chat_messages` টেবিল
-- প্রতিটি user-এর জন্য RLS (own data only)
-- Sign-in (Google + email) যোগ করব → cross-device sync
-- Tutor + Lab AI Assistant + Viva — তিনটার history-ই persist হবে
-- Export (PDF/Markdown) button
-
-### 5. "UI সুন্দর হবে?"
-হ্যাঁ — RAG-এর সাথে UI upgrade:
-- প্রতিটি AI উত্তরের নিচে **citation chips**: 📖 Chapter 3 · Page 45 (click → source preview drawer)
-- **Confidence indicator**: 🟢 High (বই-থেকে) / 🟡 Medium (mixed) / 🔴 General knowledge
-- **Source drawer**: retrieved chunks-এর preview, highlighted matched text
-- **Admin upload UI**: PDF drag-drop → progress bar → chunk preview → "Ingest" button
-- **Knowledge browser**: chapter-wise navigate করে দেখা যাবে কী কী আছে
+বর্তমান `routes/index.tsx`-এর সব lab logic `routes/_authenticated/lab.tsx`-এ shift হবে। নতুন `routes/index.tsx` হবে landing page।
 
 ---
 
-## প্রস্তাবিত Implementation (3 Phase)
+## ২। Marketing Landing Page (`/`)
 
-### Phase A — RAG Foundation (highest impact)
-1. **PDF Ingestion pipeline** (`/admin/ingest` route, admin-only)
-   - PDF upload → text extract (text PDF সরাসরি; scanned হলে Gemini Vision OCR)
-   - Chunk by heading/paragraph (≈800 char, 100 char overlap)
-   - Per chunk: metadata tag (chapter, page, type), embedding via Lovable AI
-   - Bulk insert into `kb_documents`
-2. **Retrieval-augmented stream endpoint**
-   - User query → optional query rewrite → embed → `match_kb_documents` top-6
-   - Retrieved chunks system prompt-এ inject ("নিচের NCTB excerpt ব্যবহার করে উত্তর দাও…")
-   - Stream response with citations metadata side-channel
-3. **Citation UI** in `MessageBubble` — chips, source drawer
+Khan/Coursera-style modern EdTech vibe, Bangla-first, mobile-first:
 
-### Phase B — Chat Persistence + Auth
-4. Migration: `chat_conversations`, `chat_messages` tables + RLS
-5. Google + email/password auth (Lovable broker), login route
-6. `tutor-store` rewrite to sync with DB (optimistic + background sync)
-7. Same persistence for Lab AI Assistant chat + Viva sessions
+- **Hero**: বড় Bangla headline ("ক্লাস ৯-১০ রসায়ন — হাতে-কলমে শিখো"), subheading, dual CTA ("ফ্রি শুরু করো" + "ডেমো দেখো"), animated SVG beaker/molecule
+- **Trust strip**: NCTB curriculum · ১২+ ভার্চুয়াল ল্যাব · AI Tutor · ফ্রি
+- **Features Bento Grid**: 6 cards (Virtual Lab, AI Tutor, Notes, Viva Mode, Reports, Bilingual)
+- **Experiments Showcase**: ১২ experiment grid with icons + short desc
+- **How it works**: 3-step (Sign up → Choose experiment → Learn & save notes)
+- **Live Demo embed**: একটা mini experiment preview (read-only)
+- **For Students / For Teachers**: dual-column benefit list
+- **Testimonials** placeholder (3 cards)
+- **Pricing**: "এখন সম্পূর্ণ ফ্রি" single card
+- **FAQ accordion** (6 Q)
+- **Footer**: links, contact, social
+- **SEO**: per-route `head()` — title, description, og:title/description/type, JSON-LD `EducationalOrganization`
+- **Animation**: Framer Motion fade-in + scroll reveal
 
-### Phase C — Polish
-8. Admin knowledge browser + delete/re-ingest
-9. Confidence scoring, "verify in book" deep links
-10. Per-experiment RAG (Lab AI Assistant-ও বই থেকে answer দেবে)
-11. Export chat as PDF/MD
+ফাইল: `src/routes/index.tsx` (rewrite), `src/components/landing/*` (Hero, Features, ExperimentsShowcase, HowItWorks, ForStudentsTeachers, FAQ, Footer)
 
 ---
 
-## সীমাবদ্ধতা (সৎভাবে)
+## ৩। Auth + Roles
 
-- **Scanned PDF**-এ OCR error ≈3-5% থাকবে (Bangla যুক্তবর্ণে)
-- **গাণিতিক equation**-এর কিছু PDF-এ image হিসেবে থাকে → OCR-এ মিস হতে পারে; manual review লাগবে
-- **প্রথম ingest**-এ সময় লাগবে (≈300 page PDF → ~5-10 মিনিট + কিছু embedding cost)
-- বই-এর বাইরের প্রশ্নে RAG help করবে না — তখন general LLM mode-এ fall back করবে
+**Supabase migration:**
+
+- `app_role` enum: `'student' | 'teacher' | 'admin'`
+- `profiles` (user_id, display_name, email, school, class, role_label, avatar_url, created_at)
+- `user_roles` (user_id, role) — **আলাদা টেবিল** (privilege escalation প্রতিরোধে)
+- `has_role(uuid, app_role)` SECURITY DEFINER function
+- Trigger: signup-এ profile auto-create, default role = student
+- RLS: profiles নিজেরটা read/update; teachers can view student profiles (via has_role)
+- Email/password + Google OAuth (Lovable broker)
+- Signup form-এ role radio (Student/Teacher)
+
+**Frontend:**
+
+- `_authenticated` layout route (গাইড অনুসারে)
+- `_authenticated/_teacher` layout (has_role check)
+- `useAuth` hook → router context-এ inject
+- `onAuthStateChange` listener root-এ → cache invalidate
+- Header-এ user avatar dropdown (Profile, Notes, Logout)
 
 ---
 
-## পরবর্তী পদক্ষেপ
+## ৪। Collaborative Notes System
 
-PDF ready হলে পাঠাও (একসাথে কয়েকটা হলেও সমস্যা নাই)। আমি আগে **Phase A** শুরু করব — PDF ingest + RAG retrieval + citation UI। তারপর তুমি test করে দেখবে answer quality, তারপর Phase B (persistence + auth) এ যাব।
+**Supabase migration:**
 
-**কোন PDF আগে দিতে চাও?**
-1. NCTB মূল textbook (Class 9-10 রসায়ন)
-2. Guide book
-3. প্রশ্ন ব্যাংক (board questions)
-4. ল্যাব practical manual
+```text
+notes
+  id, author_id, title, content_md, experiment_id (nullable),
+  visibility ('private' | 'shared' | 'public'),
+  is_pinned, tags[], created_at, updated_at
 
-— সব একসাথেও দিতে পারো, আমি source-tag আলাদা রেখে ingest করব।
+note_collaborators
+  note_id, user_id, permission ('view' | 'edit')
+
+note_comments
+  id, note_id, user_id, body, created_at
+
+note_likes
+  note_id, user_id, created_at
+```
+
+**RLS:**
+
+- author সব করতে পারে
+- collaborators permission অনুযায়ী view/edit
+- `visibility='public'` হলে authenticated সবাই read
+- teachers can view all student notes for their experiments (via has_role)
+- comments/likes: যেকোনো reader create করতে পারে নিজের row
+
+**Realtime:** `ALTER PUBLICATION supabase_realtime ADD TABLE notes, note_comments, note_likes;` — একই note multi-user edit হলে subscribe করে live update।
+
+**Frontend components:**
+
+- `src/routes/_authenticated/notes.tsx` — full Notion-style editor page (list sidebar + editor)
+- `src/components/notes/NoteEditor.tsx` — Markdown editor (textarea + preview, KaTeX support)
+- `src/components/notes/NoteList.tsx` — search, filter (tag/experiment/visibility), sort
+- `src/components/notes/NoteShareDialog.tsx` — invite collaborator by email, set permission
+- `src/components/notes/QuickNotePanel.tsx` — lab workspace-এ side drawer, experiment-linked quick note
+- `src/components/notes/SaveToNotesButton.tsx` — Tutor MessageBubble + Lab result-এ "📝 Save to Notes" button
+- `src/components/notes/CommentThread.tsx` — comment + like UI
+- Export: `html2pdf.js` দিয়ে PDF, plain `.md` download
+- Admin (role='admin' or teacher): bulk export selected students' notes as ZIP
+
+**Integration:**
+
+- Lab workspaces-এ floating "📝 Note" button → opens QuickNotePanel (experiment_id pre-linked)
+- Tutor MessageBubble-এ "Save" icon → creates note with chat excerpt
+- Realtime presence indicator (who's viewing/editing)
+
+---
+
+## ৫। Google Sheets Sync
+
+User চান profile + notes activity Google Sheet-এও দেখতে। Approach:
+
+1. **Connector setup**: `standard_connectors--connect` দিয়ে Google Sheets connector link (developer's own sheet — user-এর নিজের Google account)
+2. ইউজার একটা spreadsheet তৈরি করে ID পেস্ট করবেন (Settings page-এ input)
+3. Secret: `GOOGLE_SHEETS_SPREADSHEET_ID` (add_secret)
+4. **Server function** `src/lib/sheets-sync.functions.ts`:
+  - `syncSignupsToSheet()` — signup trigger / cron-এ নতুন users append করে `Users` tab-এ (id, email, name, role, school, class, signup_at)
+  - `syncNotesActivityToSheet()` — note created/updated event-এ `Notes` tab-এ row append
+  - Google Sheets API v4 via connector gateway (`/spreadsheets/{id}/values/{range}:append`)
+5. **Trigger options** (auto-sync):
+  - Realtime: signup-এ `onAuthStateChange` + note create-এ client থেকে server fn call (fire-and-forget)
+  - Manual: Teacher dashboard-এ "Sync to Sheets" button
+6. **Public cron endpoint** `src/routes/api/public/sheets-sync.ts` — HMAC signature verified, pg_cron বা external scheduler call করতে পারবে (incremental sync)
+
+ফলাফল: user নিজের Google Sheet খুলে real-time student data, notes activity দেখতে পারবেন — sharing/analytics-এ সুবিধা।
+
+---
+
+## ৬। Teacher Dashboard (`/teacher`)
+
+- Student list (profiles where role='student')
+- Notes feed (all public + shared-to-teacher notes)
+- Experiment-wise activity heatmap
+- Bulk export students' notes (PDF/ZIP)
+- "Sync to Google Sheets" button
+
+---
+
+## ৭। UI/UX Polish (publish-ready)
+
+- Global theme: existing tokens রাখা, landing-এর জন্য hero gradient + glow tokens যোগ
+- Mobile nav (hamburger), responsive Bento grid
+- Loading skeletons, toast notifications (sonner)
+- 404 + error pages already exist — copy polish
+- Favicon + og:image (generate via imagegen)
+- robots.txt + sitemap.xml (server route)
+- Empty states (no notes yet, no students yet)
+- Onboarding tour first-time signup-এ (optional dismiss)
+
+---
+
+## ৮। Implementation Phases
+
+**Phase 1 — Auth foundation** (এক migration + auth UI)
+
+- Migration: enums, profiles, user_roles, has_role, trigger, RLS, GRANTs
+- `configure_social_auth(['google'])`
+- `/login`, `/signup` (role select), `/reset-password`
+- `_authenticated` + `_teacher` layout routes
+- Header avatar dropdown
+- Root `onAuthStateChange` listener
+
+**Phase 2 — Landing page + route restructure**
+
+- বর্তমান `index.tsx` → `_authenticated/lab.tsx`
+- নতুন `index.tsx` = marketing landing
+- All landing components + SEO meta + JSON-LD
+- robots.txt + sitemap.xml server route
+- Favicon + og:image
+
+**Phase 3 — Notes system**
+
+- Migration: notes, note_collaborators, note_comments, note_likes + RLS + realtime publication
+- `/notes` route + NoteList + NoteEditor + ShareDialog + Comments
+- QuickNotePanel integration in every lab workspace
+- SaveToNotesButton in Tutor MessageBubble
+- PDF/MD export
+
+**Phase 4 — Google Sheets sync**
+
+- Connect Google Sheets connector
+- `sheets-sync.functions.ts` (signups + notes)
+- Settings page for spreadsheet ID input
+- `/api/public/sheets-sync` cron endpoint with HMAC
+
+**Phase 5 — Teacher dashboard + final polish**
+
+- `/teacher` page
+- Bulk export
+- Onboarding tour
+- Final QA pass (mobile, dark mode, edge cases)
+- Publish
+
+---
+
+## ৯। Technical Details (for the engineer)
+
+- **Stack**: TanStack Start, server fns via `createServerFn` + `requireSupabaseAuth`. NO Supabase Edge Functions.
+- **Markdown editor**: `react-markdown` + `remark-gfm` + KaTeX (already installed) + simple textarea (no heavy library for v1)
+- **PDF export**: `html2pdf.js` bundle (Worker-compatible)
+- **Realtime**: Supabase channels in NoteEditor useEffect
+- **Google Sheets**: connector gateway `https://connector-gateway.lovable.dev/google_sheets/v4/spreadsheets/...` — NO range encoding
+- **Secrets**: `GOOGLE_SHEETS_SPREADSHEET_ID`, `SHEETS_CRON_SECRET` (HMAC)
+- **SEO**: per-route `head()`, leaf canonicals, JSON-LD EducationalOrganization on root, FAQPage on landing
+- **start.ts**: confirm `attachSupabaseAuth` registered in `functionMiddleware`
+
+---
+
+## ১০। অজানা/সীমাবদ্ধতা
+
+- Google Sheets connector developer-account-scoped — সব user-এর data এক sheet-এ জমা হবে (admin-owned)। প্রতি teacher আলাদা sheet চাইলে per-user OAuth লাগবে (Phase 6+)।
+- Realtime collaborative editing simple "latest-write-wins" হবে (CRDT না) — v1-এ acceptable
+- Email verification ডিফল্টে on (security best-practice); দরকার হলে auto-confirm করব
+
+প্রস্তুত হলে বলো — Phase 1 দিয়ে শুরু করব (auth migration + login/signup UI)।
