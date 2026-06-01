@@ -66,7 +66,7 @@ export default function UserMenu() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link to="/">
+          <Link to="/app">
             <UserIcon className="h-4 w-4" /> ল্যাব
           </Link>
         </DropdownMenuItem>

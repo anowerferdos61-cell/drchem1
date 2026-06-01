@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-router";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { toast, Toaster } from "sonner";
 import { FlaskConical, Loader2 } from "lucide-react";
 
@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 
 export const Route = createFileRoute("/login")({
   validateSearch: (search: Record<string, unknown>) => ({
-    redirect: typeof search.redirect === "string" ? search.redirect : "/",
+    redirect: typeof search.redirect === "string" ? search.redirect : "/app",
   }),
   component: LoginPage,
   head: () => ({
@@ -31,9 +31,11 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  if (!loading && isAuthenticated) {
-    void navigate({ to: redirect, replace: true });
-  }
+  useEffect(() => {
+    if (!loading && isAuthenticated) {
+      void navigate({ to: redirect, replace: true });
+    }
+  }, [loading, isAuthenticated, navigate, redirect]);
 
   const handleEmailLogin = async (e: FormEvent) => {
     e.preventDefault();
