@@ -61,11 +61,11 @@ export const Route = createFileRoute("/app")({
   component: Index,
   head: () => ({
     meta: [
-      { title: "Virtual Chemistry Lab · AI-Powered Portal" },
+      { title: "Lab · Dr. Chem" },
       {
         name: "description",
         content:
-          "Virtual Chemistry Lab Portal — interactive experiments, AI tutoring, smart notes, video lessons & live support for Bangladeshi students.",
+          "Dr. Chem Virtual Lab — interactive experiments, AI tutoring, viva practice for Class 9-10 students.",
       },
     ],
   }),
