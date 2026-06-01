@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TutorRouteImport } from './routes/tutor'
+import { Route as SignupRouteImport } from './routes/signup'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiTutorStreamRouteImport } from './routes/api/tutor/stream'
@@ -17,6 +18,11 @@ import { Route as ApiTutorStreamRouteImport } from './routes/api/tutor/stream'
 const TutorRoute = TutorRouteImport.update({
   id: '/tutor',
   path: '/tutor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -38,12 +44,14 @@ const ApiTutorStreamRoute = ApiTutorStreamRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
   '/tutor': typeof TutorRoute
   '/api/tutor/stream': typeof ApiTutorStreamRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
   '/tutor': typeof TutorRoute
   '/api/tutor/stream': typeof ApiTutorStreamRoute
 }
@@ -51,20 +59,22 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
   '/tutor': typeof TutorRoute
   '/api/tutor/stream': typeof ApiTutorStreamRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/tutor' | '/api/tutor/stream'
+  fullPaths: '/' | '/login' | '/signup' | '/tutor' | '/api/tutor/stream'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/tutor' | '/api/tutor/stream'
-  id: '__root__' | '/' | '/login' | '/tutor' | '/api/tutor/stream'
+  to: '/' | '/login' | '/signup' | '/tutor' | '/api/tutor/stream'
+  id: '__root__' | '/' | '/login' | '/signup' | '/tutor' | '/api/tutor/stream'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LoginRoute: typeof LoginRoute
+  SignupRoute: typeof SignupRoute
   TutorRoute: typeof TutorRoute
   ApiTutorStreamRoute: typeof ApiTutorStreamRoute
 }
@@ -76,6 +86,13 @@ declare module '@tanstack/react-router' {
       path: '/tutor'
       fullPath: '/tutor'
       preLoaderRoute: typeof TutorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -105,6 +122,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
+  SignupRoute: SignupRoute,
   TutorRoute: TutorRoute,
   ApiTutorStreamRoute: ApiTutorStreamRoute,
 }
