@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 
 export const Route = createFileRoute("/login")({
   validateSearch: (search: Record<string, unknown>) => ({
-    redirect: typeof search.redirect === "string" ? search.redirect : "/",
+    redirect: typeof search.redirect === "string" ? search.redirect : "/app",
   }),
   component: LoginPage,
   head: () => ({
