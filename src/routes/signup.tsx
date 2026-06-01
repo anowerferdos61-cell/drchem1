@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { toast, Toaster } from "sonner";
 import { FlaskConical, GraduationCap, Loader2, UserCog } from "lucide-react";
 
@@ -33,9 +33,11 @@ function SignupPage() {
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  if (!loading && isAuthenticated) {
-    void navigate({ to: "/", replace: true });
-  }
+  useEffect(() => {
+    if (!loading && isAuthenticated) {
+      void navigate({ to: "/app", replace: true });
+    }
+  }, [loading, isAuthenticated, navigate]);
 
   const handleSignup = async (e: FormEvent) => {
     e.preventDefault();
