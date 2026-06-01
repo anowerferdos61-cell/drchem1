@@ -50,7 +50,7 @@ function SignupPage() {
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/`,
+        emailRedirectTo: `${window.location.origin}/app`,
         data: {
           display_name: displayName,
           school,
