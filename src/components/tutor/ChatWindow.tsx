@@ -162,8 +162,9 @@ export default function ChatWindow() {
           </div>
           <div>
             <h1 className="text-sm font-semibold leading-none">
-              {active?.title || "Dr. Chem"}
+              {active?.title || "Dr. Chem — AI Chemistry Tutor"}
             </h1>
+
             <p className="mt-0.5 text-[10px] text-muted-foreground">
               {ragMode ? "📚 বই থেকে উত্তর · Class 9-10" : "Chemistry Tutor · Class 9-10 · bilingual"}
             </p>

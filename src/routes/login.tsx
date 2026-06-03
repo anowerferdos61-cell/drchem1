@@ -18,9 +18,23 @@ export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
       { title: "লগইন · Dr. Chem" },
-      { name: "description", content: "Dr. Chem ভার্চুয়াল ল্যাবে লগইন করুন।" },
+      {
+        name: "description",
+        content:
+          "Log in to Dr. Chem to continue your virtual chemistry experiments, AI tutoring sessions and viva practice for Class 9-10.",
+      },
+      { property: "og:title", content: "লগইন · Dr. Chem" },
+      {
+        property: "og:description",
+        content:
+          "Log in to your Dr. Chem account to continue learning chemistry with the virtual lab and AI tutor.",
+      },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://drchem.lovable.app/login" },
     ],
+    links: [{ rel: "canonical", href: "https://drchem.lovable.app/login" }],
   }),
+
 });
 
 function LoginPage() {

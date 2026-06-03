@@ -11,8 +11,17 @@ import { Label } from "@/components/ui/label";
 export const Route = createFileRoute("/reset-password")({
   component: ResetPasswordPage,
   head: () => ({
-    meta: [{ title: "পাসওয়ার্ড রিসেট · Dr. Chem" }],
+    meta: [
+      { title: "পাসওয়ার্ড রিসেট · Dr. Chem" },
+      {
+        name: "description",
+        content:
+          "Reset your Dr. Chem account password to regain access to the virtual chemistry lab and AI tutor for Class 9-10.",
+      },
+      { name: "robots", content: "noindex,nofollow" },
+    ],
   }),
+
 });
 
 function ResetPasswordPage() {
