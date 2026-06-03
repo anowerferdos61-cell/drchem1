@@ -313,7 +313,7 @@ function Experiments() {
         </div>
         <div className="mt-10 text-center">
           <Button asChild size="lg" variant="outline">
-            <Link to="/app">
+            <Link to="/signup">
               See all experiments <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
