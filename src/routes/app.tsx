@@ -2,7 +2,7 @@
  * Virtual Chemistry Lab — Acid-Base Titration (HCl + NaOH).
  * Central brain: holds ALL state and orchestrates the lab + viva.
  */
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Toaster, toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -50,7 +50,7 @@ import LabAIAssistant from "@/components/lab/LabAIAssistant";
 import UserMenu from "@/components/auth/UserMenu";
 
 import { setAIContext, useAIContext } from "@/lib/ai-context-store";
-
+import { useAuth } from "@/lib/auth-store";
 
 import { ArrowLeft } from "lucide-react";
 
@@ -120,6 +120,16 @@ type EquipmentSelectId =
   | "clamp";
 
 function Index() {
+  const navigate = useNavigate();
+  const { isAuthenticated, loading } = useAuth();
+
+  // Auth guard: redirect unauthenticated users to login
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      void navigate({ to: "/login", search: { redirect: "/app" }, replace: true });
+    }
+  }, [loading, isAuthenticated, navigate]);
+
   const [activeExperiment, setActiveExperiment] = useState<ExperimentId | null>(null);
   const [showExperiments, setShowExperiments] = useState(false);
 

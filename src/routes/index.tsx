@@ -129,7 +129,7 @@ function Hero() {
               </Link>
             </Button>
             <Button asChild size="lg" variant="outline" className="text-base">
-              <Link to="/app">
+              <Link to="/signup">
                 <PlayCircle className="h-4 w-4" /> Watch Demo
               </Link>
             </Button>
@@ -313,7 +313,7 @@ function Experiments() {
         </div>
         <div className="mt-10 text-center">
           <Button asChild size="lg" variant="outline">
-            <Link to="/app">
+            <Link to="/signup">
               See all experiments <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
@@ -478,7 +478,7 @@ function FinalCTA() {
                 variant="outline"
                 className="text-base bg-transparent text-white border-white/40 hover:bg-white/10 hover:text-white"
               >
-                <Link to="/app">
+                <Link to="/signup">
                   <PlayCircle className="h-4 w-4" /> Try Demo
                 </Link>
               </Button>
