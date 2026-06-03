@@ -129,7 +129,7 @@ function Hero() {
               </Link>
             </Button>
             <Button asChild size="lg" variant="outline" className="text-base">
-              <Link to="/app">
+              <Link to="/signup">
                 <PlayCircle className="h-4 w-4" /> Watch Demo
               </Link>
             </Button>
