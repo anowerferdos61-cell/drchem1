@@ -16,9 +16,23 @@ export const Route = createFileRoute("/signup")({
   head: () => ({
     meta: [
       { title: "সাইনআপ · Dr. Chem" },
-      { name: "description", content: "ফ্রি Dr. Chem অ্যাকাউন্ট তৈরি করুন।" },
+      {
+        name: "description",
+        content:
+          "Create a free Dr. Chem account to start running virtual chemistry experiments, chatting with the AI tutor and practicing viva for Class 9-10.",
+      },
+      { property: "og:title", content: "সাইনআপ · Dr. Chem" },
+      {
+        property: "og:description",
+        content:
+          "Sign up free for Dr. Chem — virtual chemistry lab, AI tutor and viva practice for Class 9-10 students and teachers.",
+      },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://drchem.lovable.app/signup" },
     ],
+    links: [{ rel: "canonical", href: "https://drchem.lovable.app/signup" }],
   }),
+
 });
 
 function SignupPage() {
