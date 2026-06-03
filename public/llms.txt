@@ -1,0 +1,14 @@
+# Dr. Chem
+
+> Dr. Chem is an AI-powered virtual chemistry lab for Class 9-10 students and teachers. It provides safe interactive experiments, an AI tutor, and viva practice in Bangla and English, aligned with the Bangladesh NCTB chemistry curriculum.
+
+Dr. Chem lets students perform chemistry experiments visually and safely — titration, pH scale, oxygen and CO₂ preparation, ionic and covalent bonding, electrochemical series, solubility, and more — and ask follow-up questions to an AI chemistry tutor grounded in the NCTB Class 9-10 textbook.
+
+## Pages
+
+- [Home](/): Overview of Dr. Chem — what it is, who it's for, and the experiments included.
+
+## Optional
+
+- [Sign up](/signup): Create a free student or teacher account.
+- [Log in](/login): Log in to an existing account.
