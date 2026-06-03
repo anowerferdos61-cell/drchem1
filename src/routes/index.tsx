@@ -478,7 +478,7 @@ function FinalCTA() {
                 variant="outline"
                 className="text-base bg-transparent text-white border-white/40 hover:bg-white/10 hover:text-white"
               >
-                <Link to="/app">
+                <Link to="/signup">
                   <PlayCircle className="h-4 w-4" /> Try Demo
                 </Link>
               </Button>
