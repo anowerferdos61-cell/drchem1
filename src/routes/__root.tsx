@@ -96,6 +96,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "Safe, visual, AI-guided chemistry experiments for Class 9-10 students and teachers.",
       },
+      { name: "description", content: "Master chemistry concepts with Dr. Chem. Perform virtual experiments, get instant AI tutoring, and make learning science easy, safe, and accessible anywhere." },
+      { property: "og:description", content: "Master chemistry concepts with Dr. Chem. Perform virtual experiments, get instant AI tutoring, and make learning science easy, safe, and accessible anywhere." },
+      { name: "twitter:description", content: "Master chemistry concepts with Dr. Chem. Perform virtual experiments, get instant AI tutoring, and make learning science easy, safe, and accessible anywhere." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/BNbspVP1QLgQXV1xmKzQ4H5W7yJ2/social-images/social-1780481523006-Gemini_Generated_Image_2no3022no3022no3.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/BNbspVP1QLgQXV1xmKzQ4H5W7yJ2/social-images/social-1780481523006-Gemini_Generated_Image_2no3022no3022no3.webp" },
     ],
     links: [
       {
