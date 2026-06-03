@@ -61,15 +61,25 @@ export const Route = createFileRoute("/app")({
   component: Index,
   head: () => ({
     meta: [
-      { title: "Lab · Dr. Chem" },
+      { title: "Virtual Lab · Dr. Chem" },
       {
         name: "description",
         content:
-          "Dr. Chem Virtual Lab — interactive experiments, AI tutoring, viva practice for Class 9-10 students.",
+          "Dr. Chem Virtual Lab — interactive chemistry experiments, AI tutoring and viva practice for Class 9-10 students and teachers, in Bangla and English.",
       },
+      { property: "og:title", content: "Virtual Lab · Dr. Chem" },
+      {
+        property: "og:description",
+        content:
+          "Interactive chemistry experiments with an AI tutor and viva practice for Class 9-10.",
+      },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://drchem.lovable.app/app" },
     ],
+    links: [{ rel: "canonical", href: "https://drchem.lovable.app/app" }],
   }),
 });
+
 
 const DEFAULT_CONFIG: TitrationConfig = { Ma: 0.1, Va: 25, Mb: 0.1 };
 
