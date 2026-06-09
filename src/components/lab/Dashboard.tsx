@@ -1,7 +1,6 @@
 /**
  * Dr. Chem — Main App Dashboard
- * Redesigned: NCTB Curriculum Hub + Practical Lab Room
- * (Mock data only; database integration comes later.)
+ * 4-card home: Curriculum Hub, Practical Lab Room, Video Lessons, Smart Notes
  */
 import { useState, useMemo, useCallback } from "react";
 import { useNavigate } from "@tanstack/react-router";
@@ -9,9 +8,14 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
 import type { ExperimentId } from "./types";
 import {
@@ -27,12 +31,15 @@ import {
   GraduationCap,
   BookOpen,
   ChevronRight,
+  ChevronLeft,
   Bot,
   PlayCircle,
   CheckCircle2,
   Circle,
   Search,
   Lock,
+  Video,
+  NotebookPen,
 } from "lucide-react";
 
 interface DashboardProps {
@@ -41,7 +48,7 @@ interface DashboardProps {
 }
 
 // ─────────────────────────────────────────────────────────────
-// MOCK DATA — replace with DB once schema lands
+// MOCK DATA
 // ─────────────────────────────────────────────────────────────
 
 type LabMeta = {
@@ -49,10 +56,10 @@ type LabMeta = {
   title: string;
   titleBn: string;
   icon: typeof FlaskConical;
-  tint: string;          // tailwind gradient classes
+  tint: string;
   iconColor: string;
-  isCoreBoard: boolean;  // NCTB ব্যবহারিক
-  completed?: boolean;   // mock progress
+  isCoreBoard: boolean;
+  completed?: boolean;
 };
 
 const ALL_LABS: LabMeta[] = [
@@ -88,11 +95,14 @@ type ChapterMeta = {
   titleEn: string;
   descBn: string;
   labIds: ExperimentId[];
-  comingSoonCount?: number; // conceptual / non-lab activities
+  comingSoonCount?: number;
   accent: string;
   icon: typeof BookOpen;
 };
 
+// Curriculum Hub holds only core/board labs. Exploratory labs
+// (bonding_basics, ph_scale, indicator_compare, solubility_rules)
+// live exclusively in the Practical Lab Room.
 const CHAPTERS: ChapterMeta[] = [
   { number: 1, titleBn: "রসায়নের ধারণা", titleEn: "Concepts of Chemistry",
     descBn: "রসায়নের পরিচিতি, গুরুত্ব ও নিরাপত্তা।",
@@ -108,7 +118,7 @@ const CHAPTERS: ChapterMeta[] = [
     labIds: [], comingSoonCount: 2, accent: "from-fuchsia-500 to-pink-500", icon: Microscope },
   { number: 5, titleBn: "রাসায়নিক বন্ধন", titleEn: "Chemical Bonding",
     descBn: "আয়নিক, সমযোজী ও ধাতব বন্ধনের ধারণা।",
-    labIds: ["ionic_covalent", "bonding_basics"],
+    labIds: ["ionic_covalent"],
     accent: "from-indigo-500 to-violet-500", icon: Atom },
   { number: 6, titleBn: "মোল ও রাসায়নিক গণনা", titleEn: "Mole & Chemical Calculations",
     descBn: "মোল ধারণা, মোলারিটি ও প্রমাণ দ্রবণ।",
@@ -124,11 +134,11 @@ const CHAPTERS: ChapterMeta[] = [
     accent: "from-yellow-500 to-amber-500", icon: Zap },
   { number: 9, titleBn: "এসিড-ক্ষারক সাম্য", titleEn: "Acid-Base Equilibrium",
     descBn: "pH, Ka/Kb এবং দ্রাব্যতার ধারণা।",
-    labIds: ["solubility_rules"], comingSoonCount: 1,
+    labIds: [], comingSoonCount: 1,
     accent: "from-rose-500 to-pink-500", icon: Droplets },
   { number: 10, titleBn: "এসিড, ক্ষারক ও লবণ", titleEn: "Acids, Bases & Salts",
     descBn: "pH স্কেল, নির্দেশক ও দৈনন্দিন প্রয়োগ।",
-    labIds: ["ph_scale", "indicator_compare"],
+    labIds: [], comingSoonCount: 2,
     accent: "from-pink-500 to-fuchsia-500", icon: FlaskConical },
   { number: 11, titleBn: "খনিজ সম্পদ: জীবাশ্ম", titleEn: "Mineral Resources: Fossil Fuels",
     descBn: "হাইড্রোকার্বন, পেট্রোলিয়াম ও পলিমার।",
@@ -140,16 +150,25 @@ const CHAPTERS: ChapterMeta[] = [
 
 const LAB_BY_ID = new Map(ALL_LABS.map((l) => [l.id, l]));
 
+// Labs that don't belong to any chapter → live in Practical Lab Room only.
+const CHAPTER_LAB_IDS = new Set<ExperimentId>(
+  CHAPTERS.flatMap((c) => c.labIds),
+);
+const PRACTICAL_LABS = ALL_LABS.filter((l) => !CHAPTER_LAB_IDS.has(l.id));
+
+type View = "home" | "curriculum" | "practical";
+
 // ─────────────────────────────────────────────────────────────
 
-export default function Dashboard({ onEnterExperiments, onPickExperiment }: DashboardProps) {
+export default function Dashboard({ onPickExperiment }: DashboardProps) {
   const navigate = useNavigate();
+  const [view, setView] = useState<View>("home");
   const [activeChapter, setActiveChapter] = useState<ChapterMeta | null>(null);
   const [labFilter, setLabFilter] = useState<"all" | "core" | "completed" | "incomplete">("all");
   const [search, setSearch] = useState("");
 
   const filteredLabs = useMemo(() => {
-    return ALL_LABS.filter((l) => {
+    return PRACTICAL_LABS.filter((l) => {
       if (labFilter === "core" && !l.isCoreBoard) return false;
       if (labFilter === "completed" && !l.completed) return false;
       if (labFilter === "incomplete" && l.completed) return false;
@@ -161,7 +180,6 @@ export default function Dashboard({ onEnterExperiments, onPickExperiment }: Dash
     });
   }, [labFilter, search]);
 
-  // mock completion stats
   const completedCount = ALL_LABS.filter((l) => l.completed).length;
   const overallProgress = Math.round((completedCount / ALL_LABS.length) * 100);
 
@@ -181,6 +199,16 @@ export default function Dashboard({ onEnterExperiments, onPickExperiment }: Dash
       <header className="sticky top-0 z-30 border-b bg-background/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 md:px-6">
           <div className="flex items-center gap-3">
+            {view !== "home" && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setView("home")}
+                className="gap-1 -ml-2"
+              >
+                <ChevronLeft className="h-4 w-4" /> <span className="hidden sm:inline">Back</span>
+              </Button>
+            )}
             <div className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg shadow-emerald-500/20">
               <FlaskConical className="h-5 w-5 text-white" />
             </div>
@@ -215,8 +243,8 @@ export default function Dashboard({ onEnterExperiments, onPickExperiment }: Dash
               NCTB কারিকুলামের ১২টি অধ্যায় ভ্রমণ করো, ভার্চুয়াল ল্যাবে পরীক্ষণ চালাও আর AI টিউটরের সাহায্য নাও।
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
-              <Button size="sm" variant="secondary" className="bg-white text-emerald-700 hover:bg-white/90" onClick={onEnterExperiments}>
-                <PlayCircle className="h-4 w-4" /> সব ল্যাব দেখুন
+              <Button size="sm" variant="secondary" className="bg-white text-emerald-700 hover:bg-white/90" onClick={() => setView("curriculum")}>
+                <BookOpen className="h-4 w-4" /> কারিকুলাম দেখুন
               </Button>
               <Button size="sm" variant="outline" className="border-white/30 bg-white/10 text-white hover:bg-white/20" onClick={goTutor}>
                 <Bot className="h-4 w-4" /> AI কে প্রশ্ন করো
@@ -239,160 +267,30 @@ export default function Dashboard({ onEnterExperiments, onPickExperiment }: Dash
         </div>
       </section>
 
-      {/* Tabs */}
       <section className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-10">
-        <Tabs defaultValue="curriculum" className="w-full">
-          <TabsList className="grid h-auto w-full grid-cols-2 gap-1 rounded-xl bg-muted p-1 md:max-w-xl">
-            <TabsTrigger value="curriculum" className="gap-2 py-2.5 data-[state=active]:shadow">
-              <BookOpen className="h-4 w-4" /> কারিকুলাম হাব
-            </TabsTrigger>
-            <TabsTrigger value="lab" className="gap-2 py-2.5 data-[state=active]:shadow">
-              <FlaskConical className="h-4 w-4" /> ব্যবহারিক ল্যাব রুম
-            </TabsTrigger>
-          </TabsList>
+        {view === "home" && (
+          <HomeGrid
+            onCurriculum={() => setView("curriculum")}
+            onPractical={() => setView("practical")}
+            onComingSoon={handleComingSoon}
+            practicalCount={PRACTICAL_LABS.length}
+          />
+        )}
 
-          {/* ───────── Curriculum Hub ───────── */}
-          <TabsContent value="curriculum" className="mt-6">
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {CHAPTERS.map((ch) => {
-                const labCount = ch.labIds.length;
-                const total = labCount + (ch.comingSoonCount ?? 0);
-                const done = ch.labIds.filter((id) => LAB_BY_ID.get(id)?.completed).length;
-                const pct = total > 0 ? Math.round((done / total) * 100) : 0;
-                const Icon = ch.icon;
-                const hasLabs = labCount > 0;
+        {view === "curriculum" && (
+          <CurriculumGrid onPick={setActiveChapter} />
+        )}
 
-                return (
-                  <Card
-                    key={ch.number}
-                    onClick={() => setActiveChapter(ch)}
-                    className="group relative cursor-pointer overflow-hidden border bg-card p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl"
-                  >
-                    {/* accent stripe */}
-                    <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${ch.accent}`} />
-                    <div className="flex items-start justify-between">
-                      <div className={`grid h-11 w-11 place-items-center rounded-xl bg-gradient-to-br ${ch.accent} text-white shadow-md`}>
-                        <Icon className="h-5 w-5" />
-                      </div>
-                      <Badge variant="outline" className="text-[10px] font-mono">CH {String(ch.number).padStart(2, "0")}</Badge>
-                    </div>
-                    <h3 className="mt-3 text-base font-bold leading-tight">{ch.titleBn}</h3>
-                    <p className="text-xs font-medium text-muted-foreground">{ch.titleEn}</p>
-                    <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{ch.descBn}</p>
-
-                    <div className="mt-4 flex flex-wrap items-center gap-1.5">
-                      {hasLabs ? (
-                        <Badge className="gap-1 bg-emerald-500/10 text-emerald-700 hover:bg-emerald-500/15 dark:text-emerald-300" variant="secondary">
-                          <FlaskConical className="h-3 w-3" /> {labCount} Lab{labCount > 1 ? "s" : ""}
-                        </Badge>
-                      ) : (
-                        <Badge variant="outline" className="gap-1 text-muted-foreground">
-                          <Lock className="h-3 w-3" /> শীঘ্রই
-                        </Badge>
-                      )}
-                      {(ch.comingSoonCount ?? 0) > 0 && hasLabs && (
-                        <Badge variant="outline" className="text-[10px] text-muted-foreground">+{ch.comingSoonCount} concept</Badge>
-                      )}
-                    </div>
-
-                    <div className="mt-4">
-                      <div className="mb-1 flex items-center justify-between text-[10px] text-muted-foreground">
-                        <span>অগ্রগতি</span><span>{pct}%</span>
-                      </div>
-                      <Progress value={pct} className="h-1.5" />
-                    </div>
-
-                    <div className="mt-4 flex items-center justify-end text-sm font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">
-                      Explore <ChevronRight className="h-4 w-4" />
-                    </div>
-                  </Card>
-                );
-              })}
-            </div>
-          </TabsContent>
-
-          {/* ───────── Practical Lab Room ───────── */}
-          <TabsContent value="lab" className="mt-6">
-            {/* Filter Bar */}
-            <div className="mb-5 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-              <div className="flex flex-wrap gap-2">
-                {[
-                  { k: "all", label: "All Labs" },
-                  { k: "core", label: "Core Board Practicals" },
-                  { k: "completed", label: "Completed" },
-                  { k: "incomplete", label: "Incomplete" },
-                ].map((f) => (
-                  <Button
-                    key={f.k}
-                    size="sm"
-                    variant={labFilter === f.k ? "default" : "outline"}
-                    className="rounded-full"
-                    onClick={() => setLabFilter(f.k as typeof labFilter)}
-                  >
-                    {f.label}
-                  </Button>
-                ))}
-              </div>
-              <div className="relative w-full md:w-72">
-                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <input
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="ল্যাব খুঁজুন..."
-                  className="w-full rounded-full border bg-background py-2 pl-9 pr-4 text-sm shadow-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
-                />
-              </div>
-            </div>
-
-            {filteredLabs.length === 0 ? (
-              <div className="rounded-xl border border-dashed p-12 text-center text-sm text-muted-foreground">
-                কোন ল্যাব পাওয়া যায়নি। ফিল্টার পরিবর্তন করে আবার চেষ্টা করুন।
-              </div>
-            ) : (
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {filteredLabs.map((lab) => {
-                  const Icon = lab.icon;
-                  return (
-                    <Card
-                      key={lab.id}
-                      onClick={() => openLab(lab.id)}
-                      className={`group relative cursor-pointer overflow-hidden border bg-gradient-to-br ${lab.tint} p-5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl`}
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className={`grid h-12 w-12 place-items-center rounded-xl bg-background/80 shadow-sm backdrop-blur ${lab.iconColor}`}>
-                          <Icon className="h-6 w-6" />
-                        </div>
-                        <div className="flex flex-col items-end gap-1">
-                          {lab.isCoreBoard && (
-                            <Badge variant="secondary" className="border bg-background/70 text-[10px] backdrop-blur">Board</Badge>
-                          )}
-                          {lab.completed ? (
-                            <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
-                              <CheckCircle2 className="h-3 w-3" /> Completed
-                            </span>
-                          ) : (
-                            <span className="inline-flex items-center gap-1 text-[10px] font-medium text-muted-foreground">
-                              <Circle className="h-3 w-3" /> Pending
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      <h3 className="mt-3 text-sm font-bold leading-tight md:text-base">{lab.titleBn}</h3>
-                      <p className="text-xs text-muted-foreground">{lab.title}</p>
-                      <Button
-                        size="sm"
-                        className="mt-4 w-full gap-1"
-                        onClick={(e) => { e.stopPropagation(); openLab(lab.id); }}
-                      >
-                        <PlayCircle className="h-4 w-4" /> Start Lab
-                      </Button>
-                    </Card>
-                  );
-                })}
-              </div>
-            )}
-          </TabsContent>
-        </Tabs>
+        {view === "practical" && (
+          <PracticalRoom
+            labs={filteredLabs}
+            labFilter={labFilter}
+            setLabFilter={setLabFilter}
+            search={search}
+            setSearch={setSearch}
+            onOpenLab={openLab}
+          />
+        )}
       </section>
 
       {/* Chapter Drawer / Dialog */}
@@ -478,6 +376,289 @@ export default function Dashboard({ onEnterExperiments, onPickExperiment }: Dash
         Built for Bangladeshi students · NCTB Curriculum · Made with AI
       </footer>
     </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Home — 4 main cards
+// ─────────────────────────────────────────────────────────────
+
+function HomeGrid({
+  onCurriculum,
+  onPractical,
+  onComingSoon,
+  practicalCount,
+}: {
+  onCurriculum: () => void;
+  onPractical: () => void;
+  onComingSoon: (what: string) => void;
+  practicalCount: number;
+}) {
+  const cards = [
+    {
+      key: "curriculum",
+      title: "Curriculum Hub",
+      titleBn: "কারিকুলাম হাব",
+      desc: "NCTB-র ১২টি অধ্যায়, প্রতিটি অধ্যায়ের ভেতরে যুক্ত ল্যাব ও AI টিউটর শর্টকাট।",
+      icon: BookOpen,
+      accent: "from-emerald-500 to-teal-600",
+      shadow: "shadow-emerald-500/20",
+      meta: "১২ অধ্যায়",
+      onClick: onCurriculum,
+      available: true,
+    },
+    {
+      key: "practical",
+      title: "Practical Lab Room",
+      titleBn: "ব্যবহারিক ল্যাব রুম",
+      desc: "চ্যাপ্টারের বাইরের এক্সপ্লোরেটরি ভার্চুয়াল ল্যাবগুলো — সরাসরি পরীক্ষণ শুরু করো।",
+      icon: FlaskConical,
+      accent: "from-sky-500 to-cyan-600",
+      shadow: "shadow-sky-500/20",
+      meta: `${practicalCount} ল্যাব`,
+      onClick: onPractical,
+      available: true,
+    },
+    {
+      key: "video",
+      title: "Video Lessons",
+      titleBn: "ভিডিও লেসন",
+      desc: "প্রতিটি অধ্যায়ের ছোট, দ্বিভাষিক ভিডিও পাঠ — শীঘ্রই আসছে।",
+      icon: Video,
+      accent: "from-rose-500 to-pink-600",
+      shadow: "shadow-rose-500/20",
+      meta: "শীঘ্রই",
+      onClick: () => onComingSoon("Video Lessons"),
+      available: false,
+    },
+    {
+      key: "notes",
+      title: "Smart Notes",
+      titleBn: "স্মার্ট নোটস",
+      desc: "AI-জেনারেটেড সংক্ষিপ্ত নোট, ফর্মুলা শিট ও রিভিশন কার্ড — শীঘ্রই আসছে।",
+      icon: NotebookPen,
+      accent: "from-amber-500 to-orange-600",
+      shadow: "shadow-amber-500/20",
+      meta: "শীঘ্রই",
+      onClick: () => onComingSoon("Smart Notes"),
+      available: false,
+    },
+  ];
+
+  return (
+    <div className="grid gap-4 sm:grid-cols-2">
+      {cards.map((c) => {
+        const Icon = c.icon;
+        return (
+          <Card
+            key={c.key}
+            onClick={c.onClick}
+            className={`group relative cursor-pointer overflow-hidden border bg-card p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl ${c.shadow}`}
+          >
+            <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${c.accent}`} />
+            <div className="flex items-start justify-between">
+              <div className={`grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br ${c.accent} text-white shadow-lg`}>
+                <Icon className="h-7 w-7" />
+              </div>
+              {c.available ? (
+                <Badge variant="secondary" className="border bg-emerald-500/10 text-[10px] text-emerald-700 dark:text-emerald-300">
+                  {c.meta}
+                </Badge>
+              ) : (
+                <Badge variant="outline" className="gap-1 text-[10px] text-muted-foreground">
+                  <Lock className="h-3 w-3" /> {c.meta}
+                </Badge>
+              )}
+            </div>
+            <h3 className="mt-5 text-xl font-extrabold tracking-tight">{c.titleBn}</h3>
+            <p className="text-xs font-medium text-muted-foreground">{c.title}</p>
+            <p className="mt-2 text-sm text-muted-foreground">{c.desc}</p>
+            <div className="mt-5 flex items-center justify-end text-sm font-semibold text-primary opacity-0 transition-opacity group-hover:opacity-100">
+              {c.available ? "Open" : "Notify Me"} <ChevronRight className="h-4 w-4" />
+            </div>
+          </Card>
+        );
+      })}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Curriculum view
+// ─────────────────────────────────────────────────────────────
+
+function CurriculumGrid({ onPick }: { onPick: (c: ChapterMeta) => void }) {
+  return (
+    <>
+      <div className="mb-5">
+        <h2 className="text-xl font-extrabold tracking-tight md:text-2xl">কারিকুলাম হাব</h2>
+        <p className="text-sm text-muted-foreground">NCTB ক্লাস ৯-১০ রসায়নের ১২টি অধ্যায়</p>
+      </div>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {CHAPTERS.map((ch) => {
+          const labCount = ch.labIds.length;
+          const total = labCount + (ch.comingSoonCount ?? 0);
+          const done = ch.labIds.filter((id) => LAB_BY_ID.get(id)?.completed).length;
+          const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+          const Icon = ch.icon;
+          const hasLabs = labCount > 0;
+
+          return (
+            <Card
+              key={ch.number}
+              onClick={() => onPick(ch)}
+              className="group relative cursor-pointer overflow-hidden border bg-card p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl"
+            >
+              <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${ch.accent}`} />
+              <div className="flex items-start justify-between">
+                <div className={`grid h-11 w-11 place-items-center rounded-xl bg-gradient-to-br ${ch.accent} text-white shadow-md`}>
+                  <Icon className="h-5 w-5" />
+                </div>
+                <Badge variant="outline" className="text-[10px] font-mono">CH {String(ch.number).padStart(2, "0")}</Badge>
+              </div>
+              <h3 className="mt-3 text-base font-bold leading-tight">{ch.titleBn}</h3>
+              <p className="text-xs font-medium text-muted-foreground">{ch.titleEn}</p>
+              <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{ch.descBn}</p>
+
+              <div className="mt-4 flex flex-wrap items-center gap-1.5">
+                {hasLabs ? (
+                  <Badge className="gap-1 bg-emerald-500/10 text-emerald-700 hover:bg-emerald-500/15 dark:text-emerald-300" variant="secondary">
+                    <FlaskConical className="h-3 w-3" /> {labCount} Lab{labCount > 1 ? "s" : ""}
+                  </Badge>
+                ) : (
+                  <Badge variant="outline" className="gap-1 text-muted-foreground">
+                    <Lock className="h-3 w-3" /> শীঘ্রই
+                  </Badge>
+                )}
+                {(ch.comingSoonCount ?? 0) > 0 && hasLabs && (
+                  <Badge variant="outline" className="text-[10px] text-muted-foreground">+{ch.comingSoonCount} concept</Badge>
+                )}
+              </div>
+
+              <div className="mt-4">
+                <div className="mb-1 flex items-center justify-between text-[10px] text-muted-foreground">
+                  <span>অগ্রগতি</span><span>{pct}%</span>
+                </div>
+                <Progress value={pct} className="h-1.5" />
+              </div>
+
+              <div className="mt-4 flex items-center justify-end text-sm font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">
+                Explore <ChevronRight className="h-4 w-4" />
+              </div>
+            </Card>
+          );
+        })}
+      </div>
+    </>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Practical Lab Room view
+// ─────────────────────────────────────────────────────────────
+
+function PracticalRoom({
+  labs,
+  labFilter,
+  setLabFilter,
+  search,
+  setSearch,
+  onOpenLab,
+}: {
+  labs: LabMeta[];
+  labFilter: "all" | "core" | "completed" | "incomplete";
+  setLabFilter: (k: "all" | "core" | "completed" | "incomplete") => void;
+  search: string;
+  setSearch: (s: string) => void;
+  onOpenLab: (id: ExperimentId) => void;
+}) {
+  return (
+    <>
+      <div className="mb-5">
+        <h2 className="text-xl font-extrabold tracking-tight md:text-2xl">ব্যবহারিক ল্যাব রুম</h2>
+        <p className="text-sm text-muted-foreground">
+          কারিকুলামের বাইরের এক্সপ্লোরেটরি ভার্চুয়াল ল্যাব — সরাসরি চালু করো।
+        </p>
+      </div>
+
+      <div className="mb-5 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-wrap gap-2">
+          {[
+            { k: "all", label: "All Labs" },
+            { k: "core", label: "Core Board Practicals" },
+            { k: "completed", label: "Completed" },
+            { k: "incomplete", label: "Incomplete" },
+          ].map((f) => (
+            <Button
+              key={f.k}
+              size="sm"
+              variant={labFilter === f.k ? "default" : "outline"}
+              className="rounded-full"
+              onClick={() => setLabFilter(f.k as typeof labFilter)}
+            >
+              {f.label}
+            </Button>
+          ))}
+        </div>
+        <div className="relative w-full md:w-72">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="ল্যাব খুঁজুন..."
+            className="w-full rounded-full border bg-background py-2 pl-9 pr-4 text-sm shadow-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+          />
+        </div>
+      </div>
+
+      {labs.length === 0 ? (
+        <div className="rounded-xl border border-dashed p-12 text-center text-sm text-muted-foreground">
+          কোন ল্যাব পাওয়া যায়নি। ফিল্টার পরিবর্তন করে আবার চেষ্টা করুন।
+        </div>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {labs.map((lab) => {
+            const Icon = lab.icon;
+            return (
+              <Card
+                key={lab.id}
+                onClick={() => onOpenLab(lab.id)}
+                className={`group relative cursor-pointer overflow-hidden border bg-gradient-to-br ${lab.tint} p-5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl`}
+              >
+                <div className="flex items-start justify-between">
+                  <div className={`grid h-12 w-12 place-items-center rounded-xl bg-background/80 shadow-sm backdrop-blur ${lab.iconColor}`}>
+                    <Icon className="h-6 w-6" />
+                  </div>
+                  <div className="flex flex-col items-end gap-1">
+                    {lab.isCoreBoard && (
+                      <Badge variant="secondary" className="border bg-background/70 text-[10px] backdrop-blur">Board</Badge>
+                    )}
+                    {lab.completed ? (
+                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
+                        <CheckCircle2 className="h-3 w-3" /> Completed
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 text-[10px] font-medium text-muted-foreground">
+                        <Circle className="h-3 w-3" /> Pending
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <h3 className="mt-3 text-sm font-bold leading-tight md:text-base">{lab.titleBn}</h3>
+                <p className="text-xs text-muted-foreground">{lab.title}</p>
+                <Button
+                  size="sm"
+                  className="mt-4 w-full gap-1"
+                  onClick={(e) => { e.stopPropagation(); onOpenLab(lab.id); }}
+                >
+                  <PlayCircle className="h-4 w-4" /> Start Lab
+                </Button>
+              </Card>
+            );
+          })}
+        </div>
+      )}
+    </>
   );
 }
 
