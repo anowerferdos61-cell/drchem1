@@ -100,9 +100,9 @@ type ChapterMeta = {
   icon: typeof BookOpen;
 };
 
-// Curriculum Hub holds only core/board labs. Exploratory labs
-// (bonding_basics, ph_scale, indicator_compare, solubility_rules)
-// live exclusively in the Practical Lab Room.
+// Curriculum Hub holds exploratory/conceptual labs mapped to their
+// NCTB chapter. All board/practical labs (isCoreBoard) live in the
+// Practical Lab Room.
 const CHAPTERS: ChapterMeta[] = [
   { number: 1, titleBn: "রসায়নের ধারণা", titleEn: "Concepts of Chemistry",
     descBn: "রসায়নের পরিচিতি, গুরুত্ব ও নিরাপত্তা।",
@@ -118,19 +118,19 @@ const CHAPTERS: ChapterMeta[] = [
     labIds: [], comingSoonCount: 2, accent: "from-fuchsia-500 to-pink-500", icon: Microscope },
   { number: 5, titleBn: "রাসায়নিক বন্ধন", titleEn: "Chemical Bonding",
     descBn: "আয়নিক, সমযোজী ও ধাতব বন্ধনের ধারণা।",
-    labIds: ["ionic_covalent"],
+    labIds: ["bonding_basics"],
     accent: "from-indigo-500 to-violet-500", icon: Atom },
   { number: 6, titleBn: "মোল ও রাসায়নিক গণনা", titleEn: "Mole & Chemical Calculations",
     descBn: "মোল ধারণা, মোলারিটি ও প্রমাণ দ্রবণ।",
-    labIds: ["titration"], comingSoonCount: 1,
+    labIds: [], comingSoonCount: 1,
     accent: "from-emerald-500 to-teal-500", icon: TestTubes },
   { number: 7, titleBn: "রাসায়নিক বিক্রিয়া", titleEn: "Chemical Reactions",
-    descBn: "বিক্রিয়ার ধরন, NaCl কেলাসন ও গ্যাস প্রস্তুতি।",
-    labIds: ["nacl_crystal", "na2co3_standard", "cuso4_water", "oxygen_prep", "co2_prep"],
+    descBn: "বিক্রিয়ার ধরন, দ্রাব্যতা ও গ্যাস প্রস্তুতি।",
+    labIds: ["solubility_rules"],
     accent: "from-amber-500 to-orange-500", icon: Beaker },
   { number: 8, titleBn: "রসায়ন ও শক্তি", titleEn: "Chemistry & Energy",
     descBn: "তাপ পরিবর্তন, তড়িৎ-রাসায়নিক সারি।",
-    labIds: ["electrochemical_series"],
+    labIds: [], comingSoonCount: 1,
     accent: "from-yellow-500 to-amber-500", icon: Zap },
   { number: 9, titleBn: "এসিড-ক্ষারক সাম্য", titleEn: "Acid-Base Equilibrium",
     descBn: "pH, Ka/Kb এবং দ্রাব্যতার ধারণা।",
@@ -138,7 +138,7 @@ const CHAPTERS: ChapterMeta[] = [
     accent: "from-rose-500 to-pink-500", icon: Droplets },
   { number: 10, titleBn: "এসিড, ক্ষারক ও লবণ", titleEn: "Acids, Bases & Salts",
     descBn: "pH স্কেল, নির্দেশক ও দৈনন্দিন প্রয়োগ।",
-    labIds: [], comingSoonCount: 2,
+    labIds: ["ph_scale", "indicator_compare"],
     accent: "from-pink-500 to-fuchsia-500", icon: FlaskConical },
   { number: 11, titleBn: "খনিজ সম্পদ: জীবাশ্ম", titleEn: "Mineral Resources: Fossil Fuels",
     descBn: "হাইড্রোকার্বন, পেট্রোলিয়াম ও পলিমার।",
@@ -150,11 +150,8 @@ const CHAPTERS: ChapterMeta[] = [
 
 const LAB_BY_ID = new Map(ALL_LABS.map((l) => [l.id, l]));
 
-// Labs that don't belong to any chapter → live in Practical Lab Room only.
-const CHAPTER_LAB_IDS = new Set<ExperimentId>(
-  CHAPTERS.flatMap((c) => c.labIds),
-);
-const PRACTICAL_LABS = ALL_LABS.filter((l) => !CHAPTER_LAB_IDS.has(l.id));
+// All board/practical labs live in the Practical Lab Room.
+const PRACTICAL_LABS = ALL_LABS.filter((l) => l.isCoreBoard);
 
 type View = "home" | "curriculum" | "practical";
 
