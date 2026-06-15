@@ -505,10 +505,9 @@ function Footer() {
           </span>
         </div>
         <div className="flex gap-5 text-sm text-muted-foreground">
-          <Link to="/app" className="hover:text-foreground">Login</Link>
-          <Link to="/app" className="hover:text-foreground">Sign up</Link>
-          <Link to="/app" className="hover:text-foreground">Lab</Link>
+          <Link to="/app" className="hover:text-foreground">Open Lab</Link>
         </div>
+
       </div>
     </footer>
   );
