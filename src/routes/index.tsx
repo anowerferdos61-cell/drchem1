@@ -124,12 +124,12 @@ function Hero() {
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <Button asChild size="lg" className="text-base">
-              <Link to="/signup">
+              <Link to="/app">
                 <Sparkles className="h-4 w-4" /> Try Free
               </Link>
             </Button>
             <Button asChild size="lg" variant="outline" className="text-base">
-              <Link to="/signup">
+              <Link to="/app">
                 <PlayCircle className="h-4 w-4" /> Watch Demo
               </Link>
             </Button>
@@ -313,7 +313,7 @@ function Experiments() {
         </div>
         <div className="mt-10 text-center">
           <Button asChild size="lg" variant="outline">
-            <Link to="/signup">
+            <Link to="/app">
               See all experiments <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
@@ -468,7 +468,7 @@ function FinalCTA() {
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Button asChild size="lg" variant="secondary" className="text-base">
-                <Link to="/signup">
+                <Link to="/app">
                   <Sparkles className="h-4 w-4" /> Create Free Account
                 </Link>
               </Button>
@@ -478,7 +478,7 @@ function FinalCTA() {
                 variant="outline"
                 className="text-base bg-transparent text-white border-white/40 hover:bg-white/10 hover:text-white"
               >
-                <Link to="/signup">
+                <Link to="/app">
                   <PlayCircle className="h-4 w-4" /> Try Demo
                 </Link>
               </Button>
@@ -505,8 +505,8 @@ function Footer() {
           </span>
         </div>
         <div className="flex gap-5 text-sm text-muted-foreground">
-          <Link to="/login" className="hover:text-foreground">Login</Link>
-          <Link to="/signup" className="hover:text-foreground">Sign up</Link>
+          <Link to="/app" className="hover:text-foreground">Login</Link>
+          <Link to="/app" className="hover:text-foreground">Sign up</Link>
           <Link to="/app" className="hover:text-foreground">Lab</Link>
         </div>
       </div>
