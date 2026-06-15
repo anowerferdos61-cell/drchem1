@@ -11,10 +11,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export const Route = createFileRoute("/login")({
+  beforeLoad: () => {
+    throw redirect({ to: "/app" });
+  },
   validateSearch: (search: Record<string, unknown>) => ({
     redirect: typeof search.redirect === "string" ? search.redirect : "/app",
   }),
   component: LoginPage,
+
   head: () => ({
     meta: [
       { title: "লগইন · Dr. Chem" },
