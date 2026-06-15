@@ -120,15 +120,9 @@ type EquipmentSelectId =
   | "clamp";
 
 function Index() {
-  const navigate = useNavigate();
-  const { isAuthenticated, loading } = useAuth();
+  // Auth disabled — dashboard is publicly accessible.
 
-  // Auth guard: redirect unauthenticated users to login
-  useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      void navigate({ to: "/login", search: { redirect: "/app" }, replace: true });
-    }
-  }, [loading, isAuthenticated, navigate]);
+
 
   const [activeExperiment, setActiveExperiment] = useState<ExperimentId | null>(null);
   const [showExperiments, setShowExperiments] = useState(false);
