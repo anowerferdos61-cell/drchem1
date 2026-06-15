@@ -47,7 +47,7 @@ import ElectrochemicalSeriesLab from "@/components/lab/ElectrochemicalSeriesLab"
 import BondingLab from "@/components/lab/BondingLab";
 
 import LabAIAssistant from "@/components/lab/LabAIAssistant";
-import UserMenu from "@/components/auth/UserMenu";
+
 
 import { setAIContext, useAIContext } from "@/lib/ai-context-store";
 
