@@ -50,7 +50,7 @@ import LabAIAssistant from "@/components/lab/LabAIAssistant";
 import UserMenu from "@/components/auth/UserMenu";
 
 import { setAIContext, useAIContext } from "@/lib/ai-context-store";
-import { useAuth } from "@/lib/auth-store";
+
 
 import { ArrowLeft } from "lucide-react";
 
