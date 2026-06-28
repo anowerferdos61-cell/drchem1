@@ -208,16 +208,8 @@ function BillingPage() {
                       {PLAN_INFO[p.plan_code]?.name ?? p.plan_code} · ৳{p.amount_bdt}
                     </div>
                     <div className="text-xs text-muted-foreground flex items-center gap-1 flex-wrap">
-                      <span>TrxID:</span>
-                      <code className="font-mono">{p.trx_id}</code>
-                      <button
-                        type="button"
-                        onClick={() => copyText(p.trx_id, "TrxID")}
-                        className="inline-flex items-center hover:text-foreground"
-                        title="Copy TrxID"
-                      >
-                        <Copy className="h-3 w-3" />
-                      </button>
+                      <span>bKash:</span>
+                      <code className="font-mono">{p.sender_phone}</code>
                       <span>· {new Date(p.created_at).toLocaleString("bn-BD")}</span>
                     </div>
                     {p.review_note && (
