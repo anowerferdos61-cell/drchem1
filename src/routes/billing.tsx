@@ -30,7 +30,6 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/lib/auth-store";
 import { useEntitlements } from "@/hooks/useEntitlements";
 import {
-  startTrial,
   submitPaymentRequest,
   listMyPayments,
   cancelSubscription,
