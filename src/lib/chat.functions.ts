@@ -74,6 +74,7 @@ function buildContextBlock(ctx: z.infer<typeof ContextSchema>): string {
 }
 
 export const chatWithAssistant = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((input) =>
     z
       .object({
@@ -82,7 +83,43 @@ export const chatWithAssistant = createServerFn({ method: "POST" })
       })
       .parse(input),
   )
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+
+    // ─── Quota check for Free tier ─────────────────────────────
+    const { data: sub } = await supabase
+      .from("subscriptions")
+      .select("plan_code, status")
+      .eq("user_id", userId)
+      .in("status", ["trialing", "active"])
+      .maybeSingle();
+
+    const isPaid = !!sub && sub.plan_code !== "free";
+
+    if (!isPaid) {
+      // Free tier: 5 messages/day in Asia/Dhaka
+      const now = new Date();
+      const dhaka = new Date(now.getTime() + (6 * 60 - now.getTimezoneOffset()) * 60_000);
+      const today = dhaka.toISOString().slice(0, 10);
+
+      const { data: usage } = await supabase
+        .from("usage_counters")
+        .select("ai_messages_used")
+        .eq("user_id", userId)
+        .eq("usage_date", today)
+        .maybeSingle();
+
+      const used = usage?.ai_messages_used ?? 0;
+      if (used >= 5) {
+        return {
+          reply: "",
+          error:
+            "আজকের ৫টি free AI message শেষ হয়ে গেছে। Unlimited access এর জন্য Pro upgrade করো।",
+          quotaExceeded: true as const,
+        };
+      }
+    }
+
     const key = process.env.LOVABLE_API_KEY;
     if (!key) {
       return {
@@ -97,6 +134,31 @@ export const chatWithAssistant = createServerFn({ method: "POST" })
     }));
     try {
       const reply = await chatComplete({ apiKey: key, systemPrompt, history });
+
+      // Record usage (only for free tier, but harmless for paid)
+      if (!isPaid) {
+        const now = new Date();
+        const dhaka = new Date(now.getTime() + (6 * 60 - now.getTimezoneOffset()) * 60_000);
+        const today = dhaka.toISOString().slice(0, 10);
+        const { data: existing } = await supabase
+          .from("usage_counters")
+          .select("ai_messages_used")
+          .eq("user_id", userId)
+          .eq("usage_date", today)
+          .maybeSingle();
+        if (existing) {
+          await supabase
+            .from("usage_counters")
+            .update({ ai_messages_used: existing.ai_messages_used + 1 })
+            .eq("user_id", userId)
+            .eq("usage_date", today);
+        } else {
+          await supabase
+            .from("usage_counters")
+            .insert({ user_id: userId, usage_date: today, ai_messages_used: 1 });
+        }
+      }
+
       return { reply, error: null as string | null };
     } catch (e) {
       console.error("chatWithAssistant failed", e);
