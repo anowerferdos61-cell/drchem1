@@ -493,42 +493,99 @@ function FinalCTA() {
 /* ───────────── Footer ───────────── */
 function Footer() {
   return (
-    <footer className="border-t border-border py-10">
-      <div className="max-w-6xl mx-auto px-4 flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-2">
-            <div className="h-7 w-7 rounded-md bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
-              <FlaskConical className="h-4 w-4 text-primary-foreground" />
+    <footer className="relative overflow-hidden border-t border-border bg-gradient-to-br from-background via-primary/5 to-blue-500/10">
+      <div className="absolute -top-24 left-1/4 w-72 h-72 rounded-full bg-primary/20 blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-24 right-1/4 w-72 h-72 rounded-full bg-blue-400/20 blur-3xl pointer-events-none" />
+
+      <div className="relative max-w-6xl mx-auto px-6 py-14">
+        <div className="grid gap-10 md:grid-cols-3">
+          {/* Brand */}
+          <div className="flex flex-col gap-4 animate-fade-in">
+            <div className="flex items-center gap-3">
+              <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-primary to-blue-500 flex items-center justify-center shadow-lg shadow-primary/30 hover-scale">
+                <FlaskConical className="h-6 w-6 text-primary-foreground" />
+              </div>
+              <span className="font-bold text-2xl tracking-tight">Dr. Chem</span>
             </div>
-            <span className="font-semibold">Dr. Chem</span>
+            <p className="text-base text-muted-foreground leading-relaxed max-w-xs">
+              Class 9-10-এর জন্য AI-পাওয়ার্ড ভার্চুয়াল কেমিস্ট্রি ল্যাব। নিরাপদে শিখুন,
+              যেকোনো সময়, যেকোনো জায়গায়।
+            </p>
+            <span className="text-sm text-muted-foreground">
+              © {new Date().getFullYear()} · Made with 💙 in Bangladesh
+            </span>
           </div>
-          <span className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} · Made in Bangladesh
+
+          {/* Contact */}
+          <div className="flex flex-col gap-4 animate-fade-in" style={{ animationDelay: "100ms" }}>
+            <h3 className="font-bold text-xl text-foreground">যোগাযোগ করুন</h3>
+            <a
+              href="mailto:drchem.bd@gmail.com"
+              className="group flex items-center gap-3 text-base text-muted-foreground hover:text-primary transition-colors"
+            >
+              <span className="h-10 w-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-all group-hover:scale-110">
+                ✉️
+              </span>
+              <span className="font-medium">drchem.bd@gmail.com</span>
+            </a>
+            <a
+              href="tel:+8801303446161"
+              className="group flex items-center gap-3 text-base text-muted-foreground hover:text-primary transition-colors"
+            >
+              <span className="h-10 w-10 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center group-hover:bg-emerald-500 group-hover:text-white transition-all group-hover:scale-110">
+                📞
+              </span>
+              <span className="font-medium">01303-446161</span>
+            </a>
+            <a
+              href="https://www.facebook.com/share/p/1EakXVp6i2/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center gap-3 text-base text-muted-foreground hover:text-primary transition-colors"
+            >
+              <span className="h-10 w-10 rounded-lg bg-blue-500/10 text-blue-600 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-all group-hover:scale-110">
+                📘
+              </span>
+              <span className="font-medium">Facebook Page</span>
+            </a>
+          </div>
+
+          {/* Quick Links */}
+          <div className="flex flex-col gap-4 animate-fade-in" style={{ animationDelay: "200ms" }}>
+            <h3 className="font-bold text-xl text-foreground">দ্রুত লিংক</h3>
+            <Link
+              to="/app"
+              className="text-base text-muted-foreground hover:text-primary transition-colors story-link w-fit font-medium"
+            >
+              🧪 Open Virtual Lab
+            </Link>
+            <Link
+              to="/pricing"
+              className="text-base text-muted-foreground hover:text-primary transition-colors story-link w-fit font-medium"
+            >
+              💎 Pricing Plans
+            </Link>
+            <Link
+              to="/login"
+              className="text-base text-muted-foreground hover:text-primary transition-colors story-link w-fit font-medium"
+            >
+              🔐 Login
+            </Link>
+            <Link
+              to="/signup"
+              className="text-base text-muted-foreground hover:text-primary transition-colors story-link w-fit font-medium"
+            >
+              ✨ Create Account
+            </Link>
+          </div>
+        </div>
+
+        <div className="mt-12 pt-8 border-t border-border/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
+          <span>সকল অধিকার সংরক্ষিত · Dr. Chem Bangladesh</span>
+          <span className="flex items-center gap-2">
+            Powered by <span className="font-semibold text-primary">AI</span> · Built for
+            <span className="font-semibold text-foreground">শিক্ষার্থী</span>
           </span>
-        </div>
-
-        <div className="flex flex-col gap-2 text-sm text-muted-foreground">
-          <h3 className="font-semibold text-foreground">যোগাযোগ</h3>
-          <a href="mailto:drchem.bd@gmail.com" className="hover:text-foreground">
-            ✉️ drchem.bd@gmail.com
-          </a>
-          <a href="tel:+8801303446161" className="hover:text-foreground">
-            📞 01303-446161
-          </a>
-          <a
-            href="https://www.facebook.com/share/p/1EakXVp6i2/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-foreground"
-          >
-            📘 Facebook Page
-          </a>
-        </div>
-
-        <div className="flex flex-col gap-2 text-sm text-muted-foreground">
-          <h3 className="font-semibold text-foreground">দ্রুত লিংক</h3>
-          <Link to="/app" className="hover:text-foreground">Open Lab</Link>
-          <Link to="/pricing" className="hover:text-foreground">Pricing</Link>
         </div>
       </div>
     </footer>
