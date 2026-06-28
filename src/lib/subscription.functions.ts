@@ -268,32 +268,37 @@ export const approvePayment = createServerFn({ method: "POST" })
     });
     if (!isAdmin) throw new Error("Forbidden");
 
-    const { data: pr } = await supabase
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const { data: pr, error: prErr } = await supabaseAdmin
       .from("payment_requests")
       .select("id, user_id, plan_code, status")
       .eq("id", data.paymentId)
       .maybeSingle();
+    if (prErr) throw new Error(prErr.message);
     if (!pr) throw new Error("Payment not found");
     if (pr.status !== "pending") throw new Error("ইতিমধ্যে review হয়েছে");
 
-    const { data: plan } = await supabase
+    const { data: plan, error: planErr } = await supabaseAdmin
       .from("subscription_plans")
       .select("duration_days")
       .eq("code", pr.plan_code)
       .maybeSingle();
+    if (planErr) throw new Error(planErr.message);
     if (!plan) throw new Error("Invalid plan");
 
     // Expire any existing active subscription for this user
-    await supabase
+    const { error: expErr } = await supabaseAdmin
       .from("subscriptions")
       .update({ status: "expired" })
       .eq("user_id", pr.user_id)
       .in("status", ["trialing", "active"]);
+    if (expErr) throw new Error(expErr.message);
 
     const now = new Date();
     const periodEnd = new Date(now.getTime() + plan.duration_days * 24 * 60 * 60 * 1000);
 
-    const { error: subErr } = await supabase.from("subscriptions").insert({
+    const { error: subErr } = await supabaseAdmin.from("subscriptions").insert({
       user_id: pr.user_id,
       plan_code: pr.plan_code,
       status: "active",
@@ -302,7 +307,7 @@ export const approvePayment = createServerFn({ method: "POST" })
     });
     if (subErr) throw new Error(subErr.message);
 
-    const { error: updErr } = await supabase
+    const { error: updErr } = await supabaseAdmin
       .from("payment_requests")
       .update({
         status: "approved",
@@ -315,6 +320,7 @@ export const approvePayment = createServerFn({ method: "POST" })
 
     return { ok: true };
   });
+
 
 // ─── ADMIN: rejectPayment ──────────────────────────────────────────────
 export const rejectPayment = createServerFn({ method: "POST" })
@@ -330,7 +336,8 @@ export const rejectPayment = createServerFn({ method: "POST" })
     });
     if (!isAdmin) throw new Error("Forbidden");
 
-    const { error } = await supabase
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin
       .from("payment_requests")
       .update({
         status: "rejected",
@@ -343,6 +350,7 @@ export const rejectPayment = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
 
 // ─── cancelSubscription ────────────────────────────────────────────────
 export const cancelSubscription = createServerFn({ method: "POST" })
