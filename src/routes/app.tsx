@@ -48,6 +48,7 @@ import ElectrochemicalSeriesLab from "@/components/lab/ElectrochemicalSeriesLab"
 import BondingLab from "@/components/lab/BondingLab";
 
 import LabAIAssistant from "@/components/lab/LabAIAssistant";
+import LandscapeGate from "@/components/lab/LandscapeGate";
 
 
 import { setAIContext, useAIContext } from "@/lib/ai-context-store";
