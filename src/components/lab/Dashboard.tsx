@@ -43,6 +43,7 @@ import {
 } from "lucide-react";
 import { useEntitlements } from "@/hooks/useEntitlements";
 import { PaywallModal } from "@/components/subscription/PaywallModal";
+import { PendingPaymentBanner } from "@/components/subscription/PendingPaymentBanner";
 
 interface DashboardProps {
   onEnterExperiments: () => void;
@@ -237,6 +238,8 @@ export default function Dashboard({ onPickExperiment }: DashboardProps) {
           </div>
         </div>
       </header>
+
+      <PendingPaymentBanner />
 
       {/* Hero strip with progress */}
       <section className="mx-auto max-w-7xl px-4 pt-6 md:px-6 md:pt-10">

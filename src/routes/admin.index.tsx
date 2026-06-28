@@ -18,6 +18,8 @@ import {
   Sparkles,
   AlertCircle,
   XCircle,
+  TrendingUp,
+  Calendar,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -60,8 +62,8 @@ export const Route = createFileRoute("/admin/")({
 const PLAN_OPTIONS = [
   { code: "student_monthly", label: "Student · Monthly (৳99)" },
   { code: "student_yearly", label: "Student · Yearly (৳999)" },
-  { code: "teacher_monthly", label: "Teacher · Monthly (৳99)" },
-  { code: "teacher_yearly", label: "Teacher · Yearly (৳999)" },
+  { code: "teacher_monthly", label: "Teacher · Monthly (৳299)" },
+  { code: "teacher_yearly", label: "Teacher · Yearly (৳1290)" },
 ] as const;
 
 function StatusBadge({ status }: { status: string | undefined }) {
@@ -222,18 +224,39 @@ function AdminDashboard() {
             value={stats?.activeSubs}
             tint="emerald"
           />
-          <StatCard
-            icon={Sparkles}
-            label="On Trial"
-            value={stats?.trialingSubs}
-            tint="amber"
-          />
+          <StatCard icon={Sparkles} label="On Trial" value={stats?.trialingSubs} tint="amber" />
           <StatCard
             icon={AlertCircle}
             label="Pending Payments"
             value={stats?.pendingPayments}
             tint="rose"
             link="/admin/payments"
+          />
+          <StatCard
+            icon={CheckCircle2}
+            label="Approved Today"
+            value={stats?.approvedToday}
+            tint="emerald"
+          />
+          <StatCard
+            icon={XCircle}
+            label="Rejected Today"
+            value={stats?.rejectedToday}
+            tint="rose"
+          />
+          <StatCard
+            icon={Calendar}
+            label="This Month Revenue"
+            value={stats?.monthlyRevenue}
+            tint="amber"
+            prefix="৳"
+          />
+          <StatCard
+            icon={TrendingUp}
+            label="Total Revenue"
+            value={stats?.totalRevenue}
+            tint="primary"
+            prefix="৳"
           />
         </div>
 
@@ -433,12 +456,14 @@ function StatCard({
   value,
   tint,
   link,
+  prefix,
 }: {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
   value: number | undefined;
   tint: "primary" | "emerald" | "amber" | "rose";
   link?: string;
+  prefix?: string;
 }) {
   const tintMap: Record<string, string> = {
     primary: "bg-primary/10 text-primary",
@@ -446,13 +471,15 @@ function StatCard({
     amber: "bg-amber-500/15 text-amber-600",
     rose: "bg-rose-500/15 text-rose-600",
   };
+  const display =
+    value === undefined ? "—" : `${prefix ?? ""}${value.toLocaleString("bn-BD")}`;
   const inner = (
     <div className="rounded-xl border bg-card p-4 flex items-center gap-3 hover:shadow-md transition-shadow">
       <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${tintMap[tint]}`}>
         <Icon className="h-5 w-5" />
       </div>
       <div>
-        <div className="text-2xl font-bold leading-none">{value ?? "—"}</div>
+        <div className="text-2xl font-bold leading-none">{display}</div>
         <div className="text-xs text-muted-foreground mt-1">{label}</div>
       </div>
     </div>

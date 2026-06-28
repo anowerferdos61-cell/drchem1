@@ -152,11 +152,28 @@ export const adminStats = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     await ensureAdmin(context.supabase, context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    // Start of "today" in Asia/Dhaka, expressed as UTC ISO.
+    const now = new Date();
+    const dhakaOffsetMs = 6 * 60 * 60 * 1000;
+    const dhakaNow = new Date(now.getTime() + dhakaOffsetMs);
+    const dhakaMidnight = new Date(
+      Date.UTC(dhakaNow.getUTCFullYear(), dhakaNow.getUTCMonth(), dhakaNow.getUTCDate()),
+    );
+    const todayStartUtc = new Date(dhakaMidnight.getTime() - dhakaOffsetMs).toISOString();
+    const monthStartUtc = new Date(
+      Date.UTC(dhakaNow.getUTCFullYear(), dhakaNow.getUTCMonth(), 1) - dhakaOffsetMs,
+    ).toISOString();
+
     const [
       { count: totalUsers },
       { count: activeSubs },
       { count: trialingSubs },
       { count: pendingPayments },
+      { count: approvedToday },
+      { count: rejectedToday },
+      { data: revenueAll },
+      { data: revenueMonth },
     ] = await Promise.all([
       supabaseAdmin.from("profiles").select("*", { count: "exact", head: true }),
       supabaseAdmin
@@ -171,11 +188,38 @@ export const adminStats = createServerFn({ method: "GET" })
         .from("payment_requests")
         .select("*", { count: "exact", head: true })
         .eq("status", "pending"),
+      supabaseAdmin
+        .from("payment_requests")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "approved")
+        .gte("reviewed_at", todayStartUtc),
+      supabaseAdmin
+        .from("payment_requests")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "rejected")
+        .gte("reviewed_at", todayStartUtc),
+      supabaseAdmin
+        .from("payment_requests")
+        .select("amount_bdt")
+        .eq("status", "approved"),
+      supabaseAdmin
+        .from("payment_requests")
+        .select("amount_bdt")
+        .eq("status", "approved")
+        .gte("reviewed_at", monthStartUtc),
     ]);
+
+    const sum = (rows: { amount_bdt: number | null }[] | null) =>
+      (rows ?? []).reduce((acc, r) => acc + (Number(r.amount_bdt) || 0), 0);
+
     return {
       totalUsers: totalUsers ?? 0,
       activeSubs: activeSubs ?? 0,
       trialingSubs: trialingSubs ?? 0,
       pendingPayments: pendingPayments ?? 0,
+      approvedToday: approvedToday ?? 0,
+      rejectedToday: rejectedToday ?? 0,
+      totalRevenue: sum(revenueAll),
+      monthlyRevenue: sum(revenueMonth),
     };
   });
