@@ -24,6 +24,7 @@ export interface AuthState {
   profile: Profile | null;
   roles: AppRole[];
   loading: boolean;
+  rolesLoaded: boolean;
 }
 
 type Listener = (s: AuthState) => void;
