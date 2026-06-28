@@ -41,6 +41,8 @@ import {
   Video,
   NotebookPen,
 } from "lucide-react";
+import { useEntitlements } from "@/hooks/useEntitlements";
+import { PaywallModal } from "@/components/subscription/PaywallModal";
 
 interface DashboardProps {
   onEnterExperiments: () => void;
@@ -163,6 +165,9 @@ export default function Dashboard({ onPickExperiment }: DashboardProps) {
   const [activeChapter, setActiveChapter] = useState<ChapterMeta | null>(null);
   const [labFilter, setLabFilter] = useState<"all" | "core" | "completed" | "incomplete">("all");
   const [search, setSearch] = useState("");
+  const { isPro, canAccessLab, loading: entLoading } = useEntitlements();
+  const [paywallOpen, setPaywallOpen] = useState(false);
+  const [paywallLab, setPaywallLab] = useState<string>("");
 
   const filteredLabs = useMemo(() => {
     return PRACTICAL_LABS.filter((l) => {
@@ -181,14 +186,21 @@ export default function Dashboard({ onPickExperiment }: DashboardProps) {
   const overallProgress = Math.round((completedCount / ALL_LABS.length) * 100);
 
   const openLab = useCallback((id: ExperimentId) => {
+    if (!entLoading && !canAccessLab(id)) {
+      const meta = ALL_LABS.find((l) => l.id === id);
+      setPaywallLab(meta?.titleBn || meta?.title || "এই Lab");
+      setPaywallOpen(true);
+      return;
+    }
     onPickExperiment(id);
-  }, [onPickExperiment]);
+  }, [onPickExperiment, canAccessLab, entLoading]);
 
   const goTutor = useCallback(() => navigate({ to: "/tutor" }), [navigate]);
 
   const handleComingSoon = useCallback((what: string) => {
     toast(`${what} — শীঘ্রই আসছে`, { icon: <Sparkles className="h-4 w-4" /> });
   }, []);
+
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-background via-background to-muted/30">
@@ -368,6 +380,13 @@ export default function Dashboard({ onPickExperiment }: DashboardProps) {
           )}
         </DialogContent>
       </Dialog>
+
+
+      <PaywallModal
+        open={paywallOpen}
+        onOpenChange={setPaywallOpen}
+        featureName={paywallLab}
+      />
 
       <footer className="mx-auto max-w-7xl px-4 pb-10 text-center text-xs text-muted-foreground md:px-6">
         Built for Bangladeshi students · NCTB Curriculum · Made with AI
@@ -569,6 +588,7 @@ function PracticalRoom({
   setSearch: (s: string) => void;
   onOpenLab: (id: ExperimentId) => void;
 }) {
+  const { canAccessLab } = useEntitlements();
   return (
     <>
       <div className="mb-5">
@@ -616,12 +636,18 @@ function PracticalRoom({
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {labs.map((lab) => {
             const Icon = lab.icon;
+            const locked = !canAccessLab(lab.id);
             return (
               <Card
                 key={lab.id}
                 onClick={() => onOpenLab(lab.id)}
                 className={`group relative cursor-pointer overflow-hidden border bg-gradient-to-br ${lab.tint} p-5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl`}
               >
+                {locked && (
+                  <div className="absolute right-2 top-2 z-10 inline-flex items-center gap-1 rounded-full bg-amber-500/95 px-2 py-0.5 text-[10px] font-bold text-white shadow">
+                    <Lock className="h-3 w-3" /> Pro
+                  </div>
+                )}
                 <div className="flex items-start justify-between">
                   <div className={`grid h-12 w-12 place-items-center rounded-xl bg-background/80 shadow-sm backdrop-blur ${lab.iconColor}`}>
                     <Icon className="h-6 w-6" />
@@ -646,9 +672,14 @@ function PracticalRoom({
                 <Button
                   size="sm"
                   className="mt-4 w-full gap-1"
+                  variant={locked ? "outline" : "default"}
                   onClick={(e) => { e.stopPropagation(); onOpenLab(lab.id); }}
                 >
-                  <PlayCircle className="h-4 w-4" /> Start Lab
+                  {locked ? (
+                    <><Lock className="h-4 w-4" /> Unlock Pro</>
+                  ) : (
+                    <><PlayCircle className="h-4 w-4" /> Start Lab</>
+                  )}
                 </Button>
               </Card>
             );

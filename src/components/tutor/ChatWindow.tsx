@@ -18,6 +18,9 @@ import {
 import { generateTitle } from "@/lib/tutor-title.functions";
 import MessageBubble from "./MessageBubble";
 import Composer from "./Composer";
+import { supabase } from "@/integrations/supabase/client";
+import { useEntitlements } from "@/hooks/useEntitlements";
+import { Link } from "@tanstack/react-router";
 
 const STREAM_URL = "/api/tutor/stream";
 
@@ -37,6 +40,7 @@ export default function ChatWindow() {
   const abortRef = useRef<AbortController | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const callTitle = useServerFn(generateTitle);
+  const { isPro, aiMessagesRemaining, refetch: refetchEnt } = useEntitlements();
 
   // Auto-scroll
   useEffect(() => {
@@ -83,9 +87,14 @@ export default function ChatWindow() {
           ...convo.messages.map((m) => ({ role: m.role, content: m.content })),
           { role: "user", content: text },
         ];
+        const { data: sess } = await supabase.auth.getSession();
+        const token = sess.session?.access_token;
         const res = await fetch(STREAM_URL, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
           body: JSON.stringify({ messages: history, ragMode }),
           signal: ctrl.signal,
         });
@@ -146,6 +155,7 @@ export default function ChatWindow() {
       } finally {
         updateMessage(convoId, assistant.id, { streaming: false });
         setStreaming(false);
+        void refetchEnt();
         abortRef.current = null;
       }
     },
@@ -170,9 +180,18 @@ export default function ChatWindow() {
             </p>
           </div>
         </div>
+        {!isPro && (
+          <div className="flex items-center gap-2 text-[10px]">
+            <span className="rounded-full bg-amber-500/15 px-2 py-1 font-semibold text-amber-700 dark:text-amber-400">
+              আজ বাকি: {Number.isFinite(aiMessagesRemaining) ? aiMessagesRemaining : "∞"} / 5
+            </span>
+            <Link to="/pricing" className="rounded-full bg-primary px-2 py-1 font-bold text-primary-foreground hover:opacity-90">
+              Pro
+            </Link>
+          </div>
+        )}
       </div>
 
-      {/* Messages */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto">
         {!active || active.messages.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center px-6 text-center">

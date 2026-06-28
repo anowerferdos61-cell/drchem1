@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate, useSearch, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
 import { toast, Toaster } from "sonner";
 import { FlaskConical, Loader2 } from "lucide-react";
@@ -11,9 +11,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export const Route = createFileRoute("/login")({
-  beforeLoad: () => {
-    throw redirect({ to: "/app" });
-  },
   validateSearch: (search: Record<string, unknown>) => ({
     redirect: typeof search.redirect === "string" ? search.redirect : "/app",
   }),

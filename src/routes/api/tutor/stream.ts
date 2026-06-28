@@ -13,6 +13,66 @@
  */
 import { createFileRoute } from "@tanstack/react-router";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { createClient } from "@supabase/supabase-js";
+
+async function getUserIdFromRequest(req: Request): Promise<string | null> {
+  const auth = req.headers.get("authorization");
+  if (!auth?.startsWith("Bearer ")) return null;
+  const token = auth.slice(7);
+  try {
+    const url = process.env.SUPABASE_URL;
+    const key = process.env.SUPABASE_PUBLISHABLE_KEY;
+    if (!url || !key) return null;
+    const supa = createClient(url, key, {
+      auth: { persistSession: false, autoRefreshToken: false },
+      global: { headers: { Authorization: `Bearer ${token}` } },
+    });
+    const { data } = await supa.auth.getUser(token);
+    return data.user?.id ?? null;
+  } catch {
+    return null;
+  }
+}
+
+async function checkAndConsumeQuota(userId: string): Promise<{ ok: boolean; used: number }> {
+  // Check active subscription
+  const { data: sub } = await supabaseAdmin
+    .from("subscriptions")
+    .select("plan_code, status")
+    .eq("user_id", userId)
+    .in("status", ["trialing", "active"])
+    .maybeSingle();
+  const isPaid = !!sub && sub.plan_code !== "free";
+  if (isPaid) return { ok: true, used: 0 };
+
+  const now = new Date();
+  const dhaka = new Date(now.getTime() + (6 * 60 - now.getTimezoneOffset()) * 60_000);
+  const today = dhaka.toISOString().slice(0, 10);
+
+  const { data: usage } = await supabaseAdmin
+    .from("usage_counters")
+    .select("ai_messages_used")
+    .eq("user_id", userId)
+    .eq("usage_date", today)
+    .maybeSingle();
+  const used = usage?.ai_messages_used ?? 0;
+  if (used >= 5) return { ok: false, used };
+
+  if (usage) {
+    await supabaseAdmin
+      .from("usage_counters")
+      .update({ ai_messages_used: used + 1 })
+      .eq("user_id", userId)
+      .eq("usage_date", today);
+  } else {
+    await supabaseAdmin.from("usage_counters").insert({
+      user_id: userId,
+      usage_date: today,
+      ai_messages_used: 1,
+    });
+  }
+  return { ok: true, used: used + 1 };
+}
 
 const GATEWAY_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
 const EMBED_URL = "https://ai.gateway.lovable.dev/v1/embeddings";
@@ -132,6 +192,26 @@ export const Route = createFileRoute("/api/tutor/stream")({
           );
         }
 
+        // ─── Auth + Quota (Free tier = 5/day, Pro = unlimited) ────
+        const userId = await getUserIdFromRequest(request);
+        if (!userId) {
+          return new Response(
+            JSON.stringify({ error: "Unauthorized — sign in to use AI Tutor" }),
+            { status: 401, headers: { "Content-Type": "application/json" } },
+          );
+        }
+        const quota = await checkAndConsumeQuota(userId);
+        if (!quota.ok) {
+          return new Response(
+            JSON.stringify({
+              error:
+                "আজকের ৫টি free AI message শেষ হয়ে গেছে। Unlimited access এর জন্য Pro upgrade করো।",
+              quotaExceeded: true,
+            }),
+            { status: 429, headers: { "Content-Type": "application/json" } },
+          );
+        }
+
         let body: {
           messages?: Array<{ role: string; content: string }>;
           ragMode?: boolean;
@@ -154,6 +234,7 @@ export const Route = createFileRoute("/api/tutor/stream")({
             headers: { "Content-Type": "application/json" },
           });
         }
+
 
         // ------- Optional RAG retrieval -------
         let systemContent = body.system || BASE_SYSTEM_PROMPT;

@@ -2,7 +2,8 @@
  * Virtual Chemistry Lab — Acid-Base Titration (HCl + NaOH).
  * Central brain: holds ALL state and orchestrates the lab + viva.
  */
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useAuth } from "@/lib/auth-store";
 import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Toaster, toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -120,9 +121,14 @@ type EquipmentSelectId =
   | "clamp";
 
 function Index() {
-  // Auth disabled — dashboard is publicly accessible.
-
-
+  // Auth guard — redirect to /login if not signed in
+  const { isAuthenticated, loading } = useAuth();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      void navigate({ to: "/login", search: { redirect: "/app" }, replace: true });
+    }
+  }, [loading, isAuthenticated, navigate]);
 
   const [activeExperiment, setActiveExperiment] = useState<ExperimentId | null>(null);
   const [showExperiments, setShowExperiments] = useState(false);
