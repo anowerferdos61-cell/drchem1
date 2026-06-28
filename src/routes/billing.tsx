@@ -180,9 +180,9 @@ function BillingPage() {
           )}
         </div>
 
-        {/* Trial activation OR Payment form */}
+        {/* Payment form */}
         {!isPro && (
-          <TrialOrPay
+          <PaymentForm
             preselectedPlan={preselectedPlan}
             onSuccess={async () => {
               await refetch();
