@@ -18,8 +18,6 @@ import {
   Crown,
   FlaskConical,
   Loader2,
-  Phone,
-  ShieldCheck,
   Sparkles,
   XCircle,
 } from "lucide-react";
