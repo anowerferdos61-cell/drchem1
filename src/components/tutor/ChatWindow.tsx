@@ -155,6 +155,7 @@ export default function ChatWindow() {
       } finally {
         updateMessage(convoId, assistant.id, { streaming: false });
         setStreaming(false);
+        void refetchEnt();
         abortRef.current = null;
       }
     },
