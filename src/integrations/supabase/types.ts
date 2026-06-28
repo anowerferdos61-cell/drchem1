@@ -56,6 +56,65 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_requests: {
+        Row: {
+          amount_bdt: number
+          created_at: string
+          id: string
+          method: string
+          note: string | null
+          plan_code: string
+          review_note: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          sender_phone: string
+          status: string
+          trx_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_bdt: number
+          created_at?: string
+          id?: string
+          method?: string
+          note?: string | null
+          plan_code: string
+          review_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          sender_phone: string
+          status?: string
+          trx_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_bdt?: number
+          created_at?: string
+          id?: string
+          method?: string
+          note?: string | null
+          plan_code?: string
+          review_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          sender_phone?: string
+          status?: string
+          trx_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_requests_plan_code_fkey"
+            columns: ["plan_code"]
+            isOneToOne: false
+            referencedRelation: "subscription_plans"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -64,7 +123,10 @@ export type Database = {
           display_name: string | null
           email: string | null
           id: string
+          phone: string | null
+          phone_verified_at: string | null
           school: string | null
+          trial_used: boolean
           updated_at: string
           user_id: string
         }
@@ -75,7 +137,10 @@ export type Database = {
           display_name?: string | null
           email?: string | null
           id?: string
+          phone?: string | null
+          phone_verified_at?: string | null
           school?: string | null
+          trial_used?: boolean
           updated_at?: string
           user_id: string
         }
@@ -86,8 +151,118 @@ export type Database = {
           display_name?: string | null
           email?: string | null
           id?: string
+          phone?: string | null
+          phone_verified_at?: string | null
           school?: string | null
+          trial_used?: boolean
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      subscription_plans: {
+        Row: {
+          billing_cycle: string
+          code: string
+          created_at: string
+          duration_days: number
+          features: Json
+          is_active: boolean
+          name_bn: string
+          name_en: string
+          price_bdt: number
+          tier: string
+        }
+        Insert: {
+          billing_cycle: string
+          code: string
+          created_at?: string
+          duration_days?: number
+          features?: Json
+          is_active?: boolean
+          name_bn: string
+          name_en: string
+          price_bdt?: number
+          tier: string
+        }
+        Update: {
+          billing_cycle?: string
+          code?: string
+          created_at?: string
+          duration_days?: number
+          features?: Json
+          is_active?: boolean
+          name_bn?: string
+          name_en?: string
+          price_bdt?: number
+          tier?: string
+        }
+        Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          cancelled_at: string | null
+          created_at: string
+          current_period_end: string
+          id: string
+          plan_code: string
+          started_at: string
+          status: string
+          trial_ends_at: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cancelled_at?: string | null
+          created_at?: string
+          current_period_end: string
+          id?: string
+          plan_code: string
+          started_at?: string
+          status: string
+          trial_ends_at?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cancelled_at?: string | null
+          created_at?: string
+          current_period_end?: string
+          id?: string
+          plan_code?: string
+          started_at?: string
+          status?: string
+          trial_ends_at?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_plan_code_fkey"
+            columns: ["plan_code"]
+            isOneToOne: false
+            referencedRelation: "subscription_plans"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
+      usage_counters: {
+        Row: {
+          ai_messages_used: number
+          updated_at: string
+          usage_date: string
+          user_id: string
+        }
+        Insert: {
+          ai_messages_used?: number
+          updated_at?: string
+          usage_date: string
+          user_id: string
+        }
+        Update: {
+          ai_messages_used?: number
+          updated_at?: string
+          usage_date?: string
           user_id?: string
         }
         Relationships: []
