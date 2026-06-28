@@ -4,7 +4,6 @@ import { toast, Toaster } from "sonner";
 import { FlaskConical, GraduationCap, Loader2, UserCog } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
 import { useAuth } from "@/lib/auth-store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,7 +39,7 @@ function SignupPage() {
   const navigate = useNavigate();
   const { isAuthenticated, loading } = useAuth();
 
-  const [role, setRole] = useState<"student" | "teacher">("student");
+  const [role, setRole] = useState<"student" | "teacher" | null>(null);
   const [displayName, setDisplayName] = useState("");
   const [school, setSchool] = useState("");
   const [klass, setKlass] = useState("");
@@ -56,6 +55,10 @@ function SignupPage() {
 
   const handleSignup = async (e: FormEvent) => {
     e.preventDefault();
+    if (!role) {
+      toast.error("আগে শিক্ষার্থী বা শিক্ষক রোল সিলেক্ট করুন");
+      return;
+    }
     if (password.length < 6) {
       toast.error("পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে");
       return;
@@ -86,14 +89,6 @@ function SignupPage() {
     navigate({ to: "/login" });
   };
 
-  const handleGoogle = async () => {
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
-      extraParams: { prompt: "select_account" },
-    });
-    if (result.error) toast.error("Google sign-up failed");
-  };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5 px-4 py-10">
       <Toaster richColors position="top-center" />
@@ -109,7 +104,7 @@ function SignupPage() {
           ফ্রি সাইনআপ করে ভার্চুয়াল ল্যাবে শুরু করুন
         </p>
 
-        {/* Role selector */}
+        <Label className="mb-2 block">আপনি কে?</Label>
         <div className="grid grid-cols-2 gap-2 mb-5">
           <button
             type="button"
@@ -137,24 +132,6 @@ function SignupPage() {
             <UserCog className="h-5 w-5" />
             <span className="text-sm font-medium">শিক্ষক</span>
           </button>
-        </div>
-
-        <Button
-          type="button"
-          variant="outline"
-          className="w-full mb-4"
-          onClick={handleGoogle}
-        >
-          Google দিয়ে চালিয়ে যান
-        </Button>
-
-        <div className="relative my-4">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-border" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-card px-2 text-muted-foreground">অথবা ইমেইল দিয়ে</span>
-          </div>
         </div>
 
         <form onSubmit={handleSignup} className="space-y-3">
@@ -211,7 +188,7 @@ function SignupPage() {
               placeholder="কমপক্ষে ৬ অক্ষর"
             />
           </div>
-          <Button type="submit" className="w-full" disabled={submitting}>
+          <Button type="submit" className="w-full" disabled={submitting || !role}>
             {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : "অ্যাকাউন্ট তৈরি করো"}
           </Button>
         </form>
