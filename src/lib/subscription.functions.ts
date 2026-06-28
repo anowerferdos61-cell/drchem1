@@ -336,7 +336,8 @@ export const rejectPayment = createServerFn({ method: "POST" })
     });
     if (!isAdmin) throw new Error("Forbidden");
 
-    const { error } = await supabase
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin
       .from("payment_requests")
       .update({
         status: "rejected",
@@ -349,6 +350,7 @@ export const rejectPayment = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
 
 // ─── cancelSubscription ────────────────────────────────────────────────
 export const cancelSubscription = createServerFn({ method: "POST" })
