@@ -41,6 +41,8 @@ import {
   Video,
   NotebookPen,
 } from "lucide-react";
+import { useEntitlements } from "@/hooks/useEntitlements";
+import { PaywallModal } from "@/components/subscription/PaywallModal";
 
 interface DashboardProps {
   onEnterExperiments: () => void;
