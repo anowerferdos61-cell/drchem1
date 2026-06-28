@@ -388,7 +388,6 @@ function PaymentForm({
     preselectedPlan && preselectedPlan in PLAN_INFO ? preselectedPlan : "student_monthly";
   const [plan, setPlan] = useState(validPlan);
   const [senderPhone, setSenderPhone] = useState("");
-  const [trxId, setTrxId] = useState("");
   const [busy, setBusy] = useState(false);
   const submitFn = useServerFn(submitPaymentRequest);
 
@@ -402,11 +401,9 @@ function PaymentForm({
         data: {
           planCode: plan as "student_monthly" | "student_yearly" | "teacher_monthly" | "teacher_yearly",
           senderPhone,
-          trxId,
         },
       });
       toast.success("✅ Payment submit হয়েছে! ২৪ ঘন্টার মধ্যে approve হবে।");
-      setTrxId("");
       setSenderPhone("");
       await onSuccess();
     } catch (err) {
