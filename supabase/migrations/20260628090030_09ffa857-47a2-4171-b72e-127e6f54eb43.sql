@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.admin_grant_subscription(uuid, text) FROM authenticated, anon, PUBLIC;

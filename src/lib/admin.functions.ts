@@ -121,7 +121,8 @@ export const grantSubscription = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     await ensureAdmin(context.supabase, context.userId);
-    const { error } = await context.supabase.rpc("admin_grant_subscription", {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin.rpc("admin_grant_subscription", {
       _user_id: data.userId,
       _plan_code: data.planCode,
     });
