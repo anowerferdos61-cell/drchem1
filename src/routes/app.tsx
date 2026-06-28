@@ -122,12 +122,12 @@ type EquipmentSelectId =
 
 function Index() {
   // Auth guard — redirect to /login if not signed in
-  const { isAuthenticated, loading, profile, roles, user } = useAuth();
+  const { isAuthenticated, loading, profile, roles, rolesLoaded } = useAuth();
   const navigate = useNavigate();
   const isAdmin = roles.includes("admin");
   // Roles load asynchronously after the session — wait for them before rendering
   // so admins never see a flash of the student dashboard.
-  const rolesReady = !user || roles.length > 0;
+  const rolesReady = rolesLoaded;
   useEffect(() => {
     if (loading) return;
     if (!isAuthenticated) {
