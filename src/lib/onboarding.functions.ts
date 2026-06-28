@@ -18,6 +18,7 @@ export const setMyRole = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     // Don't allow downgrading an admin
     const { data: existing } = await supabase
@@ -28,13 +29,14 @@ export const setMyRole = createServerFn({ method: "POST" })
     const isAdmin = (existing ?? []).some((r) => r.role === "admin");
 
     // Reset non-admin roles
-    await supabase
+    const { error: deleteErr } = await supabaseAdmin
       .from("user_roles")
       .delete()
       .eq("user_id", userId)
       .neq("role", "admin");
+    if (deleteErr) throw new Error(deleteErr.message);
 
-    const { error: roleErr } = await supabase
+    const { error: roleErr } = await supabaseAdmin
       .from("user_roles")
       .insert({ user_id: userId, role: data.role });
     if (roleErr && roleErr.code !== "23505") throw new Error(roleErr.message);
@@ -47,7 +49,7 @@ export const setMyRole = createServerFn({ method: "POST" })
     if (data.school !== undefined) updates.school = data.school;
     if (data.klass !== undefined) updates.class = data.klass;
 
-    const { error: profErr } = await supabase
+    const { error: profErr } = await supabaseAdmin
       .from("profiles")
       .update(updates)
       .eq("user_id", userId);
