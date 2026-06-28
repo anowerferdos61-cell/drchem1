@@ -37,7 +37,7 @@ export function PaywallModal({
             🔒 {featureName} Pro এ পাওয়া যাবে
           </DialogTitle>
           <DialogDescription className="text-center pt-2">
-            {reason ?? "Free tier এ এই lab unlock নাই। Pro upgrade করো বা ৭ দিনের free trial নাও।"}
+            {reason ?? "Free tier এ এই feature unlock নাই। Pro plan নাও।"}
           </DialogDescription>
         </DialogHeader>
 
