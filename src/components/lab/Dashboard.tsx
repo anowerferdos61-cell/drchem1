@@ -516,7 +516,7 @@ function HomeGrid({
 // Curriculum view
 // ─────────────────────────────────────────────────────────────
 
-function CurriculumGrid({ onPick }: { onPick: (c: ChapterMeta) => void }) {
+function CurriculumGrid({ onPick, isPro }: { onPick: (c: ChapterMeta) => void; isPro: boolean }) {
   return (
     <>
       <div className="mb-5">
