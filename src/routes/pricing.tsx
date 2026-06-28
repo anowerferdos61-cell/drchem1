@@ -254,8 +254,8 @@ function PricingPage() {
         {/* Payment method note */}
         <div className="mt-12 text-center">
           <p className="text-sm text-muted-foreground">
-            💳 Payment via <strong className="text-foreground">bKash</strong> · TrxID submit করলে
-            ২৪ ঘন্টার মধ্যে activate হবে
+            💳 Payment via <strong className="text-foreground">bKash</strong> · আপনার bKash নম্বর
+            submit করলে ২৪ ঘন্টার মধ্যে activate হবে
           </p>
         </div>
 
