@@ -48,6 +48,7 @@ import ElectrochemicalSeriesLab from "@/components/lab/ElectrochemicalSeriesLab"
 import BondingLab from "@/components/lab/BondingLab";
 
 import LabAIAssistant from "@/components/lab/LabAIAssistant";
+import LandscapeGate from "@/components/lab/LandscapeGate";
 
 
 import { setAIContext, useAIContext } from "@/lib/ai-context-store";
@@ -262,6 +263,7 @@ function Index() {
   return (
     <>
       {content}
+      {showFloatingAI && <LandscapeGate />}
       {showFloatingAI && <LabAIAssistant context={aiCtx} />}
     </>
   );
@@ -562,74 +564,79 @@ function TitrationLab({ onBack }: { onBack: () => void }) {
   return (
     <>
       <Toaster position="top-center" richColors />
-      <div className="min-h-screen p-3 md:p-6">
-        {/* Top bar */}
-        <header className="mb-4 flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" onClick={onBack}>
-              <ArrowLeft className="mr-1 h-4 w-4" /> Experiments
+      <div className="flex h-[100dvh] flex-col overflow-hidden bg-gradient-to-br from-slate-50 via-white to-sky-50">
+        {/* ── Top bar (compact, always visible) ─────────────── */}
+        <header className="flex shrink-0 items-center justify-between gap-1.5 border-b bg-card/80 px-2 py-1.5 backdrop-blur md:px-4 md:py-2.5">
+          <div className="flex min-w-0 items-center gap-1.5">
+            <Button variant="ghost" size="sm" onClick={onBack} className="h-7 shrink-0 px-1.5 md:h-8 md:px-2">
+              <ArrowLeft className="h-3.5 w-3.5 md:mr-1" />
+              <span className="hidden md:inline">Experiments</span>
             </Button>
-            <FlaskConical className="h-6 w-6 text-primary" />
-            <div>
-              <h1 className="text-lg font-bold leading-tight">
-                Virtual Chemistry Lab · ভার্চুয়াল রসায়ন ল্যাব
+            <FlaskConical className="h-4 w-4 shrink-0 text-primary md:h-6 md:w-6" />
+            <div className="min-w-0">
+              <h1 className="truncate text-[11px] font-bold leading-tight md:text-lg">
+                <span className="md:hidden">Virtual Lab · ভার্চুয়াল ল্যাব</span>
+                <span className="hidden md:inline">
+                  Virtual Chemistry Lab · ভার্চুয়াল রসায়ন ল্যাব
+                </span>
               </h1>
-              <p className="text-xs text-muted-foreground">
+              <p className="hidden truncate text-xs text-muted-foreground sm:block">
                 Acid-Base Titration · HCl + NaOH
               </p>
             </div>
           </div>
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex shrink-0 items-center gap-1 md:gap-2">
             <ModeToggle mode={mode} setMode={setMode} />
-            <Button variant="outline" size="sm" onClick={() => setShowPanels((v) => !v)}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowPanels((v) => !v)}
+              className="hidden h-8 px-2 md:inline-flex"
+            >
               {showPanels ? <EyeOff className="mr-1 h-4 w-4" /> : <Eye className="mr-1 h-4 w-4" />}
               {showPanels ? "Hide" : "Show"} panels
             </Button>
-            <Button variant="outline" size="sm" onClick={() => setShowViva((v) => !v)}>
-              <GraduationCap className="mr-1 h-4 w-4" />
-              {showViva ? "Hide Viva" : "AI Viva"}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowViva((v) => !v)}
+              className="h-7 px-1.5 text-[11px] md:h-8 md:px-3 md:text-sm"
+            >
+              <GraduationCap className="h-3.5 w-3.5 md:mr-1 md:h-4 md:w-4" />
+              <span className="hidden md:inline">{showViva ? "Hide Viva" : "AI Viva"}</span>
+              <span className="ml-0.5 md:hidden">Viva</span>
             </Button>
           </div>
         </header>
 
-        <div
-          className={[
-            "grid gap-4",
-            showPanels && !classroom
-              ? "lg:grid-cols-[260px_1fr_280px]"
-              : "grid-cols-1",
-          ].join(" ")}
-        >
-          {/* Left panel */}
-          {showPanels && !classroom && (
-            <div className="space-y-3">
+        {/* ── Main 3-column layout (fits in single screen on landscape) ── */}
+        <div className="flex min-h-0 flex-1 gap-1.5 p-1.5 md:gap-3 md:p-4">
+          {/* Left: equipment + config */}
+          {showPanels && (
+            <aside className="flex w-[140px] shrink-0 flex-col gap-1.5 overflow-y-auto pr-0.5 sm:w-[180px] md:w-[240px] lg:w-[260px] [&_h3]:text-[10px] md:[&_h3]:text-sm">
               <EquipmentPanel
                 onSelect={handleSelect}
                 highlight={guide ? nextHighlight : null}
                 disabled={() => submitted}
               />
               <ConfigPanel config={config} onChange={setConfig} />
-            </div>
+            </aside>
           )}
 
-          {/* Center: 3D workspace */}
+          {/* Center: workspace */}
           <section
-            className="relative rounded-2xl border bg-card/60 shadow-xl backdrop-blur"
-            style={{ minHeight: classroom ? 640 : 480 }}
+            className="relative min-w-0 flex-1 overflow-hidden rounded-xl border bg-card/60 shadow-xl backdrop-blur md:rounded-2xl"
             onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => {
               const id = e.dataTransfer.getData("text/equipment") as EquipmentSelectId;
               if (id) handleSelect(id);
             }}
           >
-            <div
-              className="absolute inset-0 overflow-hidden rounded-2xl"
-              style={{ transform: classroom ? "scale(1.18)" : undefined, transformOrigin: "center" }}
-            >
+            <div className="absolute inset-0 overflow-hidden rounded-xl md:rounded-2xl">
               <Suspense
                 fallback={
-                  <div className="flex h-full items-center justify-center text-muted-foreground">
-                    Loading 3D scene…
+                  <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
+                    Loading scene…
                   </div>
                 }
               >
@@ -645,37 +652,62 @@ function TitrationLab({ onBack }: { onBack: () => void }) {
               </Suspense>
             </div>
 
-            {/* Workspace controls */}
-            <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 gap-2 rounded-full border bg-background/90 p-1.5 shadow-lg backdrop-blur">
+            {/* Mobile panel toggle (top-left of workspace) */}
+            <button
+              onClick={() => setShowPanels((v) => !v)}
+              className="absolute left-2 top-2 z-10 rounded-full border bg-background/90 p-1.5 shadow-md backdrop-blur transition-transform active:scale-95 md:hidden"
+              aria-label="Toggle panels"
+            >
+              {showPanels ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+            </button>
+
+            {/* Bottom action bar */}
+            <div className="absolute bottom-1.5 left-1/2 z-10 flex -translate-x-1/2 gap-1 rounded-full border bg-background/95 p-1 shadow-lg backdrop-blur md:bottom-3 md:gap-2 md:p-1.5">
               <Button
                 size="sm"
                 variant={stopcockOpen ? "destructive" : "default"}
                 onClick={toggleStopcock}
                 disabled={submitted}
+                className="h-7 px-2 text-[11px] md:h-8 md:px-3 md:text-sm"
               >
-                {stopcockOpen ? <Pause className="mr-1 h-4 w-4" /> : <Play className="mr-1 h-4 w-4" />}
-                {stopcockOpen ? "Close" : "Open"} stopcock
+                {stopcockOpen ? <Pause className="h-3.5 w-3.5 md:mr-1" /> : <Play className="h-3.5 w-3.5 md:mr-1" />}
+                <span className="hidden md:inline">{stopcockOpen ? "Close" : "Open"} stopcock</span>
+                <span className="ml-1 md:hidden">{stopcockOpen ? "Close" : "Open"}</span>
               </Button>
               <Button
                 size="sm"
                 variant="secondary"
                 onClick={() => setStirring((v) => !v)}
                 disabled={!placed.hcl || submitted}
+                className="h-7 px-2 text-[11px] md:h-8 md:px-3 md:text-sm"
               >
-                {stirring ? "Stop stir" : "Stir"}
+                {stirring ? "Stop" : "Stir"}
               </Button>
-              <Button size="sm" variant="outline" onClick={resetLab}>
-                <RotateCcw className="mr-1 h-4 w-4" /> Reset · পুনরায়
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={resetLab}
+                className="h-7 px-2 text-[11px] md:h-8 md:px-3 md:text-sm"
+              >
+                <RotateCcw className="h-3.5 w-3.5 md:mr-1" />
+                <span className="hidden md:inline">Reset</span>
               </Button>
-              <Button size="sm" onClick={submit} disabled={submitted}>
-                <Trophy className="mr-1 h-4 w-4" /> Submit · জমা
+              <Button
+                size="sm"
+                onClick={submit}
+                disabled={submitted}
+                className="h-7 px-2 text-[11px] md:h-8 md:px-3 md:text-sm"
+              >
+                <Trophy className="h-3.5 w-3.5 md:mr-1" />
+                <span className="hidden md:inline">Submit</span>
+                <span className="ml-1 md:hidden">Submit</span>
               </Button>
             </div>
           </section>
 
-          {/* Right panel */}
-          {showPanels && !classroom && (
-            <div className="space-y-3">
+          {/* Right: live data + steps */}
+          {showPanels && (
+            <aside className="flex w-[140px] shrink-0 flex-col gap-1.5 overflow-y-auto pl-0.5 sm:w-[190px] md:w-[260px] lg:w-[280px] [&_h3]:text-[10px] md:[&_h3]:text-sm">
               <StatusPanel
                 Vb={Vb}
                 Ve={Ve}
@@ -683,7 +715,6 @@ function TitrationLab({ onBack }: { onBack: () => void }) {
                 Ma={config.Ma}
                 Va={config.Va}
                 Mb={config.Mb}
-                
               />
               {mode !== "student" && (
                 <StepsPanel
@@ -693,27 +724,34 @@ function TitrationLab({ onBack }: { onBack: () => void }) {
                   nextHint={guide ? nextHint : undefined}
                 />
               )}
-            </div>
+            </aside>
           )}
         </div>
 
-        {/* Report */}
+        {/* Report overlay */}
         {report && (
-          <div className="mt-6">
+          <div className="absolute inset-0 z-20 overflow-auto bg-background/95 p-4 backdrop-blur">
             <LabReport report={report} onReset={resetLab} />
           </div>
         )}
 
         {/* Viva drawer */}
         {showViva && (
-          <div className="mt-6 grid gap-4 lg:grid-cols-2">
-            <TeacherViva onPublish={setVivaQuestions} />
-            <StudentViva />
-            {vivaQuestions.length === 0 && (
-              <p className="col-span-full text-center text-xs text-muted-foreground">
-                Teacher generates and publishes questions. Students answer them and get AI grading.
-              </p>
-            )}
+          <div className="absolute inset-0 z-20 overflow-auto bg-background/95 p-4 backdrop-blur">
+            <div className="mb-3 flex justify-end">
+              <Button size="sm" variant="outline" onClick={() => setShowViva(false)}>
+                Close
+              </Button>
+            </div>
+            <div className="grid gap-4 lg:grid-cols-2">
+              <TeacherViva onPublish={setVivaQuestions} />
+              <StudentViva />
+              {vivaQuestions.length === 0 && (
+                <p className="col-span-full text-center text-xs text-muted-foreground">
+                  Teacher generates and publishes questions. Students answer them and get AI grading.
+                </p>
+              )}
+            </div>
           </div>
         )}
       </div>
