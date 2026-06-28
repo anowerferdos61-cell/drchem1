@@ -469,7 +469,7 @@ function PaymentForm({
             <strong className="text-base">৳{info.price}</strong> (Reference: "DrChem")
           </li>
           <li>
-            <strong>৪.</strong> Success message থেকে TrxID copy করে নিচে দিন
+            <strong>৪.</strong> পেমেন্ট শেষে নিচে আপনার bKash নম্বরটি দিয়ে Submit করুন
           </li>
         </ol>
       </div>
@@ -486,21 +486,8 @@ function PaymentForm({
           maxLength={11}
           className="mt-1"
         />
-      </div>
-
-      <div>
-        <Label htmlFor="trx-id">Transaction ID (TrxID)</Label>
-        <Input
-          id="trx-id"
-          required
-          value={trxId}
-          onChange={(e) => setTrxId(e.target.value.trim().toUpperCase())}
-          placeholder="যেমন: 8N7K9P2Q3M"
-          className="mt-1 font-mono"
-          maxLength={20}
-        />
         <p className="text-xs text-muted-foreground mt-1">
-          ⚠️ TrxID ভুল হলে approve হবে না।
+          ⚠️ ভুল নম্বর দিলে আমরা পেমেন্ট মিলাতে পারব না।
         </p>
       </div>
 
