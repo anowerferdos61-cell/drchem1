@@ -29,7 +29,7 @@ export interface AuthState {
 
 type Listener = (s: AuthState) => void;
 
-let state: AuthState = { user: null, profile: null, roles: [], loading: true };
+let state: AuthState = { user: null, profile: null, roles: [], loading: true, rolesLoaded: false };
 const listeners = new Set<Listener>();
 let initialized = false;
 
@@ -46,6 +46,7 @@ async function loadProfileAndRoles(userId: string) {
   setState({
     profile: (profile as Profile | null) ?? null,
     roles: ((roleRows ?? []) as { role: AppRole }[]).map((r) => r.role),
+    rolesLoaded: true,
   });
 }
 
@@ -56,18 +57,18 @@ function initialize() {
   // Listener FIRST so we never miss a session restore
   supabase.auth.onAuthStateChange((_event, session) => {
     const user = session?.user ?? null;
-    setState({ user, loading: false });
+    setState({ user, loading: false, rolesLoaded: !user });
     if (user) {
       void loadProfileAndRoles(user.id);
     } else {
-      setState({ profile: null, roles: [] });
+      setState({ profile: null, roles: [], rolesLoaded: true });
     }
   });
 
   // Then hydrate
   supabase.auth.getSession().then(({ data }) => {
     const user = data.session?.user ?? null;
-    setState({ user, loading: false });
+    setState({ user, loading: false, rolesLoaded: !user });
     if (user) void loadProfileAndRoles(user.id);
   });
 }
