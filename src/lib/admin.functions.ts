@@ -7,7 +7,7 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 async function ensureAdmin(ctx: {
-  supabase: { rpc: (fn: string, args: Record<string, unknown>) => Promise<{ data: unknown }> };
+  supabase: { rpc: (fn: "has_role", args: { _user_id: string; _role: "admin" | "teacher" | "student" }) => Promise<{ data: boolean | null }> };
   userId: string;
 }) {
   const { data: isAdmin } = await ctx.supabase.rpc("has_role", {
