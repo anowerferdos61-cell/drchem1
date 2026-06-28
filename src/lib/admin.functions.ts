@@ -6,11 +6,9 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-type AuthContext = Parameters<Parameters<typeof requireSupabaseAuth>[0] extends never ? never : never>[0] extends never ? never : never;
-
-async function ensureAdmin(supabase: { rpc: (...args: unknown[]) => unknown }, userId: string) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: isAdmin } = await (supabase as any).rpc("has_role", {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function ensureAdmin(supabase: any, userId: string) {
+  const { data: isAdmin } = await supabase.rpc("has_role", {
     _user_id: userId,
     _role: "admin",
   });
