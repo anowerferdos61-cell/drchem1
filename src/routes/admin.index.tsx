@@ -108,18 +108,20 @@ function AdminDashboard() {
   const grantFn = useServerFn(grantSubscription);
   const cancelFn = useServerFn(cancelUserSubscription);
 
-  const { data: users = [], isLoading: usersLoading } = useQuery({
+  const { data: users = [], isLoading: usersLoading, error: usersError } = useQuery({
     queryKey: ["admin", "users"],
     queryFn: () => usersFn(),
-    enabled: isAuthenticated && isAdmin,
+    enabled: isAuthenticated && rolesLoaded && isAdmin,
     refetchInterval: 60_000,
+    retry: 1,
   });
 
-  const { data: stats } = useQuery({
+  const { data: stats, error: statsError } = useQuery({
     queryKey: ["admin", "stats"],
     queryFn: () => statsFn(),
-    enabled: isAuthenticated && isAdmin,
+    enabled: isAuthenticated && rolesLoaded && isAdmin,
     refetchInterval: 60_000,
+    retry: 1,
   });
 
   const [search, setSearch] = useState("");
