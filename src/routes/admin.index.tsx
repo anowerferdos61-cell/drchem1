@@ -18,6 +18,8 @@ import {
   Sparkles,
   AlertCircle,
   XCircle,
+  TrendingUp,
+  Calendar,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
