@@ -18,6 +18,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as BillingRouteImport } from './routes/billing'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
 import { Route as ApiTutorStreamRouteImport } from './routes/api/tutor/stream'
 
 const TutorRoute = TutorRouteImport.update({
@@ -65,6 +66,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminPaymentsRoute = AdminPaymentsRouteImport.update({
+  id: '/admin/payments',
+  path: '/admin/payments',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiTutorStreamRoute = ApiTutorStreamRouteImport.update({
   id: '/api/tutor/stream',
   path: '/api/tutor/stream',
@@ -81,6 +87,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tutor': typeof TutorRoute
+  '/admin/payments': typeof AdminPaymentsRoute
   '/api/tutor/stream': typeof ApiTutorStreamRoute
 }
 export interface FileRoutesByTo {
@@ -93,6 +100,7 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tutor': typeof TutorRoute
+  '/admin/payments': typeof AdminPaymentsRoute
   '/api/tutor/stream': typeof ApiTutorStreamRoute
 }
 export interface FileRoutesById {
@@ -106,6 +114,7 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tutor': typeof TutorRoute
+  '/admin/payments': typeof AdminPaymentsRoute
   '/api/tutor/stream': typeof ApiTutorStreamRoute
 }
 export interface FileRouteTypes {
@@ -120,6 +129,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/sitemap.xml'
     | '/tutor'
+    | '/admin/payments'
     | '/api/tutor/stream'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -132,6 +142,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/sitemap.xml'
     | '/tutor'
+    | '/admin/payments'
     | '/api/tutor/stream'
   id:
     | '__root__'
@@ -144,6 +155,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/sitemap.xml'
     | '/tutor'
+    | '/admin/payments'
     | '/api/tutor/stream'
   fileRoutesById: FileRoutesById
 }
@@ -157,6 +169,7 @@ export interface RootRouteChildren {
   SignupRoute: typeof SignupRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TutorRoute: typeof TutorRoute
+  AdminPaymentsRoute: typeof AdminPaymentsRoute
   ApiTutorStreamRoute: typeof ApiTutorStreamRoute
 }
 
@@ -225,6 +238,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/payments': {
+      id: '/admin/payments'
+      path: '/admin/payments'
+      fullPath: '/admin/payments'
+      preLoaderRoute: typeof AdminPaymentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/tutor/stream': {
       id: '/api/tutor/stream'
       path: '/api/tutor/stream'
@@ -245,6 +265,7 @@ const rootRouteChildren: RootRouteChildren = {
   SignupRoute: SignupRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TutorRoute: TutorRoute,
+  AdminPaymentsRoute: AdminPaymentsRoute,
   ApiTutorStreamRoute: ApiTutorStreamRoute,
 }
 export const routeTree = rootRouteImport
