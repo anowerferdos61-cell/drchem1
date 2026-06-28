@@ -83,7 +83,7 @@ function StatusBadge({ status }: { status: string | undefined }) {
 }
 
 function AdminDashboard() {
-  const { isAuthenticated, loading, roles } = useAuth();
+  const { isAuthenticated, loading, roles, rolesLoaded } = useAuth();
   const navigate = useNavigate();
   const isAdmin = roles.includes("admin");
 
@@ -91,10 +91,16 @@ function AdminDashboard() {
     if (loading) return;
     if (!isAuthenticated) {
       void navigate({ to: "/login", search: { redirect: "/admin" }, replace: true });
-    } else if (!isAdmin) {
+      return;
+    }
+    // Wait for roles to finish loading before deciding admin-vs-not.
+    // Otherwise we redirect to /app before roles arrive, and /app bounces
+    // back to /admin once they do → infinite redirect loop / spinner.
+    if (!rolesLoaded) return;
+    if (!isAdmin) {
       void navigate({ to: "/app", replace: true });
     }
-  }, [loading, isAuthenticated, isAdmin, navigate]);
+  }, [loading, isAuthenticated, rolesLoaded, isAdmin, navigate]);
 
   const qc = useQueryClient();
   const usersFn = useServerFn(listAllUsers);
