@@ -139,7 +139,7 @@ function Index() {
       void navigate({ to: "/admin", replace: true });
       return;
     }
-    // Force onboarding if role not yet selected (e.g. Google signup)
+    // Fallback for older accounts that missed signup role setup.
     if (profile && !profile.role_selected) {
       void navigate({ to: "/onboarding", replace: true });
     }

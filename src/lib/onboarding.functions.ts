@@ -1,5 +1,5 @@
 /**
- * One-time role selection for users who signed up via Google.
+ * One-time role selection fallback for accounts that missed signup role setup.
  */
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
