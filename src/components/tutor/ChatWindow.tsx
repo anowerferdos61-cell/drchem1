@@ -84,9 +84,14 @@ export default function ChatWindow() {
           ...convo.messages.map((m) => ({ role: m.role, content: m.content })),
           { role: "user", content: text },
         ];
+        const { data: sess } = await supabase.auth.getSession();
+        const token = sess.session?.access_token;
         const res = await fetch(STREAM_URL, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
           body: JSON.stringify({ messages: history, ragMode }),
           signal: ctrl.signal,
         });
