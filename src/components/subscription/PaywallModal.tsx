@@ -63,7 +63,7 @@ export function PaywallModal({
             পরে
           </Button>
           <Button asChild className="flex-1">
-            <Link to="/billing">🎁 Trial শুরু করো</Link>
+            <Link to="/billing">👑 Pro নিন</Link>
           </Button>
         </div>
       </DialogContent>
