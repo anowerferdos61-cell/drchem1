@@ -224,18 +224,39 @@ function AdminDashboard() {
             value={stats?.activeSubs}
             tint="emerald"
           />
-          <StatCard
-            icon={Sparkles}
-            label="On Trial"
-            value={stats?.trialingSubs}
-            tint="amber"
-          />
+          <StatCard icon={Sparkles} label="On Trial" value={stats?.trialingSubs} tint="amber" />
           <StatCard
             icon={AlertCircle}
             label="Pending Payments"
             value={stats?.pendingPayments}
             tint="rose"
             link="/admin/payments"
+          />
+          <StatCard
+            icon={CheckCircle2}
+            label="Approved Today"
+            value={stats?.approvedToday}
+            tint="emerald"
+          />
+          <StatCard
+            icon={XCircle}
+            label="Rejected Today"
+            value={stats?.rejectedToday}
+            tint="rose"
+          />
+          <StatCard
+            icon={Calendar}
+            label="This Month Revenue"
+            value={stats?.monthlyRevenue}
+            tint="amber"
+            prefix="৳"
+          />
+          <StatCard
+            icon={TrendingUp}
+            label="Total Revenue"
+            value={stats?.totalRevenue}
+            tint="primary"
+            prefix="৳"
           />
         </div>
 
