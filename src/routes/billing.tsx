@@ -45,9 +45,18 @@ const PLAN_INFO: Record<
 > = {
   student_monthly: { name: "Student Monthly", price: 99, cycle: "মাসিক" },
   student_yearly: { name: "Student Yearly", price: 999, cycle: "বার্ষিক" },
-  teacher_monthly: { name: "Teacher Monthly", price: 499, cycle: "মাসিক" },
-  teacher_yearly: { name: "Teacher Yearly", price: 4990, cycle: "বার্ষিক" },
+  teacher_monthly: { name: "Teacher Monthly", price: 299, cycle: "মাসিক" },
+  teacher_yearly: { name: "Teacher Yearly", price: 1290, cycle: "বার্ষিক" },
 };
+
+async function copyText(text: string, label: string) {
+  try {
+    await navigator.clipboard.writeText(text);
+    toast.success(`${label} copy হয়েছে`);
+  } catch {
+    toast.error("Copy করা যায়নি");
+  }
+}
 
 export const Route = createFileRoute("/billing")({
   validateSearch: (s: Record<string, unknown>) => ({
