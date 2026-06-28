@@ -262,8 +262,7 @@ function Index() {
 
   return (
     <>
-      {content}
-      {showFloatingAI && <LandscapeGate />}
+      {showFloatingAI ? <LandscapeWrapper>{content}</LandscapeWrapper> : content}
       {showFloatingAI && <LabAIAssistant context={aiCtx} />}
     </>
   );
