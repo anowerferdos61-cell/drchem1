@@ -18,6 +18,7 @@ import {
 import { generateTitle } from "@/lib/tutor-title.functions";
 import MessageBubble from "./MessageBubble";
 import Composer from "./Composer";
+import { supabase } from "@/integrations/supabase/client";
 
 const STREAM_URL = "/api/tutor/stream";
 
