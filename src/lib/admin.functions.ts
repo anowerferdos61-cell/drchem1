@@ -121,11 +121,38 @@ export const grantSubscription = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     await ensureAdmin(context.supabase, context.userId);
-    const { error } = await context.supabase.rpc("admin_grant_subscription", {
-      _user_id: data.userId,
-      _plan_code: data.planCode,
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: plan, error: planError } = await supabaseAdmin
+      .from("subscription_plans")
+      .select("duration_days")
+      .eq("code", data.planCode)
+      .single();
+
+    if (planError) throw new Error(planError.message);
+    if (!plan?.duration_days) throw new Error(`Invalid plan: ${data.planCode}`);
+
+    const now = new Date();
+    const currentPeriodEnd = new Date(
+      now.getTime() + Number(plan.duration_days) * 24 * 60 * 60 * 1000,
+    ).toISOString();
+
+    const { error: expireError } = await supabaseAdmin
+      .from("subscriptions")
+      .update({ status: "expired" })
+      .eq("user_id", data.userId)
+      .in("status", ["trialing", "active"]);
+    if (expireError) throw new Error(expireError.message);
+
+    const { error: insertError } = await supabaseAdmin.from("subscriptions").insert({
+      user_id: data.userId,
+      plan_code: data.planCode,
+      status: "active",
+      started_at: now.toISOString(),
+      current_period_end: currentPeriodEnd,
     });
-    if (error) throw new Error(error.message);
+    if (insertError) throw new Error(insertError.message);
+
     return { ok: true };
   });
 
