@@ -385,7 +385,7 @@ export default function Dashboard({ onPickExperiment }: DashboardProps) {
       <PaywallModal
         open={paywallOpen}
         onOpenChange={setPaywallOpen}
-        feature={paywallLab}
+        featureName={paywallLab}
       />
 
       <footer className="mx-auto max-w-7xl px-4 pb-10 text-center text-xs text-muted-foreground md:px-6">
