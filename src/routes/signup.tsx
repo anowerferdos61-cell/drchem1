@@ -64,7 +64,7 @@ function SignupPage() {
       return;
     }
     setSubmitting(true);
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -82,11 +82,22 @@ function SignupPage() {
       toast.error(error.message);
       return;
     }
-    toast.success(
-      "অ্যাকাউন্ট তৈরি হয়েছে! ইমেইলে ভেরিফিকেশন লিংক দেখুন।",
-      { duration: 6000 },
-    );
-    navigate({ to: "/login" });
+
+    if (!data.session) {
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (signInError) {
+        toast.success("অ্যাকাউন্ট তৈরি হয়েছে। এখন একই ইমেইল-পাসওয়ার্ড দিয়ে লগইন করুন।");
+        navigate({ to: "/login" });
+        return;
+      }
+    }
+
+    toast.success("অ্যাকাউন্ট তৈরি হয়েছে — স্বাগতম!");
+    navigate({ to: "/app", replace: true });
   };
 
   return (
