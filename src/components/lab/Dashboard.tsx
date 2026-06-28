@@ -636,12 +636,18 @@ function PracticalRoom({
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {labs.map((lab) => {
             const Icon = lab.icon;
+            const locked = !canAccessLab(lab.id);
             return (
               <Card
                 key={lab.id}
                 onClick={() => onOpenLab(lab.id)}
                 className={`group relative cursor-pointer overflow-hidden border bg-gradient-to-br ${lab.tint} p-5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl`}
               >
+                {locked && (
+                  <div className="absolute right-2 top-2 z-10 inline-flex items-center gap-1 rounded-full bg-amber-500/95 px-2 py-0.5 text-[10px] font-bold text-white shadow">
+                    <Lock className="h-3 w-3" /> Pro
+                  </div>
+                )}
                 <div className="flex items-start justify-between">
                   <div className={`grid h-12 w-12 place-items-center rounded-xl bg-background/80 shadow-sm backdrop-blur ${lab.iconColor}`}>
                     <Icon className="h-6 w-6" />
@@ -666,9 +672,14 @@ function PracticalRoom({
                 <Button
                   size="sm"
                   className="mt-4 w-full gap-1"
+                  variant={locked ? "outline" : "default"}
                   onClick={(e) => { e.stopPropagation(); onOpenLab(lab.id); }}
                 >
-                  <PlayCircle className="h-4 w-4" /> Start Lab
+                  {locked ? (
+                    <><Lock className="h-4 w-4" /> Unlock Pro</>
+                  ) : (
+                    <><PlayCircle className="h-4 w-4" /> Start Lab</>
+                  )}
                 </Button>
               </Card>
             );
