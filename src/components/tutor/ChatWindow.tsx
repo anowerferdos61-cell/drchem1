@@ -19,6 +19,8 @@ import { generateTitle } from "@/lib/tutor-title.functions";
 import MessageBubble from "./MessageBubble";
 import Composer from "./Composer";
 import { supabase } from "@/integrations/supabase/client";
+import { useEntitlements } from "@/hooks/useEntitlements";
+import { Link } from "@tanstack/react-router";
 
 const STREAM_URL = "/api/tutor/stream";
 
