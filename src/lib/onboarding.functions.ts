@@ -39,7 +39,11 @@ export const setMyRole = createServerFn({ method: "POST" })
       .insert({ user_id: userId, role: data.role });
     if (roleErr && roleErr.code !== "23505") throw new Error(roleErr.message);
 
-    const updates: Record<string, unknown> = { role_selected: true };
+    const updates: {
+      role_selected: boolean;
+      school?: string;
+      class?: string;
+    } = { role_selected: true };
     if (data.school !== undefined) updates.school = data.school;
     if (data.klass !== undefined) updates.class = data.klass;
 

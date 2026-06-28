@@ -6,8 +6,10 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-async function ensureAdmin(ctx: { supabase: ReturnType<typeof Object>; userId: string }) {
-  // @ts-expect-error supabase is the supabase-js client from middleware
+async function ensureAdmin(ctx: {
+  supabase: { rpc: (fn: string, args: Record<string, unknown>) => Promise<{ data: unknown }> };
+  userId: string;
+}) {
   const { data: isAdmin } = await ctx.supabase.rpc("has_role", {
     _user_id: ctx.userId,
     _role: "admin",
