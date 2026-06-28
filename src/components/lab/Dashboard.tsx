@@ -588,7 +588,7 @@ function PracticalRoom({
   setSearch: (s: string) => void;
   onOpenLab: (id: ExperimentId) => void;
 }) {
-  const { canAccessLab, isPro } = useEntitlements();
+  const { canAccessLab } = useEntitlements();
   return (
     <>
       <div className="mb-5">
