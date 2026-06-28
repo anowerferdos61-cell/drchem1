@@ -167,7 +167,6 @@ export const submitPaymentRequest = createServerFn({ method: "POST" })
           .string()
           .trim()
           .regex(/^01[3-9]\d{8}$/, "Valid bKash number লাগবে"),
-        trxId: z.string().trim().min(6).max(40),
         note: z.string().trim().max(300).optional(),
       })
       .parse(input),
@@ -190,17 +189,14 @@ export const submitPaymentRequest = createServerFn({ method: "POST" })
         amount_bdt: plan.price_bdt,
         method: "bkash",
         sender_phone: data.senderPhone,
-        trx_id: data.trxId,
+        trx_id: null,
         note: data.note ?? null,
         status: "pending",
       })
       .select("id")
       .single();
 
-    if (error) {
-      if (error.code === "23505") throw new Error("এই TrxID আগে submit করা হয়েছে।");
-      throw new Error(error.message);
-    }
+    if (error) throw new Error(error.message);
     return { ok: true, id: inserted.id };
   });
 
@@ -210,7 +206,7 @@ export const listMyPayments = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const { data } = await context.supabase
       .from("payment_requests")
-      .select("id, plan_code, amount_bdt, trx_id, sender_phone, status, review_note, created_at")
+      .select("id, plan_code, amount_bdt, sender_phone, status, review_note, created_at")
       .eq("user_id", context.userId)
       .order("created_at", { ascending: false })
       .limit(20);

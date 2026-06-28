@@ -208,16 +208,8 @@ function BillingPage() {
                       {PLAN_INFO[p.plan_code]?.name ?? p.plan_code} · ৳{p.amount_bdt}
                     </div>
                     <div className="text-xs text-muted-foreground flex items-center gap-1 flex-wrap">
-                      <span>TrxID:</span>
-                      <code className="font-mono">{p.trx_id}</code>
-                      <button
-                        type="button"
-                        onClick={() => copyText(p.trx_id, "TrxID")}
-                        className="inline-flex items-center hover:text-foreground"
-                        title="Copy TrxID"
-                      >
-                        <Copy className="h-3 w-3" />
-                      </button>
+                      <span>bKash:</span>
+                      <code className="font-mono">{p.sender_phone}</code>
                       <span>· {new Date(p.created_at).toLocaleString("bn-BD")}</span>
                     </div>
                     {p.review_note && (
@@ -396,7 +388,6 @@ function PaymentForm({
     preselectedPlan && preselectedPlan in PLAN_INFO ? preselectedPlan : "student_monthly";
   const [plan, setPlan] = useState(validPlan);
   const [senderPhone, setSenderPhone] = useState("");
-  const [trxId, setTrxId] = useState("");
   const [busy, setBusy] = useState(false);
   const submitFn = useServerFn(submitPaymentRequest);
 
@@ -410,11 +401,9 @@ function PaymentForm({
         data: {
           planCode: plan as "student_monthly" | "student_yearly" | "teacher_monthly" | "teacher_yearly",
           senderPhone,
-          trxId,
         },
       });
       toast.success("✅ Payment submit হয়েছে! ২৪ ঘন্টার মধ্যে approve হবে।");
-      setTrxId("");
       setSenderPhone("");
       await onSuccess();
     } catch (err) {
@@ -480,7 +469,7 @@ function PaymentForm({
             <strong className="text-base">৳{info.price}</strong> (Reference: "DrChem")
           </li>
           <li>
-            <strong>৪.</strong> Success message থেকে TrxID copy করে নিচে দিন
+            <strong>৪.</strong> পেমেন্ট শেষে নিচে আপনার bKash নম্বরটি দিয়ে Submit করুন
           </li>
         </ol>
       </div>
@@ -497,21 +486,8 @@ function PaymentForm({
           maxLength={11}
           className="mt-1"
         />
-      </div>
-
-      <div>
-        <Label htmlFor="trx-id">Transaction ID (TrxID)</Label>
-        <Input
-          id="trx-id"
-          required
-          value={trxId}
-          onChange={(e) => setTrxId(e.target.value.trim().toUpperCase())}
-          placeholder="যেমন: 8N7K9P2Q3M"
-          className="mt-1 font-mono"
-          maxLength={20}
-        />
         <p className="text-xs text-muted-foreground mt-1">
-          ⚠️ TrxID ভুল হলে approve হবে না।
+          ⚠️ ভুল নম্বর দিলে আমরা পেমেন্ট মিলাতে পারব না।
         </p>
       </div>
 

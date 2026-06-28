@@ -39,8 +39,8 @@ export function PendingPaymentBanner() {
             Payment Verification Pending
           </div>
           <p className="text-sm text-amber-800/90 dark:text-amber-200/90 mt-0.5">
-            আপনার <strong>৳{pending.amount_bdt}</strong> এর payment request (TrxID:{" "}
-            <code className="font-mono">{pending.trx_id}</code>) submit হয়েছে। Admin verify
+            আপনার <strong>৳{pending.amount_bdt}</strong> এর payment request (bKash:{" "}
+            <code className="font-mono">{pending.sender_phone}</code>) submit হয়েছে। Admin verify
             করছেন — সাধারণত কয়েক ঘন্টার মধ্যে approve হয়ে যায়।
           </p>
         </div>
