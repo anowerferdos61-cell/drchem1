@@ -179,9 +179,18 @@ export default function ChatWindow() {
             </p>
           </div>
         </div>
+        {!isPro && (
+          <div className="flex items-center gap-2 text-[10px]">
+            <span className="rounded-full bg-amber-500/15 px-2 py-1 font-semibold text-amber-700 dark:text-amber-400">
+              আজ বাকি: {Number.isFinite(aiMessagesRemaining) ? aiMessagesRemaining : "∞"} / 5
+            </span>
+            <Link to="/pricing" className="rounded-full bg-primary px-2 py-1 font-bold text-primary-foreground hover:opacity-90">
+              Pro
+            </Link>
+          </div>
+        )}
       </div>
 
-      {/* Messages */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto">
         {!active || active.messages.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center px-6 text-center">
