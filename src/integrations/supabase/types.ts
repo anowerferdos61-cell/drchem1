@@ -125,6 +125,7 @@ export type Database = {
           id: string
           phone: string | null
           phone_verified_at: string | null
+          role_selected: boolean
           school: string | null
           trial_used: boolean
           updated_at: string
@@ -139,6 +140,7 @@ export type Database = {
           id?: string
           phone?: string | null
           phone_verified_at?: string | null
+          role_selected?: boolean
           school?: string | null
           trial_used?: boolean
           updated_at?: string
@@ -153,6 +155,7 @@ export type Database = {
           id?: string
           phone?: string | null
           phone_verified_at?: string | null
+          role_selected?: boolean
           school?: string | null
           trial_used?: boolean
           updated_at?: string
@@ -293,6 +296,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_grant_subscription: {
+        Args: { _plan_code: string; _user_id: string }
+        Returns: undefined
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

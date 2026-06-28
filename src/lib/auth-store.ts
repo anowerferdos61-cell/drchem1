@@ -16,6 +16,7 @@ export interface Profile {
   school: string | null;
   class: string | null;
   avatar_url: string | null;
+  role_selected: boolean;
 }
 
 export interface AuthState {

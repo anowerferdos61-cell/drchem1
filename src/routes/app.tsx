@@ -122,13 +122,24 @@ type EquipmentSelectId =
 
 function Index() {
   // Auth guard — redirect to /login if not signed in
-  const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, loading, profile, roles } = useAuth();
   const navigate = useNavigate();
   useEffect(() => {
-    if (!loading && !isAuthenticated) {
+    if (loading) return;
+    if (!isAuthenticated) {
       void navigate({ to: "/login", search: { redirect: "/app" }, replace: true });
+      return;
     }
-  }, [loading, isAuthenticated, navigate]);
+    // Admins go straight to admin dashboard
+    if (roles.includes("admin")) {
+      void navigate({ to: "/admin", replace: true });
+      return;
+    }
+    // Force onboarding if role not yet selected (e.g. Google signup)
+    if (profile && !profile.role_selected) {
+      void navigate({ to: "/onboarding", replace: true });
+    }
+  }, [loading, isAuthenticated, profile, roles, navigate]);
 
   const [activeExperiment, setActiveExperiment] = useState<ExperimentId | null>(null);
   const [showExperiments, setShowExperiments] = useState(false);
