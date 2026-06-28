@@ -6,12 +6,12 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-async function ensureAdmin(ctx: {
-  supabase: { rpc: (fn: "has_role", args: { _user_id: string; _role: "admin" | "teacher" | "student" }) => Promise<{ data: boolean | null }> };
-  userId: string;
-}) {
-  const { data: isAdmin } = await ctx.supabase.rpc("has_role", {
-    _user_id: ctx.userId,
+type AuthContext = Parameters<Parameters<typeof requireSupabaseAuth>[0] extends never ? never : never>[0] extends never ? never : never;
+
+async function ensureAdmin(supabase: { rpc: (...args: unknown[]) => unknown }, userId: string) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: isAdmin } = await (supabase as any).rpc("has_role", {
+    _user_id: userId,
     _role: "admin",
   });
   if (!isAdmin) throw new Error("Forbidden");
