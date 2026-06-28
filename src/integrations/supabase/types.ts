@@ -69,7 +69,7 @@ export type Database = {
           reviewed_by: string | null
           sender_phone: string
           status: string
-          trx_id: string
+          trx_id: string | null
           updated_at: string
           user_id: string
         }
@@ -85,7 +85,7 @@ export type Database = {
           reviewed_by?: string | null
           sender_phone: string
           status?: string
-          trx_id: string
+          trx_id?: string | null
           updated_at?: string
           user_id: string
         }
@@ -101,7 +101,7 @@ export type Database = {
           reviewed_by?: string | null
           sender_phone?: string
           status?: string
-          trx_id?: string
+          trx_id?: string | null
           updated_at?: string
           user_id?: string
         }
