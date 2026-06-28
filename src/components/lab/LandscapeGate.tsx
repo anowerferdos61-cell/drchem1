@@ -1,23 +1,26 @@
-import { useEffect, useState } from "react";
-import { RotateCcw, Smartphone } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useEffect, useState, type ReactNode } from "react";
 
 /**
- * Shows a full-screen "please rotate" overlay when a mobile user
- * is in portrait. Attempts (best-effort) to lock landscape via the
- * Screen Orientation API after a user gesture / fullscreen.
+ * Auto-rotates lab content into landscape on portrait mobile devices using a
+ * CSS transform. The viewport stays portrait, but the content is rendered
+ * sideways at landscape dimensions — so users get a true landscape lab
+ * experience without manually turning the phone.
+ *
+ * Best-effort Screen Orientation lock is still attempted (works when the
+ * page is fullscreen), and we fall back to the CSS rotation otherwise.
  */
-export default function LandscapeGate() {
-  const [isPortrait, setIsPortrait] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+export default function LandscapeWrapper({ children }: { children: ReactNode }) {
+  const [dims, setDims] = useState<{ w: number; h: number } | null>(null);
+  const [rotate, setRotate] = useState(false);
 
   useEffect(() => {
     const check = () => {
       const w = window.innerWidth;
       const h = window.innerHeight;
-      const mobile = Math.min(w, h) < 768; // phone-sized
-      setIsMobile(mobile);
-      setIsPortrait(h > w);
+      const isMobile = Math.min(w, h) < 768;
+      const isPortrait = h > w;
+      setRotate(isMobile && isPortrait);
+      setDims({ w, h });
     };
     check();
     window.addEventListener("resize", check);
@@ -28,9 +31,9 @@ export default function LandscapeGate() {
     };
   }, []);
 
-  // Best-effort auto-lock on mount (will silently fail without fullscreen).
+  // Best-effort native landscape lock (silently fails without fullscreen).
   useEffect(() => {
-    if (!isMobile) return;
+    if (!rotate) return;
     const tryLock = async () => {
       try {
         const orientation = screen.orientation as ScreenOrientation & {
@@ -38,45 +41,37 @@ export default function LandscapeGate() {
         };
         await orientation.lock?.("landscape");
       } catch {
-        /* ignored — needs fullscreen / user gesture on most browsers */
+        /* fall back to CSS rotation */
       }
     };
     void tryLock();
-  }, [isMobile]);
+  }, [rotate]);
 
-  const requestLandscape = async () => {
-    try {
-      await document.documentElement.requestFullscreen?.();
-      const orientation = screen.orientation as ScreenOrientation & {
-        lock?: (o: string) => Promise<void>;
-      };
-      await orientation.lock?.("landscape");
-    } catch {
-      /* show overlay until user rotates manually */
-    }
-  };
+  if (!rotate || !dims) {
+    return <>{children}</>;
+  }
 
-  if (!isMobile || !isPortrait) return null;
-
+  // Rotate the inner content 90° so it occupies a landscape canvas
+  // (width = device height, height = device width).
   return (
-    <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center gap-5 bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 px-6 text-center text-white">
-      <div className="relative">
-        <Smartphone className="h-20 w-20 animate-pulse text-primary" strokeWidth={1.5} />
-        <RotateCcw
-          className="absolute -right-6 -top-2 h-8 w-8 animate-spin text-primary/80"
-          style={{ animationDuration: "2.5s" }}
-        />
+    <div
+      className="fixed inset-0 overflow-hidden bg-background"
+      style={{ touchAction: "manipulation" }}
+    >
+      <div
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          width: `${dims.h}px`,
+          height: `${dims.w}px`,
+          transform: "translate(-50%, -50%) rotate(90deg)",
+          transformOrigin: "center center",
+          overflow: "auto",
+        }}
+      >
+        {children}
       </div>
-      <div className="space-y-1">
-        <h2 className="text-lg font-bold tracking-tight">Rotate your device</h2>
-        <p className="text-sm text-slate-300">ফোনটি ল্যান্ডস্কেপ মোডে ঘোরান</p>
-        <p className="text-xs text-slate-400">
-          Virtual Lab works best in landscape · ভার্চুয়াল ল্যাব ল্যান্ডস্কেপে ভালো চলে
-        </p>
-      </div>
-      <Button onClick={requestLandscape} size="sm" variant="secondary">
-        <RotateCcw className="mr-2 h-4 w-4" /> Try auto-rotate
-      </Button>
     </div>
   );
 }
