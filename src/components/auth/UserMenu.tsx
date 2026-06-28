@@ -88,12 +88,18 @@ export default function UserMenu() {
           <>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
+              <Link to="/admin">
+                <ShieldCheck className="h-4 w-4" /> Admin Dashboard
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
               <Link to="/admin/payments">
-                <ShieldCheck className="h-4 w-4" /> Admin Payments
+                <CreditCard className="h-4 w-4" /> Payment Approvals
               </Link>
             </DropdownMenuItem>
           </>
         )}
+
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={() => void signOut()}>
           <LogOut className="h-4 w-4" /> লগআউট

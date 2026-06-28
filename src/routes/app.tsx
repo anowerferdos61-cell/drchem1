@@ -122,8 +122,12 @@ type EquipmentSelectId =
 
 function Index() {
   // Auth guard — redirect to /login if not signed in
-  const { isAuthenticated, loading, profile, roles } = useAuth();
+  const { isAuthenticated, loading, profile, roles, user } = useAuth();
   const navigate = useNavigate();
+  const isAdmin = roles.includes("admin");
+  // Roles load asynchronously after the session — wait for them before rendering
+  // so admins never see a flash of the student dashboard.
+  const rolesReady = !user || roles.length > 0;
   useEffect(() => {
     if (loading) return;
     if (!isAuthenticated) {
@@ -131,7 +135,7 @@ function Index() {
       return;
     }
     // Admins go straight to admin dashboard
-    if (roles.includes("admin")) {
+    if (isAdmin) {
       void navigate({ to: "/admin", replace: true });
       return;
     }
@@ -139,7 +143,8 @@ function Index() {
     if (profile && !profile.role_selected) {
       void navigate({ to: "/onboarding", replace: true });
     }
-  }, [loading, isAuthenticated, profile, roles, navigate]);
+  }, [loading, isAuthenticated, isAdmin, profile, navigate]);
+
 
   const [activeExperiment, setActiveExperiment] = useState<ExperimentId | null>(null);
   const [showExperiments, setShowExperiments] = useState(false);
@@ -244,6 +249,16 @@ function Index() {
   const aiCtx = useAIContext();
   // Floating AI assistant: ONLY inside an active experiment (not on dashboard / picker).
   const showFloatingAI = activeExperiment !== null;
+  // Block any render until we're sure the user isn't an admin (avoids
+  // flashing the student dashboard while role rows are still loading).
+  if (loading || !isAuthenticated || !rolesReady || isAdmin) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-sm text-muted-foreground">
+        লোড হচ্ছে…
+      </div>
+    );
+  }
+
   return (
     <>
       {content}
@@ -251,6 +266,7 @@ function Index() {
     </>
   );
 }
+
 
 
 
