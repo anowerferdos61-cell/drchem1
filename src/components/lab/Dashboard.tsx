@@ -290,7 +290,17 @@ export default function Dashboard({ onPickExperiment }: DashboardProps) {
         )}
 
         {view === "curriculum" && (
-          <CurriculumGrid onPick={setActiveChapter} />
+          <CurriculumGrid
+            isPro={isPro}
+            onPick={(ch) => {
+              if (!isPro && ch.number !== 10) {
+                setPaywallLab(`অধ্যায় ${ch.number}: ${ch.titleBn}`);
+                setPaywallOpen(true);
+                return;
+              }
+              setActiveChapter(ch);
+            }}
+          />
         )}
 
         {view === "practical" && (
