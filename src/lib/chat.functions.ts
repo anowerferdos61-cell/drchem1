@@ -135,29 +135,14 @@ export const chatWithAssistant = createServerFn({ method: "POST" })
     try {
       const reply = await chatComplete({ apiKey: key, systemPrompt, history });
 
-      // Record usage (only for free tier, but harmless for paid)
+      // Record usage (only for free tier) via SECURITY DEFINER RPC
       if (!isPaid) {
         const now = new Date();
         const dhaka = new Date(now.getTime() + (6 * 60 - now.getTimezoneOffset()) * 60_000);
         const today = dhaka.toISOString().slice(0, 10);
-        const { data: existing } = await supabase
-          .from("usage_counters")
-          .select("ai_messages_used")
-          .eq("user_id", userId)
-          .eq("usage_date", today)
-          .maybeSingle();
-        if (existing) {
-          await supabase
-            .from("usage_counters")
-            .update({ ai_messages_used: existing.ai_messages_used + 1 })
-            .eq("user_id", userId)
-            .eq("usage_date", today);
-        } else {
-          await supabase
-            .from("usage_counters")
-            .insert({ user_id: userId, usage_date: today, ai_messages_used: 1 });
-        }
+        await supabase.rpc("increment_ai_usage", { _usage_date: today });
       }
+
 
       return { reply, error: null as string | null };
     } catch (e) {

@@ -366,32 +366,12 @@ export const cancelSubscription = createServerFn({ method: "POST" })
 export const incrementAiUsage = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { supabase, userId } = context;
+    const { supabase } = context;
     const today = todayDhaka();
-
-    // Upsert: increment if exists, insert with 1 if new
-    const { data: existing } = await supabase
-      .from("usage_counters")
-      .select("ai_messages_used")
-      .eq("user_id", userId)
-      .eq("usage_date", today)
-      .maybeSingle();
-
-    if (existing) {
-      await supabase
-        .from("usage_counters")
-        .update({
-          ai_messages_used: existing.ai_messages_used + 1,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("user_id", userId)
-        .eq("usage_date", today);
-      return { used: existing.ai_messages_used + 1 };
-    }
-    await supabase.from("usage_counters").insert({
-      user_id: userId,
-      usage_date: today,
-      ai_messages_used: 1,
+    const { data, error } = await supabase.rpc("increment_ai_usage", {
+      _usage_date: today,
     });
-    return { used: 1 };
+    if (error) throw new Error(error.message);
+    return { used: data ?? 0 };
   });
+
