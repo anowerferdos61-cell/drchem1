@@ -192,6 +192,26 @@ export const Route = createFileRoute("/api/tutor/stream")({
           );
         }
 
+        // ─── Auth + Quota (Free tier = 5/day, Pro = unlimited) ────
+        const userId = await getUserIdFromRequest(request);
+        if (!userId) {
+          return new Response(
+            JSON.stringify({ error: "Unauthorized — sign in to use AI Tutor" }),
+            { status: 401, headers: { "Content-Type": "application/json" } },
+          );
+        }
+        const quota = await checkAndConsumeQuota(userId);
+        if (!quota.ok) {
+          return new Response(
+            JSON.stringify({
+              error:
+                "আজকের ৫টি free AI message শেষ হয়ে গেছে। Unlimited access এর জন্য Pro upgrade করো।",
+              quotaExceeded: true,
+            }),
+            { status: 429, headers: { "Content-Type": "application/json" } },
+          );
+        }
+
         let body: {
           messages?: Array<{ role: string; content: string }>;
           ragMode?: boolean;
@@ -214,6 +234,7 @@ export const Route = createFileRoute("/api/tutor/stream")({
             headers: { "Content-Type": "application/json" },
           });
         }
+
 
         // ------- Optional RAG retrieval -------
         let systemContent = body.system || BASE_SYSTEM_PROMPT;
