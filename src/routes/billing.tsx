@@ -182,13 +182,15 @@ function BillingPage() {
 
         {/* Payment form */}
         {!isPro && (
-          <PaymentForm
-            preselectedPlan={preselectedPlan}
-            onSuccess={async () => {
-              await refetch();
-              void qc.invalidateQueries({ queryKey: ["my-payments"] });
-            }}
-          />
+          <div className="rounded-2xl border bg-card overflow-hidden">
+            <PaymentForm
+              preselectedPlan={preselectedPlan}
+              onSuccess={async () => {
+                await refetch();
+                void qc.invalidateQueries({ queryKey: ["my-payments"] });
+              }}
+            />
+          </div>
         )}
 
         {/* Payment history */}
