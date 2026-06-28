@@ -2,7 +2,8 @@
  * Virtual Chemistry Lab — Acid-Base Titration (HCl + NaOH).
  * Central brain: holds ALL state and orchestrates the lab + viva.
  */
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useAuth } from "@/lib/auth-store";
 import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Toaster, toast } from "sonner";
 import { Button } from "@/components/ui/button";
