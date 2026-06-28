@@ -48,7 +48,7 @@ import ElectrochemicalSeriesLab from "@/components/lab/ElectrochemicalSeriesLab"
 import BondingLab from "@/components/lab/BondingLab";
 
 import LabAIAssistant from "@/components/lab/LabAIAssistant";
-import LandscapeGate from "@/components/lab/LandscapeGate";
+import LandscapeWrapper from "@/components/lab/LandscapeGate";
 
 
 import { setAIContext, useAIContext } from "@/lib/ai-context-store";
@@ -262,8 +262,7 @@ function Index() {
 
   return (
     <>
-      {content}
-      {showFloatingAI && <LandscapeGate />}
+      {showFloatingAI ? <LandscapeWrapper>{content}</LandscapeWrapper> : content}
       {showFloatingAI && <LabAIAssistant context={aiCtx} />}
     </>
   );
