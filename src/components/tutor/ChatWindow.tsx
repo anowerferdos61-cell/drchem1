@@ -40,6 +40,7 @@ export default function ChatWindow() {
   const abortRef = useRef<AbortController | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const callTitle = useServerFn(generateTitle);
+  const { isPro, aiMessagesRemaining, refetch: refetchEnt } = useEntitlements();
 
   // Auto-scroll
   useEffect(() => {
