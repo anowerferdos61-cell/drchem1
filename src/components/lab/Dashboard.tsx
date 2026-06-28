@@ -381,6 +381,13 @@ export default function Dashboard({ onPickExperiment }: DashboardProps) {
         </DialogContent>
       </Dialog>
 
+
+      <PaywallModal
+        open={paywallOpen}
+        onOpenChange={setPaywallOpen}
+        feature={paywallLab}
+      />
+
       <footer className="mx-auto max-w-7xl px-4 pb-10 text-center text-xs text-muted-foreground md:px-6">
         Built for Bangladeshi students · NCTB Curriculum · Made with AI
       </footer>
