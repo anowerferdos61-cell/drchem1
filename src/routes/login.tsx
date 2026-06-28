@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate, useSearch, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
 import { toast, Toaster } from "sonner";
 import { FlaskConical, Loader2 } from "lucide-react";
