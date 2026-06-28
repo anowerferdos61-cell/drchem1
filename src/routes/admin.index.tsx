@@ -60,8 +60,8 @@ export const Route = createFileRoute("/admin/")({
 const PLAN_OPTIONS = [
   { code: "student_monthly", label: "Student · Monthly (৳99)" },
   { code: "student_yearly", label: "Student · Yearly (৳999)" },
-  { code: "teacher_monthly", label: "Teacher · Monthly (৳99)" },
-  { code: "teacher_yearly", label: "Teacher · Yearly (৳999)" },
+  { code: "teacher_monthly", label: "Teacher · Monthly (৳299)" },
+  { code: "teacher_yearly", label: "Teacher · Yearly (৳1290)" },
 ] as const;
 
 function StatusBadge({ status }: { status: string | undefined }) {
