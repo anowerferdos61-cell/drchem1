@@ -242,8 +242,8 @@ function AdminPayments() {
                     )}
                     <div>
                       <div>
-                        <strong>{p.user_email}</strong> · {p.plan_code} · ৳{p.amount_bdt} · TrxID:{" "}
-                        <code className="font-mono">{p.trx_id}</code>
+                        <strong>{p.user_email}</strong> · {p.plan_code} · ৳{p.amount_bdt} · bKash:{" "}
+                        <code className="font-mono">{p.sender_phone}</code>
                       </div>
                       <div className="text-xs text-muted-foreground">
                         {p.reviewed_at && new Date(p.reviewed_at).toLocaleString("bn-BD")}
