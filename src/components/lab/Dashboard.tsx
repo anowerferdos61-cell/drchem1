@@ -239,6 +239,8 @@ export default function Dashboard({ onPickExperiment }: DashboardProps) {
         </div>
       </header>
 
+      <PendingPaymentBanner />
+
       {/* Hero strip with progress */}
       <section className="mx-auto max-w-7xl px-4 pt-6 md:px-6 md:pt-10">
         <div className="grid gap-4 md:grid-cols-3">
