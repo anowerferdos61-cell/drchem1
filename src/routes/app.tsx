@@ -262,6 +262,7 @@ function Index() {
   return (
     <>
       {content}
+      {showFloatingAI && <LandscapeGate />}
       {showFloatingAI && <LabAIAssistant context={aiCtx} />}
     </>
   );
