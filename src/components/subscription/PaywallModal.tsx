@@ -37,7 +37,7 @@ export function PaywallModal({
             🔒 {featureName} Pro এ পাওয়া যাবে
           </DialogTitle>
           <DialogDescription className="text-center pt-2">
-            {reason ?? "Free tier এ এই lab unlock নাই। Pro upgrade করো বা ৭ দিনের free trial নাও।"}
+            {reason ?? "Free tier এ এই feature unlock নাই। Pro plan নাও।"}
           </DialogDescription>
         </DialogHeader>
 
@@ -63,7 +63,7 @@ export function PaywallModal({
             পরে
           </Button>
           <Button asChild className="flex-1">
-            <Link to="/billing">🎁 Trial শুরু করো</Link>
+            <Link to="/billing">👑 Pro নিন</Link>
           </Button>
         </div>
       </DialogContent>

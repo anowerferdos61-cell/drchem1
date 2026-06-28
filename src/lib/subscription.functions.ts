@@ -28,8 +28,15 @@ export interface Entitlements {
   canWriteNotes: boolean;
 }
 
-// Labs that are FREE for the Free tier (2 introductory ones).
-export const FREE_TIER_LABS = ["ph_scale", "indicator_compare"] as const;
+// Labs that are FREE for the Free tier:
+// - First 2 practical labs (Titration, Oxygen Preparation)
+// - Chapter 10 labs (pH Scale, Indicator Comparison)
+export const FREE_TIER_LABS = [
+  "titration",
+  "oxygen_prep",
+  "ph_scale",
+  "indicator_compare",
+] as const;
 
 function todayDhaka(): string {
   // YYYY-MM-DD in Asia/Dhaka

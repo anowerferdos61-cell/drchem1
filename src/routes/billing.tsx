@@ -18,8 +18,6 @@ import {
   Crown,
   FlaskConical,
   Loader2,
-  Phone,
-  ShieldCheck,
   Sparkles,
   XCircle,
 } from "lucide-react";
@@ -30,7 +28,6 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/lib/auth-store";
 import { useEntitlements } from "@/hooks/useEntitlements";
 import {
-  startTrial,
   submitPaymentRequest,
   listMyPayments,
   cancelSubscription,
@@ -180,15 +177,17 @@ function BillingPage() {
           )}
         </div>
 
-        {/* Trial activation OR Payment form */}
+        {/* Payment form */}
         {!isPro && (
-          <TrialOrPay
-            preselectedPlan={preselectedPlan}
-            onSuccess={async () => {
-              await refetch();
-              void qc.invalidateQueries({ queryKey: ["my-payments"] });
-            }}
-          />
+          <div className="rounded-2xl border bg-card overflow-hidden">
+            <PaymentForm
+              preselectedPlan={preselectedPlan}
+              onSuccess={async () => {
+                await refetch();
+                void qc.invalidateQueries({ queryKey: ["my-payments"] });
+              }}
+            />
+          </div>
         )}
 
         {/* Payment history */}
@@ -275,107 +274,8 @@ function PaymentStatusBadge({ status }: { status: string }) {
   );
 }
 
-/* ─────────── Trial OR Payment form ─────────── */
+/* ─────────── Payment form ─────────── */
 
-type Tab = "trial" | "pay";
-
-function TrialOrPay({
-  preselectedPlan,
-  onSuccess,
-}: {
-  preselectedPlan: string | undefined;
-  onSuccess: () => void | Promise<void>;
-}) {
-  const { entitlements } = useEntitlements();
-  const trialUsed = !!entitlements && entitlements.status === "expired";
-  const [tab, setTab] = useState<Tab>(preselectedPlan ? "pay" : trialUsed ? "pay" : "trial");
-
-  return (
-    <div className="rounded-2xl border bg-card overflow-hidden">
-      <div className="grid grid-cols-2 border-b">
-        <button
-          onClick={() => setTab("trial")}
-          disabled={trialUsed}
-          className={`p-3 text-sm font-medium transition-colors ${
-            tab === "trial"
-              ? "bg-primary/10 text-primary"
-              : "text-muted-foreground hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
-          }`}
-        >
-          🎁 ৭ দিন ফ্রি Trial
-        </button>
-        <button
-          onClick={() => setTab("pay")}
-          className={`p-3 text-sm font-medium transition-colors ${
-            tab === "pay" ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-accent"
-          }`}
-        >
-          💳 bKash দিয়ে Pay
-        </button>
-      </div>
-      {tab === "trial" ? (
-        <TrialForm onSuccess={onSuccess} />
-      ) : (
-        <PaymentForm preselectedPlan={preselectedPlan} onSuccess={onSuccess} />
-      )}
-    </div>
-  );
-}
-
-function TrialForm({ onSuccess }: { onSuccess: () => void | Promise<void> }) {
-  const [phone, setPhone] = useState("");
-  const [busy, setBusy] = useState(false);
-  const startTrialFn = useServerFn(startTrial);
-
-  const submit = async (e: FormEvent) => {
-    e.preventDefault();
-    setBusy(true);
-    try {
-      await startTrialFn({ data: { phone } });
-      toast.success("🎉 ৭ দিনের trial activate হয়ে গেছে!");
-      await onSuccess();
-    } catch (err) {
-      toast.error((err as Error).message);
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  return (
-    <form onSubmit={submit} className="p-6 space-y-4">
-      <div>
-        <h3 className="font-semibold mb-1 flex items-center gap-2">
-          <ShieldCheck className="h-4 w-4 text-emerald-500" /> Phone verify করে শুরু করুন
-        </h3>
-        <p className="text-sm text-muted-foreground">
-          ৭ দিন full Pro access — কার্ড বা bKash কিছুই লাগবে না।
-        </p>
-      </div>
-      <div>
-        <Label htmlFor="trial-phone">আপনার মোবাইল নম্বর</Label>
-        <div className="relative mt-1">
-          <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            id="trial-phone"
-            type="tel"
-            required
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="01XXXXXXXXX"
-            className="pl-9"
-            maxLength={11}
-          />
-        </div>
-        <p className="text-xs text-muted-foreground mt-1">
-          ⚠️ Trial প্রতি account এ একবার পাওয়া যাবে।
-        </p>
-      </div>
-      <Button type="submit" className="w-full" size="lg" disabled={busy}>
-        {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : "🎁 Trial Activate করো"}
-      </Button>
-    </form>
-  );
-}
 
 function PaymentForm({
   preselectedPlan,

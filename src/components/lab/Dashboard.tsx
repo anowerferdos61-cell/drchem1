@@ -290,7 +290,17 @@ export default function Dashboard({ onPickExperiment }: DashboardProps) {
         )}
 
         {view === "curriculum" && (
-          <CurriculumGrid onPick={setActiveChapter} />
+          <CurriculumGrid
+            isPro={isPro}
+            onPick={(ch) => {
+              if (!isPro && ch.number !== 10) {
+                setPaywallLab(`অধ্যায় ${ch.number}: ${ch.titleBn}`);
+                setPaywallOpen(true);
+                return;
+              }
+              setActiveChapter(ch);
+            }}
+          />
         )}
 
         {view === "practical" && (
@@ -506,7 +516,7 @@ function HomeGrid({
 // Curriculum view
 // ─────────────────────────────────────────────────────────────
 
-function CurriculumGrid({ onPick }: { onPick: (c: ChapterMeta) => void }) {
+function CurriculumGrid({ onPick, isPro }: { onPick: (c: ChapterMeta) => void; isPro: boolean }) {
   return (
     <>
       <div className="mb-5">
@@ -521,19 +531,27 @@ function CurriculumGrid({ onPick }: { onPick: (c: ChapterMeta) => void }) {
           const pct = total > 0 ? Math.round((done / total) * 100) : 0;
           const Icon = ch.icon;
           const hasLabs = labCount > 0;
+          const locked = !isPro && ch.number !== 10;
 
           return (
             <Card
               key={ch.number}
               onClick={() => onPick(ch)}
-              className="group relative cursor-pointer overflow-hidden border bg-card p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl"
+              className={`group relative cursor-pointer overflow-hidden border bg-card p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl ${locked ? "opacity-80" : ""}`}
             >
               <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${ch.accent}`} />
               <div className="flex items-start justify-between">
                 <div className={`grid h-11 w-11 place-items-center rounded-xl bg-gradient-to-br ${ch.accent} text-white shadow-md`}>
                   <Icon className="h-5 w-5" />
                 </div>
-                <Badge variant="outline" className="text-[10px] font-mono">CH {String(ch.number).padStart(2, "0")}</Badge>
+                <div className="flex items-center gap-1">
+                  {locked && (
+                    <Badge variant="outline" className="gap-1 text-[10px] text-amber-600 border-amber-500/40 bg-amber-500/10">
+                      <Lock className="h-3 w-3" /> Pro
+                    </Badge>
+                  )}
+                  <Badge variant="outline" className="text-[10px] font-mono">CH {String(ch.number).padStart(2, "0")}</Badge>
+                </div>
               </div>
               <h3 className="mt-3 text-base font-bold leading-tight">{ch.titleBn}</h3>
               <p className="text-xs font-medium text-muted-foreground">{ch.titleEn}</p>
