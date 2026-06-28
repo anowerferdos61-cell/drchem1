@@ -494,20 +494,42 @@ function FinalCTA() {
 function Footer() {
   return (
     <footer className="border-t border-border py-10">
-      <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-2">
-          <div className="h-7 w-7 rounded-md bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
-            <FlaskConical className="h-4 w-4 text-primary-foreground" />
+      <div className="max-w-6xl mx-auto px-4 flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2">
+            <div className="h-7 w-7 rounded-md bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
+              <FlaskConical className="h-4 w-4 text-primary-foreground" />
+            </div>
+            <span className="font-semibold">Dr. Chem</span>
           </div>
-          <span className="font-semibold">Dr. Chem</span>
           <span className="text-xs text-muted-foreground">
             © {new Date().getFullYear()} · Made in Bangladesh
           </span>
         </div>
-        <div className="flex gap-5 text-sm text-muted-foreground">
-          <Link to="/app" className="hover:text-foreground">Open Lab</Link>
+
+        <div className="flex flex-col gap-2 text-sm text-muted-foreground">
+          <h3 className="font-semibold text-foreground">যোগাযোগ</h3>
+          <a href="mailto:drchem.bd@gmail.com" className="hover:text-foreground">
+            ✉️ drchem.bd@gmail.com
+          </a>
+          <a href="tel:+8801303446161" className="hover:text-foreground">
+            📞 01303-446161
+          </a>
+          <a
+            href="https://www.facebook.com/share/p/1EakXVp6i2/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-foreground"
+          >
+            📘 Facebook Page
+          </a>
         </div>
 
+        <div className="flex flex-col gap-2 text-sm text-muted-foreground">
+          <h3 className="font-semibold text-foreground">দ্রুত লিংক</h3>
+          <Link to="/app" className="hover:text-foreground">Open Lab</Link>
+          <Link to="/pricing" className="hover:text-foreground">Pricing</Link>
+        </div>
       </div>
     </footer>
   );
