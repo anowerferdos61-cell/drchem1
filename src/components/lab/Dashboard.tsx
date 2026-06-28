@@ -43,6 +43,7 @@ import {
 } from "lucide-react";
 import { useEntitlements } from "@/hooks/useEntitlements";
 import { PaywallModal } from "@/components/subscription/PaywallModal";
+import { PendingPaymentBanner } from "@/components/subscription/PendingPaymentBanner";
 
 interface DashboardProps {
   onEnterExperiments: () => void;
