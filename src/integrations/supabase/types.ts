@@ -307,6 +307,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_ai_usage: { Args: { _usage_date: string }; Returns: number }
       match_kb_documents: {
         Args: {
           filter_source?: string
