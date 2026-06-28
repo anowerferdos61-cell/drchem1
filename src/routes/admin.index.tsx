@@ -182,13 +182,38 @@ function AdminDashboard() {
     }
   };
 
-  if (loading || (isAuthenticated && !isAdmin)) {
+  if (loading || !rolesLoaded || (isAuthenticated && !isAdmin)) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="h-6 w-6 animate-spin text-primary" />
       </div>
     );
   }
+
+  const fatalError = (usersError ?? statsError) as Error | undefined;
+  if (fatalError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-6">
+        <div className="max-w-md w-full rounded-xl border border-rose-500/30 bg-rose-500/5 p-6 space-y-3">
+          <div className="flex items-center gap-2 text-rose-600 font-semibold">
+            <AlertCircle className="h-5 w-5" /> Admin data load failed
+          </div>
+          <p className="text-sm text-muted-foreground break-words">
+            {fatalError.message || "Unknown error"}
+          </p>
+          <Button
+            size="sm"
+            onClick={() => {
+              void qc.invalidateQueries({ queryKey: ["admin"] });
+            }}
+          >
+            Retry
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
 
   return (
     <div className="min-h-screen bg-background">
