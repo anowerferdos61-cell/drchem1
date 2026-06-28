@@ -456,13 +456,36 @@ function StatCard({
   value,
   tint,
   link,
+  prefix,
 }: {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
   value: number | undefined;
   tint: "primary" | "emerald" | "amber" | "rose";
   link?: string;
+  prefix?: string;
 }) {
+  const tintMap: Record<string, string> = {
+    primary: "bg-primary/10 text-primary",
+    emerald: "bg-emerald-500/15 text-emerald-600",
+    amber: "bg-amber-500/15 text-amber-600",
+    rose: "bg-rose-500/15 text-rose-600",
+  };
+  const display =
+    value === undefined ? "—" : `${prefix ?? ""}${value.toLocaleString("bn-BD")}`;
+  const inner = (
+    <div className="rounded-xl border bg-card p-4 flex items-center gap-3 hover:shadow-md transition-shadow">
+      <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${tintMap[tint]}`}>
+        <Icon className="h-5 w-5" />
+      </div>
+      <div>
+        <div className="text-2xl font-bold leading-none">{display}</div>
+        <div className="text-xs text-muted-foreground mt-1">{label}</div>
+      </div>
+    </div>
+  );
+  return link ? <Link to={link}>{inner}</Link> : inner;
+}
   const tintMap: Record<string, string> = {
     primary: "bg-primary/10 text-primary",
     emerald: "bg-emerald-500/15 text-emerald-600",
