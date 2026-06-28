@@ -165,6 +165,9 @@ export default function Dashboard({ onPickExperiment }: DashboardProps) {
   const [activeChapter, setActiveChapter] = useState<ChapterMeta | null>(null);
   const [labFilter, setLabFilter] = useState<"all" | "core" | "completed" | "incomplete">("all");
   const [search, setSearch] = useState("");
+  const { isPro, canAccessLab, loading: entLoading } = useEntitlements();
+  const [paywallOpen, setPaywallOpen] = useState(false);
+  const [paywallLab, setPaywallLab] = useState<string>("");
 
   const filteredLabs = useMemo(() => {
     return PRACTICAL_LABS.filter((l) => {
@@ -183,14 +186,21 @@ export default function Dashboard({ onPickExperiment }: DashboardProps) {
   const overallProgress = Math.round((completedCount / ALL_LABS.length) * 100);
 
   const openLab = useCallback((id: ExperimentId) => {
+    if (!entLoading && !canAccessLab(id)) {
+      const meta = ALL_LABS.find((l) => l.id === id);
+      setPaywallLab(meta?.titleBn || meta?.title || "এই Lab");
+      setPaywallOpen(true);
+      return;
+    }
     onPickExperiment(id);
-  }, [onPickExperiment]);
+  }, [onPickExperiment, canAccessLab, entLoading]);
 
   const goTutor = useCallback(() => navigate({ to: "/tutor" }), [navigate]);
 
   const handleComingSoon = useCallback((what: string) => {
     toast(`${what} — শীঘ্রই আসছে`, { icon: <Sparkles className="h-4 w-4" /> });
   }, []);
+
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-background via-background to-muted/30">
