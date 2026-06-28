@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { LogIn, LogOut, User as UserIcon, Sparkles } from "lucide-react";
+import { CreditCard, LogIn, LogOut, ShieldCheck, Sparkles, User as UserIcon } from "lucide-react";
 import { useAuth } from "@/lib/auth-store";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,7 +14,7 @@ import {
 /**
  * Compact auth widget for any top bar.
  * - Logged-out: "লগইন" + "সাইনআপ" buttons
- * - Logged-in: avatar dropdown with profile + logout
+ * - Logged-in: avatar dropdown with profile + billing + (admin) + logout
  */
 export default function UserMenu() {
   const { user, profile, roles, isAuthenticated, loading, signOut } = useAuth();
@@ -26,6 +26,9 @@ export default function UserMenu() {
   if (!isAuthenticated) {
     return (
       <div className="flex items-center gap-2">
+        <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
+          <Link to="/pricing">Pricing</Link>
+        </Button>
         <Button asChild variant="ghost" size="sm">
           <Link to="/login">লগইন</Link>
         </Button>
@@ -40,7 +43,8 @@ export default function UserMenu() {
 
   const name = profile?.display_name || user?.email?.split("@")[0] || "User";
   const initial = name.charAt(0).toUpperCase();
-  const role = roles.includes("admin")
+  const isAdmin = roles.includes("admin");
+  const role = isAdmin
     ? "Admin"
     : roles.includes("teacher")
       ? "শিক্ষক"
@@ -70,6 +74,26 @@ export default function UserMenu() {
             <UserIcon className="h-4 w-4" /> ল্যাব
           </Link>
         </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link to="/billing">
+            <CreditCard className="h-4 w-4" /> Billing & Plan
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link to="/pricing">
+            <Sparkles className="h-4 w-4" /> Pricing
+          </Link>
+        </DropdownMenuItem>
+        {isAdmin && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link to="/admin/payments">
+                <ShieldCheck className="h-4 w-4" /> Admin Payments
+              </Link>
+            </DropdownMenuItem>
+          </>
+        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={() => void signOut()}>
           <LogOut className="h-4 w-4" /> লগআউট
