@@ -37,7 +37,7 @@ export interface AdminUserRow {
 export const listAllUsers = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<AdminUserRow[]> => {
-    await ensureAdmin(context);
+    await ensureAdmin(context.supabase, context.userId);
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -120,7 +120,7 @@ export const grantSubscription = createServerFn({ method: "POST" })
       .parse(input),
   )
   .handler(async ({ data, context }) => {
-    await ensureAdmin(context);
+    await ensureAdmin(context.supabase, context.userId);
     const { error } = await context.supabase.rpc("admin_grant_subscription", {
       _user_id: data.userId,
       _plan_code: data.planCode,
@@ -134,7 +134,7 @@ export const cancelUserSubscription = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => z.object({ userId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
-    await ensureAdmin(context);
+    await ensureAdmin(context.supabase, context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin
       .from("subscriptions")
@@ -149,7 +149,7 @@ export const cancelUserSubscription = createServerFn({ method: "POST" })
 export const adminStats = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await ensureAdmin(context);
+    await ensureAdmin(context.supabase, context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const [
       { count: totalUsers },
