@@ -249,6 +249,16 @@ function Index() {
   const aiCtx = useAIContext();
   // Floating AI assistant: ONLY inside an active experiment (not on dashboard / picker).
   const showFloatingAI = activeExperiment !== null;
+  // Block any render until we're sure the user isn't an admin (avoids
+  // flashing the student dashboard while role rows are still loading).
+  if (loading || !isAuthenticated || !rolesReady || isAdmin) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-sm text-muted-foreground">
+        লোড হচ্ছে…
+      </div>
+    );
+  }
+
   return (
     <>
       {content}
@@ -256,6 +266,7 @@ function Index() {
     </>
   );
 }
+
 
 
 
