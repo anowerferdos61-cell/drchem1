@@ -171,8 +171,8 @@ function AdminPayments() {
                       <div className="font-mono">{p.sender_phone}</div>
                     </div>
                     <div>
-                      <div className="text-xs text-muted-foreground">TrxID</div>
-                      <div className="font-mono font-bold text-base">{p.trx_id}</div>
+                      <div className="text-xs text-muted-foreground">Status</div>
+                      <div className="font-semibold capitalize">{p.status}</div>
                     </div>
                     <div className="md:col-span-2">
                       <div className="text-xs text-muted-foreground">Submitted</div>
