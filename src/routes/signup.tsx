@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
 import { toast, Toaster } from "sonner";
 import { FlaskConical, GraduationCap, Loader2, UserCog } from "lucide-react";
@@ -12,9 +12,6 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/signup")({
-  beforeLoad: () => {
-    throw redirect({ to: "/app" });
-  },
   component: SignupPage,
 
   head: () => ({
