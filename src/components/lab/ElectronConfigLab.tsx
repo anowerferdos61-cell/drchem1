@@ -543,11 +543,12 @@ export default function ElectronConfigLab({ onBack }: Props) {
   );
 }
 
-function Prop({ label, value }: { label: string; value: string }) {
+function Prop({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div className="flex items-center justify-between gap-2 text-sm">
       <span className="text-xs text-muted-foreground">{label}</span>
-      <span className="font-mono font-semibold">{value}</span>
+      <span className="text-right font-mono text-sm font-semibold">{value}</span>
     </div>
   );
 }
+
