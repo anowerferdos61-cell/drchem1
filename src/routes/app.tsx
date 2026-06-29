@@ -231,6 +231,8 @@ function Index() {
     content = <ElectrochemicalSeriesLab onBack={back} />;
   } else if (activeExperiment === "bonding_basics") {
     content = <BondingLab onBack={back} />;
+  } else if (activeExperiment === "electron_config") {
+    content = <ElectronConfigLab onBack={back} />;
   } else {
     content = <TitrationLab onBack={back} />;
   }
