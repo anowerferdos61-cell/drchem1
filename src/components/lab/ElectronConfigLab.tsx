@@ -376,25 +376,13 @@ export default function ElectronConfigLab({ onBack }: Props) {
   const [Z, setZ] = useState<number>(11); // Sodium default — nice demo
   const [speed, setSpeed] = useState<number>(0.5);
   const [focusShell, setFocusShell] = useState<number | null>(null);
-  const [search, setSearch] = useState("");
 
   const element = ELEMENT_BY_Z.get(Z)!;
+  const facts = ELEMENT_FACTS[Z];
 
   useEffect(() => {
     setFocusShell(null);
   }, [Z]);
-
-  const filtered = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    if (!q) return ELEMENTS;
-    return ELEMENTS.filter(
-      (e) =>
-        e.symbol.toLowerCase().includes(q) ||
-        e.name.toLowerCase().includes(q) ||
-        e.nameBn.includes(search.trim()) ||
-        String(e.Z) === q,
-    );
-  }, [search]);
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-background via-background to-muted/30">
@@ -422,38 +410,75 @@ export default function ElectronConfigLab({ onBack }: Props) {
         </div>
       </header>
 
-      <main className="mx-auto grid max-w-7xl gap-4 px-4 py-6 lg:grid-cols-[260px_1fr_320px]">
-        {/* ── Sidebar ─────────────────────────────────────── */}
+      <main className="mx-auto grid max-w-7xl gap-4 px-4 py-6 lg:grid-cols-[300px_1fr_320px]">
+        {/* ── Sidebar: Properties only ───────────────────── */}
         <aside className="space-y-4">
-          <Card className="p-4 space-y-3">
-            <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              Element · মৌল
+          <Card className="overflow-hidden">
+            {/* Hero / "sample" visual */}
+            <div
+              className="relative h-32 w-full"
+              style={{
+                background: `radial-gradient(circle at 30% 30%, ${facts?.color ?? "#94a3b8"} 0%, rgba(0,0,0,0.55) 100%)`,
+              }}
+              aria-label={`${element.name} sample swatch`}
+            >
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+              <div className="absolute left-3 top-3 rounded-md bg-black/40 px-1.5 py-0.5 text-[10px] font-mono text-white backdrop-blur">
+                Z = {element.Z}
+              </div>
+              <div className="absolute right-3 top-3 rounded-md bg-white/15 px-2 py-0.5 text-[10px] font-semibold text-white backdrop-blur">
+                {facts?.metalType}
+              </div>
+              <div className="absolute bottom-2 left-3 text-white drop-shadow">
+                <div className="text-3xl font-black leading-none">{element.symbol}</div>
+                <div className="text-[11px] opacity-90">
+                  {element.name} · {element.nameBn}
+                </div>
+              </div>
             </div>
-            <div className="relative">
-              <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-              <input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search Na, 11, সোডিয়াম..."
-                className="w-full rounded-md border bg-background py-1.5 pl-8 pr-2 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
-                aria-label="Search element"
-              />
-            </div>
-            <Select value={String(Z)} onValueChange={(v) => setZ(parseInt(v, 10))}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {filtered.map((e) => (
-                  <SelectItem key={e.Z} value={String(e.Z)}>
-                    <span className="font-mono">{String(e.Z).padStart(2, "0")}</span>{" "}
-                    <span className="font-semibold">{e.symbol}</span> · {e.name} · {e.nameBn}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
 
-            <div className="space-y-1.5 pt-2">
+            <div className="space-y-1.5 p-4">
+              <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                Properties · ধর্ম
+              </div>
+              {facts && (
+                <>
+                  <Prop label="পারমাণবিক ভর · Mass" value={`${facts.mass} g/mol`} />
+                  <Prop label="অবস্থা · State" value={`${facts.state} · ${facts.stateBn}`} />
+                  <Prop label="কঠিনতা · Hardness" value={facts.hardnessBn} />
+                  <Prop
+                    label="রঙ · Colour"
+                    value={
+                      <span className="inline-flex items-center gap-1.5">
+                        <span
+                          className="inline-block h-3 w-3 rounded-full border border-border"
+                          style={{ background: facts.color }}
+                        />
+                        {facts.colorLabelBn}
+                      </span>
+                    }
+                  />
+                  <Prop label="গলনাঙ্ক · Melting" value={facts.melt} />
+                  <Prop label="স্ফুটনাঙ্ক · Boiling" value={facts.boil} />
+                  {facts.density && <Prop label="ঘনত্ব · Density" value={facts.density} />}
+                  <Prop label="প্রকার · Type" value={facts.metalTypeBn} />
+                </>
+              )}
+              <Prop label="শেল · Shells" value={element.shells.join(", ")} />
+              <Prop label="ব্লক · Block" value={element.block.toUpperCase()} />
+              <Prop label="মোট e⁻ · Electrons" value={String(element.Z)} />
+
+              {facts?.uses && (
+                <div className="mt-3 rounded-md border border-primary/20 bg-primary/5 p-2.5">
+                  <div className="mb-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary">
+                    ব্যবহার · Uses
+                  </div>
+                  <div className="text-xs leading-snug">{facts.uses}</div>
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-1.5 border-t bg-muted/30 p-4">
               <div className="flex items-center justify-between text-xs">
                 <span className="text-muted-foreground">Animation Speed · গতি</span>
                 <span className="font-mono">{Math.round(speed * 100)}%</span>
@@ -464,41 +489,8 @@ export default function ElectronConfigLab({ onBack }: Props) {
               </div>
             </div>
           </Card>
-
-          <Card className="p-4 space-y-2">
-            <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              Properties · ধর্ম
-            </div>
-            <Prop label="Atomic No · পারমাণবিক সংখ্যা" value={String(element.Z)} />
-            <Prop label="Symbol · প্রতীক" value={element.symbol} />
-            <Prop label="Name · নাম" value={`${element.name} · ${element.nameBn}`} />
-            <Prop label="Total e⁻ · মোট ইলেকট্রন" value={String(element.Z)} />
-            <Prop label="Shells · শেল" value={element.shells.join(", ")} />
-            <Prop label="Block" value={element.block.toUpperCase()} />
-          </Card>
-
-          <Card className="p-4 space-y-2">
-            <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              Quick navigate · দ্রুত মৌল
-            </div>
-            <div className="grid grid-cols-5 gap-1">
-              {ELEMENTS.map((e) => (
-                <button
-                  key={e.Z}
-                  onClick={() => setZ(e.Z)}
-                  className={`rounded-md border px-1 py-1 text-[10px] font-mono transition ${
-                    e.Z === Z
-                      ? "border-primary bg-primary text-primary-foreground"
-                      : "hover:border-primary/40 hover:bg-muted"
-                  }`}
-                  title={`${e.name} · ${e.nameBn}`}
-                >
-                  {e.symbol}
-                </button>
-              ))}
-            </div>
-          </Card>
         </aside>
+
 
         {/* ── Center: Bohr model + periodic snippet ───────── */}
         <section className="space-y-4">
