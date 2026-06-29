@@ -12,7 +12,8 @@ export type ExperimentId =
   | "indicator_compare"
   | "solubility_rules"
   | "electrochemical_series"
-  | "bonding_basics";
+  | "bonding_basics"
+  | "electron_config";
 
 
 export type Mode = "guide" | "student" | "classroom";
