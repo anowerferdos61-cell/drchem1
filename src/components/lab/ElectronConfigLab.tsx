@@ -107,16 +107,19 @@ function BohrModel({
               {SHELL_NAMES[idx]}
             </text>
 
-            {/* Orbiting electrons */}
-            <g style={{ transformOrigin: `${cx}px ${cy}px` }}>
+            {/* Orbiting electrons — rotate around nucleus (cx,cy) so they stay on this shell */}
+            <g>
               <animateTransform
                 attributeName="transform"
+                attributeType="XML"
                 type="rotate"
                 from={`0 ${cx} ${cy}`}
                 to={`${360 * direction} ${cx} ${cy}`}
                 dur={`${period}s`}
                 repeatCount="indefinite"
+                additive="replace"
               />
+
               {Array.from({ length: count }).map((_, ei) => {
                 const angle = (ei / count) * Math.PI * 2;
                 const ex = cx + r * Math.cos(angle);
