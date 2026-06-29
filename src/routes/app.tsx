@@ -46,6 +46,7 @@ import IndicatorLab from "@/components/lab/IndicatorLab";
 import SolubilityLab from "@/components/lab/SolubilityLab";
 import ElectrochemicalSeriesLab from "@/components/lab/ElectrochemicalSeriesLab";
 import BondingLab from "@/components/lab/BondingLab";
+import ElectronConfigLab from "@/components/lab/ElectronConfigLab";
 
 import LabAIAssistant from "@/components/lab/LabAIAssistant";
 import LandscapeWrapper from "@/components/lab/LandscapeGate";
@@ -166,7 +167,8 @@ function Index() {
         raw === "indicator_compare" ||
         raw === "solubility_rules" ||
         raw === "electrochemical_series" ||
-        raw === "bonding_basics"
+        raw === "bonding_basics" ||
+        raw === "electron_config"
       ) {
 
 
@@ -229,6 +231,8 @@ function Index() {
     content = <ElectrochemicalSeriesLab onBack={back} />;
   } else if (activeExperiment === "bonding_basics") {
     content = <BondingLab onBack={back} />;
+  } else if (activeExperiment === "electron_config") {
+    content = <ElectronConfigLab onBack={back} />;
   } else {
     content = <TitrationLab onBack={back} />;
   }

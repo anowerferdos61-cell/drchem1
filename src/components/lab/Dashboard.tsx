@@ -90,6 +90,8 @@ const ALL_LABS: LabMeta[] = [
     icon: Microscope, tint: "from-teal-500/15 to-emerald-500/10", iconColor: "text-teal-500", isCoreBoard: false },
   { id: "electrochemical_series", title: "Electrochemical Series", titleBn: "তড়িৎ-রাসায়নিক সারি",
     icon: Zap, tint: "from-yellow-500/15 to-amber-500/10", iconColor: "text-yellow-600", isCoreBoard: true },
+  { id: "electron_config", title: "Electron Configuration", titleBn: "ইলেকট্রন বিন্যাস ও পর্যায়-গ্রুপ",
+    icon: Atom, tint: "from-fuchsia-500/15 to-violet-500/10", iconColor: "text-fuchsia-500", isCoreBoard: false },
 ];
 
 type ChapterMeta = {
@@ -118,7 +120,7 @@ const CHAPTERS: ChapterMeta[] = [
     labIds: [], comingSoonCount: 3, accent: "from-violet-500 to-purple-500", icon: Atom },
   { number: 4, titleBn: "পর্যায় সারণি", titleEn: "Periodic Table",
     descBn: "মৌলিক পদার্থের শ্রেণিবিন্যাস ও ধর্ম।",
-    labIds: [], comingSoonCount: 2, accent: "from-fuchsia-500 to-pink-500", icon: Microscope },
+    labIds: ["electron_config"], comingSoonCount: 1, accent: "from-fuchsia-500 to-pink-500", icon: Microscope },
   { number: 5, titleBn: "রাসায়নিক বন্ধন", titleEn: "Chemical Bonding",
     descBn: "আয়নিক, সমযোজী ও ধাতব বন্ধনের ধারণা।",
     labIds: ["bonding_basics", "ionic_covalent"],
