@@ -48,6 +48,7 @@ import ElectrochemicalSeriesLab from "@/components/lab/ElectrochemicalSeriesLab"
 import BondingLab from "@/components/lab/BondingLab";
 import ElectronConfigLab from "@/components/lab/ElectronConfigLab";
 import PeriodicTrendsLab from "@/components/lab/PeriodicTrendsLab";
+import GroupReactivityLab from "@/components/lab/GroupReactivityLab";
 
 import LabAIAssistant from "@/components/lab/LabAIAssistant";
 import LandscapeWrapper from "@/components/lab/LandscapeGate";
@@ -170,7 +171,8 @@ function Index() {
         raw === "electrochemical_series" ||
         raw === "bonding_basics" ||
         raw === "electron_config" ||
-        raw === "periodic_trends"
+        raw === "periodic_trends" ||
+        raw === "group_reactivity"
       ) {
 
 
@@ -237,6 +239,8 @@ function Index() {
     content = <ElectronConfigLab onBack={back} />;
   } else if (activeExperiment === "periodic_trends") {
     content = <PeriodicTrendsLab onBack={back} />;
+  } else if (activeExperiment === "group_reactivity") {
+    content = <GroupReactivityLab onBack={back} />;
   } else {
     content = <TitrationLab onBack={back} />;
   }
