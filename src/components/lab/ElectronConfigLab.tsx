@@ -6,7 +6,7 @@
  * Bilingual labels, animated electrons, step-by-step Period/Group logic,
  * and a mini periodic-table snippet that highlights the current element.
  */
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { ArrowLeft, Atom, ChevronRight, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -336,8 +336,8 @@ function PeriodicSnippet({ element }: { element: Element }) {
             </div>
           ))}
           {periods.map((p) => (
-            <>
-              <div key={`ph-${p}`} className="self-center text-[9px] font-medium text-muted-foreground">
+            <Fragment key={`row-${p}`}>
+              <div className="self-center text-[9px] font-medium text-muted-foreground">
                 {p}
               </div>
               {groups.map((g) => {
@@ -359,7 +359,7 @@ function PeriodicSnippet({ element }: { element: Element }) {
                   </div>
                 );
               })}
-            </>
+            </Fragment>
           ))}
         </div>
       </div>
