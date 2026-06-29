@@ -304,7 +304,13 @@ function StepCard({ n, title, body }: { n: number; title: string; body: React.Re
 // Periodic table snippet
 // ────────────────────────────────────────────────────────────
 
-function PeriodicSnippet({ element }: { element: Element }) {
+function PeriodicSnippet({
+  element,
+  onSelect,
+}: {
+  element: Element;
+  onSelect: (z: number) => void;
+}) {
   // Build a grid of periods 1..4 × groups 1..18 with sparse cells.
   const cells = ELEMENTS.map((e) => ({
     key: `${e.period}-${e.group}`,
@@ -325,8 +331,11 @@ function PeriodicSnippet({ element }: { element: Element }) {
 
   return (
     <div className="space-y-2">
-      <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-        Periodic Table snippet · পর্যায় সারণি (H – Zn)
+      <div className="flex items-center justify-between">
+        <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          Periodic Table · পর্যায় সারণি (H – Zn)
+        </div>
+        <div className="text-[10px] text-muted-foreground">মৌল বেছে নিতে ক্লিক করুন · click to select</div>
       </div>
       <div className="overflow-x-auto">
         <div className="grid min-w-[640px] gap-1" style={{ gridTemplateColumns: `28px repeat(18, minmax(28px, 1fr))` }}>
@@ -346,18 +355,19 @@ function PeriodicSnippet({ element }: { element: Element }) {
                 if (!el) return <div key={`c-${p}-${g}`} className="h-9 rounded-sm bg-muted/20" />;
                 const active = el.Z === element.Z;
                 return (
-                  <div
+                  <button
                     key={`c-${p}-${g}`}
-                    className={`flex h-9 flex-col items-center justify-center rounded-sm text-[10px] leading-none ${groupColor(g)} ${
+                    onClick={() => onSelect(el.Z)}
+                    className={`flex h-9 flex-col items-center justify-center rounded-sm text-[10px] leading-none cursor-pointer ${groupColor(g)} ${
                       active
-                        ? "ring-2 ring-primary ring-offset-1 scale-110 font-bold shadow-md"
-                        : "opacity-90"
+                        ? "ring-2 ring-primary ring-offset-1 scale-110 font-bold shadow-md z-10"
+                        : "opacity-90 hover:opacity-100 hover:scale-105 hover:ring-1 hover:ring-primary/50"
                     } transition-all`}
                     title={`${el.name} · ${el.nameBn} (Z=${el.Z})`}
                   >
                     <span className="text-[8px] opacity-70">{el.Z}</span>
                     <span className="font-bold">{el.symbol}</span>
-                  </div>
+                  </button>
                 );
               })}
             </Fragment>
@@ -367,6 +377,7 @@ function PeriodicSnippet({ element }: { element: Element }) {
     </div>
   );
 }
+
 
 // ────────────────────────────────────────────────────────────
 // Main component
