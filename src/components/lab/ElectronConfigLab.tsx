@@ -527,7 +527,7 @@ export default function ElectronConfigLab({ onBack }: Props) {
           </Card>
 
           <Card className="p-4">
-            <PeriodicSnippet element={element} />
+            <PeriodicSnippet element={element} onSelect={setZ} />
             <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
               <Badge className="bg-primary/15 text-primary hover:bg-primary/20">
                 <ChevronRight className="mr-1 h-3 w-3" />
