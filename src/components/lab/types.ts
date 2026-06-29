@@ -13,7 +13,8 @@ export type ExperimentId =
   | "solubility_rules"
   | "electrochemical_series"
   | "bonding_basics"
-  | "electron_config";
+  | "electron_config"
+  | "periodic_trends";
 
 
 export type Mode = "guide" | "student" | "classroom";
