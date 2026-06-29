@@ -49,15 +49,8 @@ function BohrModel({
   const cx = 200;
   const cy = 200;
   const shells = element.shells;
-  // Radii for up to 4 shells
-  const radii = [40, 70, 105, 145];
-  // Animation period (s): slower when speed→0
-  const basePeriod = 8 - speed * 6; // 8s slow → 2s fast
-
-  // Nucleus: protons (Z), neutrons ≈ round(mass-Z). Use small cluster.
-  const nucleons = Math.min(element.Z * 2, 28); // visual cap
-  const protonCount = Math.min(element.Z, Math.ceil(nucleons / 2));
-  const neutronCount = Math.max(0, nucleons - protonCount);
+  const radii = [55, 90, 128, 165];
+  const basePeriod = 14 - speed * 11; // 14s slow → 3s fast (outer baseline)
 
   return (
     <svg
@@ -66,44 +59,62 @@ function BohrModel({
       role="img"
       aria-label={`Bohr model of ${element.name}`}
     >
-      {/* Shells */}
+      <defs>
+        <radialGradient id="nucleusGrad" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#60a5fa" />
+          <stop offset="70%" stopColor="#2563eb" />
+          <stop offset="100%" stopColor="#1d4ed8" />
+        </radialGradient>
+        <radialGradient id="electronGrad" cx="35%" cy="35%" r="65%">
+          <stop offset="0%" stopColor="#fffbeb" />
+          <stop offset="50%" stopColor="#facc15" />
+          <stop offset="100%" stopColor="#b45309" />
+        </radialGradient>
+      </defs>
+
+      {/* Orbit rings + electrons */}
       {shells.map((count, idx) => {
         const r = radii[idx];
         const isFocus = focusShell === idx + 1;
         const dim = focusShell !== null && !isFocus;
         const isValence = idx === shells.length - 1;
+        // Inner shells faster; scale period by (idx+1)
+        const period = (basePeriod * (idx + 1)) / shells.length;
+        const direction = idx % 2 === 0 ? 1 : -1;
+
         return (
-          <g key={`shell-${idx}`} opacity={dim ? 0.25 : 1}>
+          <g key={`shell-${idx}`} opacity={dim ? 0.2 : 1}>
             <circle
               cx={cx}
               cy={cy}
               r={r}
               fill="none"
-              stroke={isFocus ? "hsl(var(--primary))" : "hsl(var(--muted-foreground) / 0.35)"}
-              strokeDasharray={isFocus ? "0" : "3 4"}
-              strokeWidth={isFocus ? 1.5 : 1}
+              stroke={isFocus ? "hsl(var(--primary))" : "#94a3b8"}
+              strokeOpacity={isFocus ? 0.9 : 0.55}
+              strokeDasharray="4 6"
+              strokeWidth={isFocus ? 1.6 : 1.1}
               className="cursor-pointer"
               onClick={() => onFocusShell(isFocus ? null : idx + 1)}
             />
-            {/* Shell label */}
             <text
-              x={cx + r + 4}
-              y={cy - 4}
+              x={cx + r + 6}
+              y={cy + 3}
               fontSize="10"
+              fontWeight="600"
               fill="hsl(var(--muted-foreground))"
               className="select-none"
             >
-              {SHELL_NAMES[idx]} ({count})
+              {SHELL_NAMES[idx]}
             </text>
 
-            {/* Electrons orbiting */}
+            {/* Orbiting electrons */}
             <g style={{ transformOrigin: `${cx}px ${cy}px` }}>
               <animateTransform
                 attributeName="transform"
                 type="rotate"
                 from={`0 ${cx} ${cy}`}
-                to={`360 ${cx} ${cy}`}
-                dur={`${basePeriod + idx * 0.7}s`}
+                to={`${360 * direction} ${cx} ${cy}`}
+                dur={`${period}s`}
                 repeatCount="indefinite"
               />
               {Array.from({ length: count }).map((_, ei) => {
@@ -111,21 +122,22 @@ function BohrModel({
                 const ex = cx + r * Math.cos(angle);
                 const ey = cy + r * Math.sin(angle);
                 return (
-                  <circle
-                    key={`e-${idx}-${ei}`}
-                    cx={ex}
-                    cy={ey}
-                    r={isValence ? 5.5 : 4.5}
-                    fill="#facc15"
-                    stroke={isValence ? "#ef4444" : "rgba(0,0,0,0.25)"}
-                    strokeWidth={isValence ? 1.5 : 0.6}
-                  >
-                    <title>
-                      {isValence
-                        ? `Valence electron · যোজ্যতা ইলেকট্রন (${SHELL_NAMES[idx]})`
-                        : `Electron · ইলেকট্রন (${SHELL_NAMES[idx]})`}
-                    </title>
-                  </circle>
+                  <g key={`e-${idx}-${ei}`}>
+                    <circle
+                      cx={ex}
+                      cy={ey}
+                      r={isValence ? 7 : 6}
+                      fill="url(#electronGrad)"
+                      stroke={isValence ? "#ef4444" : "#92400e"}
+                      strokeWidth={isValence ? 1.5 : 0.8}
+                    >
+                      <title>
+                        {isValence
+                          ? `Valence electron · যোজ্যতা ইলেকট্রন (${SHELL_NAMES[idx]})`
+                          : `Electron · ইলেকট্রন (${SHELL_NAMES[idx]})`}
+                      </title>
+                    </circle>
+                  </g>
                 );
               })}
             </g>
@@ -133,34 +145,26 @@ function BohrModel({
         );
       })}
 
-      {/* Nucleus cluster */}
+      {/* Clean nucleus */}
       <g>
-        <circle cx={cx} cy={cy} r={28} fill="hsl(var(--muted))" opacity="0.4" />
-        {Array.from({ length: nucleons }).map((_, i) => {
-          const a = (i / nucleons) * Math.PI * 2;
-          const rr = i % 2 === 0 ? 9 : 16;
-          const px = cx + rr * Math.cos(a);
-          const py = cy + rr * Math.sin(a);
-          const isProton = i < protonCount;
-          return (
-            <circle
-              key={`n-${i}`}
-              cx={px}
-              cy={py}
-              r={4.5}
-              fill={isProton ? "#3b82f6" : "#94a3b8"}
-            >
-              <title>{isProton ? "Proton" : "Neutron"}</title>
-            </circle>
-          );
-        })}
+        <circle cx={cx} cy={cy} r={32} fill="#1e3a8a" opacity="0.25" />
+        <circle
+          cx={cx}
+          cy={cy}
+          r={26}
+          fill="url(#nucleusGrad)"
+          stroke="#1e40af"
+          strokeWidth={1.5}
+        />
         <text
           x={cx}
-          y={cy + 3}
-          fontSize="14"
+          y={cy}
+          fontSize="18"
           fontWeight="800"
           textAnchor="middle"
-          fill="hsl(var(--foreground))"
+          dominantBaseline="central"
+          fill="#ffffff"
+          style={{ paintOrder: "stroke", letterSpacing: "0.5px" }}
         >
           {element.symbol}
         </text>
@@ -168,18 +172,17 @@ function BohrModel({
 
       {/* Legend */}
       <g fontSize="9" fill="hsl(var(--muted-foreground))">
-        <circle cx={14} cy={384} r={4} fill="#3b82f6" />
-        <text x={22} y={387}>proton ({protonCount}/{element.Z})</text>
-        <circle cx={120} cy={384} r={4} fill="#94a3b8" />
-        <text x={128} y={387}>neutron</text>
-        <circle cx={210} cy={384} r={4} fill="#facc15" />
-        <text x={218} y={387}>electron</text>
-        <circle cx={300} cy={384} r={4} fill="#facc15" stroke="#ef4444" strokeWidth={1.5} />
-        <text x={308} y={387}>valence · যোজ্যতা</text>
+        <circle cx={14} cy={384} r={5} fill="url(#nucleusGrad)" />
+        <text x={24} y={387}>nucleus · নিউক্লিয়াস</text>
+        <circle cx={150} cy={384} r={5} fill="url(#electronGrad)" stroke="#92400e" strokeWidth={0.6} />
+        <text x={160} y={387}>electron</text>
+        <circle cx={240} cy={384} r={5} fill="url(#electronGrad)" stroke="#ef4444" strokeWidth={1.5} />
+        <text x={250} y={387}>valence · যোজ্যতা</text>
       </g>
     </svg>
   );
 }
+
 
 // ────────────────────────────────────────────────────────────
 // Config display
