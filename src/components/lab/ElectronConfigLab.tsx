@@ -6,26 +6,21 @@
  * Bilingual labels, animated electrons, step-by-step Period/Group logic,
  * and a mini periodic-table snippet that highlights the current element.
  */
-import { Fragment, useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Atom, ChevronRight, Search } from "lucide-react";
+import { Fragment, useEffect, useState } from "react";
+import { ArrowLeft, Atom, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   ELEMENTS,
   ELEMENT_BY_Z,
+  ELEMENT_FACTS,
   SHELL_NAMES,
   groupRule,
   type Element,
 } from "@/lib/electron-config";
+
 
 interface Props {
   onBack: () => void;
