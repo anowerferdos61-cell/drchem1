@@ -101,3 +101,58 @@ export function groupRule(el: Element): { rule: string; ruleBn: string; calc: st
 /** Bohr shell capacities (informative). */
 export const SHELL_CAPACITY = [2, 8, 18, 32];
 export const SHELL_NAMES = ["K", "L", "M", "N"];
+
+// ────────────────────────────────────────────────────────────
+// Extra physical / descriptive facts (for Properties panel)
+// ────────────────────────────────────────────────────────────
+
+export type ElementFacts = {
+  mass: number;              // g/mol
+  state: "Solid" | "Liquid" | "Gas";
+  stateBn: string;
+  hardness: string;          // "Soft", "Hard", "—" (gases)
+  hardnessBn: string;
+  color: string;             // visual swatch (CSS color)
+  colorLabel: string;        // "Silvery", "Yellow-green gas" ...
+  colorLabelBn: string;
+  melt: string;              // melting point with unit, e.g. "97.8 °C"
+  boil: string;
+  density?: string;          // g/cm³ or g/L
+  uses: string;              // short Bengali use blurb
+  metalType: "Metal" | "Non-metal" | "Metalloid" | "Noble gas";
+  metalTypeBn: string;
+};
+
+export const ELEMENT_FACTS: Record<number, ElementFacts> = {
+  1:  { mass:1.008,   state:"Gas",    stateBn:"গ্যাস",   hardness:"—",        hardnessBn:"—",            color:"#e0f2fe", colorLabel:"Colourless gas",    colorLabelBn:"বর্ণহীন গ্যাস",       melt:"−259 °C", boil:"−253 °C", density:"0.0899 g/L",  uses:"রকেট জ্বালানি, অ্যামোনিয়া উৎপাদন", metalType:"Non-metal", metalTypeBn:"অধাতু" },
+  2:  { mass:4.0026,  state:"Gas",    stateBn:"গ্যাস",   hardness:"—",        hardnessBn:"—",            color:"#fef9c3", colorLabel:"Colourless gas",    colorLabelBn:"বর্ণহীন গ্যাস",       melt:"−272 °C", boil:"−269 °C", density:"0.1786 g/L",  uses:"বেলুন, MRI কুল্যান্ট",            metalType:"Noble gas", metalTypeBn:"নিষ্ক্রিয় গ্যাস" },
+  3:  { mass:6.94,    state:"Solid",  stateBn:"কঠিন",    hardness:"Very soft",hardnessBn:"অতি কোমল",     color:"#cbd5e1", colorLabel:"Silvery-white",     colorLabelBn:"রুপালি-সাদা",         melt:"180.5 °C",boil:"1342 °C", density:"0.534 g/cm³", uses:"মোবাইল/EV ব্যাটারি, ঔষধ",       metalType:"Metal",     metalTypeBn:"ধাতু" },
+  4:  { mass:9.0122,  state:"Solid",  stateBn:"কঠিন",    hardness:"Hard",     hardnessBn:"কঠিন",         color:"#94a3b8", colorLabel:"Steel-grey",        colorLabelBn:"ইস্পাত-ধূসর",         melt:"1287 °C", boil:"2469 °C", density:"1.85 g/cm³",  uses:"মহাকাশযান, X-ray জানালা",        metalType:"Metal",     metalTypeBn:"ধাতু" },
+  5:  { mass:10.81,   state:"Solid",  stateBn:"কঠিন",    hardness:"Very hard",hardnessBn:"অতি কঠিন",     color:"#78350f", colorLabel:"Brown-black",       colorLabelBn:"বাদামি-কালো",         melt:"2076 °C", boil:"3927 °C", density:"2.34 g/cm³",  uses:"কাঁচ, সাবান, সার",              metalType:"Metalloid", metalTypeBn:"উপধাতু" },
+  6:  { mass:12.011,  state:"Solid",  stateBn:"কঠিন",    hardness:"Very hard*",hardnessBn:"অতি কঠিন (ডায়মন্ড)", color:"#1f2937", colorLabel:"Black (graphite)", colorLabelBn:"কালো (গ্রাফাইট)",     melt:"3550 °C", boil:"4827 °C", density:"2.27 g/cm³",  uses:"জীবনের ভিত্তি, জ্বালানি, ইস্পাত",  metalType:"Non-metal", metalTypeBn:"অধাতু" },
+  7:  { mass:14.007,  state:"Gas",    stateBn:"গ্যাস",   hardness:"—",        hardnessBn:"—",            color:"#dbeafe", colorLabel:"Colourless gas",    colorLabelBn:"বর্ণহীন গ্যাস",       melt:"−210 °C", boil:"−196 °C", density:"1.251 g/L",   uses:"সার, খাদ্য সংরক্ষণ",            metalType:"Non-metal", metalTypeBn:"অধাতু" },
+  8:  { mass:15.999,  state:"Gas",    stateBn:"গ্যাস",   hardness:"—",        hardnessBn:"—",            color:"#bae6fd", colorLabel:"Colourless gas",    colorLabelBn:"বর্ণহীন গ্যাস",       melt:"−218 °C", boil:"−183 °C", density:"1.429 g/L",   uses:"শ্বসন, দহন, ইস্পাত উৎপাদন",      metalType:"Non-metal", metalTypeBn:"অধাতু" },
+  9:  { mass:18.998,  state:"Gas",    stateBn:"গ্যাস",   hardness:"—",        hardnessBn:"—",            color:"#fef08a", colorLabel:"Pale-yellow gas",   colorLabelBn:"হালকা হলুদ গ্যাস",    melt:"−220 °C", boil:"−188 °C", density:"1.696 g/L",   uses:"টুথপেস্ট, টেফলন",                metalType:"Non-metal", metalTypeBn:"হ্যালোজেন" },
+  10: { mass:20.180,  state:"Gas",    stateBn:"গ্যাস",   hardness:"—",        hardnessBn:"—",            color:"#fecaca", colorLabel:"Colourless gas",    colorLabelBn:"বর্ণহীন গ্যাস",       melt:"−249 °C", boil:"−246 °C", density:"0.900 g/L",   uses:"নিয়ন সাইন",                       metalType:"Noble gas", metalTypeBn:"নিষ্ক্রিয় গ্যাস" },
+  11: { mass:22.990,  state:"Solid",  stateBn:"কঠিন",    hardness:"Very soft",hardnessBn:"অতি কোমল (ছুরি দিয়ে কাটা যায়)", color:"#e5e7eb", colorLabel:"Silvery-white", colorLabelBn:"রুপালি-সাদা",        melt:"97.8 °C", boil:"883 °C",  density:"0.97 g/cm³",  uses:"লবণ (NaCl), সাবান, রাস্তা-বাতি", metalType:"Metal",     metalTypeBn:"ক্ষার ধাতু" },
+  12: { mass:24.305,  state:"Solid",  stateBn:"কঠিন",    hardness:"Soft",     hardnessBn:"কোমল",         color:"#d1d5db", colorLabel:"Silvery-white",     colorLabelBn:"রুপালি-সাদা",         melt:"650 °C",  boil:"1090 °C", density:"1.74 g/cm³",  uses:"হাল্কা সংকর, আতশবাজি",           metalType:"Metal",     metalTypeBn:"মৃৎক্ষার ধাতু" },
+  13: { mass:26.982,  state:"Solid",  stateBn:"কঠিন",    hardness:"Soft",     hardnessBn:"কোমল",         color:"#cbd5e1", colorLabel:"Silvery",           colorLabelBn:"রুপালি",              melt:"660 °C",  boil:"2519 °C", density:"2.70 g/cm³",  uses:"ফয়েল, জানালার ফ্রেম, প্লেন",      metalType:"Metal",     metalTypeBn:"ধাতু" },
+  14: { mass:28.085,  state:"Solid",  stateBn:"কঠিন",    hardness:"Hard",     hardnessBn:"কঠিন",         color:"#475569", colorLabel:"Dark-grey",         colorLabelBn:"গাঢ় ধূসর",            melt:"1414 °C", boil:"3265 °C", density:"2.33 g/cm³",  uses:"কম্পিউটার চিপ, কাঁচ, সিমেন্ট",     metalType:"Metalloid", metalTypeBn:"উপধাতু" },
+  15: { mass:30.974,  state:"Solid",  stateBn:"কঠিন",    hardness:"Soft (white)",hardnessBn:"কোমল (সাদা)", color:"#fde68a", colorLabel:"White / red",      colorLabelBn:"সাদা / লাল",          melt:"44 °C",   boil:"281 °C",  density:"1.82 g/cm³",  uses:"দিয়াশলাই, সার, DNA",            metalType:"Non-metal", metalTypeBn:"অধাতু" },
+  16: { mass:32.06,   state:"Solid",  stateBn:"কঠিন",    hardness:"Soft",     hardnessBn:"কোমল",         color:"#facc15", colorLabel:"Yellow",            colorLabelBn:"হলুদ",                 melt:"115 °C",  boil:"445 °C",  density:"2.07 g/cm³",  uses:"H₂SO₄, রবার, গানপাউডার",         metalType:"Non-metal", metalTypeBn:"অধাতু" },
+  17: { mass:35.45,   state:"Gas",    stateBn:"গ্যাস",   hardness:"—",        hardnessBn:"—",            color:"#bef264", colorLabel:"Yellow-green gas",  colorLabelBn:"হলুদ-সবুজ গ্যাস",     melt:"−101 °C", boil:"−34 °C",  density:"3.214 g/L",   uses:"জীবাণুনাশক, PVC, ব্লিচ",         metalType:"Non-metal", metalTypeBn:"হ্যালোজেন" },
+  18: { mass:39.948,  state:"Gas",    stateBn:"গ্যাস",   hardness:"—",        hardnessBn:"—",            color:"#e9d5ff", colorLabel:"Colourless gas",    colorLabelBn:"বর্ণহীন গ্যাস",       melt:"−189 °C", boil:"−186 °C", density:"1.784 g/L",   uses:"বাল্ব, ওয়েল্ডিং রক্ষাকারী গ্যাস",  metalType:"Noble gas", metalTypeBn:"নিষ্ক্রিয় গ্যাস" },
+  19: { mass:39.098,  state:"Solid",  stateBn:"কঠিন",    hardness:"Very soft",hardnessBn:"অতি কোমল",     color:"#e5e7eb", colorLabel:"Silvery-white",     colorLabelBn:"রুপালি-সাদা",         melt:"63.5 °C", boil:"759 °C",  density:"0.86 g/cm³",  uses:"সার, কলার মাংসপেশি",            metalType:"Metal",     metalTypeBn:"ক্ষার ধাতু" },
+  20: { mass:40.078,  state:"Solid",  stateBn:"কঠিন",    hardness:"Soft",     hardnessBn:"কোমল",         color:"#d1d5db", colorLabel:"Silvery-grey",      colorLabelBn:"রুপালি-ধূসর",         melt:"842 °C",  boil:"1484 °C", density:"1.55 g/cm³",  uses:"হাড়, দাঁত, সিমেন্ট",             metalType:"Metal",     metalTypeBn:"মৃৎক্ষার ধাতু" },
+  21: { mass:44.956,  state:"Solid",  stateBn:"কঠিন",    hardness:"Hard",     hardnessBn:"কঠিন",         color:"#cbd5e1", colorLabel:"Silvery",           colorLabelBn:"রুপালি",              melt:"1541 °C", boil:"2836 °C", density:"2.99 g/cm³",  uses:"হাল্কা অ্যালোয়, স্পোর্টস গিয়ার",  metalType:"Metal",     metalTypeBn:"অবস্থান্তর ধাতু" },
+  22: { mass:47.867,  state:"Solid",  stateBn:"কঠিন",    hardness:"Very hard",hardnessBn:"অতি কঠিন",     color:"#9ca3af", colorLabel:"Silvery",           colorLabelBn:"রুপালি",              melt:"1668 °C", boil:"3287 °C", density:"4.51 g/cm³",  uses:"বিমান, ইমপ্লান্ট, পেইন্ট",        metalType:"Metal",     metalTypeBn:"অবস্থান্তর ধাতু" },
+  23: { mass:50.942,  state:"Solid",  stateBn:"কঠিন",    hardness:"Hard",     hardnessBn:"কঠিন",         color:"#9ca3af", colorLabel:"Silvery",           colorLabelBn:"রুপালি",              melt:"1910 °C", boil:"3407 °C", density:"6.11 g/cm³",  uses:"ইস্পাত শক্ত করা",                 metalType:"Metal",     metalTypeBn:"অবস্থান্তর ধাতু" },
+  24: { mass:51.996,  state:"Solid",  stateBn:"কঠিন",    hardness:"Very hard",hardnessBn:"অতি কঠিন",     color:"#a3a3a3", colorLabel:"Silvery",           colorLabelBn:"রুপালি",              melt:"1907 °C", boil:"2671 °C", density:"7.19 g/cm³",  uses:"স্টেইনলেস স্টিল, ক্রোম প্রলেপ",   metalType:"Metal",     metalTypeBn:"অবস্থান্তর ধাতু" },
+  25: { mass:54.938,  state:"Solid",  stateBn:"কঠিন",    hardness:"Hard, brittle",hardnessBn:"কঠিন, ভঙ্গুর", color:"#9ca3af", colorLabel:"Silvery",       colorLabelBn:"রুপালি",              melt:"1246 °C", boil:"2061 °C", density:"7.21 g/cm³",  uses:"ইস্পাত, ব্যাটারি",                metalType:"Metal",     metalTypeBn:"অবস্থান্তর ধাতু" },
+  26: { mass:55.845,  state:"Solid",  stateBn:"কঠিন",    hardness:"Hard",     hardnessBn:"কঠিন",         color:"#71717a", colorLabel:"Silvery-grey",      colorLabelBn:"রুপালি-ধূসর",         melt:"1538 °C", boil:"2862 °C", density:"7.87 g/cm³",  uses:"ইস্পাত, রক্তের হিমোগ্লোবিন",      metalType:"Metal",     metalTypeBn:"অবস্থান্তর ধাতু" },
+  27: { mass:58.933,  state:"Solid",  stateBn:"কঠিন",    hardness:"Hard",     hardnessBn:"কঠিন",         color:"#60a5fa", colorLabel:"Silvery-blue",      colorLabelBn:"রুপালি-নীল",          melt:"1495 °C", boil:"2927 °C", density:"8.90 g/cm³",  uses:"চুম্বক, নীল রঙ, Li-ব্যাটারি",     metalType:"Metal",     metalTypeBn:"অবস্থান্তর ধাতু" },
+  28: { mass:58.693,  state:"Solid",  stateBn:"কঠিন",    hardness:"Hard",     hardnessBn:"কঠিন",         color:"#a8a29e", colorLabel:"Silvery",           colorLabelBn:"রুপালি",              melt:"1455 °C", boil:"2913 °C", density:"8.91 g/cm³",  uses:"কয়েন, ব্যাটারি, প্রলেপ",          metalType:"Metal",     metalTypeBn:"অবস্থান্তর ধাতু" },
+  29: { mass:63.546,  state:"Solid",  stateBn:"কঠিন",    hardness:"Soft, ductile",hardnessBn:"কোমল, নমনীয়", color:"#b45309", colorLabel:"Reddish-orange", colorLabelBn:"লালচে-কমলা",          melt:"1085 °C", boil:"2562 °C", density:"8.96 g/cm³",  uses:"বৈদ্যুতিক তার, পয়সা",           metalType:"Metal",     metalTypeBn:"অবস্থান্তর ধাতু" },
+  30: { mass:65.38,   state:"Solid",  stateBn:"কঠিন",    hardness:"Brittle",  hardnessBn:"ভঙ্গুর",        color:"#9ca3af", colorLabel:"Bluish-silver",     colorLabelBn:"নীলাভ-রুপালি",        melt:"419.5 °C",boil:"907 °C",  density:"7.14 g/cm³",  uses:"গ্যালভানাইজিং, ব্যাটারি, ঔষধ",   metalType:"Metal",     metalTypeBn:"অবস্থান্তর ধাতু" },
+};
+
