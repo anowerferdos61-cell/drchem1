@@ -14,7 +14,8 @@ export type ExperimentId =
   | "electrochemical_series"
   | "bonding_basics"
   | "electron_config"
-  | "periodic_trends";
+  | "periodic_trends"
+  | "group_reactivity";
 
 
 export type Mode = "guide" | "student" | "classroom";
