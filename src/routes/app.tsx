@@ -169,6 +169,7 @@ function Index() {
         raw === "electrochemical_series" ||
         raw === "bonding_basics" ||
         raw === "electron_config"
+      ) {
 
 
         setActiveExperiment(raw);
