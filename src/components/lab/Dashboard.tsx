@@ -96,6 +96,8 @@ const ALL_LABS: LabMeta[] = [
     icon: Microscope, tint: "from-pink-500/15 to-fuchsia-500/10", iconColor: "text-pink-500", isCoreBoard: false },
   { id: "group_reactivity", title: "Special Groups & Water Reactivity", titleBn: "গ্রুপ ভিত্তিক বিশেষ মৌল ও পানির বিক্রিয়া",
     icon: Flame, tint: "from-orange-500/15 to-red-500/10", iconColor: "text-orange-500", isCoreBoard: false },
+  { id: "periodic_anomalies", title: "Periodic Table Anomalies & Debate", titleBn: "পর্যায় সারণির পটভূমি ও ত্রুটি অনুসন্ধানকারী",
+    icon: Sparkles, tint: "from-fuchsia-500/15 to-pink-500/10", iconColor: "text-fuchsia-500", isCoreBoard: false },
 ];
 
 type ChapterMeta = {
@@ -124,7 +126,7 @@ const CHAPTERS: ChapterMeta[] = [
     labIds: [], comingSoonCount: 3, accent: "from-violet-500 to-purple-500", icon: Atom },
   { number: 4, titleBn: "পর্যায় সারণি", titleEn: "Periodic Table",
     descBn: "মৌলিক পদার্থের শ্রেণিবিন্যাস ও ধর্ম।",
-    labIds: ["electron_config", "periodic_trends", "group_reactivity"], accent: "from-fuchsia-500 to-pink-500", icon: Microscope },
+    labIds: ["electron_config", "periodic_trends", "group_reactivity", "periodic_anomalies"], accent: "from-fuchsia-500 to-pink-500", icon: Microscope },
   { number: 5, titleBn: "রাসায়নিক বন্ধন", titleEn: "Chemical Bonding",
     descBn: "আয়নিক, সমযোজী ও ধাতব বন্ধনের ধারণা।",
     labIds: ["bonding_basics", "ionic_covalent"],

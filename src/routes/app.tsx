@@ -49,6 +49,7 @@ import BondingLab from "@/components/lab/BondingLab";
 import ElectronConfigLab from "@/components/lab/ElectronConfigLab";
 import PeriodicTrendsLab from "@/components/lab/PeriodicTrendsLab";
 import GroupReactivityLab from "@/components/lab/GroupReactivityLab";
+import PeriodicAnomaliesLab from "@/components/lab/PeriodicAnomaliesLab";
 
 import LabAIAssistant from "@/components/lab/LabAIAssistant";
 import LandscapeWrapper from "@/components/lab/LandscapeGate";
@@ -172,7 +173,8 @@ function Index() {
         raw === "bonding_basics" ||
         raw === "electron_config" ||
         raw === "periodic_trends" ||
-        raw === "group_reactivity"
+        raw === "group_reactivity" ||
+        raw === "periodic_anomalies"
       ) {
 
 
@@ -241,6 +243,8 @@ function Index() {
     content = <PeriodicTrendsLab onBack={back} />;
   } else if (activeExperiment === "group_reactivity") {
     content = <GroupReactivityLab onBack={back} />;
+  } else if (activeExperiment === "periodic_anomalies") {
+    content = <PeriodicAnomaliesLab onBack={back} />;
   } else {
     content = <TitrationLab onBack={back} />;
   }
