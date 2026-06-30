@@ -50,6 +50,7 @@ import ElectronConfigLab from "@/components/lab/ElectronConfigLab";
 import PeriodicTrendsLab from "@/components/lab/PeriodicTrendsLab";
 import GroupReactivityLab from "@/components/lab/GroupReactivityLab";
 import PeriodicAnomaliesLab from "@/components/lab/PeriodicAnomaliesLab";
+import KineticTheoryLab from "@/components/lab/KineticTheoryLab";
 
 import LabAIAssistant from "@/components/lab/LabAIAssistant";
 import LandscapeWrapper from "@/components/lab/LandscapeGate";
@@ -174,7 +175,8 @@ function Index() {
         raw === "electron_config" ||
         raw === "periodic_trends" ||
         raw === "group_reactivity" ||
-        raw === "periodic_anomalies"
+        raw === "periodic_anomalies" ||
+        raw === "kinetic_theory"
       ) {
 
 
@@ -245,6 +247,8 @@ function Index() {
     content = <GroupReactivityLab onBack={back} />;
   } else if (activeExperiment === "periodic_anomalies") {
     content = <PeriodicAnomaliesLab onBack={back} />;
+  } else if (activeExperiment === "kinetic_theory") {
+    content = <KineticTheoryLab onBack={back} />;
   } else {
     content = <TitrationLab onBack={back} />;
   }
