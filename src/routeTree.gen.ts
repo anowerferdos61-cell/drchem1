@@ -19,7 +19,10 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as BillingRouteImport } from './routes/billing'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AppVideosRouteImport } from './routes/app.videos'
+import { Route as AppNotesRouteImport } from './routes/app.notes'
 import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
 import { Route as ApiTutorStreamRouteImport } from './routes/api/tutor/stream'
 
@@ -73,10 +76,25 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppIndexRoute = AppIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppRoute,
+} as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/admin/',
   path: '/admin/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AppVideosRoute = AppVideosRouteImport.update({
+  id: '/videos',
+  path: '/videos',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppNotesRoute = AppNotesRouteImport.update({
+  id: '/notes',
+  path: '/notes',
+  getParentRoute: () => AppRoute,
 } as any)
 const AdminPaymentsRoute = AdminPaymentsRouteImport.update({
   id: '/admin/payments',
@@ -91,7 +109,7 @@ const ApiTutorStreamRoute = ApiTutorStreamRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/app': typeof AppRoute
+  '/app': typeof AppRouteWithChildren
   '/billing': typeof BillingRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
@@ -101,12 +119,14 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tutor': typeof TutorRoute
   '/admin/payments': typeof AdminPaymentsRoute
+  '/app/notes': typeof AppNotesRoute
+  '/app/videos': typeof AppVideosRoute
   '/admin/': typeof AdminIndexRoute
+  '/app/': typeof AppIndexRoute
   '/api/tutor/stream': typeof ApiTutorStreamRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/app': typeof AppRoute
   '/billing': typeof BillingRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
@@ -116,13 +136,16 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tutor': typeof TutorRoute
   '/admin/payments': typeof AdminPaymentsRoute
+  '/app/notes': typeof AppNotesRoute
+  '/app/videos': typeof AppVideosRoute
   '/admin': typeof AdminIndexRoute
+  '/app': typeof AppIndexRoute
   '/api/tutor/stream': typeof ApiTutorStreamRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/app': typeof AppRoute
+  '/app': typeof AppRouteWithChildren
   '/billing': typeof BillingRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
@@ -132,7 +155,10 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tutor': typeof TutorRoute
   '/admin/payments': typeof AdminPaymentsRoute
+  '/app/notes': typeof AppNotesRoute
+  '/app/videos': typeof AppVideosRoute
   '/admin/': typeof AdminIndexRoute
+  '/app/': typeof AppIndexRoute
   '/api/tutor/stream': typeof ApiTutorStreamRoute
 }
 export interface FileRouteTypes {
@@ -149,12 +175,14 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/tutor'
     | '/admin/payments'
+    | '/app/notes'
+    | '/app/videos'
     | '/admin/'
+    | '/app/'
     | '/api/tutor/stream'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/app'
     | '/billing'
     | '/login'
     | '/onboarding'
@@ -164,7 +192,10 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/tutor'
     | '/admin/payments'
+    | '/app/notes'
+    | '/app/videos'
     | '/admin'
+    | '/app'
     | '/api/tutor/stream'
   id:
     | '__root__'
@@ -179,13 +210,16 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/tutor'
     | '/admin/payments'
+    | '/app/notes'
+    | '/app/videos'
     | '/admin/'
+    | '/app/'
     | '/api/tutor/stream'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AppRoute: typeof AppRoute
+  AppRoute: typeof AppRouteWithChildren
   BillingRoute: typeof BillingRoute
   LoginRoute: typeof LoginRoute
   OnboardingRoute: typeof OnboardingRoute
@@ -271,12 +305,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/': {
+      id: '/app/'
+      path: '/'
+      fullPath: '/app/'
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/admin/': {
       id: '/admin/'
       path: '/admin'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/app/videos': {
+      id: '/app/videos'
+      path: '/videos'
+      fullPath: '/app/videos'
+      preLoaderRoute: typeof AppVideosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/notes': {
+      id: '/app/notes'
+      path: '/notes'
+      fullPath: '/app/notes'
+      preLoaderRoute: typeof AppNotesRouteImport
+      parentRoute: typeof AppRoute
     }
     '/admin/payments': {
       id: '/admin/payments'
@@ -295,9 +350,23 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AppRouteChildren {
+  AppNotesRoute: typeof AppNotesRoute
+  AppVideosRoute: typeof AppVideosRoute
+  AppIndexRoute: typeof AppIndexRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppNotesRoute: AppNotesRoute,
+  AppVideosRoute: AppVideosRoute,
+  AppIndexRoute: AppIndexRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AppRoute: AppRoute,
+  AppRoute: AppRouteWithChildren,
   BillingRoute: BillingRoute,
   LoginRoute: LoginRoute,
   OnboardingRoute: OnboardingRoute,
@@ -313,13 +382,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

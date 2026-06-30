@@ -292,6 +292,8 @@ export default function Dashboard({ onPickExperiment }: DashboardProps) {
           <HomeGrid
             onCurriculum={() => setView("curriculum")}
             onPractical={() => setView("practical")}
+            onVideos={() => navigate({ to: "/app/videos" })}
+            onNotes={() => navigate({ to: "/app/notes" })}
             onComingSoon={handleComingSoon}
             practicalCount={PRACTICAL_LABS.length}
           />
@@ -423,11 +425,15 @@ export default function Dashboard({ onPickExperiment }: DashboardProps) {
 function HomeGrid({
   onCurriculum,
   onPractical,
-  onComingSoon,
+  onVideos,
+  onNotes,
+  onComingSoon: _onComingSoon,
   practicalCount,
 }: {
   onCurriculum: () => void;
   onPractical: () => void;
+  onVideos: () => void;
+  onNotes: () => void;
   onComingSoon: (what: string) => void;
   practicalCount: number;
 }) {
@@ -460,25 +466,25 @@ function HomeGrid({
       key: "video",
       title: "Video Lessons",
       titleBn: "ভিডিও লেসন",
-      desc: "প্রতিটি অধ্যায়ের ছোট, দ্বিভাষিক ভিডিও পাঠ — শীঘ্রই আসছে।",
+      desc: "প্রতিটি অধ্যায়ের ছোট, দ্বিভাষিক ভিডিও পাঠ — সরাসরি ইন-অ্যাপে দেখো।",
       icon: Video,
       accent: "from-rose-500 to-pink-600",
       shadow: "shadow-rose-500/20",
-      meta: "শীঘ্রই",
-      onClick: () => onComingSoon("Video Lessons"),
-      available: false,
+      meta: "নতুন",
+      onClick: onVideos,
+      available: true,
     },
     {
       key: "notes",
       title: "Smart Notes",
       titleBn: "স্মার্ট নোটস",
-      desc: "AI-জেনারেটেড সংক্ষিপ্ত নোট, ফর্মুলা শিট ও রিভিশন কার্ড — শীঘ্রই আসছে।",
+      desc: "অধ্যায়-ভিত্তিক স্মার্ট নোট, ফর্মুলা শিট ও AI টিউটর ইন্টিগ্রেশন।",
       icon: NotebookPen,
       accent: "from-amber-500 to-orange-600",
       shadow: "shadow-amber-500/20",
-      meta: "শীঘ্রই",
-      onClick: () => onComingSoon("Smart Notes"),
-      available: false,
+      meta: "নতুন",
+      onClick: onNotes,
+      available: true,
     },
   ];
 
