@@ -403,38 +403,63 @@ export default function KineticTheoryLab({ onBack }: Props) {
               </div>
             </div>
 
-            {/* Temperature slider footer */}
-            <div className="border-t bg-background/60 px-4 py-4 md:px-6">
-              <div className="mb-2 flex items-center justify-between text-xs font-medium">
-                <span className="flex items-center gap-1.5 text-sky-600 dark:text-sky-400">
-                  <Snowflake className="h-3.5 w-3.5" /> ঠাণ্ডা
-                </span>
-                <span className="text-muted-foreground">
-                  তাপমাত্রা স্লাইডার — Temperature
-                </span>
-                <span className="flex items-center gap-1.5 text-orange-600 dark:text-orange-400">
-                  গরম <Flame className="h-3.5 w-3.5" />
-                </span>
+            {/* Substance + Temperature footer */}
+            <div className="border-t bg-background/60 px-4 py-4 md:px-6 space-y-4">
+              {/* Substance selector */}
+              <div>
+                <div className="mb-1.5 flex items-center justify-between text-xs font-medium">
+                  <span className="text-muted-foreground">পদার্থ নির্বাচন — Substance</span>
+                  <span className="text-[11px] text-muted-foreground">
+                    গলনাঙ্ক <b className="text-foreground">{substance.melt}°C</b> · স্ফুটনাঙ্ক <b className="text-foreground">{substance.boil}°C</b>
+                  </span>
+                </div>
+                <Select value={substanceId} onValueChange={setSubstanceId}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {SUBSTANCES.map((s) => (
+                      <SelectItem key={s.id} value={s.id}>
+                        <span className="mr-2">{s.emoji}</span>
+                        {s.bn} ({s.en}) · {s.formula}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-              <Slider
-                value={[temp]}
-                onValueChange={(v) => setTemp(v[0])}
-                min={0}
-                max={100}
-                step={1}
-                className="my-3"
-              />
-              <div className="mt-2 flex items-center justify-between text-[11px] text-muted-foreground">
-                <span>কঠিন (Solid)</span>
-                <span>তরল (Liquid)</span>
-                <span>গ্যাস (Gas)</span>
-              </div>
-              <div className="mt-3 flex justify-end">
-                <Button variant="outline" size="sm" onClick={reset} className="gap-1.5">
-                  <RotateCcw className="h-3.5 w-3.5" /> Reset
-                </Button>
+
+              {/* Temperature slider */}
+              <div>
+                <div className="mb-2 flex items-center justify-between text-xs font-medium">
+                  <span className="flex items-center gap-1.5 text-sky-600 dark:text-sky-400">
+                    <Snowflake className="h-3.5 w-3.5" /> {substance.tempMin}°C
+                  </span>
+                  <span className="text-muted-foreground">তাপমাত্রা — {tempCelsius}°C</span>
+                  <span className="flex items-center gap-1.5 text-orange-600 dark:text-orange-400">
+                    {substance.tempMax}°C <Flame className="h-3.5 w-3.5" />
+                  </span>
+                </div>
+                <Slider
+                  value={[temp]}
+                  onValueChange={(v) => setTemp(v[0])}
+                  min={substance.tempMin}
+                  max={substance.tempMax}
+                  step={1}
+                  className="my-3"
+                />
+                <div className="mt-2 flex items-center justify-between text-[11px] text-muted-foreground">
+                  <span>কঠিন (&lt; {substance.melt}°C)</span>
+                  <span>তরল</span>
+                  <span>গ্যাস (&gt; {substance.boil}°C)</span>
+                </div>
+                <div className="mt-3 flex justify-end">
+                  <Button variant="outline" size="sm" onClick={reset} className="gap-1.5">
+                    <RotateCcw className="h-3.5 w-3.5" /> Reset
+                  </Button>
+                </div>
               </div>
             </div>
+
           </Card>
 
           {/* ── Side Panels ── */}
