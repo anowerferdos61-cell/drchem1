@@ -188,10 +188,15 @@ function Index() {
   const { isAuthenticated, loading, profile, roles, rolesLoaded } = useAuth();
   const navigate = useNavigate();
   const isAdmin = roles.includes("admin");
-  // Roles load asynchronously after the session — wait for them before rendering
-  // so admins never see a flash of the student dashboard.
   const rolesReady = rolesLoaded;
   const [rolesWaitExpired, setRolesWaitExpired] = useState(false);
+
+  // STICKY auth-pass: once we've successfully rendered the dashboard for this
+  // signed-in user, never bounce back to the loading screen on the same
+  // session. Token refreshes briefly flip rolesLoaded back to false, which
+  // used to unmount the active lab. Persist a one-way "passed" flag instead.
+  const authPassedRef = useRef(false);
+  const lastUserIdRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (loading || !isAuthenticated || rolesReady) {
@@ -206,6 +211,8 @@ function Index() {
   useEffect(() => {
     if (loading) return;
     if (!isAuthenticated) {
+      authPassedRef.current = false;
+      lastUserIdRef.current = null;
       void navigate({ to: "/login", search: { redirect: "/app" }, replace: true });
       return;
     }
@@ -291,7 +298,18 @@ function Index() {
   // Block any render until we're sure the user isn't an admin (avoids
   // flashing the student dashboard while role rows are still loading).
   const waitingForRoles = isAuthenticated && !rolesReady && !rolesWaitExpired;
-  if (loading || !isAuthenticated || waitingForRoles || isAdmin) {
+  const shouldBlock = loading || !isAuthenticated || waitingForRoles || isAdmin;
+
+  // Once we've rendered the dashboard for this user, lock it in — token
+  // refreshes must never bounce us back to the loading screen.
+  if (isAuthenticated && !shouldBlock && rolesReady && !isAdmin) {
+    if (lastUserIdRef.current !== (profile?.user_id ?? "anon")) {
+      lastUserIdRef.current = profile?.user_id ?? "anon";
+    }
+    authPassedRef.current = true;
+  }
+
+  if (shouldBlock && !authPassedRef.current) {
     return (
       <div className="min-h-screen flex items-center justify-center text-sm text-muted-foreground">
         লোড হচ্ছে…
