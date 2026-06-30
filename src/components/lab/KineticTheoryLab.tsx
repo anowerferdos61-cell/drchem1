@@ -25,6 +25,13 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface Props {
   onBack: () => void;
@@ -32,22 +39,32 @@ interface Props {
 
 type Phase = "solid" | "liquid" | "gas";
 
-interface Particle {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  // Lattice anchor (for solid)
-  ax: number;
-  ay: number;
+interface Substance {
+  id: string;
+  bn: string;
+  en: string;
+  formula: string;
+  melt: number; // °C
+  boil: number; // °C
+  tempMin: number; // slider range
+  tempMax: number;
+  emoji: string;
 }
 
-const PARTICLE_COUNT = 90;
-const PARTICLE_R = 7;
+const SUBSTANCES: Substance[] = [
+  { id: "water",   bn: "পানি",      en: "Water",    formula: "H₂O", melt: 0,    boil: 100,  tempMin: -20,  tempMax: 200,  emoji: "💧" },
+  { id: "iron",    bn: "লোহা",      en: "Iron",     formula: "Fe",  melt: 1538, boil: 2862, tempMin: 25,   tempMax: 3200, emoji: "⚙️" },
+  { id: "copper",  bn: "তামা",      en: "Copper",   formula: "Cu",  melt: 1085, boil: 2562, tempMin: 25,   tempMax: 2800, emoji: "🟧" },
+  { id: "aluminum",bn: "অ্যালুমিনিয়াম", en: "Aluminum", formula: "Al",  melt: 660,  boil: 2470, tempMin: 25,   tempMax: 2700, emoji: "🪙" },
+  { id: "gold",    bn: "স্বর্ণ",     en: "Gold",     formula: "Au",  melt: 1064, boil: 2856, tempMin: 25,   tempMax: 3100, emoji: "🥇" },
+  { id: "mercury", bn: "পারদ",      en: "Mercury",  formula: "Hg",  melt: -39,  boil: 357,  tempMin: -80,  tempMax: 500,  emoji: "🌡️" },
+  { id: "ice_n2",  bn: "নাইট্রোজেন", en: "Nitrogen", formula: "N₂",  melt: -210, boil: -196, tempMin: -250, tempMax: -100, emoji: "❄️" },
+  { id: "salt",    bn: "লবণ",       en: "Salt",     formula: "NaCl",melt: 801,  boil: 1465, tempMin: 25,   tempMax: 1800, emoji: "🧂" },
+];
 
-function phaseFromTemp(t: number): Phase {
-  if (t < 33) return "solid";
-  if (t < 67) return "liquid";
+function phaseFromTemp(t: number, s: Substance): Phase {
+  if (t < s.melt) return "solid";
+  if (t < s.boil) return "liquid";
   return "gas";
 }
 
@@ -80,6 +97,7 @@ const PHASE_META: Record<
     tip: "কণাগুলো মুক্তভাবে ছুটছে — আন্তঃআণবিক আকর্ষণ প্রায় শূন্য।",
   },
 };
+
 
 export default function KineticTheoryLab({ onBack }: Props) {
   const [temp, setTemp] = useState(20); // 0..100 (slider %)
