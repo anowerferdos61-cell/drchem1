@@ -98,26 +98,57 @@ const PHASE_META: Record<
   },
 };
 
+const PARTICLE_COUNT = 90;
+const PARTICLE_R = 7;
+
+interface Particle {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  ax: number;
+  ay: number;
+}
 
 export default function KineticTheoryLab({ onBack }: Props) {
-  const [temp, setTemp] = useState(20); // 0..100 (slider %)
+  const [substanceId, setSubstanceId] = useState<string>("water");
+  const substance = useMemo(
+    () => SUBSTANCES.find((s) => s.id === substanceId) ?? SUBSTANCES[0],
+    [substanceId],
+  );
+
+  // Temperature in °C, clamped to substance range
+  const [temp, setTemp] = useState<number>(20);
+
+  // When substance changes, snap temp to a sensible default (just below melt)
+  useEffect(() => {
+    const def = Math.max(
+      substance.tempMin,
+      Math.min(substance.tempMax, Math.round(substance.melt - (substance.boil - substance.melt) * 0.3)),
+    );
+    setTemp(def);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [substanceId]);
+
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const particlesRef = useRef<Particle[]>([]);
   const rafRef = useRef<number | null>(null);
   const tempRef = useRef(temp);
   tempRef.current = temp;
+  const substanceRef = useRef(substance);
+  substanceRef.current = substance;
 
-  const phase = phaseFromTemp(temp);
+  const phase = phaseFromTemp(temp, substance);
   const meta = PHASE_META[phase];
   const PhaseIcon = meta.icon;
 
-  // Kinetic energy & attraction gauges (0..100)
-  const kineticEnergy = Math.round(8 + temp * 0.92);
-  const attraction = Math.round(Math.max(2, 100 - temp * 0.98));
-  const tempCelsius = useMemo(() => {
-    // map 0..100 slider → -20°C .. 250°C (illustrative)
-    return Math.round(-20 + (temp / 100) * 270);
-  }, [temp]);
+  // Gauges (0..100) — based on position within substance's range
+  const range = Math.max(1, substance.tempMax - substance.tempMin);
+  const norm = Math.max(0, Math.min(1, (temp - substance.tempMin) / range));
+  const kineticEnergy = Math.round(8 + norm * 92);
+  const attraction = Math.round(Math.max(2, 100 - norm * 98));
+  const tempCelsius = temp;
+
 
   // ── Initialise particles in lattice ──
   useEffect(() => {
