@@ -342,8 +342,11 @@ export default function KineticTheoryLab({ onBack }: Props) {
   }, []);
 
   const reset = () => {
-    setTemp(20);
+    setTemp(
+      Math.round(substance.melt - (substance.boil - substance.melt) * 0.3),
+    );
   };
+
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 via-white to-sky-50 dark:from-slate-950 dark:via-background dark:to-slate-900">
