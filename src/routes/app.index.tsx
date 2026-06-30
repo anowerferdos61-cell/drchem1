@@ -71,6 +71,7 @@ const LAB_COMPONENTS: Partial<Record<ExperimentId, LazyExoticComponent<LabCompon
   heating_curve: lazy(() => import("@/components/lab/HeatingCurveLab")),
   atom_builder: lazy(() => import("@/components/lab/AtomBuilderLab")),
   atom_models: lazy(() => import("@/components/lab/AtomModelsLab")),
+  aufbau_principle: lazy(() => import("@/components/lab/AufbauLab")),
 };
 
 function LabLoadingFallback({ onBack }: { onBack: () => void }) {

@@ -21,7 +21,8 @@ export type ExperimentId =
   | "diffusion_race"
   | "heating_curve"
   | "atom_builder"
-  | "atom_models";
+  | "atom_models"
+  | "aufbau_principle";
 
 
 export type Mode = "guide" | "student" | "classroom";
