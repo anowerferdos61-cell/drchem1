@@ -20,7 +20,8 @@ export type ExperimentId =
   | "kinetic_theory"
   | "diffusion_race"
   | "heating_curve"
-  | "atom_builder";
+  | "atom_builder"
+  | "atom_models";
 
 
 export type Mode = "guide" | "student" | "classroom";
