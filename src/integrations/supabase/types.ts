@@ -56,6 +56,39 @@ export type Database = {
         }
         Relationships: []
       }
+      notes: {
+        Row: {
+          chapter_number: number
+          content: string
+          created_at: string
+          id: string
+          is_premium: boolean
+          sort_order: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          chapter_number: number
+          content?: string
+          created_at?: string
+          id?: string
+          is_premium?: boolean
+          sort_order?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          chapter_number?: number
+          content?: string
+          created_at?: string
+          id?: string
+          is_premium?: boolean
+          sort_order?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       payment_requests: {
         Row: {
           amount_bdt: number
@@ -288,6 +321,39 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      videos: {
+        Row: {
+          chapter_number: number
+          created_at: string
+          id: string
+          is_premium: boolean
+          sort_order: number
+          title: string
+          video_id: string
+          video_platform: string
+        }
+        Insert: {
+          chapter_number: number
+          created_at?: string
+          id?: string
+          is_premium?: boolean
+          sort_order?: number
+          title: string
+          video_id: string
+          video_platform?: string
+        }
+        Update: {
+          chapter_number?: number
+          created_at?: string
+          id?: string
+          is_premium?: boolean
+          sort_order?: number
+          title?: string
+          video_id?: string
+          video_platform?: string
         }
         Relationships: []
       }
