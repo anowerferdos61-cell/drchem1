@@ -25,6 +25,13 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface Props {
   onBack: () => void;
@@ -32,22 +39,32 @@ interface Props {
 
 type Phase = "solid" | "liquid" | "gas";
 
-interface Particle {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  // Lattice anchor (for solid)
-  ax: number;
-  ay: number;
+interface Substance {
+  id: string;
+  bn: string;
+  en: string;
+  formula: string;
+  melt: number; // °C
+  boil: number; // °C
+  tempMin: number; // slider range
+  tempMax: number;
+  emoji: string;
 }
 
-const PARTICLE_COUNT = 90;
-const PARTICLE_R = 7;
+const SUBSTANCES: Substance[] = [
+  { id: "water",   bn: "পানি",      en: "Water",    formula: "H₂O", melt: 0,    boil: 100,  tempMin: -20,  tempMax: 200,  emoji: "💧" },
+  { id: "iron",    bn: "লোহা",      en: "Iron",     formula: "Fe",  melt: 1538, boil: 2862, tempMin: 25,   tempMax: 3200, emoji: "⚙️" },
+  { id: "copper",  bn: "তামা",      en: "Copper",   formula: "Cu",  melt: 1085, boil: 2562, tempMin: 25,   tempMax: 2800, emoji: "🟧" },
+  { id: "aluminum",bn: "অ্যালুমিনিয়াম", en: "Aluminum", formula: "Al",  melt: 660,  boil: 2470, tempMin: 25,   tempMax: 2700, emoji: "🪙" },
+  { id: "gold",    bn: "স্বর্ণ",     en: "Gold",     formula: "Au",  melt: 1064, boil: 2856, tempMin: 25,   tempMax: 3100, emoji: "🥇" },
+  { id: "mercury", bn: "পারদ",      en: "Mercury",  formula: "Hg",  melt: -39,  boil: 357,  tempMin: -80,  tempMax: 500,  emoji: "🌡️" },
+  { id: "ice_n2",  bn: "নাইট্রোজেন", en: "Nitrogen", formula: "N₂",  melt: -210, boil: -196, tempMin: -250, tempMax: -100, emoji: "❄️" },
+  { id: "salt",    bn: "লবণ",       en: "Salt",     formula: "NaCl",melt: 801,  boil: 1465, tempMin: 25,   tempMax: 1800, emoji: "🧂" },
+];
 
-function phaseFromTemp(t: number): Phase {
-  if (t < 33) return "solid";
-  if (t < 67) return "liquid";
+function phaseFromTemp(t: number, s: Substance): Phase {
+  if (t < s.melt) return "solid";
+  if (t < s.boil) return "liquid";
   return "gas";
 }
 
@@ -81,25 +98,57 @@ const PHASE_META: Record<
   },
 };
 
+const PARTICLE_COUNT = 90;
+const PARTICLE_R = 7;
+
+interface Particle {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  ax: number;
+  ay: number;
+}
+
 export default function KineticTheoryLab({ onBack }: Props) {
-  const [temp, setTemp] = useState(20); // 0..100 (slider %)
+  const [substanceId, setSubstanceId] = useState<string>("water");
+  const substance = useMemo(
+    () => SUBSTANCES.find((s) => s.id === substanceId) ?? SUBSTANCES[0],
+    [substanceId],
+  );
+
+  // Temperature in °C, clamped to substance range
+  const [temp, setTemp] = useState<number>(20);
+
+  // When substance changes, snap temp to a sensible default (just below melt)
+  useEffect(() => {
+    const def = Math.max(
+      substance.tempMin,
+      Math.min(substance.tempMax, Math.round(substance.melt - (substance.boil - substance.melt) * 0.3)),
+    );
+    setTemp(def);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [substanceId]);
+
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const particlesRef = useRef<Particle[]>([]);
   const rafRef = useRef<number | null>(null);
   const tempRef = useRef(temp);
   tempRef.current = temp;
+  const substanceRef = useRef(substance);
+  substanceRef.current = substance;
 
-  const phase = phaseFromTemp(temp);
+  const phase = phaseFromTemp(temp, substance);
   const meta = PHASE_META[phase];
   const PhaseIcon = meta.icon;
 
-  // Kinetic energy & attraction gauges (0..100)
-  const kineticEnergy = Math.round(8 + temp * 0.92);
-  const attraction = Math.round(Math.max(2, 100 - temp * 0.98));
-  const tempCelsius = useMemo(() => {
-    // map 0..100 slider → -20°C .. 250°C (illustrative)
-    return Math.round(-20 + (temp / 100) * 270);
-  }, [temp]);
+  // Gauges (0..100) — based on position within substance's range
+  const range = Math.max(1, substance.tempMax - substance.tempMin);
+  const norm = Math.max(0, Math.min(1, (temp - substance.tempMin) / range));
+  const kineticEnergy = Math.round(8 + norm * 92);
+  const attraction = Math.round(Math.max(2, 100 - norm * 98));
+  const tempCelsius = temp;
+
 
   // ── Initialise particles in lattice ──
   useEffect(() => {
@@ -139,17 +188,29 @@ export default function KineticTheoryLab({ onBack }: Props) {
     const tick = (now: number) => {
       const dt = Math.min(32, now - last) / 16.67; // normalised
       last = now;
-      const t = tempRef.current; // 0..100
-      const ph = phaseFromTemp(t);
+      const t = tempRef.current;
+      const sub = substanceRef.current;
+      const ph = phaseFromTemp(t, sub);
 
       const particles = particlesRef.current;
 
-      // Phase-driven physics
-      // Solid: strong spring to lattice, tiny jitter
-      // Liquid: weak spring to bottom region, free movement, some cohesion
-      // Gas:   no spring, high speed, fills beaker
-      const energy = 0.1 + t / 100; // overall scale
-      const maxSpeed = ph === "solid" ? 0.4 : ph === "liquid" ? 1.6 : 4.5;
+      // Normalised "thermal intensity" within current phase (0..1+)
+      let intensity: number;
+      if (ph === "solid") {
+        // 0 at tempMin, ~1 at melt
+        const span = Math.max(1, sub.melt - sub.tempMin);
+        intensity = Math.max(0.05, (t - sub.tempMin) / span);
+      } else if (ph === "liquid") {
+        const span = Math.max(1, sub.boil - sub.melt);
+        intensity = 0.3 + (t - sub.melt) / span; // 0.3..1.3
+      } else {
+        const span = Math.max(1, sub.tempMax - sub.boil);
+        intensity = 0.8 + Math.min(1.5, (t - sub.boil) / span);
+      }
+
+      const energy = intensity;
+      const maxSpeed = ph === "solid" ? 0.2 + intensity * 0.6 : ph === "liquid" ? 1.0 + intensity * 1.4 : 3.5 + intensity * 2.5;
+
 
       for (const p of particles) {
         // Thermal jitter
@@ -211,11 +272,12 @@ export default function KineticTheoryLab({ onBack }: Props) {
       // ── Draw ──
       ctx.clearRect(0, 0, W, H);
 
-      // Background gradient (cool blue → warm orange based on temp)
+      // Background gradient (cool blue → warm orange based on intensity)
       const bg = ctx.createLinearGradient(0, 0, 0, H);
-      const warm = t / 100;
+      const warm = Math.min(1, Math.max(0, (t - sub.tempMin) / Math.max(1, sub.tempMax - sub.tempMin)));
       bg.addColorStop(0, `rgba(${30 + warm * 80}, ${60 + warm * 30}, ${120 - warm * 80}, 0.05)`);
       bg.addColorStop(1, `rgba(${100 + warm * 120}, ${120 + warm * 40}, ${180 - warm * 140}, 0.12)`);
+
       ctx.fillStyle = bg;
       ctx.fillRect(0, 0, W, H);
 
@@ -280,8 +342,11 @@ export default function KineticTheoryLab({ onBack }: Props) {
   }, []);
 
   const reset = () => {
-    setTemp(20);
+    setTemp(
+      Math.round(substance.melt - (substance.boil - substance.melt) * 0.3),
+    );
   };
+
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 via-white to-sky-50 dark:from-slate-950 dark:via-background dark:to-slate-900">
@@ -341,38 +406,63 @@ export default function KineticTheoryLab({ onBack }: Props) {
               </div>
             </div>
 
-            {/* Temperature slider footer */}
-            <div className="border-t bg-background/60 px-4 py-4 md:px-6">
-              <div className="mb-2 flex items-center justify-between text-xs font-medium">
-                <span className="flex items-center gap-1.5 text-sky-600 dark:text-sky-400">
-                  <Snowflake className="h-3.5 w-3.5" /> ঠাণ্ডা
-                </span>
-                <span className="text-muted-foreground">
-                  তাপমাত্রা স্লাইডার — Temperature
-                </span>
-                <span className="flex items-center gap-1.5 text-orange-600 dark:text-orange-400">
-                  গরম <Flame className="h-3.5 w-3.5" />
-                </span>
+            {/* Substance + Temperature footer */}
+            <div className="border-t bg-background/60 px-4 py-4 md:px-6 space-y-4">
+              {/* Substance selector */}
+              <div>
+                <div className="mb-1.5 flex items-center justify-between text-xs font-medium">
+                  <span className="text-muted-foreground">পদার্থ নির্বাচন — Substance</span>
+                  <span className="text-[11px] text-muted-foreground">
+                    গলনাঙ্ক <b className="text-foreground">{substance.melt}°C</b> · স্ফুটনাঙ্ক <b className="text-foreground">{substance.boil}°C</b>
+                  </span>
+                </div>
+                <Select value={substanceId} onValueChange={setSubstanceId}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {SUBSTANCES.map((s) => (
+                      <SelectItem key={s.id} value={s.id}>
+                        <span className="mr-2">{s.emoji}</span>
+                        {s.bn} ({s.en}) · {s.formula}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-              <Slider
-                value={[temp]}
-                onValueChange={(v) => setTemp(v[0])}
-                min={0}
-                max={100}
-                step={1}
-                className="my-3"
-              />
-              <div className="mt-2 flex items-center justify-between text-[11px] text-muted-foreground">
-                <span>কঠিন (Solid)</span>
-                <span>তরল (Liquid)</span>
-                <span>গ্যাস (Gas)</span>
-              </div>
-              <div className="mt-3 flex justify-end">
-                <Button variant="outline" size="sm" onClick={reset} className="gap-1.5">
-                  <RotateCcw className="h-3.5 w-3.5" /> Reset
-                </Button>
+
+              {/* Temperature slider */}
+              <div>
+                <div className="mb-2 flex items-center justify-between text-xs font-medium">
+                  <span className="flex items-center gap-1.5 text-sky-600 dark:text-sky-400">
+                    <Snowflake className="h-3.5 w-3.5" /> {substance.tempMin}°C
+                  </span>
+                  <span className="text-muted-foreground">তাপমাত্রা — {tempCelsius}°C</span>
+                  <span className="flex items-center gap-1.5 text-orange-600 dark:text-orange-400">
+                    {substance.tempMax}°C <Flame className="h-3.5 w-3.5" />
+                  </span>
+                </div>
+                <Slider
+                  value={[temp]}
+                  onValueChange={(v) => setTemp(v[0])}
+                  min={substance.tempMin}
+                  max={substance.tempMax}
+                  step={1}
+                  className="my-3"
+                />
+                <div className="mt-2 flex items-center justify-between text-[11px] text-muted-foreground">
+                  <span>কঠিন (&lt; {substance.melt}°C)</span>
+                  <span>তরল</span>
+                  <span>গ্যাস (&gt; {substance.boil}°C)</span>
+                </div>
+                <div className="mt-3 flex justify-end">
+                  <Button variant="outline" size="sm" onClick={reset} className="gap-1.5">
+                    <RotateCcw className="h-3.5 w-3.5" /> Reset
+                  </Button>
+                </div>
               </div>
             </div>
+
           </Card>
 
           {/* ── Side Panels ── */}
