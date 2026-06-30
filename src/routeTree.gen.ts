@@ -20,6 +20,8 @@ import { Route as BillingRouteImport } from './routes/billing'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AppVideosRouteImport } from './routes/app.videos'
+import { Route as AppNotesRouteImport } from './routes/app.notes'
 import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
 import { Route as ApiTutorStreamRouteImport } from './routes/api/tutor/stream'
 
@@ -78,6 +80,16 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/admin/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppVideosRoute = AppVideosRouteImport.update({
+  id: '/videos',
+  path: '/videos',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppNotesRoute = AppNotesRouteImport.update({
+  id: '/notes',
+  path: '/notes',
+  getParentRoute: () => AppRoute,
+} as any)
 const AdminPaymentsRoute = AdminPaymentsRouteImport.update({
   id: '/admin/payments',
   path: '/admin/payments',
@@ -91,7 +103,7 @@ const ApiTutorStreamRoute = ApiTutorStreamRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/app': typeof AppRoute
+  '/app': typeof AppRouteWithChildren
   '/billing': typeof BillingRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
@@ -101,12 +113,14 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tutor': typeof TutorRoute
   '/admin/payments': typeof AdminPaymentsRoute
+  '/app/notes': typeof AppNotesRoute
+  '/app/videos': typeof AppVideosRoute
   '/admin/': typeof AdminIndexRoute
   '/api/tutor/stream': typeof ApiTutorStreamRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/app': typeof AppRoute
+  '/app': typeof AppRouteWithChildren
   '/billing': typeof BillingRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
@@ -116,13 +130,15 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tutor': typeof TutorRoute
   '/admin/payments': typeof AdminPaymentsRoute
+  '/app/notes': typeof AppNotesRoute
+  '/app/videos': typeof AppVideosRoute
   '/admin': typeof AdminIndexRoute
   '/api/tutor/stream': typeof ApiTutorStreamRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/app': typeof AppRoute
+  '/app': typeof AppRouteWithChildren
   '/billing': typeof BillingRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
@@ -132,6 +148,8 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tutor': typeof TutorRoute
   '/admin/payments': typeof AdminPaymentsRoute
+  '/app/notes': typeof AppNotesRoute
+  '/app/videos': typeof AppVideosRoute
   '/admin/': typeof AdminIndexRoute
   '/api/tutor/stream': typeof ApiTutorStreamRoute
 }
@@ -149,6 +167,8 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/tutor'
     | '/admin/payments'
+    | '/app/notes'
+    | '/app/videos'
     | '/admin/'
     | '/api/tutor/stream'
   fileRoutesByTo: FileRoutesByTo
@@ -164,6 +184,8 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/tutor'
     | '/admin/payments'
+    | '/app/notes'
+    | '/app/videos'
     | '/admin'
     | '/api/tutor/stream'
   id:
@@ -179,13 +201,15 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/tutor'
     | '/admin/payments'
+    | '/app/notes'
+    | '/app/videos'
     | '/admin/'
     | '/api/tutor/stream'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AppRoute: typeof AppRoute
+  AppRoute: typeof AppRouteWithChildren
   BillingRoute: typeof BillingRoute
   LoginRoute: typeof LoginRoute
   OnboardingRoute: typeof OnboardingRoute
@@ -278,6 +302,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/videos': {
+      id: '/app/videos'
+      path: '/videos'
+      fullPath: '/app/videos'
+      preLoaderRoute: typeof AppVideosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/notes': {
+      id: '/app/notes'
+      path: '/notes'
+      fullPath: '/app/notes'
+      preLoaderRoute: typeof AppNotesRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/admin/payments': {
       id: '/admin/payments'
       path: '/admin/payments'
@@ -295,9 +333,21 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AppRouteChildren {
+  AppNotesRoute: typeof AppNotesRoute
+  AppVideosRoute: typeof AppVideosRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppNotesRoute: AppNotesRoute,
+  AppVideosRoute: AppVideosRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AppRoute: AppRoute,
+  AppRoute: AppRouteWithChildren,
   BillingRoute: BillingRoute,
   LoginRoute: LoginRoute,
   OnboardingRoute: OnboardingRoute,
