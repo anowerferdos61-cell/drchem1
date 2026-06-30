@@ -137,6 +137,18 @@ function Index() {
   // Roles load asynchronously after the session — wait for them before rendering
   // so admins never see a flash of the student dashboard.
   const rolesReady = rolesLoaded;
+  const [rolesWaitExpired, setRolesWaitExpired] = useState(false);
+
+  useEffect(() => {
+    if (loading || !isAuthenticated || rolesReady) {
+      setRolesWaitExpired(false);
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => setRolesWaitExpired(true), 6_000);
+    return () => window.clearTimeout(timeoutId);
+  }, [loading, isAuthenticated, rolesReady]);
+
   useEffect(() => {
     if (loading) return;
     if (!isAuthenticated) {
@@ -253,7 +265,8 @@ function Index() {
   const showFloatingAI = activeExperiment !== null;
   // Block any render until we're sure the user isn't an admin (avoids
   // flashing the student dashboard while role rows are still loading).
-  if (loading || !isAuthenticated || !rolesReady || isAdmin) {
+  const waitingForRoles = isAuthenticated && !rolesReady && !rolesWaitExpired;
+  if (loading || !isAuthenticated || waitingForRoles || isAdmin) {
     return (
       <div className="min-h-screen flex items-center justify-center text-sm text-muted-foreground">
         লোড হচ্ছে…
