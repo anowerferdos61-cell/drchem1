@@ -86,6 +86,7 @@ function NotesPage() {
       headerTitleBn="স্মার্ট নোটস"
       headerSubtitle="Smart Notes · NCTB"
       accent="from-amber-500 to-orange-600"
+      itemLabel="নোট"
       activeChapter={activeChapter}
       setActiveChapter={(n) => {
         setActiveChapter(n);
