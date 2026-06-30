@@ -292,6 +292,8 @@ export default function Dashboard({ onPickExperiment }: DashboardProps) {
           <HomeGrid
             onCurriculum={() => setView("curriculum")}
             onPractical={() => setView("practical")}
+            onVideos={() => navigate({ to: "/app/videos" })}
+            onNotes={() => navigate({ to: "/app/notes" })}
             onComingSoon={handleComingSoon}
             practicalCount={PRACTICAL_LABS.length}
           />
