@@ -16,7 +16,8 @@ export type ExperimentId =
   | "electron_config"
   | "periodic_trends"
   | "group_reactivity"
-  | "periodic_anomalies";
+  | "periodic_anomalies"
+  | "kinetic_theory";
 
 
 export type Mode = "guide" | "student" | "classroom";
