@@ -45,7 +45,7 @@ function NotesPage() {
     "notes",
     "id, chapter_number, title, content, is_premium",
   );
-  const [activeChapter, setActiveChapter] = useState<number>(10);
+  const [activeChapter, setActiveChapter] = useState<number | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const { isPro } = useEntitlements();
   const navigate = useNavigate();
