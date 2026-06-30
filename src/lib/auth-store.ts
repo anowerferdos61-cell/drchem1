@@ -39,15 +39,25 @@ function setState(next: Partial<AuthState>) {
 }
 
 async function loadProfileAndRoles(userId: string) {
-  const [{ data: profile }, { data: roleRows }] = await Promise.all([
-    supabase.from("profiles").select("*").eq("user_id", userId).maybeSingle(),
-    supabase.from("user_roles").select("role").eq("user_id", userId),
-  ]);
-  setState({
-    profile: (profile as Profile | null) ?? null,
-    roles: ((roleRows ?? []) as { role: AppRole }[]).map((r) => r.role),
-    rolesLoaded: true,
-  });
+  try {
+    const [{ data: profile, error: profileError }, { data: roleRows, error: rolesError }] =
+      await Promise.all([
+        supabase.from("profiles").select("*").eq("user_id", userId).maybeSingle(),
+        supabase.from("user_roles").select("role").eq("user_id", userId),
+      ]);
+
+    if (profileError) console.error(profileError);
+    if (rolesError) console.error(rolesError);
+
+    setState({
+      profile: profileError ? null : ((profile as Profile | null) ?? null),
+      roles: rolesError ? [] : ((roleRows ?? []) as { role: AppRole }[]).map((r) => r.role),
+      rolesLoaded: true,
+    });
+  } catch (error) {
+    console.error(error);
+    setState({ profile: null, roles: [], rolesLoaded: true });
+  }
 }
 
 function initialize() {
@@ -57,7 +67,14 @@ function initialize() {
   // Listener FIRST so we never miss a session restore
   supabase.auth.onAuthStateChange((_event, session) => {
     const user = session?.user ?? null;
-    setState({ user, loading: false, rolesLoaded: !user });
+    const sameUser = !!user && state.user?.id === user.id;
+    setState({
+      user,
+      loading: false,
+      profile: sameUser ? state.profile : null,
+      roles: sameUser ? state.roles : [],
+      rolesLoaded: user ? (sameUser ? state.rolesLoaded : false) : true,
+    });
     if (user) {
       void loadProfileAndRoles(user.id);
     } else {
@@ -68,7 +85,14 @@ function initialize() {
   // Then hydrate
   supabase.auth.getSession().then(({ data }) => {
     const user = data.session?.user ?? null;
-    setState({ user, loading: false, rolesLoaded: !user });
+    const sameUser = !!user && state.user?.id === user.id;
+    setState({
+      user,
+      loading: false,
+      profile: sameUser ? state.profile : null,
+      roles: sameUser ? state.roles : [],
+      rolesLoaded: user ? (sameUser ? state.rolesLoaded : false) : true,
+    });
     if (user) void loadProfileAndRoles(user.id);
   });
 }
@@ -87,7 +111,7 @@ export function useAuth() {
 
   const signOut = useCallback(async () => {
     await supabase.auth.signOut();
-    setState({ user: null, profile: null, roles: [] });
+    setState({ user: null, profile: null, roles: [], loading: false, rolesLoaded: true });
   }, []);
 
   const hasRole = useCallback(

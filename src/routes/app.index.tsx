@@ -155,34 +155,11 @@ function Index() {
   const [activeExperiment, setActiveExperiment] = useState<ExperimentId | null>(null);
   const [showExperiments, setShowExperiments] = useState(false);
 
-  // Hydrate from localStorage
+  // Do not auto-restore a previous lab. A stale saved lab state can trap the
+  // user in the lab/loading screen after auth refreshes or a failed attempt.
   useEffect(() => {
     try {
-      const raw = localStorage.getItem("lab:activeExperiment");
-      if (
-        raw === "titration" ||
-        raw === "oxygen_prep" ||
-        raw === "co2_prep" ||
-        raw === "nacl_crystal" ||
-        raw === "ionic_covalent" ||
-        raw === "na2co3_standard" ||
-        raw === "cuso4_water" ||
-        raw === "ph_scale" ||
-        raw === "indicator_compare" ||
-        raw === "solubility_rules" ||
-        raw === "electrochemical_series" ||
-        raw === "bonding_basics" ||
-        raw === "electron_config" ||
-        raw === "periodic_trends" ||
-        raw === "group_reactivity" ||
-        raw === "periodic_anomalies" ||
-        raw === "kinetic_theory"
-      ) {
-
-
-        setActiveExperiment(raw);
-        setShowExperiments(true);
-      }
+      localStorage.removeItem("lab:activeExperiment");
     } catch {
       /* ignore */
     }
@@ -190,11 +167,6 @@ function Index() {
 
   const pick = useCallback((id: ExperimentId) => {
     setActiveExperiment(id);
-    try {
-      localStorage.setItem("lab:activeExperiment", id);
-    } catch {
-      /* ignore */
-    }
   }, []);
 
   const back = useCallback(() => {
