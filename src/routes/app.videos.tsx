@@ -44,7 +44,7 @@ function VideosPage() {
     "videos",
     "id, chapter_number, title, video_platform, video_id, is_premium",
   );
-  const [activeChapter, setActiveChapter] = useState<number>(10);
+  const [activeChapter, setActiveChapter] = useState<number | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const { isPro } = useEntitlements();
 
