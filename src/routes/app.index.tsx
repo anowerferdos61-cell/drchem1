@@ -4,7 +4,7 @@
  */
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth-store";
-import { Component, Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type ErrorInfo, type ReactNode } from "react";
+import { Component, Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type ErrorInfo, type LazyExoticComponent, type ReactNode } from "react";
 import { Toaster, toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -50,7 +50,7 @@ const LabWorkspace = lazy(() => import("@/components/lab/LabWorkspace"));
 
 type LabComponent = ComponentType<{ onBack: () => void }>;
 
-const LAB_COMPONENTS: Partial<Record<ExperimentId, React.LazyExoticComponent<LabComponent>>> = {
+const LAB_COMPONENTS: Partial<Record<ExperimentId, LazyExoticComponent<LabComponent>>> = {
   oxygen_prep: lazy(() => import("@/components/lab/OxygenLab")),
   co2_prep: lazy(() => import("@/components/lab/CO2Lab")),
   nacl_crystal: lazy(() => import("@/components/lab/NaClLab")),
@@ -71,6 +71,54 @@ const LAB_COMPONENTS: Partial<Record<ExperimentId, React.LazyExoticComponent<Lab
   heating_curve: lazy(() => import("@/components/lab/HeatingCurveLab")),
   atom_builder: lazy(() => import("@/components/lab/AtomBuilderLab")),
 };
+
+function LabLoadingFallback({ onBack }: { onBack: () => void }) {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-slate-950 p-6 text-slate-100">
+      <div className="text-center">
+        <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-2 border-emerald-400 border-t-transparent" />
+        <p className="text-sm text-slate-300">ল্যাব প্রস্তুত হচ্ছে…</p>
+        <Button variant="outline" size="sm" onClick={onBack} className="mt-4 border-slate-700 bg-slate-900 text-slate-100 hover:bg-slate-800">
+          ড্যাশবোর্ডে ফিরুন
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+class LabErrorBoundary extends Component<
+  { children: ReactNode; onBack: () => void },
+  { hasError: boolean }
+> {
+  state = { hasError: false };
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: unknown, info: ErrorInfo) {
+    console.error("Lab render failed", error, info);
+  }
+
+  render() {
+    if (!this.state.hasError) return this.props.children;
+
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-950 p-6 text-slate-100">
+        <div className="max-w-md text-center">
+          <FlaskConical className="mx-auto mb-4 h-10 w-10 text-emerald-400" />
+          <h2 className="text-lg font-bold">এই ল্যাবটি লোড হয়নি</h2>
+          <p className="mt-2 text-sm text-slate-400">
+            ড্যাশবোর্ডে ফিরে আবার চেষ্টা করুন—অ্যাপ আর অসীম “লোড হচ্ছে” অবস্থায় আটকে থাকবে না।
+          </p>
+          <Button onClick={this.props.onBack} className="mt-5">
+            ড্যাশবোর্ডে ফিরুন
+          </Button>
+        </div>
+      </div>
+    );
+  }
+}
 
 export const Route = createFileRoute("/app/")({
   component: Index,
