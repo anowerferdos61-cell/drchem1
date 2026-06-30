@@ -71,6 +71,7 @@ function VideosPage() {
       headerTitleBn="ভিডিও লেসন"
       headerSubtitle="Video Lessons · NCTB"
       accent="from-rose-500 to-pink-600"
+      itemLabel="ভিডিও"
       activeChapter={activeChapter}
       setActiveChapter={(n) => {
         setActiveChapter(n);
