@@ -22,7 +22,8 @@ export type ExperimentId =
   | "heating_curve"
   | "atom_builder"
   | "atom_models"
-  | "aufbau_principle";
+  | "aufbau_principle"
+  | "isotope_stability";
 
 
 export type Mode = "guide" | "student" | "classroom";
