@@ -53,6 +53,7 @@ import PeriodicAnomaliesLab from "@/components/lab/PeriodicAnomaliesLab";
 import KineticTheoryLab from "@/components/lab/KineticTheoryLab";
 import DiffusionLab from "@/components/lab/DiffusionLab";
 import HeatingCurveLab from "@/components/lab/HeatingCurveLab";
+import AtomBuilderLab from "@/components/lab/AtomBuilderLab";
 
 import LabAIAssistant from "@/components/lab/LabAIAssistant";
 import LandscapeWrapper from "@/components/lab/LandscapeGate";
@@ -227,6 +228,8 @@ function Index() {
     content = <DiffusionLab onBack={back} />;
   } else if (activeExperiment === "heating_curve") {
     content = <HeatingCurveLab onBack={back} />;
+  } else if (activeExperiment === "atom_builder") {
+    content = <AtomBuilderLab onBack={back} />;
   } else {
     content = <TitrationLab onBack={back} />;
   }
