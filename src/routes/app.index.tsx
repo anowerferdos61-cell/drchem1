@@ -4,7 +4,7 @@
  */
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth-store";
-import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { Component, Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type ErrorInfo, type ReactNode } from "react";
 import { Toaster, toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -35,25 +35,6 @@ import {
 import type { ExperimentId, Mistake, Mode, Placed, Report, Step } from "@/components/lab/types";
 import ExperimentPicker from "@/components/lab/ExperimentPicker";
 import Dashboard from "@/components/lab/Dashboard";
-import OxygenLab from "@/components/lab/OxygenLab";
-import CO2Lab from "@/components/lab/CO2Lab";
-import NaClLab from "@/components/lab/NaClLab";
-import IonicLab from "@/components/lab/IonicLab";
-import Na2CO3Lab from "@/components/lab/Na2CO3Lab";
-import CopperSulfateLab from "@/components/lab/CopperSulfateLab";
-import PHScaleLab from "@/components/lab/PHScaleLab";
-import IndicatorLab from "@/components/lab/IndicatorLab";
-import SolubilityLab from "@/components/lab/SolubilityLab";
-import ElectrochemicalSeriesLab from "@/components/lab/ElectrochemicalSeriesLab";
-import BondingLab from "@/components/lab/BondingLab";
-import ElectronConfigLab from "@/components/lab/ElectronConfigLab";
-import PeriodicTrendsLab from "@/components/lab/PeriodicTrendsLab";
-import GroupReactivityLab from "@/components/lab/GroupReactivityLab";
-import PeriodicAnomaliesLab from "@/components/lab/PeriodicAnomaliesLab";
-import KineticTheoryLab from "@/components/lab/KineticTheoryLab";
-import DiffusionLab from "@/components/lab/DiffusionLab";
-import HeatingCurveLab from "@/components/lab/HeatingCurveLab";
-import AtomBuilderLab from "@/components/lab/AtomBuilderLab";
 
 import LabAIAssistant from "@/components/lab/LabAIAssistant";
 import LandscapeWrapper from "@/components/lab/LandscapeGate";
@@ -66,6 +47,30 @@ import { ArrowLeft } from "lucide-react";
 
 // 3D scene is heavy — lazy load.
 const LabWorkspace = lazy(() => import("@/components/lab/LabWorkspace"));
+
+type LabComponent = ComponentType<{ onBack: () => void }>;
+
+const LAB_COMPONENTS: Partial<Record<ExperimentId, React.LazyExoticComponent<LabComponent>>> = {
+  oxygen_prep: lazy(() => import("@/components/lab/OxygenLab")),
+  co2_prep: lazy(() => import("@/components/lab/CO2Lab")),
+  nacl_crystal: lazy(() => import("@/components/lab/NaClLab")),
+  ionic_covalent: lazy(() => import("@/components/lab/IonicLab")),
+  na2co3_standard: lazy(() => import("@/components/lab/Na2CO3Lab")),
+  cuso4_water: lazy(() => import("@/components/lab/CopperSulfateLab")),
+  ph_scale: lazy(() => import("@/components/lab/PHScaleLab")),
+  indicator_compare: lazy(() => import("@/components/lab/IndicatorLab")),
+  solubility_rules: lazy(() => import("@/components/lab/SolubilityLab")),
+  electrochemical_series: lazy(() => import("@/components/lab/ElectrochemicalSeriesLab")),
+  bonding_basics: lazy(() => import("@/components/lab/BondingLab")),
+  electron_config: lazy(() => import("@/components/lab/ElectronConfigLab")),
+  periodic_trends: lazy(() => import("@/components/lab/PeriodicTrendsLab")),
+  group_reactivity: lazy(() => import("@/components/lab/GroupReactivityLab")),
+  periodic_anomalies: lazy(() => import("@/components/lab/PeriodicAnomaliesLab")),
+  kinetic_theory: lazy(() => import("@/components/lab/KineticTheoryLab")),
+  diffusion_race: lazy(() => import("@/components/lab/DiffusionLab")),
+  heating_curve: lazy(() => import("@/components/lab/HeatingCurveLab")),
+  atom_builder: lazy(() => import("@/components/lab/AtomBuilderLab")),
+};
 
 export const Route = createFileRoute("/app/")({
   component: Index,
