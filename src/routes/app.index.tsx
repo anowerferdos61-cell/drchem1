@@ -312,8 +312,17 @@ function Index() {
 
   if (shouldBlock && !authPassedRef.current) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-sm text-muted-foreground">
-        লোড হচ্ছে…
+      <div className="min-h-screen flex flex-col items-center justify-center gap-3 text-sm text-muted-foreground p-6">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-emerald-500 border-t-transparent" />
+        <div>লোড হচ্ছে…</div>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => window.location.reload()}
+          className="text-xs"
+        >
+          আটকে গেছে? Reload করুন
+        </Button>
       </div>
     );
   }
