@@ -4,7 +4,7 @@
  */
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth-store";
-import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { Component, Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type ErrorInfo, type LazyExoticComponent, type ReactNode } from "react";
 import { Toaster, toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -35,25 +35,6 @@ import {
 import type { ExperimentId, Mistake, Mode, Placed, Report, Step } from "@/components/lab/types";
 import ExperimentPicker from "@/components/lab/ExperimentPicker";
 import Dashboard from "@/components/lab/Dashboard";
-import OxygenLab from "@/components/lab/OxygenLab";
-import CO2Lab from "@/components/lab/CO2Lab";
-import NaClLab from "@/components/lab/NaClLab";
-import IonicLab from "@/components/lab/IonicLab";
-import Na2CO3Lab from "@/components/lab/Na2CO3Lab";
-import CopperSulfateLab from "@/components/lab/CopperSulfateLab";
-import PHScaleLab from "@/components/lab/PHScaleLab";
-import IndicatorLab from "@/components/lab/IndicatorLab";
-import SolubilityLab from "@/components/lab/SolubilityLab";
-import ElectrochemicalSeriesLab from "@/components/lab/ElectrochemicalSeriesLab";
-import BondingLab from "@/components/lab/BondingLab";
-import ElectronConfigLab from "@/components/lab/ElectronConfigLab";
-import PeriodicTrendsLab from "@/components/lab/PeriodicTrendsLab";
-import GroupReactivityLab from "@/components/lab/GroupReactivityLab";
-import PeriodicAnomaliesLab from "@/components/lab/PeriodicAnomaliesLab";
-import KineticTheoryLab from "@/components/lab/KineticTheoryLab";
-import DiffusionLab from "@/components/lab/DiffusionLab";
-import HeatingCurveLab from "@/components/lab/HeatingCurveLab";
-import AtomBuilderLab from "@/components/lab/AtomBuilderLab";
 
 import LabAIAssistant from "@/components/lab/LabAIAssistant";
 import LandscapeWrapper from "@/components/lab/LandscapeGate";
@@ -66,6 +47,78 @@ import { ArrowLeft } from "lucide-react";
 
 // 3D scene is heavy — lazy load.
 const LabWorkspace = lazy(() => import("@/components/lab/LabWorkspace"));
+
+type LabComponent = ComponentType<{ onBack: () => void }>;
+
+const LAB_COMPONENTS: Partial<Record<ExperimentId, LazyExoticComponent<LabComponent>>> = {
+  oxygen_prep: lazy(() => import("@/components/lab/OxygenLab")),
+  co2_prep: lazy(() => import("@/components/lab/CO2Lab")),
+  nacl_crystal: lazy(() => import("@/components/lab/NaClLab")),
+  ionic_covalent: lazy(() => import("@/components/lab/IonicLab")),
+  na2co3_standard: lazy(() => import("@/components/lab/Na2CO3Lab")),
+  cuso4_water: lazy(() => import("@/components/lab/CopperSulfateLab")),
+  ph_scale: lazy(() => import("@/components/lab/PHScaleLab")),
+  indicator_compare: lazy(() => import("@/components/lab/IndicatorLab")),
+  solubility_rules: lazy(() => import("@/components/lab/SolubilityLab")),
+  electrochemical_series: lazy(() => import("@/components/lab/ElectrochemicalSeriesLab")),
+  bonding_basics: lazy(() => import("@/components/lab/BondingLab")),
+  electron_config: lazy(() => import("@/components/lab/ElectronConfigLab")),
+  periodic_trends: lazy(() => import("@/components/lab/PeriodicTrendsLab")),
+  group_reactivity: lazy(() => import("@/components/lab/GroupReactivityLab")),
+  periodic_anomalies: lazy(() => import("@/components/lab/PeriodicAnomaliesLab")),
+  kinetic_theory: lazy(() => import("@/components/lab/KineticTheoryLab")),
+  diffusion_race: lazy(() => import("@/components/lab/DiffusionLab")),
+  heating_curve: lazy(() => import("@/components/lab/HeatingCurveLab")),
+  atom_builder: lazy(() => import("@/components/lab/AtomBuilderLab")),
+};
+
+function LabLoadingFallback({ onBack }: { onBack: () => void }) {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-slate-950 p-6 text-slate-100">
+      <div className="text-center">
+        <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-2 border-emerald-400 border-t-transparent" />
+        <p className="text-sm text-slate-300">ল্যাব প্রস্তুত হচ্ছে…</p>
+        <Button variant="outline" size="sm" onClick={onBack} className="mt-4 border-slate-700 bg-slate-900 text-slate-100 hover:bg-slate-800">
+          ড্যাশবোর্ডে ফিরুন
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+class LabErrorBoundary extends Component<
+  { children: ReactNode; onBack: () => void },
+  { hasError: boolean }
+> {
+  state = { hasError: false };
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: unknown, info: ErrorInfo) {
+    console.error("Lab render failed", error, info);
+  }
+
+  render() {
+    if (!this.state.hasError) return this.props.children;
+
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-950 p-6 text-slate-100">
+        <div className="max-w-md text-center">
+          <FlaskConical className="mx-auto mb-4 h-10 w-10 text-emerald-400" />
+          <h2 className="text-lg font-bold">এই ল্যাবটি লোড হয়নি</h2>
+          <p className="mt-2 text-sm text-slate-400">
+            ড্যাশবোর্ডে ফিরে আবার চেষ্টা করুন—অ্যাপ আর অসীম “লোড হচ্ছে” অবস্থায় আটকে থাকবে না।
+          </p>
+          <Button onClick={this.props.onBack} className="mt-5">
+            ড্যাশবোর্ডে ফিরুন
+          </Button>
+        </div>
+      </div>
+    );
+  }
+}
 
 export const Route = createFileRoute("/app/")({
   component: Index,
@@ -137,6 +190,18 @@ function Index() {
   // Roles load asynchronously after the session — wait for them before rendering
   // so admins never see a flash of the student dashboard.
   const rolesReady = rolesLoaded;
+  const [rolesWaitExpired, setRolesWaitExpired] = useState(false);
+
+  useEffect(() => {
+    if (loading || !isAuthenticated || rolesReady) {
+      setRolesWaitExpired(false);
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => setRolesWaitExpired(true), 6_000);
+    return () => window.clearTimeout(timeoutId);
+  }, [loading, isAuthenticated, rolesReady]);
+
   useEffect(() => {
     if (loading) return;
     if (!isAuthenticated) {
@@ -192,44 +257,15 @@ function Index() {
     );
   } else if (activeExperiment === null && showExperiments) {
     content = <ExperimentPicker onPick={pick} />;
-  } else if (activeExperiment === "oxygen_prep") {
-    content = <OxygenLab onBack={back} />;
-  } else if (activeExperiment === "co2_prep") {
-    content = <CO2Lab onBack={back} />;
-  } else if (activeExperiment === "nacl_crystal") {
-    content = <NaClLab onBack={back} />;
-  } else if (activeExperiment === "ionic_covalent") {
-    content = <IonicLab onBack={back} />;
-  } else if (activeExperiment === "na2co3_standard") {
-    content = <Na2CO3Lab onBack={back} />;
-  } else if (activeExperiment === "cuso4_water") {
-    content = <CopperSulfateLab onBack={back} />;
-  } else if (activeExperiment === "ph_scale") {
-    content = <PHScaleLab onBack={back} />;
-  } else if (activeExperiment === "indicator_compare") {
-    content = <IndicatorLab onBack={back} />;
-  } else if (activeExperiment === "solubility_rules") {
-    content = <SolubilityLab onBack={back} />;
-  } else if (activeExperiment === "electrochemical_series") {
-    content = <ElectrochemicalSeriesLab onBack={back} />;
-  } else if (activeExperiment === "bonding_basics") {
-    content = <BondingLab onBack={back} />;
-  } else if (activeExperiment === "electron_config") {
-    content = <ElectronConfigLab onBack={back} />;
-  } else if (activeExperiment === "periodic_trends") {
-    content = <PeriodicTrendsLab onBack={back} />;
-  } else if (activeExperiment === "group_reactivity") {
-    content = <GroupReactivityLab onBack={back} />;
-  } else if (activeExperiment === "periodic_anomalies") {
-    content = <PeriodicAnomaliesLab onBack={back} />;
-  } else if (activeExperiment === "kinetic_theory") {
-    content = <KineticTheoryLab onBack={back} />;
-  } else if (activeExperiment === "diffusion_race") {
-    content = <DiffusionLab onBack={back} />;
-  } else if (activeExperiment === "heating_curve") {
-    content = <HeatingCurveLab onBack={back} />;
-  } else if (activeExperiment === "atom_builder") {
-    content = <AtomBuilderLab onBack={back} />;
+  } else if (activeExperiment && LAB_COMPONENTS[activeExperiment]) {
+    const ActiveLab = LAB_COMPONENTS[activeExperiment];
+    content = ActiveLab ? (
+      <LabErrorBoundary key={activeExperiment} onBack={back}>
+        <Suspense fallback={<LabLoadingFallback onBack={back} />}>
+          <ActiveLab onBack={back} />
+        </Suspense>
+      </LabErrorBoundary>
+    ) : null;
   } else {
     content = <TitrationLab onBack={back} />;
   }
@@ -253,7 +289,8 @@ function Index() {
   const showFloatingAI = activeExperiment !== null;
   // Block any render until we're sure the user isn't an admin (avoids
   // flashing the student dashboard while role rows are still loading).
-  if (loading || !isAuthenticated || !rolesReady || isAdmin) {
+  const waitingForRoles = isAuthenticated && !rolesReady && !rolesWaitExpired;
+  if (loading || !isAuthenticated || waitingForRoles || isAdmin) {
     return (
       <div className="min-h-screen flex items-center justify-center text-sm text-muted-foreground">
         লোড হচ্ছে…

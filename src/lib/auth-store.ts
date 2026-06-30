@@ -33,6 +33,7 @@ let state: AuthState = { user: null, profile: null, roles: [], loading: true, ro
 const listeners = new Set<Listener>();
 let initialized = false;
 let profileLoadSeq = 0;
+const PROFILE_LOAD_TIMEOUT_MS = 8_000;
 
 function setState(next: Partial<AuthState>) {
   state = { ...state, ...next };
@@ -42,16 +43,29 @@ function setState(next: Partial<AuthState>) {
 async function loadProfileAndRoles(userId: string) {
   const seq = ++profileLoadSeq;
   try {
-    const [{ data: profile, error: profileError }, { data: roleRows, error: rolesError }] =
-      await Promise.all([
+    const profileAndRolesPromise = Promise.all([
         supabase.from("profiles").select("*").eq("user_id", userId).maybeSingle(),
         supabase.from("user_roles").select("role").eq("user_id", userId),
       ]);
 
-    if (profileError) console.error(profileError);
-    if (rolesError) console.error(rolesError);
+    const timeoutPromise = new Promise<"timeout">((resolve) => {
+      window.setTimeout(() => resolve("timeout"), PROFILE_LOAD_TIMEOUT_MS);
+    });
+
+    const result = await Promise.race([profileAndRolesPromise, timeoutPromise]);
 
     if (seq !== profileLoadSeq || state.user?.id !== userId) return;
+
+    if (result === "timeout") {
+      console.warn("Profile/role load timed out; continuing with student access.");
+      setState({ profile: null, roles: [], rolesLoaded: true });
+      return;
+    }
+
+    const [{ data: profile, error: profileError }, { data: roleRows, error: rolesError }] = result;
+
+    if (profileError) console.error(profileError);
+    if (rolesError) console.error(rolesError);
 
     setState({
       profile: profileError ? null : ((profile as Profile | null) ?? null),
@@ -73,7 +87,17 @@ function initialize() {
   supabase.auth.onAuthStateChange((event, session) => {
     if (event === "TOKEN_REFRESHED") {
       const user = session?.user ?? state.user;
-      setState({ user, loading: false });
+      const sameUser = !!user && state.user?.id === user.id;
+      setState({
+        user,
+        loading: false,
+        profile: sameUser ? state.profile : null,
+        roles: sameUser ? state.roles : [],
+        rolesLoaded: user ? (sameUser ? state.rolesLoaded : false) : true,
+      });
+      if (user && (!sameUser || !state.rolesLoaded)) {
+        void loadProfileAndRoles(user.id);
+      }
       return;
     }
 
