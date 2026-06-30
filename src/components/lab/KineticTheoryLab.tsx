@@ -188,17 +188,29 @@ export default function KineticTheoryLab({ onBack }: Props) {
     const tick = (now: number) => {
       const dt = Math.min(32, now - last) / 16.67; // normalised
       last = now;
-      const t = tempRef.current; // 0..100
-      const ph = phaseFromTemp(t);
+      const t = tempRef.current;
+      const sub = substanceRef.current;
+      const ph = phaseFromTemp(t, sub);
 
       const particles = particlesRef.current;
 
-      // Phase-driven physics
-      // Solid: strong spring to lattice, tiny jitter
-      // Liquid: weak spring to bottom region, free movement, some cohesion
-      // Gas:   no spring, high speed, fills beaker
-      const energy = 0.1 + t / 100; // overall scale
-      const maxSpeed = ph === "solid" ? 0.4 : ph === "liquid" ? 1.6 : 4.5;
+      // Normalised "thermal intensity" within current phase (0..1+)
+      let intensity: number;
+      if (ph === "solid") {
+        // 0 at tempMin, ~1 at melt
+        const span = Math.max(1, sub.melt - sub.tempMin);
+        intensity = Math.max(0.05, (t - sub.tempMin) / span);
+      } else if (ph === "liquid") {
+        const span = Math.max(1, sub.boil - sub.melt);
+        intensity = 0.3 + (t - sub.melt) / span; // 0.3..1.3
+      } else {
+        const span = Math.max(1, sub.tempMax - sub.boil);
+        intensity = 0.8 + Math.min(1.5, (t - sub.boil) / span);
+      }
+
+      const energy = intensity;
+      const maxSpeed = ph === "solid" ? 0.2 + intensity * 0.6 : ph === "liquid" ? 1.0 + intensity * 1.4 : 3.5 + intensity * 2.5;
+
 
       for (const p of particles) {
         // Thermal jitter
