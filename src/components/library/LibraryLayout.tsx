@@ -226,14 +226,12 @@ export function LibraryShell({
 
 function ChapterGrid({
   onPick,
-  isPro,
   countsByChapter,
   itemLabel,
   headerTitleBn,
   headerSubtitle,
 }: {
   onPick: (c: Chapter) => void;
-  isPro: boolean;
   countsByChapter: Record<number, number>;
   itemLabel: string;
   headerTitleBn: string;
@@ -249,30 +247,23 @@ function ChapterGrid({
         {CHAPTERS.map((ch) => {
           const Icon = ch.icon;
           const count = countsByChapter[ch.number] ?? 0;
-          const locked = !isPro && ch.number !== 10;
           return (
             <Card
               key={ch.number}
               onClick={() => onPick(ch)}
-              className={`group relative cursor-pointer overflow-hidden border bg-card p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl ${locked ? "opacity-80" : ""}`}
+              className="group relative cursor-pointer overflow-hidden border bg-card p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl"
             >
               <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${ch.accent}`} />
               <div className="flex items-start justify-between">
                 <div className={`grid h-11 w-11 place-items-center rounded-xl bg-gradient-to-br ${ch.accent} text-white shadow-md`}>
                   <Icon className="h-5 w-5" />
                 </div>
-                <div className="flex items-center gap-1">
-                  {locked && (
-                    <Badge variant="outline" className="gap-1 text-[10px] text-amber-600 border-amber-500/40 bg-amber-500/10">
-                      <Lock className="h-3 w-3" /> Pro
-                    </Badge>
-                  )}
-                  <Badge variant="outline" className="text-[10px] font-mono">CH {String(ch.number).padStart(2, "0")}</Badge>
-                </div>
+                <Badge variant="outline" className="text-[10px] font-mono">CH {String(ch.number).padStart(2, "0")}</Badge>
               </div>
               <h3 className="mt-3 text-base font-bold leading-tight">{ch.titleBn}</h3>
               <p className="text-xs font-medium text-muted-foreground">{ch.titleEn}</p>
               <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{ch.descBn}</p>
+
 
               <div className="mt-4 flex flex-wrap items-center gap-1.5">
                 {count > 0 ? (
