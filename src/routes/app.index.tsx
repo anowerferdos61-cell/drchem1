@@ -257,44 +257,15 @@ function Index() {
     );
   } else if (activeExperiment === null && showExperiments) {
     content = <ExperimentPicker onPick={pick} />;
-  } else if (activeExperiment === "oxygen_prep") {
-    content = <OxygenLab onBack={back} />;
-  } else if (activeExperiment === "co2_prep") {
-    content = <CO2Lab onBack={back} />;
-  } else if (activeExperiment === "nacl_crystal") {
-    content = <NaClLab onBack={back} />;
-  } else if (activeExperiment === "ionic_covalent") {
-    content = <IonicLab onBack={back} />;
-  } else if (activeExperiment === "na2co3_standard") {
-    content = <Na2CO3Lab onBack={back} />;
-  } else if (activeExperiment === "cuso4_water") {
-    content = <CopperSulfateLab onBack={back} />;
-  } else if (activeExperiment === "ph_scale") {
-    content = <PHScaleLab onBack={back} />;
-  } else if (activeExperiment === "indicator_compare") {
-    content = <IndicatorLab onBack={back} />;
-  } else if (activeExperiment === "solubility_rules") {
-    content = <SolubilityLab onBack={back} />;
-  } else if (activeExperiment === "electrochemical_series") {
-    content = <ElectrochemicalSeriesLab onBack={back} />;
-  } else if (activeExperiment === "bonding_basics") {
-    content = <BondingLab onBack={back} />;
-  } else if (activeExperiment === "electron_config") {
-    content = <ElectronConfigLab onBack={back} />;
-  } else if (activeExperiment === "periodic_trends") {
-    content = <PeriodicTrendsLab onBack={back} />;
-  } else if (activeExperiment === "group_reactivity") {
-    content = <GroupReactivityLab onBack={back} />;
-  } else if (activeExperiment === "periodic_anomalies") {
-    content = <PeriodicAnomaliesLab onBack={back} />;
-  } else if (activeExperiment === "kinetic_theory") {
-    content = <KineticTheoryLab onBack={back} />;
-  } else if (activeExperiment === "diffusion_race") {
-    content = <DiffusionLab onBack={back} />;
-  } else if (activeExperiment === "heating_curve") {
-    content = <HeatingCurveLab onBack={back} />;
-  } else if (activeExperiment === "atom_builder") {
-    content = <AtomBuilderLab onBack={back} />;
+  } else if (activeExperiment && LAB_COMPONENTS[activeExperiment]) {
+    const ActiveLab = LAB_COMPONENTS[activeExperiment];
+    content = ActiveLab ? (
+      <LabErrorBoundary key={activeExperiment} onBack={back}>
+        <Suspense fallback={<LabLoadingFallback onBack={back} />}>
+          <ActiveLab onBack={back} />
+        </Suspense>
+      </LabErrorBoundary>
+    ) : null;
   } else {
     content = <TitrationLab onBack={back} />;
   }
