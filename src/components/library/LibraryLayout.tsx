@@ -191,7 +191,6 @@ export function LibraryShell({
           <ChapterGrid
             itemLabel={itemLabel}
             countsByChapter={countsByChapter}
-            isPro={isPro}
             onPick={(ch) => setActiveChapter(ch.number)}
             headerTitleBn={headerTitleBn}
             headerSubtitle={headerSubtitle}
