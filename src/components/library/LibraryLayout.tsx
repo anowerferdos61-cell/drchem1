@@ -1,10 +1,10 @@
 /**
  * Shared layout for Video Lessons (/app/videos) and Smart Notes (/app/notes).
- * - Sidebar / accordion grouped by NCTB chapters
- * - Loads rows from Supabase
- * - Premium gate via useEntitlements
+ * - Curriculum-Hub-style chapter grid landing
+ * - Click a chapter → render module content (children) with a back button
+ * - Premium gating: Free users only get Chapter 10 unlocked (matches Curriculum Hub)
  */
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, type ComponentType, type ReactNode } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,30 +13,68 @@ import { useEntitlements } from "@/hooks/useEntitlements";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   ArrowLeft,
   Lock,
   Sparkles,
   ChevronRight,
   BookOpen,
+  Atom,
+  Droplets,
+  Microscope,
+  TestTubes,
+  Beaker,
+  Zap,
+  FlaskConical,
+  Flame,
 } from "lucide-react";
 
-export type Chapter = { number: number; titleBn: string; titleEn: string };
+export type Chapter = {
+  number: number;
+  titleBn: string;
+  titleEn: string;
+  descBn: string;
+  accent: string;
+  icon: ComponentType<{ className?: string }>;
+};
 
 export const CHAPTERS: Chapter[] = [
-  { number: 1, titleBn: "রসায়নের ধারণা", titleEn: "Concepts of Chemistry" },
-  { number: 2, titleBn: "পদার্থের অবস্থা", titleEn: "States of Matter" },
-  { number: 3, titleBn: "পদার্থের গঠন", titleEn: "Structure of Matter" },
-  { number: 4, titleBn: "পর্যায় সারণি", titleEn: "Periodic Table" },
-  { number: 5, titleBn: "রাসায়নিক বন্ধন", titleEn: "Chemical Bonding" },
-  { number: 6, titleBn: "মোল ও রাসায়নিক গণনা", titleEn: "Mole & Calculations" },
-  { number: 7, titleBn: "রাসায়নিক বিক্রিয়া", titleEn: "Chemical Reactions" },
-  { number: 8, titleBn: "রসায়ন ও শক্তি", titleEn: "Chemistry & Energy" },
-  { number: 9, titleBn: "এসিড-ক্ষারক সাম্য", titleEn: "Acid-Base Equilibrium" },
-  { number: 10, titleBn: "এসিড, ক্ষারক ও লবণ", titleEn: "Acids, Bases & Salts" },
-  { number: 11, titleBn: "খনিজ সম্পদ", titleEn: "Mineral Resources" },
-  { number: 12, titleBn: "আমাদের জীবনে রসায়ন", titleEn: "Chemistry in Our Lives" },
+  { number: 1, titleBn: "রসায়নের ধারণা", titleEn: "Concepts of Chemistry",
+    descBn: "রসায়নের পরিচিতি, গুরুত্ব ও নিরাপত্তা।",
+    accent: "from-sky-500 to-blue-500", icon: BookOpen },
+  { number: 2, titleBn: "পদার্থের অবস্থা", titleEn: "States of Matter",
+    descBn: "ব্যাপন, ঊর্ধ্বপাতন ও অবস্থার পরিবর্তন।",
+    accent: "from-cyan-500 to-teal-500", icon: Droplets },
+  { number: 3, titleBn: "পদার্থের গঠন", titleEn: "Structure of Matter",
+    descBn: "পরমাণু, ইলেকট্রন বিন্যাস ও আইসোটোপ।",
+    accent: "from-violet-500 to-purple-500", icon: Atom },
+  { number: 4, titleBn: "পর্যায় সারণি", titleEn: "Periodic Table",
+    descBn: "মৌলিক পদার্থের শ্রেণিবিন্যাস ও ধর্ম।",
+    accent: "from-fuchsia-500 to-pink-500", icon: Microscope },
+  { number: 5, titleBn: "রাসায়নিক বন্ধন", titleEn: "Chemical Bonding",
+    descBn: "আয়নিক, সমযোজী ও ধাতব বন্ধনের ধারণা।",
+    accent: "from-indigo-500 to-violet-500", icon: Atom },
+  { number: 6, titleBn: "মোল ও রাসায়নিক গণনা", titleEn: "Mole & Calculations",
+    descBn: "মোল ধারণা, মোলারিটি ও প্রমাণ দ্রবণ।",
+    accent: "from-emerald-500 to-teal-500", icon: TestTubes },
+  { number: 7, titleBn: "রাসায়নিক বিক্রিয়া", titleEn: "Chemical Reactions",
+    descBn: "বিক্রিয়ার ধরন, দ্রাব্যতা ও গ্যাস প্রস্তুতি।",
+    accent: "from-amber-500 to-orange-500", icon: Beaker },
+  { number: 8, titleBn: "রসায়ন ও শক্তি", titleEn: "Chemistry & Energy",
+    descBn: "তাপ পরিবর্তন, তড়িৎ-রাসায়নিক সারি।",
+    accent: "from-yellow-500 to-amber-500", icon: Zap },
+  { number: 9, titleBn: "এসিড-ক্ষারক সাম্য", titleEn: "Acid-Base Equilibrium",
+    descBn: "pH, Ka/Kb এবং দ্রাব্যতার ধারণা।",
+    accent: "from-rose-500 to-pink-500", icon: Droplets },
+  { number: 10, titleBn: "এসিড, ক্ষারক ও লবণ", titleEn: "Acids, Bases & Salts",
+    descBn: "pH স্কেল, নির্দেশক ও দৈনন্দিন প্রয়োগ।",
+    accent: "from-pink-500 to-fuchsia-500", icon: FlaskConical },
+  { number: 11, titleBn: "খনিজ সম্পদ", titleEn: "Mineral Resources",
+    descBn: "হাইড্রোকার্বন, পেট্রোলিয়াম ও পলিমার।",
+    accent: "from-orange-500 to-red-500", icon: Flame },
+  { number: 12, titleBn: "আমাদের জীবনে রসায়ন", titleEn: "Chemistry in Our Lives",
+    descBn: "খাদ্য, ঔষধ, প্রসাধনী ও পরিবেশ।",
+    accent: "from-lime-500 to-emerald-500", icon: Sparkles },
 ];
 
 interface LibraryRow {
@@ -44,15 +82,6 @@ interface LibraryRow {
   chapter_number: number;
   title: string;
   is_premium: boolean;
-}
-
-interface Props<T extends LibraryRow> {
-  module: "videos" | "notes";
-  headerTitleBn: string;
-  headerSubtitle: string;
-  accent: string;
-  renderItem: (row: T, locked: boolean) => ReactNode;
-  emptyState?: ReactNode;
 }
 
 export function useLibraryRows<T extends LibraryRow>(
@@ -84,17 +113,20 @@ export function LibraryShell({
   activeChapter,
   setActiveChapter,
   countsByChapter,
+  itemLabel,
 }: {
   module: "videos" | "notes";
   headerTitleBn: string;
   headerSubtitle: string;
   accent: string;
   children: ReactNode;
-  activeChapter: number;
-  setActiveChapter: (n: number) => void;
+  activeChapter: number | null;
+  setActiveChapter: (n: number | null) => void;
   countsByChapter: Record<number, number>;
+  itemLabel: string; // e.g. "ভিডিও" or "নোট"
 }) {
   const { isAuthenticated, loading } = useAuth();
+  const { isPro } = useEntitlements();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -115,23 +147,34 @@ export function LibraryShell({
     );
   }
 
+  const activeMeta = activeChapter ? CHAPTERS.find((c) => c.number === activeChapter) : null;
+
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-background via-background to-muted/30">
       <header className="sticky top-0 z-30 border-b bg-background/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 md:px-6">
-          <div className="flex items-center gap-3">
-            <Link
-              to="/app"
-              className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-            >
-              <ArrowLeft className="h-4 w-4" /> <span className="hidden sm:inline">Home</span>
-            </Link>
+          <div className="flex items-center gap-3 min-w-0">
+            {activeChapter ? (
+              <button
+                onClick={() => setActiveChapter(null)}
+                className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+              >
+                <ArrowLeft className="h-4 w-4" /> <span className="hidden sm:inline">অধ্যায়সমূহ</span>
+              </button>
+            ) : (
+              <Link
+                to="/app"
+                className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+              >
+                <ArrowLeft className="h-4 w-4" /> <span className="hidden sm:inline">Home</span>
+              </Link>
+            )}
             <div className={`grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br ${accent} shadow-lg`}>
               <BookOpen className="h-5 w-5 text-white" />
             </div>
-            <div className="leading-tight">
-              <div className="text-base font-extrabold tracking-tight md:text-lg">{headerTitleBn}</div>
-              <div className="text-[10px] text-muted-foreground md:text-xs">{headerSubtitle}</div>
+            <div className="leading-tight min-w-0">
+              <div className="truncate text-base font-extrabold tracking-tight md:text-lg">{headerTitleBn}</div>
+              <div className="truncate text-[10px] text-muted-foreground md:text-xs">{headerSubtitle}</div>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -144,56 +187,115 @@ export function LibraryShell({
         </div>
       </header>
 
-      <div className="mx-auto grid max-w-7xl gap-6 px-4 py-6 md:grid-cols-[260px,1fr] md:px-6 md:py-8">
-        {/* Sidebar */}
-        <aside className="md:sticky md:top-20 md:self-start">
-          <Card className="p-2">
-            <div className="px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-              NCTB Chapters
-            </div>
-            <ScrollArea className="md:h-[calc(100vh-180px)]">
-              <div className="flex flex-row gap-1 overflow-x-auto md:flex-col md:overflow-visible">
-                {CHAPTERS.map((ch) => {
-                  const count = countsByChapter[ch.number] ?? 0;
-                  const isActive = ch.number === activeChapter;
-                  return (
-                    <button
-                      key={ch.number}
-                      onClick={() => setActiveChapter(ch.number)}
-                      className={`group flex shrink-0 items-center justify-between gap-2 rounded-lg px-3 py-2 text-left text-sm transition md:w-full ${
-                        isActive
-                          ? "bg-primary text-primary-foreground shadow-sm"
-                          : "hover:bg-muted"
-                      }`}
-                    >
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-1.5">
-                          <span className={`font-mono text-[10px] ${isActive ? "opacity-80" : "text-muted-foreground"}`}>
-                            CH {String(ch.number).padStart(2, "0")}
-                          </span>
-                        </div>
-                        <div className="truncate text-xs font-semibold md:text-sm">{ch.titleBn}</div>
-                      </div>
-                      {count > 0 && (
-                        <Badge
-                          variant={isActive ? "secondary" : "outline"}
-                          className="ml-auto h-5 shrink-0 px-1.5 text-[10px]"
-                        >
-                          {count}
-                        </Badge>
-                      )}
-                    </button>
-                  );
-                })}
+      <div className="mx-auto max-w-7xl px-4 py-6 md:px-6 md:py-8">
+        {!activeChapter ? (
+          <ChapterGrid
+            itemLabel={itemLabel}
+            countsByChapter={countsByChapter}
+            isPro={isPro}
+            onPick={(ch) => setActiveChapter(ch.number)}
+            headerTitleBn={headerTitleBn}
+            headerSubtitle={headerSubtitle}
+          />
+        ) : (
+          <div>
+            {/* Chapter breadcrumb header */}
+            {activeMeta && (
+              <div className="mb-6 flex items-center gap-3">
+                <div className={`grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br ${activeMeta.accent} text-white shadow-md`}>
+                  <activeMeta.icon className="h-6 w-6" />
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className="font-mono text-[10px]">
+                      CH {String(activeMeta.number).padStart(2, "0")}
+                    </Badge>
+                    <span className="text-[11px] text-muted-foreground">{activeMeta.titleEn}</span>
+                  </div>
+                  <h1 className="truncate text-lg font-extrabold tracking-tight md:text-2xl">
+                    {activeMeta.titleBn}
+                  </h1>
+                </div>
               </div>
-            </ScrollArea>
-          </Card>
-        </aside>
-
-        {/* Main */}
-        <main className="min-w-0">{children}</main>
+            )}
+            {children}
+          </div>
+        )}
       </div>
     </div>
+  );
+}
+
+function ChapterGrid({
+  onPick,
+  isPro,
+  countsByChapter,
+  itemLabel,
+  headerTitleBn,
+  headerSubtitle,
+}: {
+  onPick: (c: Chapter) => void;
+  isPro: boolean;
+  countsByChapter: Record<number, number>;
+  itemLabel: string;
+  headerTitleBn: string;
+  headerSubtitle: string;
+}) {
+  return (
+    <>
+      <div className="mb-5">
+        <h2 className="text-xl font-extrabold tracking-tight md:text-2xl">{headerTitleBn}</h2>
+        <p className="text-sm text-muted-foreground">{headerSubtitle} · একটি অধ্যায় বাছাই করো</p>
+      </div>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {CHAPTERS.map((ch) => {
+          const Icon = ch.icon;
+          const count = countsByChapter[ch.number] ?? 0;
+          const locked = !isPro && ch.number !== 10;
+          return (
+            <Card
+              key={ch.number}
+              onClick={() => onPick(ch)}
+              className={`group relative cursor-pointer overflow-hidden border bg-card p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl ${locked ? "opacity-80" : ""}`}
+            >
+              <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${ch.accent}`} />
+              <div className="flex items-start justify-between">
+                <div className={`grid h-11 w-11 place-items-center rounded-xl bg-gradient-to-br ${ch.accent} text-white shadow-md`}>
+                  <Icon className="h-5 w-5" />
+                </div>
+                <div className="flex items-center gap-1">
+                  {locked && (
+                    <Badge variant="outline" className="gap-1 text-[10px] text-amber-600 border-amber-500/40 bg-amber-500/10">
+                      <Lock className="h-3 w-3" /> Pro
+                    </Badge>
+                  )}
+                  <Badge variant="outline" className="text-[10px] font-mono">CH {String(ch.number).padStart(2, "0")}</Badge>
+                </div>
+              </div>
+              <h3 className="mt-3 text-base font-bold leading-tight">{ch.titleBn}</h3>
+              <p className="text-xs font-medium text-muted-foreground">{ch.titleEn}</p>
+              <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{ch.descBn}</p>
+
+              <div className="mt-4 flex flex-wrap items-center gap-1.5">
+                {count > 0 ? (
+                  <Badge className="gap-1 bg-emerald-500/10 text-emerald-700 hover:bg-emerald-500/15 dark:text-emerald-300" variant="secondary">
+                    <Sparkles className="h-3 w-3" /> {count} {itemLabel}
+                  </Badge>
+                ) : (
+                  <Badge variant="outline" className="gap-1 text-muted-foreground">
+                    <Lock className="h-3 w-3" /> শীঘ্রই
+                  </Badge>
+                )}
+              </div>
+
+              <div className="mt-4 flex items-center justify-end text-sm font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">
+                Explore <ChevronRight className="h-4 w-4" />
+              </div>
+            </Card>
+          );
+        })}
+      </div>
+    </>
   );
 }
 
