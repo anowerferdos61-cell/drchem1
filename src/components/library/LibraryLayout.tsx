@@ -126,7 +126,6 @@ export function LibraryShell({
   itemLabel: string; // e.g. "ভিডিও" or "নোট"
 }) {
   const { isAuthenticated, loading } = useAuth();
-  const { isPro } = useEntitlements();
   const navigate = useNavigate();
 
   useEffect(() => {
