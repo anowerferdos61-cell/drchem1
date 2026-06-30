@@ -110,6 +110,8 @@ const ALL_LABS: LabMeta[] = [
     icon: Atom, tint: "from-rose-500/15 to-cyan-500/10", iconColor: "text-cyan-500", isCoreBoard: false },
   { id: "aufbau_principle", title: "Aufbau Principle & Electron Configuration", titleBn: "আউফবাউ নীতি ও ইলেকট্রন বিন্যাস",
     icon: Atom, tint: "from-sky-500/15 to-violet-500/10", iconColor: "text-sky-500", isCoreBoard: false },
+  { id: "isotope_stability", title: "Isotope Balance & Nuclear Stability", titleBn: "আইসোটোপ ভারসাম্য ও নিউক্লীয় স্থিতিশীলতা",
+    icon: Atom, tint: "from-emerald-500/15 to-rose-500/10", iconColor: "text-emerald-400", isCoreBoard: false },
 ];
 
 type ChapterMeta = {
@@ -135,7 +137,7 @@ const CHAPTERS: ChapterMeta[] = [
     labIds: ["kinetic_theory", "diffusion_race", "heating_curve"], accent: "from-cyan-500 to-teal-500", icon: Droplets },
   { number: 3, titleBn: "পদার্থের গঠন", titleEn: "Structure of Matter",
     descBn: "পরমাণু, ইলেকট্রন বিন্যাস ও আইসোটোপ।",
-    labIds: ["atom_builder", "atom_models", "aufbau_principle"], accent: "from-violet-500 to-purple-500", icon: Atom },
+    labIds: ["atom_builder", "atom_models", "aufbau_principle", "isotope_stability"], accent: "from-violet-500 to-purple-500", icon: Atom },
   { number: 4, titleBn: "পর্যায় সারণি", titleEn: "Periodic Table",
     descBn: "মৌলিক পদার্থের শ্রেণিবিন্যাস ও ধর্ম।",
     labIds: ["electron_config", "periodic_trends", "group_reactivity", "periodic_anomalies"], accent: "from-fuchsia-500 to-pink-500", icon: Microscope },
