@@ -32,6 +32,20 @@ export default function Composer({
     el.style.height = Math.min(el.scrollHeight, 200) + "px";
   }, [value]);
 
+  // Seed prefill from Smart Notes "Ask Dr. Chem" deep link
+  useEffect(() => {
+    try {
+      const seed = sessionStorage.getItem("tutor:seed");
+      if (seed) {
+        setValue(seed);
+        sessionStorage.removeItem("tutor:seed");
+        requestAnimationFrame(() => ref.current?.focus());
+      }
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
   const submit = () => {
     const v = value.trim();
     if (!v || isStreaming) return;
