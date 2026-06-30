@@ -272,11 +272,12 @@ export default function KineticTheoryLab({ onBack }: Props) {
       // ── Draw ──
       ctx.clearRect(0, 0, W, H);
 
-      // Background gradient (cool blue → warm orange based on temp)
+      // Background gradient (cool blue → warm orange based on intensity)
       const bg = ctx.createLinearGradient(0, 0, 0, H);
-      const warm = t / 100;
+      const warm = Math.min(1, Math.max(0, (t - sub.tempMin) / Math.max(1, sub.tempMax - sub.tempMin)));
       bg.addColorStop(0, `rgba(${30 + warm * 80}, ${60 + warm * 30}, ${120 - warm * 80}, 0.05)`);
       bg.addColorStop(1, `rgba(${100 + warm * 120}, ${120 + warm * 40}, ${180 - warm * 140}, 0.12)`);
+
       ctx.fillStyle = bg;
       ctx.fillRect(0, 0, W, H);
 
