@@ -17,7 +17,8 @@ export type ExperimentId =
   | "periodic_trends"
   | "group_reactivity"
   | "periodic_anomalies"
-  | "kinetic_theory";
+  | "kinetic_theory"
+  | "diffusion_race";
 
 
 export type Mode = "guide" | "student" | "classroom";
