@@ -63,7 +63,7 @@ import { ArrowLeft } from "lucide-react";
 // 3D scene is heavy — lazy load.
 const LabWorkspace = lazy(() => import("@/components/lab/LabWorkspace"));
 
-export const Route = createFileRoute("/app")({
+export const Route = createFileRoute("/app/")({
   component: Index,
   head: () => ({
     meta: [

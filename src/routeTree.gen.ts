@@ -17,8 +17,8 @@ import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as BillingRouteImport } from './routes/billing'
-import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AppVideosRouteImport } from './routes/app.videos'
 import { Route as AppNotesRouteImport } from './routes/app.notes'
@@ -65,14 +65,14 @@ const BillingRoute = BillingRouteImport.update({
   path: '/billing',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppRoute = AppRouteImport.update({
-  id: '/app',
-  path: '/app',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppIndexRoute = AppIndexRouteImport.update({
+  id: '/app/',
+  path: '/app/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
@@ -81,14 +81,14 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppVideosRoute = AppVideosRouteImport.update({
-  id: '/videos',
-  path: '/videos',
-  getParentRoute: () => AppRoute,
+  id: '/app/videos',
+  path: '/app/videos',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AppNotesRoute = AppNotesRouteImport.update({
-  id: '/notes',
-  path: '/notes',
-  getParentRoute: () => AppRoute,
+  id: '/app/notes',
+  path: '/app/notes',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminPaymentsRoute = AdminPaymentsRouteImport.update({
   id: '/admin/payments',
@@ -103,7 +103,6 @@ const ApiTutorStreamRoute = ApiTutorStreamRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/app': typeof AppRouteWithChildren
   '/billing': typeof BillingRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
@@ -116,11 +115,11 @@ export interface FileRoutesByFullPath {
   '/app/notes': typeof AppNotesRoute
   '/app/videos': typeof AppVideosRoute
   '/admin/': typeof AdminIndexRoute
+  '/app/': typeof AppIndexRoute
   '/api/tutor/stream': typeof ApiTutorStreamRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/app': typeof AppRouteWithChildren
   '/billing': typeof BillingRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
@@ -133,12 +132,12 @@ export interface FileRoutesByTo {
   '/app/notes': typeof AppNotesRoute
   '/app/videos': typeof AppVideosRoute
   '/admin': typeof AdminIndexRoute
+  '/app': typeof AppIndexRoute
   '/api/tutor/stream': typeof ApiTutorStreamRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/app': typeof AppRouteWithChildren
   '/billing': typeof BillingRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
@@ -151,13 +150,13 @@ export interface FileRoutesById {
   '/app/notes': typeof AppNotesRoute
   '/app/videos': typeof AppVideosRoute
   '/admin/': typeof AdminIndexRoute
+  '/app/': typeof AppIndexRoute
   '/api/tutor/stream': typeof ApiTutorStreamRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/app'
     | '/billing'
     | '/login'
     | '/onboarding'
@@ -170,11 +169,11 @@ export interface FileRouteTypes {
     | '/app/notes'
     | '/app/videos'
     | '/admin/'
+    | '/app/'
     | '/api/tutor/stream'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/app'
     | '/billing'
     | '/login'
     | '/onboarding'
@@ -187,11 +186,11 @@ export interface FileRouteTypes {
     | '/app/notes'
     | '/app/videos'
     | '/admin'
+    | '/app'
     | '/api/tutor/stream'
   id:
     | '__root__'
     | '/'
-    | '/app'
     | '/billing'
     | '/login'
     | '/onboarding'
@@ -204,12 +203,12 @@ export interface FileRouteTypes {
     | '/app/notes'
     | '/app/videos'
     | '/admin/'
+    | '/app/'
     | '/api/tutor/stream'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AppRoute: typeof AppRouteWithChildren
   BillingRoute: typeof BillingRoute
   LoginRoute: typeof LoginRoute
   OnboardingRoute: typeof OnboardingRoute
@@ -219,7 +218,10 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TutorRoute: typeof TutorRoute
   AdminPaymentsRoute: typeof AdminPaymentsRoute
+  AppNotesRoute: typeof AppNotesRoute
+  AppVideosRoute: typeof AppVideosRoute
   AdminIndexRoute: typeof AdminIndexRoute
+  AppIndexRoute: typeof AppIndexRoute
   ApiTutorStreamRoute: typeof ApiTutorStreamRoute
 }
 
@@ -281,18 +283,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BillingRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/app': {
-      id: '/app'
-      path: '/app'
-      fullPath: '/app'
-      preLoaderRoute: typeof AppRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/': {
+      id: '/app/'
+      path: '/app'
+      fullPath: '/app/'
+      preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -304,17 +306,17 @@ declare module '@tanstack/react-router' {
     }
     '/app/videos': {
       id: '/app/videos'
-      path: '/videos'
+      path: '/app/videos'
       fullPath: '/app/videos'
       preLoaderRoute: typeof AppVideosRouteImport
-      parentRoute: typeof AppRoute
+      parentRoute: typeof rootRouteImport
     }
     '/app/notes': {
       id: '/app/notes'
-      path: '/notes'
+      path: '/app/notes'
       fullPath: '/app/notes'
       preLoaderRoute: typeof AppNotesRouteImport
-      parentRoute: typeof AppRoute
+      parentRoute: typeof rootRouteImport
     }
     '/admin/payments': {
       id: '/admin/payments'
@@ -333,21 +335,8 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface AppRouteChildren {
-  AppNotesRoute: typeof AppNotesRoute
-  AppVideosRoute: typeof AppVideosRoute
-}
-
-const AppRouteChildren: AppRouteChildren = {
-  AppNotesRoute: AppNotesRoute,
-  AppVideosRoute: AppVideosRoute,
-}
-
-const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AppRoute: AppRouteWithChildren,
   BillingRoute: BillingRoute,
   LoginRoute: LoginRoute,
   OnboardingRoute: OnboardingRoute,
@@ -357,7 +346,10 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TutorRoute: TutorRoute,
   AdminPaymentsRoute: AdminPaymentsRoute,
+  AppNotesRoute: AppNotesRoute,
+  AppVideosRoute: AppVideosRoute,
   AdminIndexRoute: AdminIndexRoute,
+  AppIndexRoute: AppIndexRoute,
   ApiTutorStreamRoute: ApiTutorStreamRoute,
 }
 export const routeTree = rootRouteImport
