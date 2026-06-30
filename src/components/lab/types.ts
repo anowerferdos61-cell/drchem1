@@ -19,7 +19,8 @@ export type ExperimentId =
   | "periodic_anomalies"
   | "kinetic_theory"
   | "diffusion_race"
-  | "heating_curve";
+  | "heating_curve"
+  | "atom_builder";
 
 
 export type Mode = "guide" | "student" | "classroom";

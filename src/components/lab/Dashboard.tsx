@@ -104,6 +104,8 @@ const ALL_LABS: LabMeta[] = [
     icon: Sparkles, tint: "from-emerald-500/15 to-cyan-500/10", iconColor: "text-emerald-500", isCoreBoard: false },
   { id: "heating_curve", title: "Heating Curve of Water", titleBn: "পানির তাপন বক্ররেখা",
     icon: Flame, tint: "from-orange-500/15 to-rose-500/10", iconColor: "text-orange-500", isCoreBoard: false },
+  { id: "atom_builder", title: "Build an Atom & Isotope Simulator", titleBn: "পরমাণু গঠন ও আইসোটোপ সিমুলেটর",
+    icon: Atom, tint: "from-violet-500/15 to-purple-500/10", iconColor: "text-violet-500", isCoreBoard: false },
 ];
 
 type ChapterMeta = {
@@ -129,7 +131,7 @@ const CHAPTERS: ChapterMeta[] = [
     labIds: ["kinetic_theory", "diffusion_race", "heating_curve"], accent: "from-cyan-500 to-teal-500", icon: Droplets },
   { number: 3, titleBn: "পদার্থের গঠন", titleEn: "Structure of Matter",
     descBn: "পরমাণু, ইলেকট্রন বিন্যাস ও আইসোটোপ।",
-    labIds: [], comingSoonCount: 3, accent: "from-violet-500 to-purple-500", icon: Atom },
+    labIds: ["atom_builder"], comingSoonCount: 2, accent: "from-violet-500 to-purple-500", icon: Atom },
   { number: 4, titleBn: "পর্যায় সারণি", titleEn: "Periodic Table",
     descBn: "মৌলিক পদার্থের শ্রেণিবিন্যাস ও ধর্ম।",
     labIds: ["electron_config", "periodic_trends", "group_reactivity", "periodic_anomalies"], accent: "from-fuchsia-500 to-pink-500", icon: Microscope },
