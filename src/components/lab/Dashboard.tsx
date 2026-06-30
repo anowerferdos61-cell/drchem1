@@ -100,6 +100,8 @@ const ALL_LABS: LabMeta[] = [
     icon: Sparkles, tint: "from-fuchsia-500/15 to-pink-500/10", iconColor: "text-fuchsia-500", isCoreBoard: false },
   { id: "kinetic_theory", title: "Kinetic Theory of Matter", titleBn: "পদার্থের গতিতত্ত্ব — কণা সিমুলেটর",
     icon: Droplets, tint: "from-cyan-500/15 to-teal-500/10", iconColor: "text-cyan-500", isCoreBoard: false },
+  { id: "diffusion_race", title: "Diffusion Race (Graham's Law)", titleBn: "ব্যাপন প্রতিযোগিতা — গ্রাহামের সূত্র",
+    icon: Sparkles, tint: "from-emerald-500/15 to-cyan-500/10", iconColor: "text-emerald-500", isCoreBoard: false },
 ];
 
 type ChapterMeta = {
@@ -122,7 +124,7 @@ const CHAPTERS: ChapterMeta[] = [
     labIds: [], comingSoonCount: 2, accent: "from-sky-500 to-blue-500", icon: BookOpen },
   { number: 2, titleBn: "পদার্থের অবস্থা", titleEn: "States of Matter",
     descBn: "ব্যাপন, ঊর্ধ্বপাতন ও অবস্থার পরিবর্তন।",
-    labIds: ["kinetic_theory"], comingSoonCount: 1, accent: "from-cyan-500 to-teal-500", icon: Droplets },
+    labIds: ["kinetic_theory", "diffusion_race"], accent: "from-cyan-500 to-teal-500", icon: Droplets },
   { number: 3, titleBn: "পদার্থের গঠন", titleEn: "Structure of Matter",
     descBn: "পরমাণু, ইলেকট্রন বিন্যাস ও আইসোটোপ।",
     labIds: [], comingSoonCount: 3, accent: "from-violet-500 to-purple-500", icon: Atom },

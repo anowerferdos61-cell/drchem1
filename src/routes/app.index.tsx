@@ -51,6 +51,7 @@ import PeriodicTrendsLab from "@/components/lab/PeriodicTrendsLab";
 import GroupReactivityLab from "@/components/lab/GroupReactivityLab";
 import PeriodicAnomaliesLab from "@/components/lab/PeriodicAnomaliesLab";
 import KineticTheoryLab from "@/components/lab/KineticTheoryLab";
+import DiffusionLab from "@/components/lab/DiffusionLab";
 
 import LabAIAssistant from "@/components/lab/LabAIAssistant";
 import LandscapeWrapper from "@/components/lab/LandscapeGate";
@@ -221,6 +222,8 @@ function Index() {
     content = <PeriodicAnomaliesLab onBack={back} />;
   } else if (activeExperiment === "kinetic_theory") {
     content = <KineticTheoryLab onBack={back} />;
+  } else if (activeExperiment === "diffusion_race") {
+    content = <DiffusionLab onBack={back} />;
   } else {
     content = <TitrationLab onBack={back} />;
   }
