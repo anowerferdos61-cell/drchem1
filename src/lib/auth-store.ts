@@ -32,6 +32,7 @@ type Listener = (s: AuthState) => void;
 let state: AuthState = { user: null, profile: null, roles: [], loading: true, rolesLoaded: false };
 const listeners = new Set<Listener>();
 let initialized = false;
+let profileLoadSeq = 0;
 
 function setState(next: Partial<AuthState>) {
   state = { ...state, ...next };
@@ -39,6 +40,7 @@ function setState(next: Partial<AuthState>) {
 }
 
 async function loadProfileAndRoles(userId: string) {
+  const seq = ++profileLoadSeq;
   try {
     const [{ data: profile, error: profileError }, { data: roleRows, error: rolesError }] =
       await Promise.all([
@@ -49,6 +51,8 @@ async function loadProfileAndRoles(userId: string) {
     if (profileError) console.error(profileError);
     if (rolesError) console.error(rolesError);
 
+    if (seq !== profileLoadSeq || state.user?.id !== userId) return;
+
     setState({
       profile: profileError ? null : ((profile as Profile | null) ?? null),
       roles: rolesError ? [] : ((roleRows ?? []) as { role: AppRole }[]).map((r) => r.role),
@@ -56,6 +60,7 @@ async function loadProfileAndRoles(userId: string) {
     });
   } catch (error) {
     console.error(error);
+    if (seq !== profileLoadSeq || state.user?.id !== userId) return;
     setState({ profile: null, roles: [], rolesLoaded: true });
   }
 }
@@ -65,7 +70,17 @@ function initialize() {
   initialized = true;
 
   // Listener FIRST so we never miss a session restore
-  supabase.auth.onAuthStateChange((_event, session) => {
+  supabase.auth.onAuthStateChange((event, session) => {
+    if (event === "TOKEN_REFRESHED") {
+      const user = session?.user ?? state.user;
+      setState({ user, loading: false });
+      return;
+    }
+
+    if (event === "INITIAL_SESSION") {
+      return;
+    }
+
     const user = session?.user ?? null;
     const sameUser = !!user && state.user?.id === user.id;
     setState({
@@ -75,9 +90,10 @@ function initialize() {
       roles: sameUser ? state.roles : [],
       rolesLoaded: user ? (sameUser ? state.rolesLoaded : false) : true,
     });
-    if (user) {
+    if (user && (!sameUser || !state.rolesLoaded)) {
       void loadProfileAndRoles(user.id);
     } else {
+      profileLoadSeq += 1;
       setState({ profile: null, roles: [], rolesLoaded: true });
     }
   });
@@ -93,7 +109,11 @@ function initialize() {
       roles: sameUser ? state.roles : [],
       rolesLoaded: user ? (sameUser ? state.rolesLoaded : false) : true,
     });
-    if (user) void loadProfileAndRoles(user.id);
+    if (user && (!sameUser || !state.rolesLoaded)) void loadProfileAndRoles(user.id);
+  }).catch((error) => {
+    console.error(error);
+    profileLoadSeq += 1;
+    setState({ user: null, profile: null, roles: [], loading: false, rolesLoaded: true });
   });
 }
 
@@ -111,6 +131,7 @@ export function useAuth() {
 
   const signOut = useCallback(async () => {
     await supabase.auth.signOut();
+    profileLoadSeq += 1;
     setState({ user: null, profile: null, roles: [], loading: false, rolesLoaded: true });
   }, []);
 
