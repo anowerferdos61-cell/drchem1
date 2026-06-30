@@ -67,7 +67,14 @@ function initialize() {
   // Listener FIRST so we never miss a session restore
   supabase.auth.onAuthStateChange((_event, session) => {
     const user = session?.user ?? null;
-    setState({ user, loading: false, rolesLoaded: !user });
+    const sameUser = !!user && state.user?.id === user.id;
+    setState({
+      user,
+      loading: false,
+      profile: sameUser ? state.profile : null,
+      roles: sameUser ? state.roles : [],
+      rolesLoaded: user ? (sameUser ? state.rolesLoaded : false) : true,
+    });
     if (user) {
       void loadProfileAndRoles(user.id);
     } else {
@@ -78,7 +85,14 @@ function initialize() {
   // Then hydrate
   supabase.auth.getSession().then(({ data }) => {
     const user = data.session?.user ?? null;
-    setState({ user, loading: false, rolesLoaded: !user });
+    const sameUser = !!user && state.user?.id === user.id;
+    setState({
+      user,
+      loading: false,
+      profile: sameUser ? state.profile : null,
+      roles: sameUser ? state.roles : [],
+      rolesLoaded: user ? (sameUser ? state.rolesLoaded : false) : true,
+    });
     if (user) void loadProfileAndRoles(user.id);
   });
 }
