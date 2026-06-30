@@ -45,7 +45,7 @@ function NotesPage() {
     "notes",
     "id, chapter_number, title, content, is_premium",
   );
-  const [activeChapter, setActiveChapter] = useState<number>(10);
+  const [activeChapter, setActiveChapter] = useState<number | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const { isPro } = useEntitlements();
   const navigate = useNavigate();
@@ -86,6 +86,7 @@ function NotesPage() {
       headerTitleBn="স্মার্ট নোটস"
       headerSubtitle="Smart Notes · NCTB"
       accent="from-amber-500 to-orange-600"
+      itemLabel="নোট"
       activeChapter={activeChapter}
       setActiveChapter={(n) => {
         setActiveChapter(n);
