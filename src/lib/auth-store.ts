@@ -39,15 +39,25 @@ function setState(next: Partial<AuthState>) {
 }
 
 async function loadProfileAndRoles(userId: string) {
-  const [{ data: profile }, { data: roleRows }] = await Promise.all([
-    supabase.from("profiles").select("*").eq("user_id", userId).maybeSingle(),
-    supabase.from("user_roles").select("role").eq("user_id", userId),
-  ]);
-  setState({
-    profile: (profile as Profile | null) ?? null,
-    roles: ((roleRows ?? []) as { role: AppRole }[]).map((r) => r.role),
-    rolesLoaded: true,
-  });
+  try {
+    const [{ data: profile, error: profileError }, { data: roleRows, error: rolesError }] =
+      await Promise.all([
+        supabase.from("profiles").select("*").eq("user_id", userId).maybeSingle(),
+        supabase.from("user_roles").select("role").eq("user_id", userId),
+      ]);
+
+    if (profileError) console.error(profileError);
+    if (rolesError) console.error(rolesError);
+
+    setState({
+      profile: profileError ? null : ((profile as Profile | null) ?? null),
+      roles: rolesError ? [] : ((roleRows ?? []) as { role: AppRole }[]).map((r) => r.role),
+      rolesLoaded: true,
+    });
+  } catch (error) {
+    console.error(error);
+    setState({ profile: null, roles: [], rolesLoaded: true });
+  }
 }
 
 function initialize() {
@@ -87,7 +97,7 @@ export function useAuth() {
 
   const signOut = useCallback(async () => {
     await supabase.auth.signOut();
-    setState({ user: null, profile: null, roles: [] });
+    setState({ user: null, profile: null, roles: [], loading: false, rolesLoaded: true });
   }, []);
 
   const hasRole = useCallback(
