@@ -4,8 +4,10 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { chatComplete } from "./ai-gateway";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 export const generateTitle = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((input) =>
     z.object({ message: z.string().min(1).max(4000) }).parse(input),
   )
