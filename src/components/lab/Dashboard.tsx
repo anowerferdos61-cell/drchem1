@@ -7,7 +7,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
+import { useAuth } from "@/lib/auth-store";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Dialog,
