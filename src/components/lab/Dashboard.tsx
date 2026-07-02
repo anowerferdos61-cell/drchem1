@@ -7,7 +7,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
+import { useAuth } from "@/lib/auth-store";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Dialog,
@@ -184,6 +184,8 @@ type View = "home" | "curriculum" | "practical";
 
 export default function Dashboard({ onPickExperiment }: DashboardProps) {
   const navigate = useNavigate();
+  const { profile, user } = useAuth();
+  const displayName = profile?.display_name?.trim() || user?.email?.split("@")[0] || "রসায়নবিদ";
   const [view, setView] = useState<View>("home");
   const [activeChapter, setActiveChapter] = useState<ChapterMeta | null>(null);
   const [labFilter, setLabFilter] = useState<"all" | "core" | "completed" | "incomplete">("all");
@@ -205,8 +207,6 @@ export default function Dashboard({ onPickExperiment }: DashboardProps) {
     });
   }, [labFilter, search]);
 
-  const completedCount = ALL_LABS.filter((l) => l.completed).length;
-  const overallProgress = Math.round((completedCount / ALL_LABS.length) * 100);
 
   const openLab = useCallback((id: ExperimentId) => {
     if (!entLoading && !canAccessLab(id)) {
@@ -263,45 +263,30 @@ export default function Dashboard({ onPickExperiment }: DashboardProps) {
 
       <PendingPaymentBanner />
 
-      {/* Hero strip with progress */}
-      <section className="mx-auto max-w-7xl px-4 pt-6 md:px-6 md:pt-10">
-        <div className="grid gap-4 md:grid-cols-3">
-          <Card className="md:col-span-2 overflow-hidden border-0 bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-700 p-6 text-white shadow-xl shadow-emerald-500/10">
-            <div className="flex items-center gap-2 text-xs font-medium opacity-90">
-              <Sparkles className="h-3.5 w-3.5" /> AI-Powered · দ্বিভাষিক
-            </div>
-            <h1 className="mt-2 text-2xl font-extrabold tracking-tight md:text-3xl">
-              স্বাগতম, রসায়নবিদ! 🧪
-            </h1>
-            <p className="mt-1 max-w-xl text-sm text-white/85 md:text-base">
-              NCTB কারিকুলামের ১২টি অধ্যায় ভ্রমণ করো, ভার্চুয়াল ল্যাবে পরীক্ষণ চালাও আর AI টিউটরের সাহায্য নাও।
-            </p>
-            <div className="mt-4 flex flex-wrap gap-2">
-              <Button size="sm" variant="secondary" className="bg-white text-emerald-700 hover:bg-white/90" onClick={() => setView("curriculum")}>
-                <BookOpen className="h-4 w-4" /> কারিকুলাম দেখুন
-              </Button>
-              <Button size="sm" variant="outline" className="border-white/30 bg-white/10 text-white hover:bg-white/20" onClick={goTutor}>
-                <Bot className="h-4 w-4" /> AI কে প্রশ্ন করো
-              </Button>
-            </div>
-          </Card>
-          <Card className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="text-sm font-medium text-muted-foreground">আপনার অগ্রগতি</div>
-              <Badge variant="outline" className="text-xs">{completedCount}/{ALL_LABS.length}</Badge>
-            </div>
-            <div className="mt-3 text-3xl font-extrabold tracking-tight">{overallProgress}%</div>
-            <Progress value={overallProgress} className="mt-3 h-2" />
-            <div className="mt-4 grid grid-cols-3 gap-2 text-center">
-              <Stat label="অধ্যায়" value="12" />
-              <Stat label="ল্যাব" value={String(ALL_LABS.length)} />
-              <Stat label="ভাষা" value="2" />
-            </div>
-          </Card>
-        </div>
+      {/* Compact greeting */}
+      <section className="mx-auto max-w-7xl px-4 pt-4 md:px-6 md:pt-8">
+        <Card className="overflow-hidden border-0 bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-700 p-4 text-white shadow-xl shadow-emerald-500/10 md:p-6">
+          <div className="flex items-center gap-2 text-[11px] font-medium opacity-90 md:text-xs">
+            <Sparkles className="h-3.5 w-3.5" /> AI-Powered · দ্বিভাষিক
+          </div>
+          <h1 className="mt-1 text-lg font-extrabold tracking-tight md:text-3xl">
+            স্বাগতম, <span className="underline decoration-white/40 underline-offset-4">{displayName}</span>! 🧪
+          </h1>
+          <p className="mt-1 hidden max-w-xl text-sm text-white/85 md:block md:text-base">
+            NCTB কারিকুলামের ১২টি অধ্যায় ভ্রমণ করো, ভার্চুয়াল ল্যাবে পরীক্ষণ চালাও আর AI টিউটরের সাহায্য নাও।
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <Button size="sm" variant="secondary" className="h-8 bg-white text-emerald-700 hover:bg-white/90" onClick={() => setView("curriculum")}>
+              <BookOpen className="h-4 w-4" /> কারিকুলাম
+            </Button>
+            <Button size="sm" variant="outline" className="h-8 border-white/30 bg-white/10 text-white hover:bg-white/20" onClick={goTutor}>
+              <Bot className="h-4 w-4" /> AI টিউটর
+            </Button>
+          </div>
+        </Card>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-10">
+      <section className="mx-auto max-w-7xl px-4 py-5 md:px-6 md:py-10">
         {view === "home" && (
           <HomeGrid
             onCurriculum={() => setView("curriculum")}
@@ -503,22 +488,22 @@ function HomeGrid({
   ];
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2">
+    <div className="grid grid-cols-2 gap-3 md:gap-4">
       {cards.map((c) => {
         const Icon = c.icon;
         return (
           <Card
             key={c.key}
             onClick={c.onClick}
-            className={`group relative cursor-pointer overflow-hidden border bg-card p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl ${c.shadow}`}
+            className={`group relative cursor-pointer overflow-hidden border bg-card p-3 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl md:p-6 ${c.shadow}`}
           >
             <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${c.accent}`} />
-            <div className="flex items-start justify-between">
-              <div className={`grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br ${c.accent} text-white shadow-lg`}>
-                <Icon className="h-7 w-7" />
+            <div className="flex items-start justify-between gap-2">
+              <div className={`grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br ${c.accent} text-white shadow-lg md:h-14 md:w-14 md:rounded-2xl`}>
+                <Icon className="h-5 w-5 md:h-7 md:w-7" />
               </div>
               {c.available ? (
-                <Badge variant="secondary" className="border bg-emerald-500/10 text-[10px] text-emerald-700 dark:text-emerald-300">
+                <Badge variant="secondary" className="border bg-emerald-500/10 px-1.5 py-0 text-[9px] text-emerald-700 dark:text-emerald-300 md:text-[10px]">
                   {c.meta}
                 </Badge>
               ) : (
@@ -527,10 +512,10 @@ function HomeGrid({
                 </Badge>
               )}
             </div>
-            <h3 className="mt-5 text-xl font-extrabold tracking-tight">{c.titleBn}</h3>
-            <p className="text-xs font-medium text-muted-foreground">{c.title}</p>
-            <p className="mt-2 text-sm text-muted-foreground">{c.desc}</p>
-            <div className="mt-5 flex items-center justify-end text-sm font-semibold text-primary opacity-0 transition-opacity group-hover:opacity-100">
+            <h3 className="mt-3 text-sm font-extrabold tracking-tight md:mt-5 md:text-xl">{c.titleBn}</h3>
+            <p className="text-[10px] font-medium text-muted-foreground md:text-xs">{c.title}</p>
+            <p className="mt-1.5 line-clamp-2 text-[11px] text-muted-foreground md:mt-2 md:line-clamp-none md:text-sm">{c.desc}</p>
+            <div className="mt-2 hidden items-center justify-end text-sm font-semibold text-primary opacity-0 transition-opacity group-hover:opacity-100 md:mt-5 md:flex">
               {c.available ? "Open" : "Notify Me"} <ChevronRight className="h-4 w-4" />
             </div>
           </Card>
@@ -604,7 +589,9 @@ function CurriculumGrid({ onPick, isPro }: { onPick: (c: ChapterMeta) => void; i
                 <div className="mb-1 flex items-center justify-between text-[10px] text-muted-foreground">
                   <span>অগ্রগতি</span><span>{pct}%</span>
                 </div>
-                <Progress value={pct} className="h-1.5" />
+                <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                  <div className={`h-full rounded-full bg-gradient-to-r ${ch.accent}`} style={{ width: `${pct}%` }} />
+                </div>
               </div>
 
               <div className="mt-4 flex items-center justify-end text-sm font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">
