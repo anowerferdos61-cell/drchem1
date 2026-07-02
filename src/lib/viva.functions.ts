@@ -2,10 +2,10 @@
 import { createServerFn } from "@tanstack/react-start";
 import { generateObject } from "ai";
 import { z } from "zod";
-import { createLovableAiGatewayProvider } from "./ai-gateway";
+import { createGeminiProvider, getGeminiApiKey, DEFAULT_CHAT_MODEL } from "./ai-gateway";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-const MODEL_ID = "google/gemini-3-flash-preview";
+const MODEL_ID = DEFAULT_CHAT_MODEL;
 
 const QuestionSchema = z.object({
   q: z.string().describe("The viva question"),
@@ -115,14 +115,14 @@ export const generateViva = createServerFn({ method: "POST" })
       .parse(input),
   )
   .handler(async ({ data }) => {
-    const key = process.env.LOVABLE_API_KEY;
+    const key = getGeminiApiKey();
     if (!key) {
       return {
         questions: [] as Array<z.infer<typeof QuestionSchema>>,
-        error: "Lovable AI is not configured.",
+        error: "AI service is not configured.",
       };
     }
-    const gateway = createLovableAiGatewayProvider(key);
+    const gateway = createGeminiProvider(key);
     const model = gateway(MODEL_ID);
 
     const ctx = experimentContext(data.experiment);
@@ -171,11 +171,11 @@ export const gradeViva = createServerFn({ method: "POST" })
       .parse(input),
   )
   .handler(async ({ data }) => {
-    const key = process.env.LOVABLE_API_KEY;
+    const key = getGeminiApiKey();
     if (!key) {
-      return { result: null, error: "Lovable AI is not configured." };
+      return { result: null, error: "AI service is not configured." };
     }
-    const gateway = createLovableAiGatewayProvider(key);
+    const gateway = createGeminiProvider(key);
     const model = gateway(MODEL_ID);
 
     const transcript = data.items

@@ -1,7 +1,7 @@
 // Chat server functions for the bilingual Lab AI Assistant.
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { chatComplete, type ChatTurn } from "./ai-gateway";
+import { chatComplete, getGeminiApiKey, type ChatTurn } from "./ai-gateway";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const SYSTEM_PROMPT = `You are an expert Chemistry professor for the Bangladeshi curriculum (Class 9–10/HSC).
@@ -120,11 +120,11 @@ export const chatWithAssistant = createServerFn({ method: "POST" })
       }
     }
 
-    const key = process.env.LOVABLE_API_KEY;
+    const key = getGeminiApiKey();
     if (!key) {
       return {
         reply: "",
-        error: "Lovable AI is not configured. দয়া করে পরে চেষ্টা করুন।",
+        error: "AI service is not configured. দয়া করে পরে চেষ্টা করুন।",
       };
     }
     const systemPrompt = SYSTEM_PROMPT + buildContextBlock(data.context);

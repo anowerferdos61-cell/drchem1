@@ -74,10 +74,11 @@ async function checkAndConsumeQuota(userId: string): Promise<{ ok: boolean; used
   return { ok: true, used: used + 1 };
 }
 
-const GATEWAY_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
-const EMBED_URL = "https://ai.gateway.lovable.dev/v1/embeddings";
-const DEFAULT_MODEL = "google/gemini-3-flash-preview";
-const EMBED_MODEL = "google/gemini-embedding-001";
+const GEMINI_BASE = "https://generativelanguage.googleapis.com/v1beta/openai";
+const GATEWAY_URL = `${GEMINI_BASE}/chat/completions`;
+const EMBED_URL = `${GEMINI_BASE}/embeddings`;
+const DEFAULT_MODEL = "gemini-2.5-flash";
+const EMBED_MODEL = "gemini-embedding-001";
 const EMBED_DIMS = 1536;
 const TOP_K = 6;
 
@@ -184,7 +185,7 @@ export const Route = createFileRoute("/api/tutor/stream")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const key = process.env.LOVABLE_API_KEY;
+        const key = process.env.GEMINI_API_KEY || process.env.LOVABLE_API_KEY;
         if (!key) {
           return new Response(
             JSON.stringify({ error: "AI service not configured" }),

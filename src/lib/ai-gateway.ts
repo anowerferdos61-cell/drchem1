@@ -1,18 +1,26 @@
+/**
+ * Direct Google Gemini API integration via the OpenAI-compatible endpoint.
+ * Uses GEMINI_API_KEY from env. No Lovable AI Gateway dependency.
+ */
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import { generateText, streamText, type ModelMessage } from "ai";
 
-const GATEWAY_BASE = "https://ai.gateway.lovable.dev/v1";
-export const DEFAULT_CHAT_MODEL = "google/gemini-3-flash-preview";
+export const GEMINI_BASE_URL =
+  "https://generativelanguage.googleapis.com/v1beta/openai";
+export const DEFAULT_CHAT_MODEL = "gemini-2.5-flash";
+export const DEFAULT_EMBED_MODEL = "gemini-embedding-001";
 
-export const createLovableAiGatewayProvider = (lovableApiKey: string) =>
+export const createGeminiProvider = (apiKey: string) =>
   createOpenAICompatible({
-    name: "lovable",
-    baseURL: GATEWAY_BASE,
+    name: "gemini",
+    baseURL: GEMINI_BASE_URL,
     headers: {
-      "Lovable-API-Key": lovableApiKey,
-      "X-Lovable-AIG-SDK": "vercel-ai-sdk",
+      Authorization: `Bearer ${apiKey}`,
     },
   });
+
+// Backwards-compat alias so callers that still import the old name keep working.
+export const createLovableAiGatewayProvider = createGeminiProvider;
 
 export interface ChatTurn {
   role: "system" | "user" | "assistant";
@@ -26,14 +34,13 @@ export interface ChatCallOptions {
   model?: string;
 }
 
-/** Non-streaming chat (used for tools like viva, summaries). */
 export async function chatComplete({
   apiKey,
   systemPrompt,
   history,
   model = DEFAULT_CHAT_MODEL,
 }: ChatCallOptions): Promise<string> {
-  const provider = createLovableAiGatewayProvider(apiKey);
+  const provider = createGeminiProvider(apiKey);
   const messages: ModelMessage[] = [
     { role: "system", content: systemPrompt },
     ...history.map((m) => ({ role: m.role, content: m.content }) as ModelMessage),
@@ -42,14 +49,13 @@ export async function chatComplete({
   return text;
 }
 
-/** Streaming chat — returns an async iterable of text deltas. */
 export async function* chatStream({
   apiKey,
   systemPrompt,
   history,
   model = DEFAULT_CHAT_MODEL,
 }: ChatCallOptions): AsyncGenerator<string> {
-  const provider = createLovableAiGatewayProvider(apiKey);
+  const provider = createGeminiProvider(apiKey);
   const messages: ModelMessage[] = [
     { role: "system", content: systemPrompt },
     ...history.map((m) => ({ role: m.role, content: m.content }) as ModelMessage),
@@ -58,4 +64,9 @@ export async function* chatStream({
   for await (const delta of result.textStream) {
     yield delta;
   }
+}
+
+/** Resolve the Gemini API key from env, supporting the legacy LOVABLE_API_KEY name. */
+export function getGeminiApiKey(): string | undefined {
+  return process.env.GEMINI_API_KEY || process.env.LOVABLE_API_KEY;
 }
