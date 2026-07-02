@@ -184,6 +184,8 @@ type View = "home" | "curriculum" | "practical";
 
 export default function Dashboard({ onPickExperiment }: DashboardProps) {
   const navigate = useNavigate();
+  const { profile, user } = useAuth();
+  const displayName = profile?.display_name?.trim() || user?.email?.split("@")[0] || "রসায়নবিদ";
   const [view, setView] = useState<View>("home");
   const [activeChapter, setActiveChapter] = useState<ChapterMeta | null>(null);
   const [labFilter, setLabFilter] = useState<"all" | "core" | "completed" | "incomplete">("all");
