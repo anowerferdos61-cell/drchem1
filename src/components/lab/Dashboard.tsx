@@ -495,15 +495,15 @@ function HomeGrid({
           <Card
             key={c.key}
             onClick={c.onClick}
-            className={`group relative cursor-pointer overflow-hidden border bg-card p-3 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl md:p-6 ${c.shadow}`}
+            className={`group relative flex min-h-[180px] cursor-pointer flex-col overflow-hidden border bg-card p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl md:min-h-[240px] md:p-6 ${c.shadow}`}
           >
             <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${c.accent}`} />
             <div className="flex items-start justify-between gap-2">
-              <div className={`grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br ${c.accent} text-white shadow-lg md:h-14 md:w-14 md:rounded-2xl`}>
-                <Icon className="h-5 w-5 md:h-7 md:w-7" />
+              <div className={`grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br ${c.accent} text-white shadow-lg md:h-14 md:w-14 md:rounded-2xl`}>
+                <Icon className="h-6 w-6 md:h-7 md:w-7" />
               </div>
               {c.available ? (
-                <Badge variant="secondary" className="border bg-emerald-500/10 px-1.5 py-0 text-[9px] text-emerald-700 dark:text-emerald-300 md:text-[10px]">
+                <Badge variant="secondary" className="border bg-emerald-500/10 px-1.5 py-0 text-[10px] text-emerald-700 dark:text-emerald-300">
                   {c.meta}
                 </Badge>
               ) : (
@@ -512,11 +512,11 @@ function HomeGrid({
                 </Badge>
               )}
             </div>
-            <h3 className="mt-3 text-sm font-extrabold tracking-tight md:mt-5 md:text-xl">{c.titleBn}</h3>
-            <p className="text-[10px] font-medium text-muted-foreground md:text-xs">{c.title}</p>
-            <p className="mt-1.5 line-clamp-2 text-[11px] text-muted-foreground md:mt-2 md:line-clamp-none md:text-sm">{c.desc}</p>
-            <div className="mt-2 hidden items-center justify-end text-sm font-semibold text-primary opacity-0 transition-opacity group-hover:opacity-100 md:mt-5 md:flex">
-              {c.available ? "Open" : "Notify Me"} <ChevronRight className="h-4 w-4" />
+            <h3 className="mt-3 text-[15px] font-extrabold leading-tight tracking-tight md:mt-5 md:text-xl">{c.titleBn}</h3>
+            <p className="text-[11px] font-medium text-muted-foreground md:text-xs">{c.title}</p>
+            <p className="mt-1.5 line-clamp-3 text-[11px] leading-snug text-muted-foreground md:mt-2 md:line-clamp-none md:text-sm">{c.desc}</p>
+            <div className="mt-auto flex items-center justify-end pt-2 text-xs font-semibold text-primary md:text-sm">
+              {c.available ? "Open" : "Notify"} <ChevronRight className="h-4 w-4" />
             </div>
           </Card>
         );
