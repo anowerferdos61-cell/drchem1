@@ -296,7 +296,13 @@ function Index() {
 
   const aiCtx = useAIContext();
   // Floating AI assistant: ONLY inside an active experiment (not on dashboard / picker).
-  const showFloatingAI = activeExperiment !== null;
+  // AI assistant only in hands-on experiment labs, not in theory/chapter labs.
+  const EXPERIMENT_LAB_IDS: ReadonlySet<string> = new Set([
+    "titration", "oxygen_prep", "co2_prep", "nacl_crystal", "ionic_covalent",
+    "na2co3_standard", "cuso4_water", "ph_scale", "indicator_compare",
+    "solubility_rules", "electrochemical_series", "bonding_basics",
+  ]);
+  const showFloatingAI = activeExperiment !== null && EXPERIMENT_LAB_IDS.has(activeExperiment);
   // Block any render until we're sure the user isn't an admin (avoids
   // flashing the student dashboard while role rows are still loading).
   const waitingForRoles = isAuthenticated && !rolesReady && !rolesWaitExpired;
