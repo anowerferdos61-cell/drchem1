@@ -606,7 +606,9 @@ function CurriculumGrid({ onPick, isPro }: { onPick: (c: ChapterMeta) => void; i
                 <div className="mb-1 flex items-center justify-between text-[10px] text-muted-foreground">
                   <span>অগ্রগতি</span><span>{pct}%</span>
                 </div>
-                <Progress value={pct} className="h-1.5" />
+                <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                  <div className={`h-full rounded-full bg-gradient-to-r ${ch.accent}`} style={{ width: `${pct}%` }} />
+                </div>
               </div>
 
               <div className="mt-4 flex items-center justify-end text-sm font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">
