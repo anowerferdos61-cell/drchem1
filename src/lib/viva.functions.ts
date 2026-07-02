@@ -153,6 +153,7 @@ const GradeSchema = z.object({
 });
 
 export const gradeViva = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((input) =>
     z
       .object({
