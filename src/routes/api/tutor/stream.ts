@@ -185,7 +185,7 @@ export const Route = createFileRoute("/api/tutor/stream")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const key = process.env.GEMINI_API_KEY || process.env.LOVABLE_API_KEY;
+        const key = process.env.GEMINI_API_KEY;
         if (!key) {
           return new Response(
             JSON.stringify({ error: "AI service not configured" }),
