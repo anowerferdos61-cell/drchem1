@@ -212,14 +212,9 @@ export const Route = createFileRoute("/api/tutor/stream")({
           );
         }
 
-        let body: {
-          messages?: Array<{ role: string; content: string }>;
-          ragMode?: boolean;
-          model?: string;
-          system?: string;
-        };
+        let rawBody: unknown;
         try {
-          body = await request.json();
+          rawBody = await request.json();
         } catch {
           return new Response(JSON.stringify({ error: "Invalid JSON" }), {
             status: 400,
@@ -227,29 +222,42 @@ export const Route = createFileRoute("/api/tutor/stream")({
           });
         }
 
-        const messages = Array.isArray(body.messages) ? body.messages : [];
-        if (messages.length === 0) {
-          return new Response(JSON.stringify({ error: "No messages" }), {
-            status: 400,
-            headers: { "Content-Type": "application/json" },
-          });
+        const { z } = await import("zod");
+        const BodySchema = z.object({
+          messages: z
+            .array(
+              z.object({
+                role: z.enum(["user", "assistant", "system"]),
+                content: z.string().max(4000),
+              }),
+            )
+            .min(1)
+            .max(40),
+          ragMode: z.boolean().optional(),
+        });
+        const parsed = BodySchema.safeParse(rawBody);
+        if (!parsed.success) {
+          return new Response(
+            JSON.stringify({ error: "Invalid request", issues: parsed.error.issues }),
+            { status: 400, headers: { "Content-Type": "application/json" } },
+          );
         }
-
+        const body = parsed.data;
+        const messages = body.messages;
 
         // ------- Optional RAG retrieval -------
-        let systemContent = body.system || BASE_SYSTEM_PROMPT;
+        let systemContent = BASE_SYSTEM_PROMPT;
         let sources: Array<Omit<BookChunk, "content">> = [];
         if (body.ragMode) {
           const lastUser = [...messages].reverse().find((m) => m.role === "user");
           if (lastUser?.content) {
             const ctx = await retrieveContext(lastUser.content, key);
             sources = ctx.sources;
-            systemContent =
-              (body.system || BASE_SYSTEM_PROMPT) + RAG_INSTRUCTIONS + ctx.block;
+            systemContent = BASE_SYSTEM_PROMPT + RAG_INSTRUCTIONS + ctx.block;
           }
         }
 
-        const model = body.model || DEFAULT_MODEL;
+        const model = DEFAULT_MODEL;
 
         const upstream = await fetch(GATEWAY_URL, {
           method: "POST",
