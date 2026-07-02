@@ -3,6 +3,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { generateObject } from "ai";
 import { z } from "zod";
 import { createLovableAiGatewayProvider } from "./ai-gateway";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const MODEL_ID = "google/gemini-3-flash-preview";
 
@@ -103,6 +104,7 @@ function experimentContext(exp: z.infer<typeof ExperimentEnum>): string {
 
 
 export const generateViva = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((input) =>
     z
       .object({
@@ -151,6 +153,7 @@ const GradeSchema = z.object({
 });
 
 export const gradeViva = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((input) =>
     z
       .object({
