@@ -66,7 +66,7 @@ export async function* chatStream({
   }
 }
 
-/** Resolve the Gemini API key from env, supporting the legacy LOVABLE_API_KEY name. */
+/** Resolve the Gemini API key from server-side env (Vercel: GEMINI_API_KEY). */
 export function getGeminiApiKey(): string | undefined {
-  return process.env.GEMINI_API_KEY || process.env.LOVABLE_API_KEY;
+  return process.env.GEMINI_API_KEY;
 }
