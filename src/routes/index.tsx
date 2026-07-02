@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import UserMenu from "@/components/auth/UserMenu";
+import { useAuth } from "@/lib/auth-store";
 import heroImg from "@/assets/landing-hero.jpg";
 
 export const Route = createFileRoute("/")({
@@ -99,6 +100,7 @@ function Nav() {
 
 /* ───────────── Hero ───────────── */
 function Hero() {
+  const { isAuthenticated } = useAuth();
   return (
     <section className="relative overflow-hidden">
       <div className="absolute inset-0 -z-10">
@@ -125,14 +127,20 @@ function Hero() {
           <div className="mt-7 flex flex-wrap gap-3">
             <Button asChild size="lg" className="text-base">
               <Link to="/app">
-                <Sparkles className="h-4 w-4" /> Try Free
+                {isAuthenticated ? (
+                  <><ArrowRight className="h-4 w-4" /> ড্যাশবোর্ডে যান</>
+                ) : (
+                  <><Sparkles className="h-4 w-4" /> Try Free</>
+                )}
               </Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="text-base">
-              <Link to="/app">
-                <PlayCircle className="h-4 w-4" /> Watch Demo
-              </Link>
-            </Button>
+            {!isAuthenticated && (
+              <Button asChild size="lg" variant="outline" className="text-base">
+                <Link to="/login">
+                  <PlayCircle className="h-4 w-4" /> Login
+                </Link>
+              </Button>
+            )}
           </div>
           <div className="mt-6 flex flex-wrap gap-5 text-xs text-muted-foreground">
             <span className="flex items-center gap-1.5">
@@ -453,6 +461,7 @@ function Testimonials() {
 
 /* ───────────── Final CTA ───────────── */
 function FinalCTA() {
+  const { isAuthenticated } = useAuth();
   return (
     <section className="py-20 md:py-28">
       <div className="max-w-4xl mx-auto px-4">
@@ -461,27 +470,35 @@ function FinalCTA() {
           <div className="absolute -bottom-20 -left-20 w-72 h-72 rounded-full bg-white/10 blur-3xl" />
           <div className="relative">
             <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white">
-              Start Learning Chemistry Smarter
+              {isAuthenticated ? "Welcome back to Dr. Chem" : "Start Learning Chemistry Smarter"}
             </h2>
             <p className="mt-4 text-white/90 text-lg max-w-xl mx-auto">
-              Join Dr. Chem free today and bring the lab to every student.
+              {isAuthenticated
+                ? "সরাসরি আপনার ড্যাশবোর্ডে ফিরে যান এবং পরীক্ষণ চালিয়ে যান।"
+                : "Join Dr. Chem free today and bring the lab to every student."}
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Button asChild size="lg" variant="secondary" className="text-base">
                 <Link to="/app">
-                  <Sparkles className="h-4 w-4" /> Create Free Account
+                  {isAuthenticated ? (
+                    <><ArrowRight className="h-4 w-4" /> ড্যাশবোর্ডে যান</>
+                  ) : (
+                    <><Sparkles className="h-4 w-4" /> Create Free Account</>
+                  )}
                 </Link>
               </Button>
-              <Button
-                asChild
-                size="lg"
-                variant="outline"
-                className="text-base bg-transparent text-white border-white/40 hover:bg-white/10 hover:text-white"
-              >
-                <Link to="/app">
-                  <PlayCircle className="h-4 w-4" /> Try Demo
-                </Link>
-              </Button>
+              {!isAuthenticated && (
+                <Button
+                  asChild
+                  size="lg"
+                  variant="outline"
+                  className="text-base bg-transparent text-white border-white/40 hover:bg-white/10 hover:text-white"
+                >
+                  <Link to="/login">
+                    <PlayCircle className="h-4 w-4" /> Login
+                  </Link>
+                </Button>
+              )}
             </div>
           </div>
         </div>
