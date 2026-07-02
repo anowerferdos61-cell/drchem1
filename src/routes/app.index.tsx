@@ -336,7 +336,7 @@ function Index() {
 
   return (
     <>
-      {showFloatingAI ? <LandscapeWrapper>{content}</LandscapeWrapper> : content}
+      {activeExperiment !== null ? <LandscapeWrapper>{content}</LandscapeWrapper> : content}
       {showFloatingAI && <LabAIAssistant context={aiCtx} />}
     </>
   );
