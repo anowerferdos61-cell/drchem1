@@ -207,8 +207,6 @@ export default function Dashboard({ onPickExperiment }: DashboardProps) {
     });
   }, [labFilter, search]);
 
-  const completedCount = ALL_LABS.filter((l) => l.completed).length;
-  const overallProgress = Math.round((completedCount / ALL_LABS.length) * 100);
 
   const openLab = useCallback((id: ExperimentId) => {
     if (!entLoading && !canAccessLab(id)) {
