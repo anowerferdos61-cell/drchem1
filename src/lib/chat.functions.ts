@@ -1,7 +1,7 @@
 // Chat server functions for the bilingual Lab AI Assistant.
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { chatComplete, type ChatTurn } from "./ai-gateway";
+import { chatComplete, getGeminiApiKey, type ChatTurn } from "./ai-gateway";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const SYSTEM_PROMPT = `You are an expert Chemistry professor for the Bangladeshi curriculum (Class 9–10/HSC).
