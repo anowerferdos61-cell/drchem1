@@ -120,11 +120,11 @@ export const chatWithAssistant = createServerFn({ method: "POST" })
       }
     }
 
-    const key = process.env.LOVABLE_API_KEY;
+    const key = getGeminiApiKey();
     if (!key) {
       return {
         reply: "",
-        error: "Lovable AI is not configured. দয়া করে পরে চেষ্টা করুন।",
+        error: "AI service is not configured. দয়া করে পরে চেষ্টা করুন।",
       };
     }
     const systemPrompt = SYSTEM_PROMPT + buildContextBlock(data.context);

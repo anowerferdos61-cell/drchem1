@@ -3,7 +3,7 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { chatComplete } from "./ai-gateway";
+import { chatComplete, getGeminiApiKey } from "./ai-gateway";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 export const generateTitle = createServerFn({ method: "POST" })
@@ -12,7 +12,7 @@ export const generateTitle = createServerFn({ method: "POST" })
     z.object({ message: z.string().min(1).max(4000) }).parse(input),
   )
   .handler(async ({ data }) => {
-    const key = process.env.LOVABLE_API_KEY;
+    const key = getGeminiApiKey();
     if (!key) return { title: "নতুন চ্যাট" };
     try {
       const reply = await chatComplete({
