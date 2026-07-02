@@ -3,6 +3,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { generateObject } from "ai";
 import { z } from "zod";
 import { createLovableAiGatewayProvider } from "./ai-gateway";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const MODEL_ID = "google/gemini-3-flash-preview";
 
