@@ -782,7 +782,8 @@ function TitrationLab({ onBack }: { onBack: () => void }) {
 
           {/* Right: live data + steps */}
           {showPanels && (
-            <aside className="flex w-[140px] shrink-0 flex-col gap-1.5 overflow-y-auto pl-0.5 sm:w-[190px] md:w-[260px] lg:w-[280px] [&_h3]:text-[10px] md:[&_h3]:text-sm">
+            <aside className="flex w-full shrink-0 flex-col gap-1.5 md:w-[260px] md:overflow-y-auto md:pl-0.5 lg:w-[280px] [&_h3]:text-[11px] md:[&_h3]:text-sm">
+
               <StatusPanel
                 Vb={Vb}
                 Ve={Ve}
