@@ -362,6 +362,7 @@ function TitrationLab({ onBack }: { onBack: () => void }) {
   const [submitted, setSubmitted] = useState(false);
   const [report, setReport] = useState<Report | null>(null);
   const [showPanels, setShowPanels] = useState(true);
+  const [mobileTab, setMobileTab] = useState<"equipment" | "lab" | "data">("lab");
   const [vivaQuestions, setVivaQuestions] = useState<VivaQuestion[]>([]);
   const [showViva, setShowViva] = useState(false);
 
