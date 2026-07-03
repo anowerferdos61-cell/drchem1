@@ -637,7 +637,7 @@ function TitrationLab({ onBack }: { onBack: () => void }) {
   return (
     <>
       <Toaster position="top-center" richColors />
-      <div className="flex h-[100dvh] flex-col overflow-hidden bg-gradient-to-br from-slate-50 via-white to-sky-50">
+      <div className="flex min-h-[100dvh] flex-col overflow-x-hidden bg-gradient-to-br from-slate-50 via-white to-sky-50 md:h-[100dvh] md:overflow-hidden">
         {/* ── Top bar (compact, always visible) ─────────────── */}
         <header className="flex shrink-0 items-center justify-between gap-1.5 border-b bg-card/80 px-2 py-1.5 backdrop-blur md:px-4 md:py-2.5">
           <div className="flex min-w-0 items-center gap-1.5">
