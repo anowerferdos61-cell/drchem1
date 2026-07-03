@@ -683,10 +683,10 @@ function TitrationLab({ onBack }: { onBack: () => void }) {
         </header>
 
         {/* ── Main 3-column layout (fits in single screen on landscape) ── */}
-        <div className="flex min-h-0 flex-1 gap-1.5 p-1.5 md:gap-3 md:p-4">
+        <div className="flex min-h-0 flex-1 flex-col gap-1.5 p-1.5 md:flex-row md:gap-3 md:p-4">
           {/* Left: equipment + config */}
           {showPanels && (
-            <aside className="flex w-[140px] shrink-0 flex-col gap-1.5 overflow-y-auto pr-0.5 sm:w-[180px] md:w-[240px] lg:w-[260px] [&_h3]:text-[10px] md:[&_h3]:text-sm">
+            <aside className="flex w-full shrink-0 flex-row gap-1.5 overflow-x-auto md:w-[240px] md:flex-col md:overflow-y-auto md:pr-0.5 lg:w-[260px] [&_h3]:text-[11px] md:[&_h3]:text-sm">
               <EquipmentPanel
                 onSelect={handleSelect}
                 highlight={guide ? nextHighlight : null}
@@ -695,6 +695,7 @@ function TitrationLab({ onBack }: { onBack: () => void }) {
               <ConfigPanel config={config} onChange={setConfig} />
             </aside>
           )}
+
 
           {/* Center: workspace */}
           <section
