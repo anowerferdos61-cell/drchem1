@@ -64,7 +64,7 @@ export default function TheoryLabShell({
   theoryLabel = "থিওরি ও বিস্তারিত",
 }: TheoryLabShellProps) {
   return (
-    <div className="flex h-[100dvh] w-full flex-col overflow-hidden bg-gradient-to-br from-slate-50 via-white to-sky-50 dark:from-slate-950 dark:via-background dark:to-slate-900">
+    <div className="relative flex h-[100dvh] w-full flex-col overflow-hidden bg-gradient-to-br from-slate-50 via-white to-sky-50 dark:from-slate-950 dark:via-background dark:to-slate-900">
       {/* ── Header ── */}
       <header className="shrink-0 border-b bg-background/85 backdrop-blur-xl">
         <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-3 py-1.5">
