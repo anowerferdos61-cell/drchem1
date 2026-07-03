@@ -699,7 +699,8 @@ function TitrationLab({ onBack }: { onBack: () => void }) {
 
           {/* Center: workspace */}
           <section
-            className="relative min-w-0 flex-1 overflow-hidden rounded-xl border bg-card/60 shadow-xl backdrop-blur md:rounded-2xl"
+            className="relative min-h-[60vh] min-w-0 flex-1 overflow-hidden rounded-xl border bg-card/60 shadow-xl backdrop-blur md:min-h-0 md:rounded-2xl"
+
             onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => {
               const id = e.dataTransfer.getData("text/equipment") as EquipmentSelectId;
