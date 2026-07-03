@@ -2,14 +2,10 @@
  * Kinetic Theory of Matter — Particle Simulator
  * পদার্থের গতিতত্ত্ব — কণা সিমুলেটর
  *
- * Full-viewport 3-column layout (landscape/desktop):
- *   Left  → info & concept
- *   Center→ beaker canvas
- *   Right → substance + temperature controls
+ * Uses TheoryLabShell → same UX pattern as every other theory lab.
  */
 import { useEffect, useRef, useState, useMemo } from "react";
 import {
-  ArrowLeft,
   Thermometer,
   Snowflake,
   Droplets,
@@ -31,6 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import TheoryLabShell from "./TheoryLabShell";
 
 interface Props {
   onBack: () => void;
@@ -39,15 +36,8 @@ interface Props {
 type Phase = "solid" | "liquid" | "gas";
 
 interface Substance {
-  id: string;
-  bn: string;
-  en: string;
-  formula: string;
-  melt: number;
-  boil: number;
-  tempMin: number;
-  tempMax: number;
-  emoji: string;
+  id: string; bn: string; en: string; formula: string;
+  melt: number; boil: number; tempMin: number; tempMax: number; emoji: string;
 }
 
 const SUBSTANCES: Substance[] = [
@@ -71,43 +61,15 @@ const PHASE_META: Record<
   Phase,
   { bn: string; en: string; color: string; ring: string; icon: typeof Snowflake; tip: string }
 > = {
-  solid: {
-    bn: "কঠিন",
-    en: "Solid",
-    color: "from-sky-500 to-blue-600",
-    ring: "ring-sky-400/40",
-    icon: Snowflake,
-    tip: "কণাগুলো নির্দিষ্ট অবস্থানে কম্পিত হচ্ছে — আন্তঃআণবিক আকর্ষণ সবচেয়ে বেশি।",
-  },
-  liquid: {
-    bn: "তরল",
-    en: "Liquid",
-    color: "from-cyan-500 to-teal-600",
-    ring: "ring-cyan-400/40",
-    icon: Droplets,
-    tip: "কণাগুলো গড়িয়ে চলছে কিন্তু একসাথে থাকছে — মাঝারি আকর্ষণ।",
-  },
-  gas: {
-    bn: "গ্যাস",
-    en: "Gas",
-    color: "from-amber-500 to-orange-600",
-    ring: "ring-amber-400/40",
-    icon: Wind,
-    tip: "কণাগুলো মুক্তভাবে ছুটছে — আন্তঃআণবিক আকর্ষণ প্রায় শূন্য।",
-  },
+  solid:  { bn: "কঠিন", en: "Solid",  color: "from-sky-500 to-blue-600",  ring: "ring-sky-400/40",  icon: Snowflake, tip: "কণাগুলো নির্দিষ্ট অবস্থানে কম্পিত হচ্ছে — আন্তঃআণবিক আকর্ষণ সবচেয়ে বেশি।" },
+  liquid: { bn: "তরল",  en: "Liquid", color: "from-cyan-500 to-teal-600", ring: "ring-cyan-400/40", icon: Droplets,  tip: "কণাগুলো গড়িয়ে চলছে কিন্তু একসাথে থাকছে — মাঝারি আকর্ষণ।" },
+  gas:    { bn: "গ্যাস", en: "Gas",    color: "from-amber-500 to-orange-600", ring: "ring-amber-400/40", icon: Wind, tip: "কণাগুলো মুক্তভাবে ছুটছে — আন্তঃআণবিক আকর্ষণ প্রায় শূন্য।" },
 };
 
 const PARTICLE_COUNT = 90;
 const PARTICLE_R = 7;
 
-interface Particle {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  ax: number;
-  ay: number;
-}
+interface Particle { x: number; y: number; vx: number; vy: number; ax: number; ay: number; }
 
 export default function KineticTheoryLab({ onBack }: Props) {
   const [substanceId, setSubstanceId] = useState<string>("water");
@@ -143,15 +105,10 @@ export default function KineticTheoryLab({ onBack }: Props) {
   const norm = Math.max(0, Math.min(1, (temp - substance.tempMin) / range));
   const kineticEnergy = Math.round(8 + norm * 92);
   const attraction = Math.round(Math.max(2, 100 - norm * 98));
-  const tempCelsius = temp;
 
   useEffect(() => {
-    const W = 360;
-    const H = 420;
-    const cols = 10;
-    const rows = 9;
-    const spacingX = 26;
-    const spacingY = 26;
+    const W = 360, H = 420;
+    const cols = 10, rows = 9, spacingX = 26, spacingY = 26;
     const startX = (W - (cols - 1) * spacingX) / 2;
     const startY = H - 30 - (rows - 1) * spacingY;
     const arr: Particle[] = [];
@@ -171,12 +128,10 @@ export default function KineticTheoryLab({ onBack }: Props) {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-
-    const W = canvas.width;
-    const H = canvas.height;
+    const W = canvas.width, H = canvas.height;
     const beaker = { left: 30, right: W - 30, top: 60, bottom: H - 30 };
-
     let last = performance.now();
+
     const tick = (now: number) => {
       const dt = Math.min(32, now - last) / 16.67;
       last = now;
@@ -209,42 +164,33 @@ export default function KineticTheoryLab({ onBack }: Props) {
           const k = 0.25;
           p.vx += (p.ax - p.x) * k;
           p.vy += (p.ay - p.y) * k;
-          p.vx *= 0.55;
-          p.vy *= 0.55;
+          p.vx *= 0.55; p.vy *= 0.55;
         } else if (ph === "liquid") {
           p.vy += 0.18;
           const targetY = beaker.bottom - 90;
           if (p.y < targetY - 40) p.vy += 0.05;
-          p.vx *= 0.94;
-          p.vy *= 0.94;
+          p.vx *= 0.94; p.vy *= 0.94;
         } else {
-          p.vx *= 0.995;
-          p.vy *= 0.995;
+          p.vx *= 0.995; p.vy *= 0.995;
         }
 
         const sp = Math.hypot(p.vx, p.vy);
-        if (sp > maxSpeed) {
-          p.vx = (p.vx / sp) * maxSpeed;
-          p.vy = (p.vy / sp) * maxSpeed;
-        }
+        if (sp > maxSpeed) { p.vx = (p.vx / sp) * maxSpeed; p.vy = (p.vy / sp) * maxSpeed; }
 
-        p.x += p.vx * dt;
-        p.y += p.vy * dt;
+        p.x += p.vx * dt; p.y += p.vy * dt;
 
-        if (p.x < beaker.left + PARTICLE_R) { p.x = beaker.left + PARTICLE_R; p.vx = Math.abs(p.vx) * 0.8; }
+        if (p.x < beaker.left + PARTICLE_R)  { p.x = beaker.left + PARTICLE_R;  p.vx =  Math.abs(p.vx) * 0.8; }
         if (p.x > beaker.right - PARTICLE_R) { p.x = beaker.right - PARTICLE_R; p.vx = -Math.abs(p.vx) * 0.8; }
-        if (p.y > beaker.bottom - PARTICLE_R) { p.y = beaker.bottom - PARTICLE_R; p.vy = -Math.abs(p.vy) * 0.8; }
-        if (p.y < beaker.top + PARTICLE_R) { p.y = beaker.top + PARTICLE_R; p.vy = Math.abs(p.vy) * 0.8; }
+        if (p.y > beaker.bottom - PARTICLE_R){ p.y = beaker.bottom - PARTICLE_R;p.vy = -Math.abs(p.vy) * 0.8; }
+        if (p.y < beaker.top + PARTICLE_R)   { p.y = beaker.top + PARTICLE_R;   p.vy =  Math.abs(p.vy) * 0.8; }
       }
 
       ctx.clearRect(0, 0, W, H);
-
       const bg = ctx.createLinearGradient(0, 0, 0, H);
       const warm = Math.min(1, Math.max(0, (t - sub.tempMin) / Math.max(1, sub.tempMax - sub.tempMin)));
       bg.addColorStop(0, `rgba(${30 + warm * 80}, ${60 + warm * 30}, ${120 - warm * 80}, 0.05)`);
       bg.addColorStop(1, `rgba(${100 + warm * 120}, ${120 + warm * 40}, ${180 - warm * 140}, 0.12)`);
-      ctx.fillStyle = bg;
-      ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
 
       ctx.lineWidth = 4;
       ctx.strokeStyle = "rgba(148,163,184,0.55)";
@@ -276,7 +222,6 @@ export default function KineticTheoryLab({ onBack }: Props) {
         const r1 = ph === "gas" ? 180 + glow * 75 : 80 + glow * 80;
         const g1 = ph === "gas" ? 140 - glow * 40 : 160 + glow * 40;
         const b1 = ph === "gas" ? 60 : 240;
-
         const grad = ctx.createRadialGradient(p.x - 2, p.y - 2, 1, p.x, p.y, PARTICLE_R + 2);
         grad.addColorStop(0, `rgba(255,255,255,0.95)`);
         grad.addColorStop(0.5, `rgba(${r1},${g1},${b1},0.95)`);
@@ -290,9 +235,7 @@ export default function KineticTheoryLab({ onBack }: Props) {
       rafRef.current = requestAnimationFrame(tick);
     };
     rafRef.current = requestAnimationFrame(tick);
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
   }, []);
 
   const reset = () => {
@@ -300,177 +243,180 @@ export default function KineticTheoryLab({ onBack }: Props) {
   };
 
   return (
-    <div className="flex h-[100dvh] w-full flex-col overflow-hidden bg-gradient-to-br from-slate-50 via-white to-sky-50 dark:from-slate-950 dark:via-background dark:to-slate-900">
-      {/* Header */}
-      <header className="shrink-0 border-b bg-background/85 backdrop-blur-xl">
-        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-3 py-2">
-          <div className="flex min-w-0 items-center gap-2">
-            <Button variant="ghost" size="sm" onClick={onBack} className="gap-1 -ml-2 h-8 px-2">
-              <ArrowLeft className="h-4 w-4" /> <span className="hidden sm:inline text-sm">Back</span>
-            </Button>
-            <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-cyan-500 to-teal-600 shadow shadow-cyan-500/20">
-              <Thermometer className="h-4 w-4 text-white" />
-            </div>
-            <div className="min-w-0 leading-tight">
-              <div className="truncate text-sm font-extrabold tracking-tight">
-                পদার্থের গতিতত্ত্ব — কণা সিমুলেটর
-              </div>
-              <div className="truncate text-[10px] text-muted-foreground">
-                Chapter 2 · Kinetic Theory of Matter
-              </div>
-            </div>
-          </div>
-          <Badge
-            variant="secondary"
-            className={`shrink-0 gap-1.5 border bg-gradient-to-r ${meta.color} text-white border-white/10`}
-          >
-            <PhaseIcon className="h-3.5 w-3.5" />
-            <span className="text-xs font-semibold">{meta.bn} · {meta.en}</span>
-          </Badge>
+    <TheoryLabShell
+      onBack={onBack}
+      titleBn="পদার্থের গতিতত্ত্ব — কণা সিমুলেটর"
+      subtitleEn="Chapter 2 · Kinetic Theory of Matter"
+      headerIcon={
+        <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-cyan-500 to-teal-600 shadow shadow-cyan-500/20">
+          <Thermometer className="h-4 w-4 text-white" />
         </div>
-      </header>
+      }
+      badge={
+        <Badge
+          variant="secondary"
+          className={`gap-1.5 border bg-gradient-to-r ${meta.color} text-white border-white/10`}
+        >
+          <PhaseIcon className="h-3.5 w-3.5" />
+          <span className="text-lab-xs font-semibold">{meta.bn} · {meta.en}</span>
+        </Badge>
+      }
 
-      {/* Body — 3 columns fill available space */}
-      <main className="min-h-0 flex-1 p-2 sm:p-3">
-        <div className="grid h-full min-h-0 grid-cols-[minmax(0,0.85fr)_minmax(0,1.3fr)_minmax(0,0.95fr)] gap-2 sm:gap-3">
-
-          {/* ── LEFT: Info panels ── */}
-          <div className="flex min-h-0 flex-col gap-2 overflow-y-auto pr-0.5">
-            <Card className={`overflow-hidden border-0 ring-2 ${meta.ring} shadow`}>
-              <div className={`bg-gradient-to-br ${meta.color} px-3 py-2 text-white`}>
-                <div className="flex items-center gap-1.5 text-[10px] font-medium opacity-90">
-                  <PhaseIcon className="h-3 w-3" /> বর্তমান অবস্থা
-                </div>
-                <div className="mt-0.5 text-base font-extrabold leading-tight">
-                  {meta.bn} <span className="text-[11px] font-medium opacity-80">/ {meta.en}</span>
-                </div>
+      /* ── LEFT ── */
+      info={
+        <>
+          <Card className={`overflow-hidden border-0 shadow ring-2 ${meta.ring}`}>
+            <div className={`bg-gradient-to-br ${meta.color} px-3 py-2 text-white`}>
+              <div className="flex items-center gap-1.5 text-lab-xs font-medium opacity-90">
+                <PhaseIcon className="h-3 w-3" /> বর্তমান অবস্থা
               </div>
-              <p className="px-3 py-2 text-[11px] leading-snug text-foreground/90">{meta.tip}</p>
-            </Card>
-
-            <Card className="space-y-3 p-3">
-              <Gauge icon={Activity} labelBn="গতিশক্তি" labelEn="KE" value={kineticEnergy} gradient="from-amber-400 to-orange-600" />
-              <Gauge icon={Magnet} labelBn="আকর্ষণ" labelEn="IMF" value={attraction} gradient="from-sky-400 to-blue-600" />
-            </Card>
-
-            <Card className="p-3">
-              <div className="mb-1.5 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
-                <Info className="h-3 w-3" /> Concept
+              <div className="mt-0.5 font-extrabold leading-tight text-lab-lg">
+                {meta.bn}{" "}
+                <span className="text-lab-xs font-medium opacity-80">/ {meta.en}</span>
               </div>
-              <ul className="space-y-1 text-[11px] leading-snug text-foreground/85">
-                <li>• তাপ বাড়লে গতিশক্তি বাড়ে।</li>
-                <li>• গতিশক্তি বাড়লে আকর্ষণ কমে।</li>
-                <li>• গলনাঙ্ক: কঠিন→তরল; স্ফুটনাঙ্ক: তরল→গ্যাস।</li>
-              </ul>
-            </Card>
+            </div>
+            <p className="px-3 py-2 text-lab-sm text-foreground/90">{meta.tip}</p>
+          </Card>
+
+          <Card className="space-y-3 p-3">
+            <Gauge icon={Activity} labelBn="গতিশক্তি" labelEn="KE" value={kineticEnergy} gradient="from-amber-400 to-orange-600" />
+            <Gauge icon={Magnet}   labelBn="আকর্ষণ"  labelEn="IMF" value={attraction}    gradient="from-sky-400 to-blue-600" />
+          </Card>
+
+          <Card className="p-3">
+            <div className="mb-1.5 flex items-center gap-1.5 text-lab-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              <Info className="h-3 w-3" /> Concept
+            </div>
+            <ul className="space-y-1 text-lab-sm text-foreground/85">
+              <li>• তাপ বাড়লে গতিশক্তি বাড়ে।</li>
+              <li>• গতিশক্তি বাড়লে আকর্ষণ কমে।</li>
+              <li>• গলনাঙ্ক: কঠিন→তরল; স্ফুটনাঙ্ক: তরল→গ্যাস।</li>
+            </ul>
+          </Card>
+        </>
+      }
+
+      /* ── CENTER: beaker auto-fits ── */
+      visual={
+        <div
+          className="relative rounded-xl bg-gradient-to-b from-slate-100/60 to-slate-200/40 ring-1 ring-slate-300/40 dark:from-slate-800/40 dark:to-slate-900/60 dark:ring-slate-700/40"
+          style={{
+            aspectRatio: "360 / 420",
+            maxHeight: "100%",
+            maxWidth: "100%",
+            height: "100%",
+          }}
+        >
+          <canvas
+            ref={canvasRef}
+            width={360}
+            height={420}
+            className="absolute inset-0 h-full w-full"
+          />
+          <div className="absolute left-2 top-2 flex items-center gap-1 rounded-full bg-background/85 px-2 py-1 text-lab-xs font-semibold shadow ring-1 ring-border">
+            <PhaseIcon className="h-3 w-3" />
+            {meta.bn}
           </div>
+          <div className="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-background/85 px-2 py-1 text-lab-xs font-semibold shadow ring-1 ring-border">
+            <Thermometer className="h-3 w-3 text-rose-500" />
+            {temp}°C
+          </div>
+        </div>
+      }
 
-          {/* ── CENTER: Beaker ── */}
-          <Card className="relative flex min-h-0 items-center justify-center overflow-hidden border-0 p-1.5 shadow-xl shadow-cyan-500/10 bg-gradient-to-br from-white via-slate-50 to-sky-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-950">
-            <div
-              className="relative rounded-xl bg-gradient-to-b from-slate-100/60 to-slate-200/40 dark:from-slate-800/40 dark:to-slate-900/60 ring-1 ring-slate-300/40 dark:ring-slate-700/40"
-              style={{
-                aspectRatio: "360 / 420",
-                height: "min(100%, calc((100cqw - 12px) * 420 / 360))",
-                maxHeight: "100%",
-                maxWidth: "100%",
-              }}
-            >
-              <canvas
-                ref={canvasRef}
-                width={360}
-                height={420}
-                className="absolute inset-0 h-full w-full"
-              />
-              <div className="absolute left-2 top-2 flex items-center gap-1 rounded-full bg-background/85 px-2 py-1 text-[10px] font-semibold shadow ring-1 ring-border">
-                <PhaseIcon className="h-3 w-3" />
-                {meta.bn}
-              </div>
-              <div className="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-background/85 px-2 py-1 text-[10px] font-semibold shadow ring-1 ring-border">
-                <Thermometer className="h-3 w-3 text-rose-500" />
-                {tempCelsius}°C
-              </div>
+      /* ── RIGHT: controls ── */
+      controls={
+        <>
+          <Card className="p-3">
+            <div className="mb-1 text-lab-xs font-medium text-muted-foreground">পদার্থ · Substance</div>
+            <Select value={substanceId} onValueChange={setSubstanceId}>
+              <SelectTrigger className="h-9 w-full text-lab-sm">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {SUBSTANCES.map((s) => (
+                  <SelectItem key={s.id} value={s.id}>
+                    <span className="mr-2">{s.emoji}</span>
+                    {s.bn} ({s.en}) · {s.formula}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <div className="mt-2 flex items-center justify-between text-lab-xs text-muted-foreground">
+              <span>গলনাঙ্ক <b className="text-foreground">{substance.melt}°C</b></span>
+              <span>স্ফুটনাঙ্ক <b className="text-foreground">{substance.boil}°C</b></span>
             </div>
           </Card>
 
-          {/* ── RIGHT: Controls ── */}
-          <div className="flex min-h-0 flex-col gap-2 overflow-y-auto pl-0.5">
-            <Card className="p-3">
-              <div className="mb-1 text-[10px] font-medium text-muted-foreground">পদার্থ · Substance</div>
-              <Select value={substanceId} onValueChange={setSubstanceId}>
-                <SelectTrigger className="h-9 w-full text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {SUBSTANCES.map((s) => (
-                    <SelectItem key={s.id} value={s.id}>
-                      <span className="mr-2">{s.emoji}</span>
-                      {s.bn} ({s.en}) · {s.formula}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <div className="mt-2 flex items-center justify-between text-[10px] text-muted-foreground">
-                <span>গলনাঙ্ক <b className="text-foreground">{substance.melt}°C</b></span>
-                <span>স্ফুটনাঙ্ক <b className="text-foreground">{substance.boil}°C</b></span>
-              </div>
-            </Card>
+          <Card className="flex-1 p-3">
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-lab-xs font-medium text-muted-foreground">তাপমাত্রা</span>
+              <span className="font-extrabold tabular-nums text-lab-xl">
+                {temp}
+                <span className="text-lab-sm font-medium text-muted-foreground">°C</span>
+              </span>
+            </div>
+            <div className="mb-1.5 flex items-center justify-between text-lab-xs">
+              <span className="flex items-center gap-1 text-sky-600 dark:text-sky-400">
+                <Snowflake className="h-3 w-3" /> {substance.tempMin}°
+              </span>
+              <span className="flex items-center gap-1 text-orange-600 dark:text-orange-400">
+                {substance.tempMax}° <Flame className="h-3 w-3" />
+              </span>
+            </div>
+            <Slider
+              value={[temp]}
+              onValueChange={(v) => setTemp(v[0])}
+              min={substance.tempMin}
+              max={substance.tempMax}
+              step={1}
+              className="my-2"
+            />
+            <div className="mt-1 flex items-center justify-between text-lab-xs text-muted-foreground">
+              <span>কঠিন</span><span>তরল</span><span>গ্যাস</span>
+            </div>
 
-            <Card className="flex-1 p-3">
-              <div className="mb-2 flex items-center justify-between">
-                <span className="text-[10px] font-medium text-muted-foreground">তাপমাত্রা</span>
-                <span className="text-lg font-extrabold tabular-nums">
-                  {tempCelsius}<span className="text-xs font-medium text-muted-foreground">°C</span>
-                </span>
-              </div>
-              <div className="mb-1.5 flex items-center justify-between text-[10px]">
-                <span className="flex items-center gap-1 text-sky-600 dark:text-sky-400">
-                  <Snowflake className="h-3 w-3" /> {substance.tempMin}°
-                </span>
-                <span className="flex items-center gap-1 text-orange-600 dark:text-orange-400">
-                  {substance.tempMax}° <Flame className="h-3 w-3" />
-                </span>
-              </div>
-              <Slider
-                value={[temp]}
-                onValueChange={(v) => setTemp(v[0])}
-                min={substance.tempMin}
-                max={substance.tempMax}
-                step={1}
-                className="my-2"
-              />
-              <div className="mt-1 flex items-center justify-between text-[9px] text-muted-foreground">
-                <span>কঠিন</span><span>তরল</span><span>গ্যাস</span>
-              </div>
+            <div className="mt-3 grid grid-cols-3 gap-1.5">
+              <QuickBtn label="কঠিন" onClick={() => setTemp(Math.max(substance.tempMin, substance.melt - Math.max(20, (substance.boil - substance.melt) * 0.4)))} tone="sky" />
+              <QuickBtn label="তরল"  onClick={() => setTemp(Math.round((substance.melt + substance.boil) / 2))} tone="cyan" />
+              <QuickBtn label="গ্যাস" onClick={() => setTemp(Math.min(substance.tempMax, substance.boil + Math.max(20, (substance.tempMax - substance.boil) * 0.3)))} tone="orange" />
+            </div>
 
-              <div className="mt-3 grid grid-cols-3 gap-1.5">
-                <QuickBtn label="কঠিন" onClick={() => setTemp(Math.max(substance.tempMin, substance.melt - Math.max(20, (substance.boil - substance.melt) * 0.4)))} tone="sky" />
-                <QuickBtn label="তরল" onClick={() => setTemp(Math.round((substance.melt + substance.boil) / 2))} tone="cyan" />
-                <QuickBtn label="গ্যাস" onClick={() => setTemp(Math.min(substance.tempMax, substance.boil + Math.max(20, (substance.tempMax - substance.boil) * 0.3)))} tone="orange" />
-              </div>
+            <Button variant="outline" size="sm" onClick={reset} className="mt-3 h-8 w-full gap-1.5 text-lab-sm">
+              <RotateCcw className="h-3.5 w-3.5" /> Reset
+            </Button>
+          </Card>
+        </>
+      }
 
-              <Button variant="outline" size="sm" onClick={reset} className="mt-3 h-8 w-full gap-1.5 text-xs">
-                <RotateCcw className="h-3.5 w-3.5" /> Reset
-              </Button>
-            </Card>
-          </div>
-
+      /* ── Optional deep theory ── */
+      theory={
+        <div className="space-y-3">
+          <p><b>পদার্থের গতিতত্ত্ব</b> অনুসারে সকল পদার্থ ক্ষুদ্র কণা দিয়ে গঠিত এবং এই কণাগুলো সর্বদা গতিশীল। কণার গতিশক্তি নির্ভর করে তাপমাত্রার উপর।</p>
+          <p><b>তিন অবস্থা:</b></p>
+          <ul>
+            <li><b>কঠিন —</b> কণাগুলো নির্দিষ্ট স্থানে কম্পিত হয়, আন্তঃআণবিক আকর্ষণ সবচেয়ে বেশি।</li>
+            <li><b>তরল —</b> কণাগুলো গড়াতে পারে কিন্তু কাছাকাছি থাকে; আকর্ষণ মাঝারি।</li>
+            <li><b>গ্যাস —</b> কণাগুলো মুক্তভাবে ছুটে চলে; আকর্ষণ প্রায় শূন্য।</li>
+          </ul>
+          <p><b>গলনাঙ্ক (Melting Point):</b> যে তাপমাত্রায় কঠিন পদার্থ তরলে পরিণত হয়।</p>
+          <p><b>স্ফুটনাঙ্ক (Boiling Point):</b> যে তাপমাত্রায় তরল পদার্থ গ্যাসে পরিণত হয়।</p>
         </div>
-      </main>
-    </div>
+      }
+    />
   );
 }
 
 function QuickBtn({ label, onClick, tone }: { label: string; onClick: () => void; tone: "sky" | "cyan" | "orange" }) {
   const map = {
-    sky: "border-sky-300 text-sky-700 hover:bg-sky-50 dark:border-sky-800 dark:text-sky-300 dark:hover:bg-sky-950",
-    cyan: "border-cyan-300 text-cyan-700 hover:bg-cyan-50 dark:border-cyan-800 dark:text-cyan-300 dark:hover:bg-cyan-950",
+    sky:    "border-sky-300 text-sky-700 hover:bg-sky-50 dark:border-sky-800 dark:text-sky-300 dark:hover:bg-sky-950",
+    cyan:   "border-cyan-300 text-cyan-700 hover:bg-cyan-50 dark:border-cyan-800 dark:text-cyan-300 dark:hover:bg-cyan-950",
     orange: "border-orange-300 text-orange-700 hover:bg-orange-50 dark:border-orange-800 dark:text-orange-300 dark:hover:bg-orange-950",
   } as const;
   return (
     <button
       onClick={onClick}
-      className={`h-8 rounded-md border bg-background text-[11px] font-semibold transition ${map[tone]}`}
+      className={`h-8 rounded-md border bg-background text-lab-sm font-semibold transition ${map[tone]}`}
     >
       {label}
     </button>
@@ -478,27 +424,19 @@ function QuickBtn({ label, onClick, tone }: { label: string; onClick: () => void
 }
 
 function Gauge({
-  icon: Icon,
-  labelBn,
-  labelEn,
-  value,
-  gradient,
+  icon: Icon, labelBn, labelEn, value, gradient,
 }: {
-  icon: typeof Activity;
-  labelBn: string;
-  labelEn: string;
-  value: number;
-  gradient: string;
+  icon: typeof Activity; labelBn: string; labelEn: string; value: number; gradient: string;
 }) {
   return (
     <div>
       <div className="mb-1 flex items-center justify-between">
-        <div className="flex items-center gap-1 text-[11px] font-semibold">
+        <div className="flex items-center gap-1 text-lab-sm font-semibold">
           <Icon className="h-3 w-3 text-muted-foreground" />
           <span>{labelBn}</span>
-          <span className="text-[9px] font-normal text-muted-foreground">/{labelEn}</span>
+          <span className="text-lab-xs font-normal text-muted-foreground">/{labelEn}</span>
         </div>
-        <span className="text-[11px] font-bold tabular-nums">{value}%</span>
+        <span className="text-lab-sm font-bold tabular-nums">{value}%</span>
       </div>
       <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
         <div

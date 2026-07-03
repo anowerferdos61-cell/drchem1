@@ -199,3 +199,18 @@
   100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
 }
 
+/* ─── Theory Lab typography tokens ───
+ * Fluid font sizes that scale with viewport height so text stays
+ * readable on tight mobile-landscape without overflowing on desktop.
+ */
+.text-lab-xs   { font-size: clamp(0.72rem, 1.9vh, 0.85rem); line-height: 1.35; }
+.text-lab-sm   { font-size: clamp(0.82rem, 2.2vh, 0.95rem); line-height: 1.4;  }
+.text-lab-base { font-size: clamp(0.92rem, 2.6vh, 1.05rem); line-height: 1.45; }
+.text-lab-lg   { font-size: clamp(1.05rem, 3.2vh, 1.30rem); line-height: 1.3;  }
+.text-lab-xl   { font-size: clamp(1.25rem, 4vh, 1.75rem);   line-height: 1.2;  }
+
+.lab-scroll { scrollbar-width: thin; scrollbar-color: rgb(148 163 184 / 0.4) transparent; }
+.lab-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
+.lab-scroll::-webkit-scrollbar-thumb { background: rgb(148 163 184 / 0.4); border-radius: 4px; }
+
+
