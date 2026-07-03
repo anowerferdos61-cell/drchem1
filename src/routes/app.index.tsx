@@ -362,6 +362,7 @@ function TitrationLab({ onBack }: { onBack: () => void }) {
   const [submitted, setSubmitted] = useState(false);
   const [report, setReport] = useState<Report | null>(null);
   const [showPanels, setShowPanels] = useState(true);
+  const [mobileTab, setMobileTab] = useState<"equipment" | "lab" | "data">("lab");
   const [vivaQuestions, setVivaQuestions] = useState<VivaQuestion[]>([]);
   const [showViva, setShowViva] = useState(false);
 
@@ -686,9 +687,19 @@ function TitrationLab({ onBack }: { onBack: () => void }) {
         <div className="flex min-h-0 flex-1 flex-col gap-1.5 p-1.5 md:flex-row md:gap-3 md:p-4">
           {/* Left: equipment + config */}
           {showPanels && (
-            <aside className="flex w-full shrink-0 flex-row gap-1.5 overflow-x-auto md:w-[240px] md:flex-col md:overflow-y-auto md:pr-0.5 lg:w-[260px] [&_h3]:text-[11px] md:[&_h3]:text-sm">
+            <aside
+              className={[
+                mobileTab === "equipment" ? "flex" : "hidden",
+                "w-full flex-1 flex-col gap-1.5 overflow-y-auto",
+                "md:!flex md:w-[240px] md:flex-none md:pr-0.5 lg:w-[260px]",
+                "[&_h3]:text-[11px] md:[&_h3]:text-sm",
+              ].join(" ")}
+            >
               <EquipmentPanel
-                onSelect={handleSelect}
+                onSelect={(id) => {
+                  handleSelect(id);
+                  setMobileTab("lab");
+                }}
                 highlight={guide ? nextHighlight : null}
                 disabled={() => submitted}
               />
@@ -699,7 +710,12 @@ function TitrationLab({ onBack }: { onBack: () => void }) {
 
           {/* Center: workspace */}
           <section
-            className="relative min-h-[60vh] min-w-0 flex-1 overflow-hidden rounded-xl border bg-card/60 shadow-xl backdrop-blur md:min-h-0 md:rounded-2xl"
+            className={[
+              mobileTab === "lab" ? "flex" : "hidden",
+              "relative min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-xl border bg-card/60 shadow-xl backdrop-blur",
+              "md:!flex md:rounded-2xl",
+              "touch-none select-none", // avoid accidental page scroll on touch
+            ].join(" ")}
 
             onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => {
@@ -727,10 +743,10 @@ function TitrationLab({ onBack }: { onBack: () => void }) {
               </Suspense>
             </div>
 
-            {/* Mobile panel toggle (top-left of workspace) */}
+            {/* Desktop-only panel toggle */}
             <button
               onClick={() => setShowPanels((v) => !v)}
-              className="absolute left-2 top-2 z-10 rounded-full border bg-background/90 p-1.5 shadow-md backdrop-blur transition-transform active:scale-95 md:hidden"
+              className="absolute left-2 top-2 z-10 hidden rounded-full border bg-background/90 p-1.5 shadow-md backdrop-blur transition-transform active:scale-95 md:block"
               aria-label="Toggle panels"
             >
               {showPanels ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
@@ -782,7 +798,14 @@ function TitrationLab({ onBack }: { onBack: () => void }) {
 
           {/* Right: live data + steps */}
           {showPanels && (
-            <aside className="flex w-full shrink-0 flex-col gap-1.5 md:w-[260px] md:overflow-y-auto md:pl-0.5 lg:w-[280px] [&_h3]:text-[11px] md:[&_h3]:text-sm">
+            <aside
+              className={[
+                mobileTab === "data" ? "flex" : "hidden",
+                "w-full flex-1 flex-col gap-1.5 overflow-y-auto",
+                "md:!flex md:w-[260px] md:flex-none md:pl-0.5 lg:w-[280px]",
+                "[&_h3]:text-[11px] md:[&_h3]:text-sm",
+              ].join(" ")}
+            >
 
               <StatusPanel
                 Vb={Vb}
@@ -803,6 +826,41 @@ function TitrationLab({ onBack }: { onBack: () => void }) {
             </aside>
           )}
         </div>
+
+        {/* ── Mobile bottom tab bar ─────────────── */}
+        <nav
+          className="shrink-0 border-t bg-card/95 backdrop-blur md:hidden"
+          role="tablist"
+          aria-label="Lab sections"
+        >
+          <div className="grid grid-cols-3">
+            {([
+              { id: "equipment", label: "Equipment", emoji: "🛠️" },
+              { id: "lab", label: "Lab", emoji: "🧪" },
+              { id: "data", label: "Data", emoji: "📊" },
+            ] as const).map((t) => {
+              const active = mobileTab === t.id;
+              return (
+                <button
+                  key={t.id}
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => setMobileTab(t.id)}
+                  className={[
+                    "flex flex-col items-center justify-center gap-0.5 py-2 text-[11px] font-medium transition-colors",
+                    active
+                      ? "text-primary bg-primary/10 border-t-2 border-primary -mt-px"
+                      : "text-muted-foreground hover:text-foreground",
+                  ].join(" ")}
+                >
+                  <span className="text-base leading-none">{t.emoji}</span>
+                  <span>{t.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </nav>
+
 
         {/* Report overlay */}
         {report && (
