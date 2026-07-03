@@ -366,23 +366,29 @@ export default function KineticTheoryLab({ onBack }: Props) {
           </div>
 
           {/* ── CENTER: Beaker ── */}
-          <Card className="relative flex min-h-0 items-center justify-center overflow-hidden border-0 p-2 shadow-xl shadow-cyan-500/10 bg-gradient-to-br from-white via-slate-50 to-sky-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-950">
-            <div className="relative flex h-full w-full items-center justify-center">
-              <div className="relative h-full aspect-[360/420] max-h-full max-w-full rounded-xl bg-gradient-to-b from-slate-100/60 to-slate-200/40 dark:from-slate-800/40 dark:to-slate-900/60 ring-1 ring-slate-300/40 dark:ring-slate-700/40">
-                <canvas
-                  ref={canvasRef}
-                  width={360}
-                  height={420}
-                  className="absolute inset-0 h-full w-full"
-                />
-                <div className="absolute left-2 top-2 flex items-center gap-1 rounded-full bg-background/85 px-2 py-1 text-[10px] font-semibold shadow ring-1 ring-border">
-                  <PhaseIcon className="h-3 w-3" />
-                  {meta.bn}
-                </div>
-                <div className="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-background/85 px-2 py-1 text-[10px] font-semibold shadow ring-1 ring-border">
-                  <Thermometer className="h-3 w-3 text-rose-500" />
-                  {tempCelsius}°C
-                </div>
+          <Card className="relative flex min-h-0 items-center justify-center overflow-hidden border-0 p-1.5 shadow-xl shadow-cyan-500/10 bg-gradient-to-br from-white via-slate-50 to-sky-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-950">
+            <div
+              className="relative rounded-xl bg-gradient-to-b from-slate-100/60 to-slate-200/40 dark:from-slate-800/40 dark:to-slate-900/60 ring-1 ring-slate-300/40 dark:ring-slate-700/40"
+              style={{
+                aspectRatio: "360 / 420",
+                height: "min(100%, calc((100cqw - 12px) * 420 / 360))",
+                maxHeight: "100%",
+                maxWidth: "100%",
+              }}
+            >
+              <canvas
+                ref={canvasRef}
+                width={360}
+                height={420}
+                className="absolute inset-0 h-full w-full"
+              />
+              <div className="absolute left-2 top-2 flex items-center gap-1 rounded-full bg-background/85 px-2 py-1 text-[10px] font-semibold shadow ring-1 ring-border">
+                <PhaseIcon className="h-3 w-3" />
+                {meta.bn}
+              </div>
+              <div className="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-background/85 px-2 py-1 text-[10px] font-semibold shadow ring-1 ring-border">
+                <Thermometer className="h-3 w-3 text-rose-500" />
+                {tempCelsius}°C
               </div>
             </div>
           </Card>
