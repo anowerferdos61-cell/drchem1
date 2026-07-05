@@ -107,6 +107,14 @@ const EXPERIMENTS: Array<{
     icon: Sparkles,
     gradient: "from-violet-100 via-rose-50 to-sky-100",
   },
+  {
+    id: "metallic_bonding",
+    title: "Metallic Bonding · ধাতব বন্ধন",
+    subtitle:
+      "Electron Sea Model · Cu²⁺ lattice + delocalized e⁻ · Battery & Malleability test",
+    icon: Atom,
+    gradient: "from-orange-100 via-amber-50 to-rose-100",
+  },
 ];
 
 
