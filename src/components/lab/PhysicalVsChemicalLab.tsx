@@ -369,62 +369,127 @@ export default function PhysicalVsChemicalLab({ onBack }: Props) {
 
   /* ── Physics: chemical ─────────────────────────────────── */
   function stepChemical(t: number, w: number, h: number) {
+    const L = chemLayout(w, h);
     const mols = chemRef.current;
-    const react = t > 55;
-    const speed = 0.4 + (t / 100) * 2;
+    const react = t > 45;
+
+    // Per-particle physics
     for (const mo of mols) {
       if (!mo.alive) continue;
-      mo.vx += (Math.random() - 0.5) * 0.1;
-      mo.vy += (Math.random() - 0.5) * 0.1;
-      const sp = Math.hypot(mo.vx, mo.vy);
-      if (sp > speed) { mo.vx = (mo.vx / sp) * speed; mo.vy = (mo.vy / sp) * speed; }
-      mo.x += mo.vx;
-      mo.y += mo.vy;
-      mo.rot += 0.03;
-      if (mo.reacting > 0) mo.reacting = Math.max(0, mo.reacting - 0.03);
-      if (mo.x < 20) { mo.x = 20; mo.vx *= -1; }
-      if (mo.x > w - 20) { mo.x = w - 20; mo.vx *= -1; }
-      if (mo.y < 20) { mo.y = 20; mo.vy *= -1; }
-      if (mo.y > h - 20) { mo.y = h - 20; mo.vy *= -1; }
-    }
+      if (mo.reacting > 0) mo.reacting = Math.max(0, mo.reacting - 0.04);
 
-    if (react) {
-      for (let i = 0; i < mols.length; i++) {
-        const a = mols[i];
-        if (!a.alive || a.kind !== "C") continue;
-        for (let j = 0; j < mols.length; j++) {
-          const bMol = mols[j];
-          if (!bMol.alive || bMol.kind !== "O2") continue;
-          const dx = a.x - bMol.x, dy = a.y - bMol.y;
-          if (dx * dx + dy * dy < 30 * 30) {
-            a.alive = false;
-            bMol.kind = "CO2";
-            bMol.reacting = 1;
-            bMol.vx *= 0.5; bMol.vy *= 0.5;
-            co2CountRef.current += 1;
-            setCo2Count(co2CountRef.current);
-            const cx = (a.x + bMol.x) / 2, cy = (a.y + bMol.y) / 2;
-            for (let k = 0; k < 14; k++) {
-              const ang = Math.random() * Math.PI * 2;
-              const s = 1 + Math.random() * 2.5;
-              sparksRef.current.push({
-                x: cx, y: cy,
-                vx: Math.cos(ang) * s, vy: Math.sin(ang) * s,
-                life: 1,
-              });
-            }
-            break;
+      if (mo.phase === "source") {
+        const flask = mo.kind === "C" ? L.fA : L.fB;
+        const minX = flask.cx - flask.w / 2 + 12;
+        const maxX = flask.cx + flask.w / 2 - 12;
+        const minY = flask.cy - flask.h / 2 + 16;
+        const maxY = flask.cy + flask.h / 2 - 12;
+        mo.vx += (Math.random() - 0.5) * 0.12;
+        mo.vy += (Math.random() - 0.5) * 0.12;
+        const cap = 0.9;
+        const sp = Math.hypot(mo.vx, mo.vy);
+        if (sp > cap) { mo.vx = (mo.vx / sp) * cap; mo.vy = (mo.vy / sp) * cap; }
+        mo.x += mo.vx; mo.y += mo.vy;
+        mo.rot += 0.02;
+        if (mo.x < minX) { mo.x = minX; mo.vx *= -1; }
+        if (mo.x > maxX) { mo.x = maxX; mo.vx *= -1; }
+        if (mo.y < minY) { mo.y = minY; mo.vy *= -1; }
+        if (mo.y > maxY) { mo.y = maxY; mo.vy *= -1; }
+      } else if (mo.phase === "travelIn" || mo.phase === "travelOut") {
+        mo.t += 0.014 + (t / 100) * 0.012;
+        if (mo.t >= 1) {
+          mo.t = 1;
+          mo.x = mo.toX; mo.y = mo.toY;
+          if (mo.phase === "travelIn") {
+            mo.phase = "waiting";
+          } else {
+            mo.phase = "collected";
+            const pf = L.prod;
+            mo.x = pf.cx + (Math.random() - 0.5) * (pf.w - 30);
+            mo.y = pf.cy + (Math.random() - 0.4) * (pf.h - 40);
           }
+        } else {
+          const u = mo.t, iu = 1 - u;
+          mo.x = iu * iu * mo.fromX + 2 * iu * u * mo.ctrlX + u * u * mo.toX;
+          mo.y = iu * iu * mo.fromY + 2 * iu * u * mo.ctrlY + u * u * mo.toY;
+          mo.rot += 0.06;
         }
+      } else if (mo.phase === "waiting") {
+        mo.x += (Math.random() - 0.5) * 0.4;
+        mo.y += (Math.random() - 0.5) * 0.4;
+        mo.rot += 0.02;
+      } else if (mo.phase === "collected") {
+        mo.x += (Math.random() - 0.5) * 0.15;
+        mo.y += (Math.random() - 0.5) * 0.15;
       }
     }
 
+    // Emit pair toward zone
+    if (react) {
+      emitTimerRef.current += 1;
+      const cadence = Math.max(28, 110 - t);
+      if (emitTimerRef.current > cadence) {
+        emitTimerRef.current = 0;
+        const c = mols.find(m => m.alive && m.kind === "C" && m.phase === "source");
+        const o = mols.find(m => m.alive && m.kind === "O2" && m.phase === "source");
+        if (c && o) {
+          const launch = (mo: ChemMol, ctrlOffY: number) => {
+            const dx = L.zone.cx - mo.x, dy = L.zone.cy - mo.y;
+            const dist = Math.max(1, Math.hypot(dx, dy));
+            const tx = L.zone.cx - (dx / dist) * (L.zone.r * 0.4);
+            const ty = L.zone.cy - (dy / dist) * (L.zone.r * 0.4);
+            mo.fromX = mo.x; mo.fromY = mo.y;
+            mo.toX = tx; mo.toY = ty;
+            mo.ctrlX = (mo.x + tx) / 2;
+            mo.ctrlY = (mo.y + ty) / 2 + ctrlOffY;
+            mo.t = 0;
+            mo.phase = "travelIn";
+          };
+          launch(c, 30);
+          launch(o, -30);
+        }
+      }
+
+      // Pair up waiting C + O2 into CO2
+      const waitC = mols.filter(m => m.alive && m.kind === "C" && m.phase === "waiting");
+      const waitO = mols.filter(m => m.alive && m.kind === "O2" && m.phase === "waiting");
+      const pairs = Math.min(waitC.length, waitO.length);
+      for (let i = 0; i < pairs; i++) {
+        const c = waitC[i], o = waitO[i];
+        const zx = L.zone.cx, zy = L.zone.cy;
+        for (let k = 0; k < 16; k++) {
+          const ang = Math.random() * Math.PI * 2;
+          const s = 1 + Math.random() * 2.5;
+          sparksRef.current.push({
+            x: zx, y: zy,
+            vx: Math.cos(ang) * s, vy: Math.sin(ang) * s,
+            life: 1,
+          });
+        }
+        c.alive = false;
+        o.kind = "CO2";
+        o.reacting = 1;
+        o.x = zx; o.y = zy;
+        o.fromX = zx; o.fromY = zy;
+        o.toX = L.prod.cx - L.prod.w / 2 + 20 + Math.random() * 20;
+        o.toY = L.prod.cy + (Math.random() - 0.5) * 40;
+        o.ctrlX = (zx + o.toX) / 2;
+        o.ctrlY = zy - 50;
+        o.t = 0;
+        o.phase = "travelOut";
+        co2CountRef.current += 1;
+        setCo2Count(co2CountRef.current);
+      }
+    }
+
+    // Sparks
     for (const s of sparksRef.current) {
       s.x += s.vx; s.y += s.vy;
       s.vx *= 0.94; s.vy *= 0.94;
       s.life -= 0.03;
     }
     sparksRef.current = sparksRef.current.filter((s) => s.life > 0);
+  }
   }
 
   /* ── Drawers ───────────────────────────────────────────── */
