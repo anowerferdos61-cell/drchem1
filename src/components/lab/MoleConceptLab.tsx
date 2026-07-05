@@ -441,6 +441,49 @@ function drawMolecule(
 
 // ── Component ──────────────────────────────────────────────
 export default function MoleConceptLab({ onBack }: { onBack: () => void }) {
+  const [mode, setMode] = useState<"avogadro" | "molarity">("avogadro");
+  return (
+    <div className="relative flex min-h-[100dvh] w-full flex-col bg-gradient-to-br from-emerald-50 via-white to-teal-50 dark:from-slate-950 dark:via-background dark:to-emerald-950/40 lg:h-[100dvh] lg:overflow-hidden">
+      <div className="sticky top-0 z-30 shrink-0 border-b bg-background/90 backdrop-blur-xl px-3 py-2 lg:static">
+        <div className="mx-auto flex max-w-3xl items-center gap-2">
+          <Button variant="ghost" size="sm" onClick={onBack} className="h-8 gap-1 px-2 shrink-0">
+            <ArrowLeft className="h-4 w-4" />
+            <span className="hidden text-xs sm:inline">Back</span>
+          </Button>
+          <div className="flex flex-1 rounded-xl border bg-muted/50 p-1 shadow-inner">
+            {([
+              { k: "avogadro", label: "১. মোল ও অ্যাভোগাড্রো", en: "Mole & Avogadro", icon: Atom },
+              { k: "molarity", label: "২. মোলারিটি ও লঘুকরণ", en: "Molarity & Dilution", icon: FlaskConical },
+            ] as const).map(({ k, label, en, icon: Icon }) => (
+              <button
+                key={k}
+                onClick={() => setMode(k)}
+                className={cn(
+                  "flex flex-1 items-center justify-center gap-1.5 rounded-lg px-2 py-1.5 text-[11px] font-bold transition-all sm:text-xs",
+                  mode === k
+                    ? k === "avogadro"
+                      ? "bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow"
+                      : "bg-gradient-to-br from-sky-500 to-blue-600 text-white shadow"
+                    : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                <Icon className="h-3.5 w-3.5 shrink-0" />
+                <span className="truncate">
+                  <span className="sm:hidden">{en}</span>
+                  <span className="hidden sm:inline">{label}</span>
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+      {mode === "avogadro" ? <AvogadroMode onBack={onBack} /> : <MolarityMode onBack={onBack} />}
+    </div>
+  );
+}
+
+function AvogadroMode({ onBack: _onBack }: { onBack: () => void }) {
+
   const [sub, setSub] = useState<SubKey | null>("water");
   const [moleIdx, setMoleIdx] = useState(1);
   const [tab, setTab] = useState<"equipment" | "lab" | "data">("lab");
