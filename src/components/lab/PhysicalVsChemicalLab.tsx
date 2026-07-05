@@ -490,7 +490,6 @@ export default function PhysicalVsChemicalLab({ onBack }: Props) {
     }
     sparksRef.current = sparksRef.current.filter((s) => s.life > 0);
   }
-  }
 
   /* ── Drawers ───────────────────────────────────────────── */
   function drawPhysical(
