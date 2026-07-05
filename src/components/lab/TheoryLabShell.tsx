@@ -141,7 +141,7 @@ function TheoryDrawer({ label, children }: { label: string; children: ReactNode 
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
         <button
-          className="absolute bottom-2 left-1/2 z-30 flex -translate-x-1/2 items-center gap-1.5 rounded-full border border-primary/30 bg-primary/90 px-3 py-1.5 text-lab-xs font-semibold text-primary-foreground shadow-lg backdrop-blur transition hover:bg-primary"
+          className="fixed bottom-3 left-1/2 z-30 flex -translate-x-1/2 items-center gap-1.5 rounded-full border border-primary/30 bg-primary/90 px-3 py-1.5 text-lab-xs font-semibold text-primary-foreground shadow-lg backdrop-blur transition hover:bg-primary lg:absolute lg:bottom-2"
           type="button"
         >
           <BookOpen className="h-3.5 w-3.5" />
