@@ -562,7 +562,69 @@ export default function PhysicalVsChemicalLab({ onBack }: Props) {
     bonds: boolean,
     w: number, h: number,
   ) {
+    const L = chemLayout(w, h);
     const mols = chemRef.current;
+
+    // 1) Pipes A→zone, B→zone, zone→product
+    const outerPipe = "rgba(148,163,184,0.35)";
+    const innerPipe = "rgba(15,23,42,0.85)";
+    const aRight = { x: L.fA.cx + L.fA.w / 2, y: L.fA.cy };
+    const bRight = { x: L.fB.cx + L.fB.w / 2, y: L.fB.cy };
+    const zLeft  = { x: L.zone.cx - L.zone.r, y: L.zone.cy };
+    const zRight = { x: L.zone.cx + L.zone.r, y: L.zone.cy };
+    const pLeft  = { x: L.prod.cx - L.prod.w / 2, y: L.prod.cy };
+    drawPipe(ctx, aRight.x, aRight.y, zLeft.x, zLeft.y,
+      (aRight.x + zLeft.x) / 2, (aRight.y + zLeft.y) / 2 + 20, outerPipe, innerPipe);
+    drawPipe(ctx, bRight.x, bRight.y, zLeft.x, zLeft.y,
+      (bRight.x + zLeft.x) / 2, (bRight.y + zLeft.y) / 2 - 20, outerPipe, innerPipe);
+    drawPipe(ctx, zRight.x, zRight.y, pLeft.x, pLeft.y,
+      (zRight.x + pLeft.x) / 2, L.zone.cy - 10, outerPipe, innerPipe);
+
+    // 2) Flasks
+    drawFlask(ctx, L.fA, "Reactant A: Carbon (C)", "rgba(55,65,81,0.28)", "rgba(148,163,184,0.6)");
+    drawFlask(ctx, L.fB, "Reactant B: Oxygen (O₂)", "rgba(239,68,68,0.16)", "rgba(248,113,113,0.65)");
+    drawFlask(ctx, L.prod, "Product: Carbon Dioxide (CO₂)", "rgba(16,185,129,0.14)", "rgba(52,211,153,0.7)");
+
+    // Product-flask fill based on collected count
+    const collected = mols.filter(m => m.phase === "collected").length;
+    const fillFrac = Math.min(1, collected / 10);
+    if (fillFrac > 0) {
+      const pf = L.prod;
+      const inX = pf.cx - pf.w / 2 + 4;
+      const inW = pf.w - 8;
+      const bottomY = pf.cy + pf.h / 2 - 4;
+      const fh = (pf.h - 12) * fillFrac;
+      ctx.fillStyle = "rgba(52,211,153,0.22)";
+      ctx.fillRect(inX, bottomY - fh, inW, fh);
+      ctx.strokeStyle = "rgba(52,211,153,0.5)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(inX, bottomY - fh);
+      ctx.lineTo(inX + inW, bottomY - fh);
+      ctx.stroke();
+    }
+
+    // 3) Reaction zone
+    const activeZone = mols.some(m => m.phase === "waiting" || (m.kind === "CO2" && m.reacting > 0.3));
+    const zg = ctx.createRadialGradient(L.zone.cx, L.zone.cy, 4, L.zone.cx, L.zone.cy, L.zone.r);
+    zg.addColorStop(0, activeZone ? "rgba(251,191,36,0.55)" : "rgba(251,191,36,0.22)");
+    zg.addColorStop(1, "rgba(251,191,36,0.02)");
+    ctx.fillStyle = zg;
+    ctx.beginPath();
+    ctx.arc(L.zone.cx, L.zone.cy, L.zone.r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = activeZone ? "rgba(251,191,36,0.95)" : "rgba(251,191,36,0.5)";
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 4]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.font = "600 9px ui-sans-serif";
+    ctx.fillStyle = "#fbbf24";
+    ctx.textAlign = "center";
+    ctx.fillText("REACTION ZONE", L.zone.cx, L.zone.cy - L.zone.r - 6);
+    ctx.textAlign = "left";
+
+    // 4) Molecules
     for (const mo of mols) {
       if (!mo.alive) continue;
       if (mo.kind === "C") {
@@ -570,14 +632,16 @@ export default function PhysicalVsChemicalLab({ onBack }: Props) {
         ctx.strokeStyle = "#f59e0b";
         ctx.lineWidth = 1.5;
         ctx.beginPath();
-        ctx.arc(mo.x, mo.y, 10, 0, Math.PI * 2);
+        ctx.arc(mo.x, mo.y, 9, 0, Math.PI * 2);
         ctx.fill(); ctx.stroke();
-        ctx.font = "700 10px ui-sans-serif";
+        ctx.font = "700 9px ui-sans-serif";
         ctx.fillStyle = "#fbbf24";
-        ctx.fillText("C", mo.x - 3, mo.y + 3);
+        ctx.textAlign = "center";
+        ctx.fillText("C", mo.x, mo.y + 3);
+        ctx.textAlign = "left";
       } else if (mo.kind === "O2") {
-        const dx = Math.cos(mo.rot) * 8;
-        const dy = Math.sin(mo.rot) * 8;
+        const dx = Math.cos(mo.rot) * 7;
+        const dy = Math.sin(mo.rot) * 7;
         if (bonds) {
           ctx.strokeStyle = "#f87171";
           ctx.lineWidth = 2;
@@ -589,12 +653,13 @@ export default function PhysicalVsChemicalLab({ onBack }: Props) {
         for (const s of [-1, 1]) {
           ctx.fillStyle = "#ef4444";
           ctx.beginPath();
-          ctx.arc(mo.x + dx * s, mo.y + dy * s, 7, 0, Math.PI * 2);
+          ctx.arc(mo.x + dx * s, mo.y + dy * s, 6, 0, Math.PI * 2);
           ctx.fill();
         }
       } else {
-        const dx = Math.cos(mo.rot) * 11;
-        const dy = Math.sin(mo.rot) * 11;
+        // CO2: central C with two O
+        const dx = Math.cos(mo.rot) * 10;
+        const dy = Math.sin(mo.rot) * 10;
         if (bonds) {
           ctx.strokeStyle = "#34d399";
           ctx.lineWidth = 2;
@@ -604,22 +669,24 @@ export default function PhysicalVsChemicalLab({ onBack }: Props) {
           ctx.stroke();
         }
         ctx.fillStyle = "#111827";
-        ctx.beginPath(); ctx.arc(mo.x, mo.y, 8, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(mo.x, mo.y, 7, 0, Math.PI * 2); ctx.fill();
         for (const s of [-1, 1]) {
           ctx.fillStyle = "#10b981";
           ctx.beginPath();
-          ctx.arc(mo.x + dx * s, mo.y + dy * s, 7, 0, Math.PI * 2);
+          ctx.arc(mo.x + dx * s, mo.y + dy * s, 6, 0, Math.PI * 2);
           ctx.fill();
         }
         if (mo.reacting > 0) {
           ctx.strokeStyle = `rgba(52,211,153,${mo.reacting})`;
           ctx.lineWidth = 2;
           ctx.beginPath();
-          ctx.arc(mo.x, mo.y, 18 + (1 - mo.reacting) * 8, 0, Math.PI * 2);
+          ctx.arc(mo.x, mo.y, 16 + (1 - mo.reacting) * 8, 0, Math.PI * 2);
           ctx.stroke();
         }
       }
     }
+
+    // 5) Sparks
     for (const s of sparksRef.current) {
       ctx.fillStyle = `rgba(251,191,36,${s.life})`;
       ctx.beginPath();
@@ -627,11 +694,23 @@ export default function PhysicalVsChemicalLab({ onBack }: Props) {
       ctx.fill();
     }
 
+    // 6) Status overlay inside zone
+    if (activeZone) {
+      ctx.font = "700 10px ui-sans-serif";
+      ctx.fillStyle = "#fde68a";
+      ctx.textAlign = "center";
+      ctx.fillText("Reaction and Bonding", L.zone.cx, L.zone.cy + L.zone.r + 14);
+      ctx.fillText("In Progress", L.zone.cx, L.zone.cy + L.zone.r + 26);
+      ctx.textAlign = "left";
+    }
+
+    // 7) Legend (all three)
     ctx.font = "600 11px ui-sans-serif";
-    ctx.fillStyle = "#fbbf24"; ctx.fillText("● C", w - 150, h - 40);
-    ctx.fillStyle = "#f87171"; ctx.fillText("● O₂", w - 110, h - 40);
-    ctx.fillStyle = "#34d399"; ctx.fillText("● CO₂", w - 150, h - 22);
+    ctx.fillStyle = "#fbbf24"; ctx.fillText("● C", w - 190, h - 22);
+    ctx.fillStyle = "#f87171"; ctx.fillText("● O₂", w - 150, h - 22);
+    ctx.fillStyle = "#34d399"; ctx.fillText("● CO₂", w - 100, h - 22);
   }
+
 
   /* ── Derived status text ───────────────────────────────── */
   const status = useMemo(() => {
