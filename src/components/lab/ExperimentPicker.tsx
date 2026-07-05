@@ -145,7 +145,7 @@ const EXPERIMENTS: Array<{
     icon: Sparkles,
     gradient: "from-fuchsia-100 via-violet-50 to-pink-100",
   },
-],
+];
 
 
 
