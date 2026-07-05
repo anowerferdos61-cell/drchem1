@@ -125,11 +125,25 @@ const EXPERIMENTS: Array<{
   },
   {
     id: "mole_concept",
-    title: "Avogadro & Mole Concept · অ্যাভোগেড্রো সংখ্যা",
+    title: "Mole & Avogadro · মোল ও অ্যাভোগাড্রো সংখ্যা",
     subtitle:
       "n = W/M · Digital scale + particle viewer showing 6.023 × 10²³ particles",
     icon: Atom,
     gradient: "from-emerald-100 via-teal-50 to-cyan-100",
+  },
+  {
+    id: "molarity_dilution",
+    title: "Molarity & Dilution · মোলারিটি ও দ্রবণ লঘুকরণ",
+    subtitle: "S₁V₁ = S₂V₂ · CuSO₄ solution with live ion visualisation",
+    icon: FlaskConical,
+    gradient: "from-sky-100 via-blue-50 to-cyan-100",
+  },
+  {
+    id: "empirical_formula",
+    title: "Empirical & Molecular Formula · স্থূল সংকেত নির্ণয়",
+    subtitle: "% composition → empirical → molecular formula builder",
+    icon: Sparkles,
+    gradient: "from-fuchsia-100 via-violet-50 to-pink-100",
   },
 ];
 
