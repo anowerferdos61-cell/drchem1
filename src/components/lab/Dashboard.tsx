@@ -162,7 +162,7 @@ const CHAPTERS: ChapterMeta[] = [
     accent: "from-indigo-500 to-violet-500", icon: Atom },
   { number: 6, titleBn: "মোল ও রাসায়নিক গণনা", titleEn: "Mole & Chemical Calculations",
     descBn: "মোল ধারণা, মোলারিটি ও প্রমাণ দ্রবণ।",
-    labIds: ["mole_concept", "molarity_dilution", "empirical_formula", "limiting_reactant"],
+    labIds: ["mole_concept", "molarity_dilution", "empirical_formula", "limiting_reactant", "stp_molar_volume"],
     accent: "from-emerald-500 to-teal-500", icon: TestTubes },
   { number: 7, titleBn: "রাসায়নিক বিক্রিয়া", titleEn: "Chemical Reactions",
     descBn: "বিক্রিয়ার ধরন, দ্রাব্যতা ও গ্যাস প্রস্তুতি।",
