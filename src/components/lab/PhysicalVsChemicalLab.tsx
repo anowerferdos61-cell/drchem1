@@ -719,8 +719,8 @@ export default function PhysicalVsChemicalLab({ onBack }: Props) {
       if (temp < 60) return { bn: "গলছে · Melting", en: "Lattice loosening — bonds intact" };
       return { bn: "তরল পানি · Liquid", en: "Molecules sliding — H₂O unchanged" };
     }
-    if (temp < 55) return { bn: "বিক্রিয়ার আগে · Below activation", en: "Bonds intact — no new substance" };
-    return { bn: "বন্ধন ভাঙছে · Reacting", en: "Bonds breaking → CO₂ forming" };
+    if (temp < 45) return { bn: "বিক্রিয়ার আগে · Below activation", en: "Reactants isolated in their vessels" };
+    return { bn: "বিক্রিয়া চলছে · Reaction in Progress", en: "C + O₂ → CO₂ (bonding & transfer)" };
   }, [mode, temp]);
 
   /* ── UI blocks ─────────────────────────────────────────── */
