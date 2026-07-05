@@ -115,6 +115,14 @@ const EXPERIMENTS: Array<{
     icon: Atom,
     gradient: "from-orange-100 via-amber-50 to-rose-100",
   },
+  {
+    id: "ionic_vs_covalent_theory",
+    title: "Ionic vs Covalent Properties · ধর্ম তুলনা",
+    subtitle:
+      "Split-screen NaCl vs Sugar · Melting point + Conductivity test with animated ions",
+    icon: Zap,
+    gradient: "from-violet-100 via-fuchsia-50 to-rose-100",
+  },
 ];
 
 
