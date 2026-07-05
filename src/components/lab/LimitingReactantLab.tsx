@@ -30,88 +30,109 @@ const M_H2O = 18;
 
 // ── Types ───────────────────────────────────────────────────
 type Kind = "H2" | "O2" | "H2O";
-interface Mol {
-  id: number;
+type Phase = "idle" | "transfer" | "react" | "deliver" | "done";
+
+interface Mover {
   kind: Kind;
+  sx: number;
+  sy: number;
+  tx: number;
+  ty: number;
+  t0: number;
+  dur: number;
+}
+
+interface Spark {
   x: number;
   y: number;
   vx: number;
   vy: number;
-  r: number;
-  angle: number;
-  spin: number;
-  bornAt?: number; // fade-in
-  limiting?: boolean; // outline highlight
+  life: number;
+  max: number;
 }
 
-// Simple hash id
-let _uid = 0;
-const uid = () => ++_uid;
-
-// ── Reaction Canvas ─────────────────────────────────────────
+// ── Reaction Canvas — 3-Vessel Pipeline ─────────────────────
 function ReactionCanvas({
   h2Count,
   o2Count,
   running,
   onReactionEnd,
-  limitingKind,
   paused,
+  resetKey,
 }: {
   h2Count: number;
   o2Count: number;
   running: boolean;
-  onReactionEnd: (produced: number) => void;
-  limitingKind: Kind | null;
+  onReactionEnd: (produced: number, limiting: Kind) => void;
   paused: boolean;
+  resetKey: number;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const molsRef = useRef<Mol[]>([]);
-  const rafRef = useRef<number>(0);
-  const producedRef = useRef(0);
-  const endedRef = useRef(false);
   const wrapRef = useRef<HTMLDivElement | null>(null);
+  const rafRef = useRef<number>(0);
   const [size, setSize] = useState({ w: 640, h: 380 });
 
-  // Resize observer
+  const h2Rem = useRef(h2Count);
+  const o2Rem = useRef(o2Count);
+  const h2oMade = useRef(0);
+  const phaseRef = useRef<Phase>("idle");
+  const phaseStart = useRef(0);
+  const moversRef = useRef<Mover[]>([]);
+  const sparksRef = useRef<Spark[]>([]);
+  const limitingRef = useRef<Kind | null>(null);
+  const blinkRef = useRef(0);
+  const endedRef = useRef(false);
+
+  useEffect(() => {
+    h2Rem.current = h2Count;
+    o2Rem.current = o2Count;
+    h2oMade.current = 0;
+    phaseRef.current = "idle";
+    phaseStart.current = performance.now();
+    moversRef.current = [];
+    sparksRef.current = [];
+    limitingRef.current = null;
+    endedRef.current = false;
+  }, [h2Count, o2Count, resetKey]);
+
   useEffect(() => {
     if (!wrapRef.current) return;
     const ro = new ResizeObserver((entries) => {
       const cr = entries[0].contentRect;
-      setSize({ w: Math.max(280, Math.floor(cr.width)), h: Math.max(240, Math.floor(cr.height)) });
+      setSize({ w: Math.max(320, Math.floor(cr.width)), h: Math.max(260, Math.floor(cr.height)) });
     });
     ro.observe(wrapRef.current);
     return () => ro.disconnect();
   }, []);
 
-  // (Re)seed molecules whenever counts change or user resets
-  useEffect(() => {
+  const geom = useMemo(() => {
     const W = size.w;
     const H = size.h;
-    const mols: Mol[] = [];
-    const seed = (kind: Kind, n: number) => {
-      for (let i = 0; i < n; i++) {
-        const r = kind === "O2" ? 18 : kind === "H2" ? 12 : 16;
-        mols.push({
-          id: uid(),
-          kind,
-          x: r + Math.random() * (W - 2 * r),
-          y: r + Math.random() * (H - 2 * r),
-          vx: (Math.random() - 0.5) * 1.1,
-          vy: (Math.random() - 0.5) * 1.1,
-          r,
-          angle: Math.random() * Math.PI * 2,
-          spin: (Math.random() - 0.5) * 0.03,
-        });
-      }
-    };
-    seed("H2", h2Count);
-    seed("O2", o2Count);
-    molsRef.current = mols;
-    producedRef.current = 0;
-    endedRef.current = false;
-  }, [h2Count, o2Count, size.w, size.h]);
+    const pad = 10;
+    const colW = Math.min(150, W * 0.24);
+    const vesselH = (H - pad * 3) / 2;
+    const vesselA = { x: pad, y: pad, w: colW, h: vesselH };
+    const vesselB = { x: pad, y: pad * 2 + vesselH, w: colW, h: vesselH };
+    const vesselC = { x: W - pad - colW, y: pad, w: colW, h: H - pad * 2 };
+    const center = { x: W / 2, y: H / 2 };
+    return { W, H, vesselA, vesselB, vesselC, center };
+  }, [size.w, size.h]);
 
-  // Animation loop
+  const slotPos = useCallback(
+    (v: { x: number; y: number; w: number; h: number }, i: number, total: number, r: number) => {
+      const cols = Math.max(2, Math.ceil(Math.sqrt(Math.max(1, total) * (v.w / v.h))));
+      const rows = Math.max(2, Math.ceil(Math.max(1, total) / cols));
+      const col = i % cols;
+      const row = Math.floor(i / cols);
+      const cellW = cols > 1 ? (v.w - 2 * r - 8) / (cols - 1) : 0;
+      const cellH = rows > 1 ? (v.h - 2 * r - 8) / (rows - 1) : 0;
+      const x = v.x + r + 4 + col * cellW;
+      const y = v.y + r + 4 + row * cellH;
+      return { x, y };
+    },
+    [],
+  );
+
   useEffect(() => {
     const cvs = canvasRef.current;
     if (!cvs) return;
@@ -125,117 +146,219 @@ function ReactionCanvas({
     cvs.style.height = size.h + "px";
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    let last = performance.now();
+    const DUR = { idle: 250, transfer: 800, react: 350, deliver: 800 };
+
+    const startPhase = (p: Phase, t: number) => {
+      phaseRef.current = p;
+      phaseStart.current = t;
+    };
+
+    const beginTransfer = (t: number) => {
+      const { vesselA, vesselB, center } = geom;
+      const movers: Mover[] = [];
+      for (let k = 0; k < 2; k++) {
+        const idx = h2Rem.current - 1 - k;
+        const p = slotPos(vesselA, idx, h2Rem.current, 14);
+        movers.push({
+          kind: "H2",
+          sx: p.x,
+          sy: p.y,
+          tx: center.x + (k === 0 ? -22 : 22),
+          ty: center.y - 8,
+          t0: t,
+          dur: DUR.transfer,
+        });
+      }
+      const oIdx = o2Rem.current - 1;
+      const op = slotPos(vesselB, oIdx, o2Rem.current, 18);
+      movers.push({
+        kind: "O2",
+        sx: op.x,
+        sy: op.y,
+        tx: center.x,
+        ty: center.y + 14,
+        t0: t,
+        dur: DUR.transfer,
+      });
+      moversRef.current = movers;
+      startPhase("transfer", t);
+    };
+
+    const beginReact = (t: number) => {
+      const { center } = geom;
+      const sparks: Spark[] = [];
+      for (let i = 0; i < 24; i++) {
+        const a = Math.random() * Math.PI * 2;
+        const s = 1.5 + Math.random() * 2.5;
+        sparks.push({ x: center.x, y: center.y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, life: 0, max: 350 });
+      }
+      sparksRef.current = sparks;
+      h2Rem.current = Math.max(0, h2Rem.current - 2);
+      o2Rem.current = Math.max(0, o2Rem.current - 1);
+      moversRef.current = [];
+      startPhase("react", t);
+    };
+
+    const beginDeliver = (t: number) => {
+      const { vesselC, center } = geom;
+      const base = h2oMade.current;
+      const movers: Mover[] = [];
+      for (let k = 0; k < 2; k++) {
+        const p = slotPos(vesselC, base + k, base + 2, 16);
+        movers.push({
+          kind: "H2O",
+          sx: center.x + (k === 0 ? -14 : 14),
+          sy: center.y,
+          tx: p.x,
+          ty: p.y,
+          t0: t,
+          dur: DUR.deliver,
+        });
+      }
+      moversRef.current = movers;
+      startPhase("deliver", t);
+    };
+
+    const finishAndMaybeLoop = (t: number) => {
+      moversRef.current = [];
+      if (h2Rem.current >= 2 && o2Rem.current >= 1) {
+        startPhase("idle", t);
+        return;
+      }
+      let limiting: Kind;
+      if (h2Rem.current < 2 && o2Rem.current >= 1) limiting = "H2";
+      else if (o2Rem.current < 1 && h2Rem.current >= 2) limiting = "O2";
+      else limiting = h2Count / 2 <= o2Count ? "H2" : "O2";
+      limitingRef.current = limiting;
+      endedRef.current = true;
+      phaseRef.current = "done";
+      onReactionEnd(h2oMade.current, limiting);
+    };
 
     const step = (t: number) => {
-      const dt = Math.min(48, t - last);
-      last = t;
-      const W = size.w;
-      const H = size.h;
+      const { W, H, vesselA, vesselB, vesselC, center } = geom;
 
-      // Background
-      const grad = ctx.createRadialGradient(W / 2, H / 2, 20, W / 2, H / 2, Math.max(W, H));
-      grad.addColorStop(0, "#0b1220");
-      grad.addColorStop(1, "#020617");
-      ctx.fillStyle = grad;
+      const bg = ctx.createRadialGradient(W / 2, H / 2, 20, W / 2, H / 2, Math.max(W, H));
+      bg.addColorStop(0, "#0b1220");
+      bg.addColorStop(1, "#020617");
+      ctx.fillStyle = bg;
       ctx.fillRect(0, 0, W, H);
 
-      // Subtle grid
-      ctx.strokeStyle = "rgba(148,163,184,0.06)";
-      ctx.lineWidth = 1;
-      for (let x = 0; x < W; x += 40) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, H);
-        ctx.stroke();
-      }
-      for (let y = 0; y < H; y += 40) {
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(W, y);
-        ctx.stroke();
+      drawArrow(ctx, vesselA.x + vesselA.w + 6, vesselA.y + vesselA.h / 2, center.x - 40, center.y - 8);
+      drawArrow(ctx, vesselB.x + vesselB.w + 6, vesselB.y + vesselB.h / 2, center.x - 40, center.y + 12);
+      drawArrow(ctx, center.x + 40, center.y, vesselC.x - 6, vesselC.y + vesselC.h / 2);
+
+      const zonePulse =
+        phaseRef.current === "react" ? 1 - (t - phaseStart.current) / DUR.react : 0.15;
+      ctx.save();
+      ctx.strokeStyle = `rgba(250,204,21,${0.35 + Math.max(0, zonePulse) * 0.5})`;
+      ctx.lineWidth = 2;
+      ctx.setLineDash([6, 4]);
+      ctx.beginPath();
+      ctx.arc(center.x, center.y, 46 + Math.max(0, zonePulse) * 10, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+      ctx.fillStyle = "rgba(148,163,184,0.55)";
+      ctx.font = "bold 10px ui-sans-serif, system-ui";
+      ctx.textAlign = "center";
+      ctx.fillText("REACTION ZONE", center.x, center.y - 54);
+      ctx.fillText("বিক্রিয়া অঞ্চল", center.x, center.y + 66);
+
+      blinkRef.current += 0.08;
+      const limiting = limitingRef.current;
+      drawVessel(ctx, vesselA, "Vessel A · H₂", "H₂ ট্যাংক", "#0891b2", endedRef.current && limiting === "H2", blinkRef.current);
+      drawVessel(ctx, vesselB, "Vessel B · O₂", "O₂ ট্যাংক", "#c2410c", endedRef.current && limiting === "O2", blinkRef.current);
+      drawVessel(ctx, vesselC, "Vessel C · H₂O", "উৎপাদ পাত্র", "#0ea5e9", false, blinkRef.current);
+
+      if (h2oMade.current > 0) {
+        const maxCap = Math.max(2, Math.min(h2Count, o2Count * 2));
+        const frac = Math.min(1, h2oMade.current / maxCap);
+        const fillH = (vesselC.h - 16) * frac;
+        const fillY = vesselC.y + vesselC.h - 8 - fillH;
+        const g = ctx.createLinearGradient(0, fillY, 0, fillY + fillH);
+        g.addColorStop(0, "rgba(56,189,248,0.35)");
+        g.addColorStop(1, "rgba(56,189,248,0.10)");
+        ctx.fillStyle = g;
+        ctx.fillRect(vesselC.x + 6, fillY, vesselC.w - 12, fillH);
       }
 
-      const mols = molsRef.current;
-      const speedMul = running && !paused ? 3.2 : 0.8;
-
-      // Move & wall-bounce
-      for (const m of mols) {
-        m.x += m.vx * speedMul * (dt / 16);
-        m.y += m.vy * speedMul * (dt / 16);
-        m.angle += m.spin * speedMul;
-        if (m.x < m.r) { m.x = m.r; m.vx = Math.abs(m.vx); }
-        if (m.x > W - m.r) { m.x = W - m.r; m.vx = -Math.abs(m.vx); }
-        if (m.y < m.r) { m.y = m.r; m.vy = Math.abs(m.vy); }
-        if (m.y > H - m.r) { m.y = H - m.r; m.vy = -Math.abs(m.vy); }
+      for (let i = 0; i < h2Rem.current; i++) {
+        const p = slotPos(vesselA, i, h2Rem.current, 14);
+        drawH2(ctx, p.x, p.y, endedRef.current && limiting === "H2" ? blinkRef.current : 0);
+      }
+      for (let i = 0; i < o2Rem.current; i++) {
+        const p = slotPos(vesselB, i, o2Rem.current, 18);
+        drawO2(ctx, p.x, p.y, endedRef.current && limiting === "O2" ? blinkRef.current : 0);
+      }
+      for (let i = 0; i < h2oMade.current; i++) {
+        const p = slotPos(vesselC, i, h2oMade.current, 16);
+        drawH2O(ctx, p.x, p.y);
       }
 
-      // Reactions: when an O2 touches ≥2 H2 within radius, react → 2 H2O
       if (running && !paused && !endedRef.current) {
-        const toRemove = new Set<number>();
-        const toAdd: Mol[] = [];
-        for (const o of mols) {
-          if (o.kind !== "O2" || toRemove.has(o.id)) continue;
-          const hits: Mol[] = [];
-          for (const h of mols) {
-            if (h.kind !== "H2" || toRemove.has(h.id)) continue;
-            const dx = h.x - o.x;
-            const dy = h.y - o.y;
-            const d = Math.hypot(dx, dy);
-            if (d < o.r + h.r + 4) hits.push(h);
-            if (hits.length >= 2) break;
+        const elapsed = t - phaseStart.current;
+        const cur = phaseRef.current;
+        if (cur === "idle") {
+          if (elapsed >= DUR.idle) {
+            if (h2Rem.current >= 2 && o2Rem.current >= 1) beginTransfer(t);
+            else finishAndMaybeLoop(t);
           }
-          if (hits.length >= 2) {
-            toRemove.add(o.id);
-            toRemove.add(hits[0].id);
-            toRemove.add(hits[1].id);
-            // Emit 2 H2O near the site
-            for (let k = 0; k < 2; k++) {
-              const ang = Math.random() * Math.PI * 2;
-              toAdd.push({
-                id: uid(),
-                kind: "H2O",
-                x: o.x + Math.cos(ang) * 8,
-                y: o.y + Math.sin(ang) * 8,
-                vx: (Math.random() - 0.5) * 1.4,
-                vy: (Math.random() - 0.5) * 1.4,
-                r: 16,
-                angle: Math.random() * Math.PI * 2,
-                spin: (Math.random() - 0.5) * 0.04,
-                bornAt: t,
-              });
-            }
-            producedRef.current += 2;
-          }
-        }
-        if (toRemove.size) {
-          molsRef.current = mols.filter((m) => !toRemove.has(m.id)).concat(toAdd);
-        }
-
-        // End detection
-        const hasH2 = molsRef.current.some((m) => m.kind === "H2");
-        const hasO2 = molsRef.current.some((m) => m.kind === "O2");
-        if (!hasH2 || !hasO2) {
-          // no more possible reactions (need 2 H2 + 1 O2)
-          endedRef.current = true;
-          onReactionEnd(producedRef.current);
-        }
+        } else if (cur === "transfer" && elapsed >= DUR.transfer) beginReact(t);
+        else if (cur === "react" && elapsed >= DUR.react) beginDeliver(t);
+        else if (cur === "deliver" && elapsed >= DUR.deliver) finishAndMaybeLoop(t);
       }
 
-      // Draw molecules
-      for (const m of molsRef.current) {
-        const born = m.bornAt ? Math.min(1, (t - m.bornAt) / 300) : 1;
-        drawMolecule(ctx, m, born, limitingKind);
+      for (const m of moversRef.current) {
+        const p = Math.min(1, (t - m.t0) / m.dur);
+        const e = easeInOut(p);
+        const x = m.sx + (m.tx - m.sx) * e;
+        const y = m.sy + (m.ty - m.sy) * e;
+        if (m.kind === "H2") drawH2(ctx, x, y, 0);
+        else if (m.kind === "O2") drawO2(ctx, x, y, 0);
+        else drawH2O(ctx, x, y);
+      }
+
+      if (sparksRef.current.length) {
+        const next: Spark[] = [];
+        for (const s of sparksRef.current) {
+          s.x += s.vx;
+          s.y += s.vy;
+          s.vx *= 0.96;
+          s.vy *= 0.96;
+          s.life += 16;
+          const a = 1 - s.life / s.max;
+          if (a > 0) {
+            ctx.fillStyle = `rgba(253,224,71,${a})`;
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, 2.5, 0, Math.PI * 2);
+            ctx.fill();
+            next.push(s);
+          }
+        }
+        sparksRef.current = next;
+      }
+
+      drawHudChip(ctx, 8, H - 26, `H₂: ${h2Rem.current}`, "#22d3ee");
+      drawHudChip(ctx, 82, H - 26, `O₂: ${o2Rem.current}`, "#fb923c");
+      drawHudChip(ctx, 156, H - 26, `H₂O: ${h2oMade.current}`, "#38bdf8");
+
+      if (endedRef.current && limiting) {
+        const flash = 0.7 + 0.3 * Math.sin(blinkRef.current * 2);
+        ctx.fillStyle = `rgba(239,68,68,${flash})`;
+        roundRect(ctx, W / 2 - 135, 6, 270, 22, 6);
+        ctx.fill();
+        ctx.fillStyle = "#fff";
+        ctx.font = "bold 11px ui-sans-serif, system-ui";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(`LIMITING: ${limiting === "H2" ? "H₂" : "O₂"} · শেষ হয়ে গেছে`, W / 2, 17);
       }
 
       rafRef.current = requestAnimationFrame(step);
     };
     rafRef.current = requestAnimationFrame(step);
     return () => cancelAnimationFrame(rafRef.current);
-  }, [size.w, size.h, running, paused, onReactionEnd, limitingKind]);
-
-  // HUD overlay counts
-  const counts = countByKind(molsRef.current);
+  }, [size.w, size.h, geom, running, paused, onReactionEnd, slotPos, h2Count, o2Count]);
 
   return (
     <div
@@ -243,73 +366,158 @@ function ReactionCanvas({
       className="relative h-full w-full overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 shadow-inner"
     >
       <canvas ref={canvasRef} className="block h-full w-full" />
-      <div className="pointer-events-none absolute left-2 top-2 flex flex-wrap gap-1.5 text-[10px] font-semibold">
-        <span className="rounded-md bg-cyan-500/20 px-2 py-0.5 text-cyan-200 ring-1 ring-cyan-400/30">
-          H₂ : {counts.H2}
-        </span>
-        <span className="rounded-md bg-rose-500/20 px-2 py-0.5 text-rose-200 ring-1 ring-rose-400/30">
-          O₂ : {counts.O2}
-        </span>
-        <span className="rounded-md bg-sky-500/20 px-2 py-0.5 text-sky-200 ring-1 ring-sky-400/30">
-          H₂O : {counts.H2O}
-        </span>
-      </div>
-      {limitingKind && running && (
-        <div className="pointer-events-none absolute right-2 top-2 rounded-md bg-red-500/90 px-2 py-1 text-[10px] font-black uppercase tracking-wide text-white shadow-lg ring-1 ring-red-300/40 animate-pulse">
-          Limiting: {limitingKind === "H2" ? "H₂" : "O₂"}
-        </div>
-      )}
     </div>
   );
 }
 
-function countByKind(mols: Mol[]) {
-  const c = { H2: 0, O2: 0, H2O: 0 };
-  for (const m of mols) c[m.kind]++;
-  return c;
+// ── Drawing helpers ─────────────────────────────────────────
+function easeInOut(t: number) {
+  return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
 }
 
-function drawMolecule(
+function drawVessel(
   ctx: CanvasRenderingContext2D,
-  m: Mol,
-  alpha: number,
-  limitingKind: Kind | null,
+  v: { x: number; y: number; w: number; h: number },
+  label: string,
+  bnLabel: string,
+  tint: string,
+  blinking: boolean,
+  phase: number,
 ) {
   ctx.save();
-  ctx.translate(m.x, m.y);
-  ctx.rotate(m.angle);
-  ctx.globalAlpha = alpha;
+  const pulse = blinking ? 0.5 + 0.5 * Math.sin(phase * 2) : 0;
+  ctx.strokeStyle = blinking ? `rgba(239,68,68,${0.7 + pulse * 0.3})` : "rgba(148,163,184,0.55)";
+  ctx.lineWidth = blinking ? 2.5 : 1.5;
+  roundRect(ctx, v.x, v.y, v.w, v.h, 12);
+  ctx.fillStyle = blinking ? `rgba(239,68,68,${0.05 + pulse * 0.08})` : "rgba(15,23,42,0.4)";
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = tint;
+  roundRect(ctx, v.x + 6, v.y + 6, Math.min(v.w - 12, 118), 18, 6);
+  ctx.fill();
+  ctx.fillStyle = "#fff";
+  ctx.font = "bold 10px ui-sans-serif, system-ui";
+  ctx.textAlign = "left";
+  ctx.textBaseline = "middle";
+  ctx.fillText(label, v.x + 12, v.y + 15);
+  ctx.fillStyle = "rgba(226,232,240,0.75)";
+  ctx.font = "9px ui-sans-serif, system-ui";
+  ctx.fillText(bnLabel, v.x + 6, v.y + v.h - 8);
+  ctx.restore();
+}
 
-  const isLimiting = limitingKind && limitingKind === m.kind;
+function roundRect(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  r: number,
+) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
 
-  if (m.kind === "H2") {
-    // two cyan spheres
-    const off = 6;
-    drawAtom(ctx, -off, 0, 8, "#67e8f9", "#0891b2");
-    drawAtom(ctx, off, 0, 8, "#67e8f9", "#0891b2");
-    strokeBond(ctx, -off, 0, off, 0, "#a5f3fc");
-    if (isLimiting) glow(ctx, 0, 0, 20, "rgba(239,68,68,0.9)");
-  } else if (m.kind === "O2") {
-    const off = 9;
-    drawAtom(ctx, -off, 0, 12, "#fb923c", "#c2410c");
-    drawAtom(ctx, off, 0, 12, "#fb923c", "#c2410c");
-    strokeBond(ctx, -off, 0, off, 0, "#fdba74");
-    if (isLimiting) glow(ctx, 0, 0, 26, "rgba(239,68,68,0.9)");
-  } else {
-    // H2O: V-shape, central O with two H
-    drawAtom(ctx, 0, 0, 11, "#f87171", "#991b1b"); // O
-    const a = Math.PI / 4;
-    const d = 12;
-    const hx1 = -Math.cos(a) * d;
-    const hy1 = Math.sin(a) * d;
-    const hx2 = Math.cos(a) * d;
-    const hy2 = Math.sin(a) * d;
-    strokeBond(ctx, 0, 0, hx1, hy1, "#fecaca");
-    strokeBond(ctx, 0, 0, hx2, hy2, "#fecaca");
-    drawAtom(ctx, hx1, hy1, 6, "#e0f2fe", "#38bdf8");
-    drawAtom(ctx, hx2, hy2, 6, "#e0f2fe", "#38bdf8");
+function drawArrow(
+  ctx: CanvasRenderingContext2D,
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+) {
+  ctx.save();
+  ctx.strokeStyle = "rgba(148,163,184,0.35)";
+  ctx.setLineDash([5, 5]);
+  ctx.lineWidth = 1.4;
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.stroke();
+  ctx.restore();
+  const ang = Math.atan2(y2 - y1, x2 - x1);
+  ctx.save();
+  ctx.fillStyle = "rgba(148,163,184,0.55)";
+  ctx.translate(x2, y2);
+  ctx.rotate(ang);
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(-8, -4);
+  ctx.lineTo(-8, 4);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawH2(ctx: CanvasRenderingContext2D, x: number, y: number, blinkPhase: number) {
+  const off = 6;
+  if (blinkPhase) {
+    const a = 0.4 + 0.4 * Math.sin(blinkPhase * 2);
+    ctx.save();
+    ctx.shadowColor = `rgba(239,68,68,${a})`;
+    ctx.shadowBlur = 10;
   }
+  drawAtom(ctx, x - off, y, 7, "#67e8f9", "#0891b2");
+  drawAtom(ctx, x + off, y, 7, "#67e8f9", "#0891b2");
+  strokeBond(ctx, x - off, y, x + off, y, "#a5f3fc");
+  if (blinkPhase) ctx.restore();
+}
 
+function drawO2(ctx: CanvasRenderingContext2D, x: number, y: number, blinkPhase: number) {
+  const off = 8;
+  if (blinkPhase) {
+    const a = 0.4 + 0.4 * Math.sin(blinkPhase * 2);
+    ctx.save();
+    ctx.shadowColor = `rgba(239,68,68,${a})`;
+    ctx.shadowBlur = 10;
+  }
+  drawAtom(ctx, x - off, y, 10, "#fb923c", "#c2410c");
+  drawAtom(ctx, x + off, y, 10, "#fb923c", "#c2410c");
+  strokeBond(ctx, x - off, y, x + off, y, "#fdba74");
+  if (blinkPhase) ctx.restore();
+}
+
+function drawH2O(ctx: CanvasRenderingContext2D, x: number, y: number) {
+  drawAtom(ctx, x, y, 9, "#f87171", "#991b1b");
+  const a = Math.PI / 4;
+  const d = 11;
+  const hx1 = x - Math.cos(a) * d;
+  const hy1 = y + Math.sin(a) * d;
+  const hx2 = x + Math.cos(a) * d;
+  const hy2 = y + Math.sin(a) * d;
+  strokeBond(ctx, x, y, hx1, hy1, "#fecaca");
+  strokeBond(ctx, x, y, hx2, hy2, "#fecaca");
+  drawAtom(ctx, hx1, hy1, 5, "#e0f2fe", "#38bdf8");
+  drawAtom(ctx, hx2, hy2, 5, "#e0f2fe", "#38bdf8");
+}
+
+function drawHudChip(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  text: string,
+  color: string,
+) {
+  ctx.save();
+  ctx.fillStyle = "rgba(15,23,42,0.85)";
+  roundRect(ctx, x, y, 68, 20, 6);
+  ctx.fill();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  ctx.fillStyle = color;
+  ctx.font = "bold 11px ui-sans-serif, system-ui";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(text, x + 34, y + 10);
   ctx.restore();
 }
 
@@ -347,23 +555,6 @@ function strokeBond(
   ctx.moveTo(x1, y1);
   ctx.lineTo(x2, y2);
   ctx.stroke();
-}
-
-function glow(
-  ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  r: number,
-  color: string,
-) {
-  ctx.save();
-  ctx.strokeStyle = color;
-  ctx.lineWidth = 2.5;
-  ctx.setLineDash([4, 3]);
-  ctx.beginPath();
-  ctx.arc(x, y, r, 0, Math.PI * 2);
-  ctx.stroke();
-  ctx.restore();
 }
 
 // ── Math Helpers ────────────────────────────────────────────
