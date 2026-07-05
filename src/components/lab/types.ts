@@ -25,7 +25,8 @@ export type ExperimentId =
   | "aufbau_principle"
   | "isotope_stability"
   | "metallic_bonding"
-  | "ionic_vs_covalent_theory";
+  | "ionic_vs_covalent_theory"
+  | "mole_concept";
 
 
 export type Mode = "guide" | "student" | "classroom";
