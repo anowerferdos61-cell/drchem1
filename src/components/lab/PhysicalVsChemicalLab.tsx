@@ -24,7 +24,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -32,9 +32,6 @@ interface Props {
 }
 
 type Mode = "physical" | "chemical";
-
-const CANVAS_W = 720;
-const CANVAS_H = 460;
 
 /* ──────────────────────────────────────────────────────────────
  * PHYSICAL — H2O molecules in a lattice that melts as T rises
@@ -46,11 +43,11 @@ interface WaterMol {
   rot: number; vrot: number;
 }
 
-function initWater(): WaterMol[] {
+function initWater(w: number, h: number): WaterMol[] {
   const arr: WaterMol[] = [];
   const cols = 12, rows = 8;
-  const gapX = CANVAS_W / (cols + 2);
-  const gapY = (CANVAS_H - 60) / (rows + 1);
+  const gapX = w / (cols + 2);
+  const gapY = (h - 60) / (rows + 1);
   const offX = gapX * 1.3;
   const offY = 40;
   for (let r = 0; r < rows; r++) {
@@ -85,14 +82,16 @@ interface Spark {
   x: number; y: number; vx: number; vy: number; life: number;
 }
 
-function initChem(): ChemMol[] {
+function initChem(w: number, h: number): ChemMol[] {
   const arr: ChemMol[] = [];
-  // 6 carbons + 6 oxygen molecules
+  const leftMax = Math.max(140, w * 0.45);
+  const rightMin = Math.min(w - 140, w * 0.55);
+  const availH = Math.max(120, h - 120);
   for (let i = 0; i < 6; i++) {
     arr.push({
       kind: "C",
-      x: 80 + Math.random() * 260,
-      y: 60 + Math.random() * (CANVAS_H - 120),
+      x: 60 + Math.random() * (leftMax - 60),
+      y: 60 + Math.random() * availH,
       vx: (Math.random() - 0.5) * 1.2,
       vy: (Math.random() - 0.5) * 1.2,
       rot: 0, reacting: 0, alive: true,
@@ -101,8 +100,8 @@ function initChem(): ChemMol[] {
   for (let i = 0; i < 6; i++) {
     arr.push({
       kind: "O2",
-      x: CANVAS_W - 340 + Math.random() * 260,
-      y: 60 + Math.random() * (CANVAS_H - 120),
+      x: rightMin + Math.random() * (w - 60 - rightMin),
+      y: 60 + Math.random() * availH,
       vx: (Math.random() - 0.5) * 1.2,
       vy: (Math.random() - 0.5) * 1.2,
       rot: Math.random() * Math.PI * 2, reacting: 0, alive: true,
@@ -134,157 +133,202 @@ export default function PhysicalVsChemicalLab({ onBack }: Props) {
   const [temp, setTemp] = useState(30);           // 0..100
   const [playing, setPlaying] = useState(true);
   const [showBonds, setShowBonds] = useState(true);
-  const [tick, setTick] = useState(0);            // reset trigger
   const [quizAns, setQuizAns] = useState<(number | null)[]>([null, null]);
-  const [mobileTab, setMobileTab] = useState<"sim" | "data">("sim");
-
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const rafRef = useRef<number | null>(null);
-
-  const waterRef = useRef<WaterMol[]>(initWater());
-  const chemRef = useRef<ChemMol[]>(initChem());
-  const sparksRef = useRef<Spark[]>([]);
-  const co2CountRef = useRef(0);
   const [co2Count, setCo2Count] = useState(0);
 
-  const resetSim = useCallback(() => {
-    waterRef.current = initWater();
-    chemRef.current = initChem();
+  // Live refs used inside the RAF loop so we don't rebind the loop on
+  // every prop change (which was killing the animation between updates).
+  const modeRef = useRef<Mode>(mode);
+  const tempRef = useRef(temp);
+  const playingRef = useRef(playing);
+  const bondsRef = useRef(showBonds);
+  useEffect(() => { modeRef.current = mode; }, [mode]);
+  useEffect(() => { tempRef.current = temp; }, [temp]);
+  useEffect(() => { playingRef.current = playing; }, [playing]);
+  useEffect(() => { bondsRef.current = showBonds; }, [showBonds]);
+
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  // Current CSS-pixel canvas size (updated by ResizeObserver).
+  const sizeRef = useRef<{ w: number; h: number }>({ w: 720, h: 460 });
+
+  const waterRef = useRef<WaterMol[]>([]);
+  const chemRef = useRef<ChemMol[]>([]);
+  const sparksRef = useRef<Spark[]>([]);
+  const co2CountRef = useRef(0);
+
+  // Rebuild particles based on the current mode + size.
+  const rebuild = useCallback(() => {
+    const { w, h } = sizeRef.current;
+    waterRef.current = initWater(w, h);
+    chemRef.current = initChem(w, h);
     sparksRef.current = [];
     co2CountRef.current = 0;
     setCo2Count(0);
-    setTick((t) => t + 1);
   }, []);
 
-  // reset when mode changes
-  useEffect(() => { resetSim(); }, [mode, resetSim]);
+  const resetSim = useCallback(() => { rebuild(); }, [rebuild]);
 
-  /* ── Animation loop ─────────────────────────────────────── */
+  // Rebuild when mode changes so particles are freshly scattered.
+  useEffect(() => { rebuild(); }, [mode, rebuild]);
+
+  /* ── Canvas sizing (DPR + ResizeObserver) ───────────────── */
+  useEffect(() => {
+    const cv = canvasRef.current;
+    const wrap = containerRef.current;
+    if (!cv || !wrap) return;
+
+    const resize = () => {
+      const rect = wrap.getBoundingClientRect();
+      const w = Math.max(280, Math.floor(rect.width));
+      const h = Math.max(240, Math.floor(rect.height));
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      cv.width = Math.floor(w * dpr);
+      cv.height = Math.floor(h * dpr);
+      cv.style.width = w + "px";
+      cv.style.height = h + "px";
+      const ctx = cv.getContext("2d");
+      if (ctx) ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const prev = sizeRef.current;
+      sizeRef.current = { w, h };
+      // On first size OR big size change, rebuild positions.
+      if (!waterRef.current.length || Math.abs(prev.w - w) > 40 || Math.abs(prev.h - h) > 40) {
+        rebuild();
+      }
+    };
+
+    resize();
+    const ro = new ResizeObserver(resize);
+    ro.observe(wrap);
+    window.addEventListener("resize", resize);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", resize);
+    };
+  }, [rebuild]);
+
+  /* ── Animation loop — mounted ONCE ───────────────────────── */
   useEffect(() => {
     const cv = canvasRef.current;
     if (!cv) return;
     const ctx = cv.getContext("2d");
     if (!ctx) return;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    cv.width = CANVAS_W * dpr;
-    cv.height = CANVAS_H * dpr;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     let raf = 0;
-    const draw = () => {
-      // BG
-      const bgTop = mode === "physical" ? "#0b1220" : "#150b0b";
-      const bgBot = mode === "physical" ? "#0f1e33" : "#20120a";
-      const grad = ctx.createLinearGradient(0, 0, 0, CANVAS_H);
+    const loop = () => {
+      const { w, h } = sizeRef.current;
+      const m = modeRef.current;
+      const t = tempRef.current;
+      const p = playingRef.current;
+      const b = bondsRef.current;
+
+      // Clear (transform is DPR-scaled so use CSS px units)
+      ctx.clearRect(0, 0, w, h);
+
+      // Background
+      const bgTop = m === "physical" ? "#0b1220" : "#1a0f0a";
+      const bgBot = m === "physical" ? "#0f1e33" : "#291509";
+      const grad = ctx.createLinearGradient(0, 0, 0, h);
       grad.addColorStop(0, bgTop);
       grad.addColorStop(1, bgBot);
       ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+      ctx.fillRect(0, 0, w, h);
 
-      // subtle vessel frame
-      ctx.strokeStyle = "rgba(148,163,184,0.25)";
+      // Vessel frame
+      ctx.strokeStyle = "rgba(148,163,184,0.28)";
       ctx.lineWidth = 2;
-      ctx.strokeRect(12, 12, CANVAS_W - 24, CANVAS_H - 24);
+      ctx.strokeRect(10, 10, w - 20, h - 20);
 
-      if (playing) {
-        if (mode === "physical") stepPhysical(temp);
-        else stepChemical(temp);
+      if (p) {
+        if (m === "physical") stepPhysical(t, w, h);
+        else stepChemical(t, w, h);
       }
-
-      if (mode === "physical") drawPhysical(ctx, showBonds, temp);
-      else drawChemical(ctx, showBonds);
+      if (m === "physical") drawPhysical(ctx, b, t, w, h);
+      else drawChemical(ctx, b, w, h);
 
       // HUD
-      ctx.fillStyle = "rgba(15,23,42,0.72)";
-      ctx.fillRect(20, 20, 240, 44);
+      ctx.fillStyle = "rgba(15,23,42,0.75)";
+      ctx.fillRect(18, 18, 240, 46);
       ctx.strokeStyle = "rgba(148,163,184,0.35)";
-      ctx.strokeRect(20, 20, 240, 44);
+      ctx.strokeRect(18, 18, 240, 46);
       ctx.font = "600 12px ui-sans-serif, system-ui";
       ctx.fillStyle = "#e2e8f0";
       ctx.fillText(
-        mode === "physical" ? "PHYSICAL · Bonds Intact" : "CHEMICAL · Bonds Breaking",
-        30, 40,
+        m === "physical" ? "PHYSICAL · Bonds Intact" : "CHEMICAL · Bonds Breaking",
+        28, 38,
       );
       ctx.font = "500 11px ui-sans-serif, system-ui";
       ctx.fillStyle = "#94a3b8";
-      ctx.fillText(`Temp: ${temp}°  ·  ${playing ? "▶ running" : "❚❚ paused"}`, 30, 56);
+      ctx.fillText(`Temp: ${t}°  ·  ${p ? "▶ running" : "❚❚ paused"}`, 28, 55);
 
-      raf = requestAnimationFrame(draw);
+      raf = requestAnimationFrame(loop);
     };
-    raf = requestAnimationFrame(draw);
-    rafRef.current = raf;
+    raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode, temp, playing, showBonds, tick]);
+  }, []);
 
   /* ── Physics: physical ─────────────────────────────────── */
-  function stepPhysical(t: number) {
+  function stepPhysical(t: number, w: number, h: number) {
     const mols = waterRef.current;
-    // 0..1: 0 rigid lattice, 1 fully liquid
     const melt = Math.max(0, Math.min(1, (t - 20) / 60));
-    for (const m of mols) {
+    for (const mo of mols) {
       const jitter = 0.05 + melt * 0.9;
-      m.vx += (Math.random() - 0.5) * jitter;
-      m.vy += (Math.random() - 0.5) * jitter;
-      // spring back to home (weakens as melt increases)
+      mo.vx += (Math.random() - 0.5) * jitter;
+      mo.vy += (Math.random() - 0.5) * jitter;
       const k = 0.06 * (1 - melt) + 0.002;
-      m.vx += (m.hx - m.x) * k;
-      m.vy += (m.hy - m.y) * k;
-      // damping
-      m.vx *= 0.92;
-      m.vy *= 0.92;
-      m.x += m.vx;
-      m.y += m.vy;
-      m.rot += m.vrot + melt * 0.03;
-      // walls
-      if (m.x < 20) { m.x = 20; m.vx *= -0.6; }
-      if (m.x > CANVAS_W - 20) { m.x = CANVAS_W - 20; m.vx *= -0.6; }
-      if (m.y < 20) { m.y = 20; m.vy *= -0.6; }
-      if (m.y > CANVAS_H - 20) { m.y = CANVAS_H - 20; m.vy *= -0.6; }
+      mo.vx += (mo.hx - mo.x) * k;
+      mo.vy += (mo.hy - mo.y) * k;
+      mo.vx *= 0.92;
+      mo.vy *= 0.92;
+      mo.x += mo.vx;
+      mo.y += mo.vy;
+      mo.rot += mo.vrot + melt * 0.03;
+      if (mo.x < 20) { mo.x = 20; mo.vx *= -0.6; }
+      if (mo.x > w - 20) { mo.x = w - 20; mo.vx *= -0.6; }
+      if (mo.y < 20) { mo.y = 20; mo.vy *= -0.6; }
+      if (mo.y > h - 20) { mo.y = h - 20; mo.vy *= -0.6; }
     }
   }
 
   /* ── Physics: chemical ─────────────────────────────────── */
-  function stepChemical(t: number) {
+  function stepChemical(t: number, w: number, h: number) {
     const mols = chemRef.current;
-    // reaction threshold
     const react = t > 55;
     const speed = 0.4 + (t / 100) * 2;
-    for (const m of mols) {
-      if (!m.alive) continue;
-      m.vx += (Math.random() - 0.5) * 0.1;
-      m.vy += (Math.random() - 0.5) * 0.1;
-      const sp = Math.hypot(m.vx, m.vy);
-      if (sp > speed) { m.vx = (m.vx / sp) * speed; m.vy = (m.vy / sp) * speed; }
-      m.x += m.vx;
-      m.y += m.vy;
-      m.rot += 0.03;
-      if (m.reacting > 0) m.reacting = Math.max(0, m.reacting - 0.03);
-      if (m.x < 20) { m.x = 20; m.vx *= -1; }
-      if (m.x > CANVAS_W - 20) { m.x = CANVAS_W - 20; m.vx *= -1; }
-      if (m.y < 20) { m.y = 20; m.vy *= -1; }
-      if (m.y > CANVAS_H - 20) { m.y = CANVAS_H - 20; m.vy *= -1; }
+    for (const mo of mols) {
+      if (!mo.alive) continue;
+      mo.vx += (Math.random() - 0.5) * 0.1;
+      mo.vy += (Math.random() - 0.5) * 0.1;
+      const sp = Math.hypot(mo.vx, mo.vy);
+      if (sp > speed) { mo.vx = (mo.vx / sp) * speed; mo.vy = (mo.vy / sp) * speed; }
+      mo.x += mo.vx;
+      mo.y += mo.vy;
+      mo.rot += 0.03;
+      if (mo.reacting > 0) mo.reacting = Math.max(0, mo.reacting - 0.03);
+      if (mo.x < 20) { mo.x = 20; mo.vx *= -1; }
+      if (mo.x > w - 20) { mo.x = w - 20; mo.vx *= -1; }
+      if (mo.y < 20) { mo.y = 20; mo.vy *= -1; }
+      if (mo.y > h - 20) { mo.y = h - 20; mo.vy *= -1; }
     }
 
-    // collisions → reaction
     if (react) {
       for (let i = 0; i < mols.length; i++) {
         const a = mols[i];
         if (!a.alive || a.kind !== "C") continue;
         for (let j = 0; j < mols.length; j++) {
-          const b = mols[j];
-          if (!b.alive || b.kind !== "O2") continue;
-          const dx = a.x - b.x, dy = a.y - b.y;
+          const bMol = mols[j];
+          if (!bMol.alive || bMol.kind !== "O2") continue;
+          const dx = a.x - bMol.x, dy = a.y - bMol.y;
           if (dx * dx + dy * dy < 30 * 30) {
-            // produce a CO2 in place of B, kill A
             a.alive = false;
-            b.kind = "CO2";
-            b.reacting = 1;
-            b.vx *= 0.5; b.vy *= 0.5;
+            bMol.kind = "CO2";
+            bMol.reacting = 1;
+            bMol.vx *= 0.5; bMol.vy *= 0.5;
             co2CountRef.current += 1;
             setCo2Count(co2CountRef.current);
-            // sparks
-            const cx = (a.x + b.x) / 2, cy = (a.y + b.y) / 2;
+            const cx = (a.x + bMol.x) / 2, cy = (a.y + bMol.y) / 2;
             for (let k = 0; k < 14; k++) {
               const ang = Math.random() * Math.PI * 2;
               const s = 1 + Math.random() * 2.5;
@@ -300,7 +344,6 @@ export default function PhysicalVsChemicalLab({ onBack }: Props) {
       }
     }
 
-    // sparks
     for (const s of sparksRef.current) {
       s.x += s.vx; s.y += s.vy;
       s.vx *= 0.94; s.vy *= 0.94;
@@ -314,11 +357,11 @@ export default function PhysicalVsChemicalLab({ onBack }: Props) {
     ctx: CanvasRenderingContext2D,
     bonds: boolean,
     t: number,
+    w: number, h: number,
   ) {
     const mols = waterRef.current;
     const melt = Math.max(0, Math.min(1, (t - 20) / 60));
 
-    // lattice / H-bonds (dashed)
     if (bonds) {
       ctx.strokeStyle = `rgba(125,211,252,${0.35 * (1 - melt) + 0.08})`;
       ctx.lineWidth = 1;
@@ -339,111 +382,105 @@ export default function PhysicalVsChemicalLab({ onBack }: Props) {
       ctx.setLineDash([]);
     }
 
-    // molecules — O + 2H
-    for (const m of mols) {
-      // O
-      const grad = ctx.createRadialGradient(m.x - 2, m.y - 2, 1, m.x, m.y, 9);
-      grad.addColorStop(0, "#fef3c7");
-      grad.addColorStop(1, "#0ea5e9");
-      ctx.fillStyle = grad;
+    for (const mo of mols) {
+      // O (red) — solid, highly visible
+      ctx.fillStyle = "#ef4444";
       ctx.beginPath();
-      ctx.arc(m.x, m.y, 8, 0, Math.PI * 2);
+      ctx.arc(mo.x, mo.y, 8, 0, Math.PI * 2);
       ctx.fill();
-      // H atoms
-      const ang1 = m.rot - 0.9;
-      const ang2 = m.rot + 0.9;
+      ctx.strokeStyle = "rgba(254,226,226,0.7)";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // H (light grey) atoms
+      const ang1 = mo.rot - 0.9;
+      const ang2 = mo.rot + 0.9;
       for (const a of [ang1, ang2]) {
-        const hx = m.x + Math.cos(a) * 11;
-        const hy = m.y + Math.sin(a) * 11;
-        ctx.fillStyle = "#e2e8f0";
-        ctx.beginPath();
-        ctx.arc(hx, hy, 3.5, 0, Math.PI * 2);
-        ctx.fill();
-        // covalent bond (always solid — inside molecule)
+        const hx = mo.x + Math.cos(a) * 11;
+        const hy = mo.y + Math.sin(a) * 11;
         ctx.strokeStyle = "rgba(226,232,240,0.85)";
         ctx.lineWidth = 1.5;
         ctx.beginPath();
-        ctx.moveTo(m.x, m.y);
+        ctx.moveTo(mo.x, mo.y);
         ctx.lineTo(hx, hy);
         ctx.stroke();
+        ctx.fillStyle = "#e5e7eb";
+        ctx.beginPath();
+        ctx.arc(hx, hy, 3.5, 0, Math.PI * 2);
+        ctx.fill();
       }
     }
 
-    // label
     ctx.font = "600 12px ui-sans-serif";
     ctx.fillStyle = "#7dd3fc";
-    ctx.fillText("H₂O", CANVAS_W - 60, CANVAS_H - 24);
+    ctx.fillText("H₂O", w - 60, h - 22);
+    ctx.fillStyle = "#ef4444"; ctx.fillText("● O", w - 120, h - 22);
+    ctx.fillStyle = "#e5e7eb"; ctx.fillText("● H", w - 160, h - 22);
   }
 
-  function drawChemical(ctx: CanvasRenderingContext2D, bonds: boolean) {
+  function drawChemical(
+    ctx: CanvasRenderingContext2D,
+    bonds: boolean,
+    w: number, h: number,
+  ) {
     const mols = chemRef.current;
-    for (const m of mols) {
-      if (!m.alive) continue;
-      if (m.kind === "C") {
+    for (const mo of mols) {
+      if (!mo.alive) continue;
+      if (mo.kind === "C") {
         ctx.fillStyle = "#374151";
         ctx.strokeStyle = "#f59e0b";
         ctx.lineWidth = 1.5;
         ctx.beginPath();
-        ctx.arc(m.x, m.y, 9, 0, Math.PI * 2);
+        ctx.arc(mo.x, mo.y, 10, 0, Math.PI * 2);
         ctx.fill(); ctx.stroke();
         ctx.font = "700 10px ui-sans-serif";
         ctx.fillStyle = "#fbbf24";
-        ctx.fillText("C", m.x - 3, m.y + 3);
-      } else if (m.kind === "O2") {
-        // two red oxygens with double bond
-        const dx = Math.cos(m.rot) * 8;
-        const dy = Math.sin(m.rot) * 8;
+        ctx.fillText("C", mo.x - 3, mo.y + 3);
+      } else if (mo.kind === "O2") {
+        const dx = Math.cos(mo.rot) * 8;
+        const dy = Math.sin(mo.rot) * 8;
         if (bonds) {
           ctx.strokeStyle = "#f87171";
           ctx.lineWidth = 2;
           ctx.beginPath();
-          ctx.moveTo(m.x - dx, m.y - dy);
-          ctx.lineTo(m.x + dx, m.y + dy);
+          ctx.moveTo(mo.x - dx, mo.y - dy);
+          ctx.lineTo(mo.x + dx, mo.y + dy);
           ctx.stroke();
         }
         for (const s of [-1, 1]) {
           ctx.fillStyle = "#ef4444";
           ctx.beginPath();
-          ctx.arc(m.x + dx * s, m.y + dy * s, 7, 0, Math.PI * 2);
+          ctx.arc(mo.x + dx * s, mo.y + dy * s, 7, 0, Math.PI * 2);
           ctx.fill();
         }
-        ctx.font = "700 9px ui-sans-serif";
-        ctx.fillStyle = "#fee2e2";
-        ctx.fillText("O", m.x + dx - 3, m.y + dy + 3);
-        ctx.fillText("O", m.x - dx - 3, m.y - dy + 3);
       } else {
-        // CO2 : O=C=O linear
-        const dx = Math.cos(m.rot) * 11;
-        const dy = Math.sin(m.rot) * 11;
+        const dx = Math.cos(mo.rot) * 11;
+        const dy = Math.sin(mo.rot) * 11;
         if (bonds) {
           ctx.strokeStyle = "#34d399";
           ctx.lineWidth = 2;
           ctx.beginPath();
-          ctx.moveTo(m.x - dx, m.y - dy);
-          ctx.lineTo(m.x + dx, m.y + dy);
+          ctx.moveTo(mo.x - dx, mo.y - dy);
+          ctx.lineTo(mo.x + dx, mo.y + dy);
           ctx.stroke();
         }
-        // center C
         ctx.fillStyle = "#111827";
-        ctx.beginPath(); ctx.arc(m.x, m.y, 8, 0, Math.PI * 2); ctx.fill();
-        // O ends
+        ctx.beginPath(); ctx.arc(mo.x, mo.y, 8, 0, Math.PI * 2); ctx.fill();
         for (const s of [-1, 1]) {
           ctx.fillStyle = "#10b981";
           ctx.beginPath();
-          ctx.arc(m.x + dx * s, m.y + dy * s, 7, 0, Math.PI * 2);
+          ctx.arc(mo.x + dx * s, mo.y + dy * s, 7, 0, Math.PI * 2);
           ctx.fill();
         }
-        // reacting flash
-        if (m.reacting > 0) {
-          ctx.strokeStyle = `rgba(52,211,153,${m.reacting})`;
+        if (mo.reacting > 0) {
+          ctx.strokeStyle = `rgba(52,211,153,${mo.reacting})`;
           ctx.lineWidth = 2;
           ctx.beginPath();
-          ctx.arc(m.x, m.y, 18 + (1 - m.reacting) * 8, 0, Math.PI * 2);
+          ctx.arc(mo.x, mo.y, 18 + (1 - mo.reacting) * 8, 0, Math.PI * 2);
           ctx.stroke();
         }
       }
     }
-    // sparks
     for (const s of sparksRef.current) {
       ctx.fillStyle = `rgba(251,191,36,${s.life})`;
       ctx.beginPath();
@@ -451,22 +488,21 @@ export default function PhysicalVsChemicalLab({ onBack }: Props) {
       ctx.fill();
     }
 
-    // legend
     ctx.font = "600 11px ui-sans-serif";
-    ctx.fillStyle = "#fbbf24"; ctx.fillText("● C", CANVAS_W - 130, CANVAS_H - 42);
-    ctx.fillStyle = "#f87171"; ctx.fillText("● O₂", CANVAS_W - 90, CANVAS_H - 42);
-    ctx.fillStyle = "#34d399"; ctx.fillText("● CO₂", CANVAS_W - 130, CANVAS_H - 24);
+    ctx.fillStyle = "#fbbf24"; ctx.fillText("● C", w - 150, h - 40);
+    ctx.fillStyle = "#f87171"; ctx.fillText("● O₂", w - 110, h - 40);
+    ctx.fillStyle = "#34d399"; ctx.fillText("● CO₂", w - 150, h - 22);
   }
 
   /* ── Derived status text ───────────────────────────────── */
   const status = useMemo(() => {
     if (mode === "physical") {
-      if (temp < 20) return { bn: "কঠিন বরফ · Rigid lattice", en: "Bonds intact — solid ice", tone: "sky" };
-      if (temp < 60) return { bn: "গলছে · Melting", en: "Lattice loosening — bonds intact", tone: "cyan" };
-      return { bn: "তরল পানি · Liquid", en: "Molecules sliding — H₂O unchanged", tone: "sky" };
+      if (temp < 20) return { bn: "কঠিন বরফ · Rigid lattice", en: "Bonds intact — solid ice" };
+      if (temp < 60) return { bn: "গলছে · Melting", en: "Lattice loosening — bonds intact" };
+      return { bn: "তরল পানি · Liquid", en: "Molecules sliding — H₂O unchanged" };
     }
-    if (temp < 55) return { bn: "বিক্রিয়ার আগে · Below activation", en: "Bonds intact — no new substance", tone: "amber" };
-    return { bn: "বন্ধন ভাঙছে · Reacting", en: "Bonds breaking → new substance CO₂ forming", tone: "emerald" };
+    if (temp < 55) return { bn: "বিক্রিয়ার আগে · Below activation", en: "Bonds intact — no new substance" };
+    return { bn: "বন্ধন ভাঙছে · Reacting", en: "Bonds breaking → CO₂ forming" };
   }, [mode, temp]);
 
   /* ── UI blocks ─────────────────────────────────────────── */
@@ -564,7 +600,6 @@ export default function PhysicalVsChemicalLab({ onBack }: Props) {
           <b>ভৌত পরিবর্তনে</b> পদার্থের কেবল অবস্থা বা আকার বদলায় — অণু অটুট থাকে
           (যেমন বরফ → পানি)। কিন্তু <b>রাসায়নিক পরিবর্তনে</b> পুরনো বন্ধন ভেঙে
           সম্পূর্ণ নতুন পদার্থ তৈরি হয় (যেমন <span className="font-mono">C + O₂ → CO₂</span>)।
-          মাইক্রোস্কোপিক দৃশ্যে এই পার্থক্যই আসল পরিচয়।
         </p>
       </Card>
 
@@ -608,31 +643,6 @@ export default function PhysicalVsChemicalLab({ onBack }: Props) {
     </div>
   );
 
-  const canvasBlock = (
-    <div className="relative w-full">
-      <canvas
-        ref={canvasRef}
-        style={{
-          width: "100%",
-          height: "min(70vh, 460px)",
-          maxHeight: 460,
-          display: "block",
-          borderRadius: 16,
-        }}
-        className="border border-slate-800/50 bg-slate-950 shadow-xl"
-      />
-      <div className="pointer-events-none absolute right-3 top-3 flex gap-2">
-        <Badge className={cn(
-          "gap-1",
-          mode === "physical" ? "bg-sky-500" : "bg-amber-500",
-        )}>
-          {mode === "physical" ? <Snowflake className="h-3 w-3" /> : <Flame className="h-3 w-3" />}
-          {mode === "physical" ? "Physical" : "Chemical"}
-        </Badge>
-      </div>
-    </div>
-  );
-
   return (
     <div className="relative min-h-[100dvh] w-full bg-gradient-to-br from-slate-50 via-white to-emerald-50 dark:from-slate-950 dark:via-background dark:to-slate-900">
       {/* Header */}
@@ -656,31 +666,35 @@ export default function PhysicalVsChemicalLab({ onBack }: Props) {
         </div>
       </header>
 
-      {/* Body */}
+      {/* Body — unified single-canvas responsive layout */}
       <main className="mx-auto max-w-7xl px-3 pb-8 pt-4 md:px-6">
-        {/* Desktop */}
-        <div className="hidden gap-4 lg:grid lg:grid-cols-[minmax(0,280px)_minmax(0,1fr)_minmax(0,300px)]">
-          <aside>{controls}</aside>
-          <section>{canvasBlock}<AIBanner mode={mode} /></section>
-          <aside>{dataPanel}</aside>
-        </div>
+        <div className="grid gap-4 lg:grid-cols-[minmax(0,280px)_minmax(0,1fr)_minmax(0,300px)]">
+          <aside className="order-2 lg:order-1">{controls}</aside>
 
-        {/* Mobile */}
-        <div className="lg:hidden">
-          <div className="mb-3">{controls}</div>
-          <Tabs value={mobileTab} onValueChange={(v) => setMobileTab(v as "sim" | "data")}>
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="sim">Simulation</TabsTrigger>
-              <TabsTrigger value="data">Data & Quiz</TabsTrigger>
-            </TabsList>
-            <TabsContent value="sim" className="mt-3 space-y-3">
-              {canvasBlock}
-              <AIBanner mode={mode} />
-            </TabsContent>
-            <TabsContent value="data" className="mt-3">
-              {dataPanel}
-            </TabsContent>
-          </Tabs>
+          <section className="order-1 lg:order-2">
+            <div
+              ref={containerRef}
+              className="relative w-full overflow-hidden rounded-2xl border border-slate-800/60 bg-slate-950 shadow-xl"
+              style={{ height: "min(70vh, 460px)", minHeight: 300 }}
+            >
+              <canvas
+                ref={canvasRef}
+                style={{ display: "block", width: "100%", height: "100%" }}
+              />
+              <div className="pointer-events-none absolute right-3 top-3 flex gap-2">
+                <Badge className={cn(
+                  "gap-1",
+                  mode === "physical" ? "bg-sky-500" : "bg-amber-500",
+                )}>
+                  {mode === "physical" ? <Snowflake className="h-3 w-3" /> : <Flame className="h-3 w-3" />}
+                  {mode === "physical" ? "Physical" : "Chemical"}
+                </Badge>
+              </div>
+            </div>
+            <AIBanner mode={mode} />
+          </section>
+
+          <aside className="order-3">{dataPanel}</aside>
         </div>
       </main>
     </div>
