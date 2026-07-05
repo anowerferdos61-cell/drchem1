@@ -228,8 +228,8 @@ function NormalScene({
           <text x="45" y="45" fontSize="10" fill="#94a3b8">Wire</text>
           {/* Disconnected bulb sitting up top */}
           <g transform="translate(300 40)">
-            <circle cx="20" cy="20" r="18" fill="#1e293b" stroke="#475569" strokeWidth="2" />
-            <Lightbulb x="8" y="8" width="24" height="24" />
+            <circle cx="20" cy="20" r="16" fill="#1e293b" stroke="#475569" strokeWidth="2" />
+            <path d="M 15 14 L 15 24 M 20 12 L 20 26 M 25 14 L 25 24" stroke="#475569" strokeWidth="1.5" fill="none" />
             <text x="20" y="60" textAnchor="middle" fontSize="10" fill="#94a3b8">
               Bulb (off)
             </text>
