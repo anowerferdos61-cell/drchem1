@@ -23,7 +23,8 @@ export type ExperimentId =
   | "atom_builder"
   | "atom_models"
   | "aufbau_principle"
-  | "isotope_stability";
+  | "isotope_stability"
+  | "metallic_bonding";
 
 
 export type Mode = "guide" | "student" | "classroom";
