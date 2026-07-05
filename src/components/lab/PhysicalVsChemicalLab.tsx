@@ -67,47 +67,121 @@ function initWater(w: number, h: number): WaterMol[] {
 }
 
 /* ──────────────────────────────────────────────────────────────
- * CHEMICAL — C + O2 → CO2
+ * CHEMICAL — Three-Vessel Reaction Transfer Pipeline
+ * C (flask A) + O₂ (flask B) → REACTION ZONE → CO₂ (product flask)
  * ────────────────────────────────────────────────────────────── */
 type ChemKind = "C" | "O2" | "CO2";
+type ChemPhase = "source" | "travelIn" | "waiting" | "travelOut" | "collected";
 interface ChemMol {
   kind: ChemKind;
+  phase: ChemPhase;
   x: number; y: number;
   vx: number; vy: number;
   rot: number;
-  reacting: number;   // 0..1 flash timer
+  // bezier travel
+  fromX: number; fromY: number;
+  toX: number; toY: number;
+  ctrlX: number; ctrlY: number;
+  t: number;
+  reacting: number;
   alive: boolean;
 }
 interface Spark {
   x: number; y: number; vx: number; vy: number; life: number;
 }
 
+interface FlaskRect { cx: number; cy: number; w: number; h: number }
+interface ChemLayout {
+  fA: FlaskRect; fB: FlaskRect; prod: FlaskRect;
+  zone: { cx: number; cy: number; r: number };
+}
+
+function chemLayout(w: number, h: number): ChemLayout {
+  const fW = Math.min(Math.max(w * 0.18, 90), 130);
+  const fH = Math.min(Math.max(h * 0.32, 110), 150);
+  const pW = Math.min(Math.max(w * 0.2, 100), 160);
+  const pH = Math.min(Math.max(h * 0.7, 200), 340);
+  return {
+    fB: { cx: 20 + fW / 2, cy: 40 + fH / 2, w: fW, h: fH },              // top-left: O₂
+    fA: { cx: 20 + fW / 2, cy: h - 20 - fH / 2, w: fW, h: fH },          // bottom-left: C
+    zone: { cx: w * 0.5, cy: h * 0.5, r: Math.min(w, h) * 0.13 },
+    prod: { cx: w - 20 - pW / 2, cy: h / 2, w: pW, h: pH },
+  };
+}
+
 function initChem(w: number, h: number): ChemMol[] {
+  const L = chemLayout(w, h);
   const arr: ChemMol[] = [];
-  const leftMax = Math.max(140, w * 0.45);
-  const rightMin = Math.min(w - 140, w * 0.55);
-  const availH = Math.max(120, h - 120);
-  for (let i = 0; i < 6; i++) {
+  const spawn = (kind: ChemKind, f: FlaskRect) => {
     arr.push({
-      kind: "C",
-      x: 60 + Math.random() * (leftMax - 60),
-      y: 60 + Math.random() * availH,
-      vx: (Math.random() - 0.5) * 1.2,
-      vy: (Math.random() - 0.5) * 1.2,
-      rot: 0, reacting: 0, alive: true,
+      kind, phase: "source",
+      x: f.cx + (Math.random() - 0.5) * (f.w - 30),
+      y: f.cy + (Math.random() - 0.5) * (f.h - 40),
+      vx: (Math.random() - 0.5) * 0.6, vy: (Math.random() - 0.5) * 0.6,
+      rot: Math.random() * Math.PI * 2,
+      fromX: 0, fromY: 0, toX: 0, toY: 0, ctrlX: 0, ctrlY: 0,
+      t: 0, reacting: 0, alive: true,
     });
-  }
-  for (let i = 0; i < 6; i++) {
-    arr.push({
-      kind: "O2",
-      x: rightMin + Math.random() * (w - 60 - rightMin),
-      y: 60 + Math.random() * availH,
-      vx: (Math.random() - 0.5) * 1.2,
-      vy: (Math.random() - 0.5) * 1.2,
-      rot: Math.random() * Math.PI * 2, reacting: 0, alive: true,
-    });
-  }
+  };
+  for (let i = 0; i < 8; i++) spawn("C", L.fA);
+  for (let i = 0; i < 8; i++) spawn("O2", L.fB);
   return arr;
+}
+
+/* ── Canvas helpers (shared) ─────────────────────────────── */
+function drawPipe(
+  ctx: CanvasRenderingContext2D,
+  x1: number, y1: number, x2: number, y2: number,
+  cx: number, cy: number,
+  outer: string, inner: string,
+) {
+  ctx.lineCap = "round";
+  ctx.strokeStyle = outer;
+  ctx.lineWidth = 14;
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.quadraticCurveTo(cx, cy, x2, y2);
+  ctx.stroke();
+  ctx.strokeStyle = inner;
+  ctx.lineWidth = 8;
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.quadraticCurveTo(cx, cy, x2, y2);
+  ctx.stroke();
+}
+
+function drawFlask(
+  ctx: CanvasRenderingContext2D,
+  f: FlaskRect, label: string, tint: string, accent: string,
+) {
+  const x = f.cx - f.w / 2;
+  const y = f.cy - f.h / 2;
+  const r = 12;
+  ctx.fillStyle = tint;
+  ctx.strokeStyle = accent;
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + f.w - r, y);
+  ctx.quadraticCurveTo(x + f.w, y, x + f.w, y + r);
+  ctx.lineTo(x + f.w, y + f.h - r);
+  ctx.quadraticCurveTo(x + f.w, y + f.h, x + f.w - r, y + f.h);
+  ctx.lineTo(x + r, y + f.h);
+  ctx.quadraticCurveTo(x, y + f.h, x, y + f.h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  // highlight
+  ctx.fillStyle = "rgba(255,255,255,0.06)";
+  ctx.fillRect(x + 5, y + 5, 5, f.h - 10);
+  // label
+  ctx.font = "600 10px ui-sans-serif, system-ui";
+  ctx.fillStyle = "#e2e8f0";
+  ctx.textAlign = "center";
+  ctx.fillText(label, f.cx, y - 6);
+  ctx.textAlign = "left";
 }
 
 /* ──────────────────────────────────────────────────────────────
