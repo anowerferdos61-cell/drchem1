@@ -440,48 +440,23 @@ function drawMolecule(
 }
 
 // ── Component ──────────────────────────────────────────────
-export default function MoleConceptLab({ onBack }: { onBack: () => void }) {
-  const [mode, setMode] = useState<"avogadro" | "molarity" | "empirical">("avogadro");
+type LabMode = "avogadro" | "molarity" | "empirical";
+
+export default function MoleConceptLab({
+  onBack,
+  forcedMode = "avogadro",
+}: {
+  onBack: () => void;
+  forcedMode?: LabMode;
+}) {
   return (
     <div className="relative flex min-h-[100dvh] w-full flex-col bg-gradient-to-br from-emerald-50 via-white to-teal-50 dark:from-slate-950 dark:via-background dark:to-emerald-950/40 lg:h-[100dvh] lg:overflow-hidden">
-      <div className="sticky top-0 z-30 shrink-0 border-b bg-background/90 backdrop-blur-xl px-3 py-2 lg:static">
-        <div className="mx-auto flex max-w-4xl items-center gap-2">
-          <Button variant="ghost" size="sm" onClick={onBack} className="h-8 gap-1 px-2 shrink-0">
-            <ArrowLeft className="h-4 w-4" />
-            <span className="hidden text-xs sm:inline">Back</span>
-          </Button>
-          <div className="flex flex-1 rounded-xl border bg-muted/50 p-1 shadow-inner">
-            {([
-              { k: "avogadro", label: "১. মোল ও অ্যাভোগাড্রো", en: "Mole", icon: Atom, on: "from-emerald-500 to-teal-500" },
-              { k: "molarity", label: "২. মোলারিটি ও লঘুকরণ", en: "Molarity", icon: FlaskConical, on: "from-sky-500 to-blue-600" },
-              { k: "empirical", label: "৩. স্থূল ও আণবিক সংকেত", en: "Empirical", icon: Sparkles, on: "from-fuchsia-500 to-violet-600" },
-            ] as const).map(({ k, label, en, icon: Icon, on }) => (
-              <button
-                key={k}
-                onClick={() => setMode(k)}
-                className={cn(
-                  "flex flex-1 items-center justify-center gap-1.5 rounded-lg px-2 py-1.5 text-[11px] font-bold transition-all sm:text-xs",
-                  mode === k
-                    ? `bg-gradient-to-br ${on} text-white shadow`
-                    : "text-muted-foreground hover:text-foreground",
-                )}
-              >
-                <Icon className="h-3.5 w-3.5 shrink-0" />
-                <span className="truncate">
-                  <span className="sm:hidden">{en}</span>
-                  <span className="hidden sm:inline">{label}</span>
-                </span>
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-      {mode === "avogadro" ? (
+      {forcedMode === "avogadro" ? (
         <AvogadroMode onBack={onBack} />
-      ) : mode === "molarity" ? (
+      ) : forcedMode === "molarity" ? (
         <MolarityMode onBack={onBack} />
       ) : (
-        <EmpiricalMode />
+        <EmpiricalMode onBack={onBack} />
       )}
     </div>
   );
