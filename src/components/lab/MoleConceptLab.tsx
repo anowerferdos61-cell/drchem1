@@ -441,6 +441,49 @@ function drawMolecule(
 
 // ── Component ──────────────────────────────────────────────
 export default function MoleConceptLab({ onBack }: { onBack: () => void }) {
+  const [mode, setMode] = useState<"avogadro" | "molarity">("avogadro");
+  return (
+    <div className="relative flex min-h-[100dvh] w-full flex-col bg-gradient-to-br from-emerald-50 via-white to-teal-50 dark:from-slate-950 dark:via-background dark:to-emerald-950/40 lg:h-[100dvh] lg:overflow-hidden">
+      <div className="sticky top-0 z-30 shrink-0 border-b bg-background/90 backdrop-blur-xl px-3 py-2 lg:static">
+        <div className="mx-auto flex max-w-3xl items-center gap-2">
+          <Button variant="ghost" size="sm" onClick={onBack} className="h-8 gap-1 px-2 shrink-0">
+            <ArrowLeft className="h-4 w-4" />
+            <span className="hidden text-xs sm:inline">Back</span>
+          </Button>
+          <div className="flex flex-1 rounded-xl border bg-muted/50 p-1 shadow-inner">
+            {([
+              { k: "avogadro", label: "১. মোল ও অ্যাভোগাড্রো", en: "Mole & Avogadro", icon: Atom },
+              { k: "molarity", label: "২. মোলারিটি ও লঘুকরণ", en: "Molarity & Dilution", icon: FlaskConical },
+            ] as const).map(({ k, label, en, icon: Icon }) => (
+              <button
+                key={k}
+                onClick={() => setMode(k)}
+                className={cn(
+                  "flex flex-1 items-center justify-center gap-1.5 rounded-lg px-2 py-1.5 text-[11px] font-bold transition-all sm:text-xs",
+                  mode === k
+                    ? k === "avogadro"
+                      ? "bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow"
+                      : "bg-gradient-to-br from-sky-500 to-blue-600 text-white shadow"
+                    : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                <Icon className="h-3.5 w-3.5 shrink-0" />
+                <span className="truncate">
+                  <span className="sm:hidden">{en}</span>
+                  <span className="hidden sm:inline">{label}</span>
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+      {mode === "avogadro" ? <AvogadroMode onBack={onBack} /> : <MolarityMode onBack={onBack} />}
+    </div>
+  );
+}
+
+function AvogadroMode({ onBack }: { onBack: () => void }) {
+
   const [sub, setSub] = useState<SubKey | null>("water");
   const [moleIdx, setMoleIdx] = useState(1);
   const [tab, setTab] = useState<"equipment" | "lab" | "data">("lab");
@@ -468,7 +511,8 @@ export default function MoleConceptLab({ onBack }: { onBack: () => void }) {
   };
 
   return (
-    <div className="relative flex min-h-[100dvh] w-full flex-col bg-gradient-to-br from-emerald-50 via-white to-teal-50 dark:from-slate-950 dark:via-background dark:to-emerald-950/40 lg:h-[100dvh] lg:overflow-hidden">
+    <div className="relative flex flex-1 min-h-0 w-full flex-col lg:overflow-hidden">
+
       <header className="sticky top-0 z-20 shrink-0 border-b bg-background/85 backdrop-blur-xl lg:static">
         <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-3 py-2">
           <div className="flex min-w-0 items-center gap-2">
@@ -832,3 +876,417 @@ function buildHint(s: Substance, moles: number, mass: number): string {
   }
   return `২ মোল ${s.nameBn} = ${mass.toFixed(2)} g → particle এখন ${m} × 10^${e}। n দ্বিগুণ হলে N-ও দ্বিগুণ (N = n × Nₐ)।`;
 }
+
+// ═══════════════════════════════════════════════════════════
+// ── EXPERIMENT 2 · Molarity & Dilution ─────────────────────
+// ═══════════════════════════════════════════════════════════
+const CUSO4_M = 160; // g/mol (anhydrous for molarity calc)
+
+function MolarityMode({ onBack: _onBack }: { onBack: () => void }) {
+  const [massW, setMassW] = useState(16); // g of CuSO4
+  const [v1, setV1] = useState(100); // mL initial
+  const [v2, setV2] = useState(100); // mL after dilution (>= v1)
+  const [tab, setTab] = useState<"equipment" | "lab" | "data">("lab");
+
+  // Molarity S = (W × 1000) / (M × V) => mol/L
+  const s1 = (massW * 1000) / (CUSO4_M * v1);
+  const s2 = (massW * 1000) / (CUSO4_M * v2);
+  const dilutionRatio = v2 / v1;
+
+  // color: higher molarity => deeper blue.
+  const clamp = (n: number, a: number, b: number) => Math.max(a, Math.min(b, n));
+  const sat = clamp(s2 / 1.5, 0.05, 1); // normalize (1.5 M ~ deepest)
+
+  const setV1Safe = (v: number) => {
+    setV1(v);
+    if (v2 < v) setV2(v);
+  };
+  const addWater = (amt: number) => setV2((prev) => clamp(prev + amt, v1, 500));
+  const reset = () => setV2(v1);
+
+  return (
+    <div className="relative flex flex-1 min-h-0 w-full flex-col lg:overflow-hidden">
+      <header className="sticky top-[54px] z-20 shrink-0 border-b bg-background/85 backdrop-blur-xl lg:static lg:top-0">
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-3 py-2">
+          <div className="flex min-w-0 items-center gap-2">
+            <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 text-white shadow-md">
+              <FlaskConical className="h-4.5 w-4.5" />
+            </div>
+            <div className="min-w-0 leading-tight">
+              <div className="truncate text-sm font-extrabold tracking-tight sm:text-base">
+                মোলারিটি ও দ্রবণ লঘুকরণ
+              </div>
+              <div className="truncate text-[11px] text-muted-foreground">
+                Molarity & Dilution · CuSO₄ (M = 160 g/mol)
+              </div>
+            </div>
+          </div>
+          <Badge className="shrink-0 border-sky-500/30 bg-sky-500/10 text-sky-700 dark:text-sky-300">
+            S₁V₁ = S₂V₂
+          </Badge>
+        </div>
+      </header>
+
+      <main className="flex-1 p-2 pb-24 sm:p-3 lg:min-h-0 lg:overflow-hidden lg:pb-3">
+        <div className="flex h-full flex-col gap-3 lg:grid lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.4fr)_minmax(0,0.95fr)] lg:grid-rows-1 lg:gap-3">
+          {/* EQUIPMENT / SOLUTE */}
+          <aside className={cn("flex-col gap-3 lg:order-1 lg:flex lg:min-h-0 lg:overflow-y-auto lg:pr-1", tab === "equipment" ? "flex" : "hidden lg:flex")}>
+            <Card className="p-3">
+              <div className="mb-2 flex items-center gap-2">
+                <Beaker className="h-4 w-4 text-sky-500" />
+                <h3 className="text-sm font-bold">Solute Shelf</h3>
+              </div>
+              <div className="flex items-center gap-3 rounded-xl border border-sky-500/40 bg-sky-500/5 p-3">
+                <div className="relative h-12 w-12 overflow-hidden rounded-xl bg-gradient-to-br from-cyan-400 to-blue-700 ring-1 ring-cyan-200/60 shadow-inner">
+                  <span className="absolute inset-0 grid place-items-center text-[10px] font-black text-white drop-shadow">CuSO₄</span>
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="text-sm font-bold">তুঁতে (CuSO₄)</div>
+                  <div className="text-[11px] text-muted-foreground">Molar Mass · 160 g/mol</div>
+                </div>
+              </div>
+              <div className="mt-3 space-y-2">
+                <div>
+                  <div className="mb-1 flex items-center justify-between text-[11px]">
+                    <span className="font-semibold">Solute Mass (W)</span>
+                    <span className="rounded bg-sky-500/10 px-1.5 py-0.5 font-bold text-sky-700 dark:text-sky-300 tabular-nums">{massW.toFixed(1)} g</span>
+                  </div>
+                  <Slider min={1} max={40} step={0.5} value={[massW]} onValueChange={(v) => setMassW(v[0])} />
+                </div>
+                <div>
+                  <div className="mb-1 flex items-center justify-between text-[11px]">
+                    <span className="font-semibold">Initial Volume (V₁)</span>
+                    <span className="rounded bg-sky-500/10 px-1.5 py-0.5 font-bold text-sky-700 dark:text-sky-300 tabular-nums">{v1} mL</span>
+                  </div>
+                  <Slider min={50} max={250} step={10} value={[v1]} onValueChange={(v) => setV1Safe(v[0])} />
+                </div>
+              </div>
+            </Card>
+
+            <Card className="p-3">
+              <div className="mb-2 flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-sky-500" />
+                <h3 className="text-sm font-bold">Dilution Controls</h3>
+              </div>
+              <div className="mb-2 flex items-center justify-between text-[11px]">
+                <span className="font-semibold">Final Volume (V₂)</span>
+                <span className="rounded bg-sky-500/10 px-1.5 py-0.5 font-bold text-sky-700 dark:text-sky-300 tabular-nums">{v2} mL</span>
+              </div>
+              <Slider min={v1} max={500} step={10} value={[v2]} onValueChange={(v) => setV2(v[0])} />
+              <div className="mt-3 grid grid-cols-3 gap-1.5">
+                {[25, 50, 100].map((n) => (
+                  <button
+                    key={n}
+                    onClick={() => addWater(n)}
+                    className="rounded-lg border border-sky-500/40 bg-sky-500/10 py-1.5 text-[11px] font-bold text-sky-700 hover:bg-sky-500/20 dark:text-sky-300"
+                  >
+                    +{n} mL H₂O
+                  </button>
+                ))}
+              </div>
+              <Button onClick={reset} variant="outline" size="sm" className="mt-2 w-full text-xs">
+                Reset V₂ = V₁
+              </Button>
+            </Card>
+          </aside>
+
+          {/* CENTER — VISUAL */}
+          <section className={cn("relative min-h-0 min-w-0 lg:order-2 lg:flex lg:flex-col", tab === "lab" ? "flex flex-col" : "hidden lg:flex")}>
+            <div className="flex w-full flex-col items-center justify-center gap-3" style={{ height: "min(70vh, 460px)" }}>
+              <MolarityVisual s1={s1} s2={s2} v1={v1} v2={v2} sat={sat} massW={massW} />
+            </div>
+            <MolarityHint s1={s1} s2={s2} v1={v1} v2={v2} />
+          </section>
+
+          {/* RIGHT — MATH / DATA */}
+          <aside className={cn("flex-col gap-3 lg:order-3 lg:flex lg:min-h-0 lg:overflow-y-auto lg:pl-1", tab === "data" ? "flex" : "hidden lg:flex")}>
+            <Card className="p-3">
+              <div className="mb-2 flex items-center gap-2">
+                <TrendingUp className="h-4 w-4 text-sky-500" />
+                <h3 className="text-sm font-bold">Live Formulas</h3>
+              </div>
+              <div className="space-y-2 text-[11.5px]">
+                <div className="rounded-lg border bg-muted/40 p-2 font-mono leading-relaxed">
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Initial Molarity</div>
+                  S₁ = (W × 1000) / (M × V₁)<br />
+                  <span className="text-muted-foreground">= ({massW} × 1000) / (160 × {v1})</span><br />
+                  <span className="font-bold text-sky-600 dark:text-sky-300">= {s1.toFixed(4)} mol/L</span>
+                </div>
+                <div className="rounded-lg border bg-muted/40 p-2 font-mono leading-relaxed">
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">After Dilution</div>
+                  S₁V₁ = S₂V₂ → S₂ = S₁V₁ / V₂<br />
+                  <span className="text-muted-foreground">= ({s1.toFixed(3)} × {v1}) / {v2}</span><br />
+                  <span className="font-bold text-sky-600 dark:text-sky-300">= {s2.toFixed(4)} mol/L</span>
+                </div>
+              </div>
+            </Card>
+
+            <Card className="p-3">
+              <div className="mb-2 flex items-center gap-2">
+                <FileText className="h-4 w-4 text-sky-500" />
+                <h3 className="text-sm font-bold">Data Table</h3>
+              </div>
+              <div className="space-y-1.5 text-xs">
+                <Row label="Solute" value="CuSO₄" />
+                <Row label="Mass (W)" value={`${massW.toFixed(1)} g`} />
+                <Row label="M" value="160 g/mol" />
+                <Row label="V₁" value={`${v1} mL`} />
+                <Row label="V₂" value={`${v2} mL`} accent />
+                <Row label="S₁" value={`${s1.toFixed(4)} M`} />
+                <Row label="S₂" value={`${s2.toFixed(4)} M`} accent />
+                <Row label="Dilution ×" value={dilutionRatio.toFixed(2)} />
+              </div>
+              {/* gauge */}
+              <div className="mt-3">
+                <div className="mb-1 flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                  <span>Molarity Gauge</span>
+                  <span className="text-sky-600 dark:text-sky-300 tabular-nums">{s2.toFixed(3)} M</span>
+                </div>
+                <div className="relative h-2 overflow-hidden rounded-full bg-muted">
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-sky-300 via-sky-500 to-blue-800 transition-all duration-500"
+                    style={{ width: `${clamp((s2 / 1.5) * 100, 4, 100)}%` }}
+                  />
+                </div>
+              </div>
+            </Card>
+
+            <Button
+              onClick={() => toast.success("Lab Report তৈরি ✓", { description: `S₂ = ${s2.toFixed(4)} mol/L in V₂ = ${v2} mL` })}
+              className="w-full gap-2 bg-gradient-to-r from-sky-500 to-blue-600 text-white shadow-md hover:opacity-90"
+            >
+              <FileText className="h-4 w-4" /> Generate Lab Report
+            </Button>
+          </aside>
+        </div>
+      </main>
+
+      <nav className="fixed inset-x-0 bottom-0 z-30 border-t bg-background/95 backdrop-blur-xl lg:hidden">
+        <div className="mx-auto grid max-w-md grid-cols-3">
+          {([
+            { k: "equipment", label: "Equipment", icon: Beaker },
+            { k: "lab", label: "Lab", icon: FlaskConical },
+            { k: "data", label: "Data", icon: TrendingUp },
+          ] as const).map(({ k, label, icon: Icon }) => (
+            <button
+              key={k}
+              onClick={() => setTab(k)}
+              className={cn(
+                "flex flex-col items-center gap-0.5 py-2 text-[11px] font-medium transition-colors",
+                tab === k ? "text-sky-600 dark:text-sky-400" : "text-muted-foreground",
+              )}
+            >
+              <Icon className="h-4 w-4" />
+              {label}
+            </button>
+          ))}
+        </div>
+      </nav>
+    </div>
+  );
+}
+
+function MolarityVisual({
+  s1: _s1, s2, v1, v2, sat, massW,
+}: { s1: number; s2: number; v1: number; v2: number; sat: number; massW: number }) {
+  // Flask visual: fill height maps to v2 (max 500).
+  const fillPct = Math.min(1, v2 / 500);
+  // color interpolation from faint sky to midnight blue.
+  const r = Math.round(186 - sat * 156); // 186 → 30
+  const g = Math.round(230 - sat * 180); // 230 → 50
+  const b = Math.round(253 - sat * 100); // 253 → 153 (keep some blue)
+  const liquid = `rgb(${r}, ${g}, ${b})`;
+  const liquidDeep = `rgb(${Math.max(r - 40, 8)}, ${Math.max(g - 40, 20)}, ${Math.max(b - 20, 90)})`;
+
+  return (
+    <div className="grid h-full w-full grid-rows-[minmax(0,1fr)_auto] gap-2">
+      {/* Flask + ions canvas */}
+      <div className="relative min-h-0 overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-slate-900 to-black shadow-lg">
+        <IonCanvas sat={sat} v2={v2} liquid={liquid} />
+
+        {/* SVG flask overlay */}
+        <svg viewBox="0 0 200 260" className="pointer-events-none absolute inset-0 mx-auto h-full" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <linearGradient id="glass" x1="0" x2="1">
+              <stop offset="0" stopColor="rgba(255,255,255,0.25)" />
+              <stop offset="0.5" stopColor="rgba(255,255,255,0.05)" />
+              <stop offset="1" stopColor="rgba(255,255,255,0.2)" />
+            </linearGradient>
+            <linearGradient id="liq" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stopColor={liquid} stopOpacity="0.85" />
+              <stop offset="1" stopColor={liquidDeep} stopOpacity="0.95" />
+            </linearGradient>
+            <clipPath id="flaskClip">
+              <path d="M85 30 L85 100 L40 220 Q40 240 60 240 L140 240 Q160 240 160 220 L115 100 L115 30 Z" />
+            </clipPath>
+          </defs>
+          {/* liquid fill */}
+          <g clipPath="url(#flaskClip)">
+            <rect x="20" y={240 - fillPct * 210} width="160" height={fillPct * 210} fill="url(#liq)" />
+            {/* meniscus */}
+            <ellipse cx="100" cy={240 - fillPct * 210} rx="70" ry="4" fill="rgba(255,255,255,0.25)" />
+          </g>
+          {/* glass outline */}
+          <path
+            d="M85 30 L85 100 L40 220 Q40 240 60 240 L140 240 Q160 240 160 220 L115 100 L115 30 Z"
+            fill="url(#glass)"
+            stroke="rgba(255,255,255,0.55)"
+            strokeWidth="1.5"
+          />
+          {/* neck rim */}
+          <rect x="80" y="24" width="40" height="8" rx="2" fill="rgba(255,255,255,0.4)" stroke="rgba(255,255,255,0.7)" />
+          {/* volume graduations */}
+          {[0.25, 0.5, 0.75].map((p) => (
+            <g key={p}>
+              <line x1="45" x2="55" y1={240 - p * 210} y2={240 - p * 210} stroke="rgba(255,255,255,0.6)" strokeWidth="1" />
+              <text x="58" y={240 - p * 210 + 3} fill="rgba(255,255,255,0.6)" fontSize="7">
+                {Math.round(p * 500)}
+              </text>
+            </g>
+          ))}
+        </svg>
+
+        {/* HUD */}
+        <div className="pointer-events-none absolute inset-x-0 top-1.5 flex flex-col items-center gap-0.5 px-3 text-center">
+          <span className="rounded-full bg-white/10 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-widest text-white/80 backdrop-blur">
+            Molarity Meter
+          </span>
+          <div className="font-mono text-lg font-black text-sky-300 drop-shadow-[0_0_8px_rgba(56,189,248,0.6)] sm:text-2xl">
+            {s2.toFixed(3)} <span className="text-xs opacity-80">mol/L</span>
+          </div>
+        </div>
+        <div className="pointer-events-none absolute bottom-1.5 left-2 rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-medium text-white/80 backdrop-blur">
+          🔬 Cu²⁺ + SO₄²⁻ ions
+        </div>
+        <div className="pointer-events-none absolute bottom-1.5 right-2 rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-medium text-white/80 backdrop-blur">
+          V₂ = {v2} mL · W = {massW}g
+        </div>
+      </div>
+
+      {/* Comparison chip */}
+      <div className="mx-auto flex w-full max-w-md items-center justify-between gap-2 rounded-xl border bg-background/70 p-2 text-[11px] backdrop-blur">
+        <div className="flex flex-1 items-center gap-1.5">
+          <span className="h-3 w-3 rounded-full border border-white/40" style={{ background: `rgb(${Math.round(186 - Math.min(1, ((massW * 1000) / (CUSO4_M * v1)) / 1.5) * 156)}, ${Math.round(230 - Math.min(1, ((massW * 1000) / (CUSO4_M * v1)) / 1.5) * 180)}, ${Math.round(253 - Math.min(1, ((massW * 1000) / (CUSO4_M * v1)) / 1.5) * 100)})` }} />
+          <span className="font-semibold">V₁ {v1}mL</span>
+          <span className="tabular-nums text-muted-foreground">→ dilute →</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="h-3 w-3 rounded-full border border-white/40" style={{ background: liquid }} />
+          <span className="font-semibold">V₂ {v2}mL</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function IonCanvas({ sat, v2, liquid }: { sat: number; v2: number; liquid: string }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const stateRef = useRef<{ ps: Array<{ x: number; y: number; vx: number; vy: number; kind: "cu" | "so4"; r: number }>; W: number; H: number }>({ ps: [], W: 0, H: 0 });
+
+  // ion count scales with concentration & clamps to a viewable range.
+  const targetCount = Math.max(6, Math.round(sat * 60));
+
+  useEffect(() => {
+    const rng = mulberry32(42);
+    stateRef.current.ps = Array.from({ length: targetCount * 2 }).map((_, i) => ({
+      x: 0.15 + rng() * 0.7,
+      y: 0.3 + rng() * 0.55,
+      vx: (rng() - 0.5) * 0.3,
+      vy: (rng() - 0.5) * 0.3,
+      kind: i % 2 === 0 ? "cu" : "so4",
+      r: i % 2 === 0 ? 7 : 9,
+    }));
+  }, [targetCount]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const container = containerRef.current;
+    if (!canvas || !container) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const resize = () => {
+      const rect = container.getBoundingClientRect();
+      stateRef.current.W = rect.width;
+      stateRef.current.H = rect.height;
+      canvas.width = Math.max(1, Math.floor(rect.width * dpr));
+      canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+      canvas.style.width = `${rect.width}px`;
+      canvas.style.height = `${rect.height}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+    resize();
+    const ro = new ResizeObserver(resize);
+    ro.observe(container);
+
+    let raf = 0;
+    const draw = () => {
+      const { W, H, ps } = stateRef.current;
+      ctx.clearRect(0, 0, W, H);
+      for (const p of ps) {
+        p.x += p.vx / W;
+        p.y += p.vy / H;
+        if (p.x < 0.12 || p.x > 0.88) p.vx *= -1;
+        if (p.y < 0.28 || p.y > 0.9) p.vy *= -1;
+        const cx = p.x * W;
+        const cy = p.y * H;
+        const g = ctx.createRadialGradient(cx - p.r * 0.3, cy - p.r * 0.3, p.r * 0.1, cx, cy, p.r);
+        if (p.kind === "cu") {
+          g.addColorStop(0, "#e0f2fe");
+          g.addColorStop(1, "#0369a1");
+        } else {
+          g.addColorStop(0, "#fef9c3");
+          g.addColorStop(1, "#a16207");
+        }
+        ctx.beginPath();
+        ctx.arc(cx, cy, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = g;
+        ctx.fill();
+        ctx.fillStyle = "rgba(255,255,255,0.9)";
+        ctx.font = `bold ${p.r * 0.8}px ui-sans-serif`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(p.kind === "cu" ? "Cu²⁺" : "SO₄²⁻", cx, cy);
+      }
+      raf = requestAnimationFrame(draw);
+    };
+    raf = requestAnimationFrame(draw);
+    return () => { cancelAnimationFrame(raf); ro.disconnect(); };
+  }, []);
+
+  // silence unused vars (v2, liquid used elsewhere / for visual key)
+  void v2; void liquid;
+
+  return (
+    <div ref={containerRef} className="absolute inset-0">
+      <canvas ref={canvasRef} className="block h-full w-full" />
+    </div>
+  );
+}
+
+function MolarityHint({ s1, s2, v1, v2 }: { s1: number; s2: number; v1: number; v2: number }) {
+  let msg = "";
+  if (v2 > v1 * 1.05) {
+    msg = `পানি যোগ করার ফলে অণুগুলোর মধ্যবর্তী দূরত্ব বাড়ছে — নীল রঙ হালকা হচ্ছে। S₁V₁ = S₂V₂ অনুযায়ী molarity ${s1.toFixed(3)} → ${s2.toFixed(3)} mol/L এ নেমে এসেছে।`;
+  } else if (s2 > 0.8) {
+    msg = `এই দ্রবণটি বেশ ঘন (S = ${s2.toFixed(3)} M)। CuSO₄ পানিতে সম্পূর্ণ ionize হয়ে Cu²⁺ ও SO₄²⁻ আয়ন তৈরি করছে — তাই গাঢ় নীল রঙ।`;
+  } else {
+    msg = `Molarity S = (W × 1000)/(M × V) = ${s2.toFixed(3)} mol/L। "Add Extra Water" চাপলে V বাড়বে, S কমবে (dilution)।`;
+  }
+  return (
+    <div className="mx-auto mt-2 flex w-full max-w-xl items-start gap-2 rounded-xl border border-sky-500/30 bg-sky-500/5 p-2.5 text-[11.5px] leading-relaxed shadow-sm">
+      <div className="grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-sky-500 to-blue-600 text-white">
+        <Bot className="h-3.5 w-3.5" />
+      </div>
+      <div>
+        <div className="mb-0.5 text-[10px] font-bold uppercase tracking-wider text-sky-600 dark:text-sky-300">
+          Lab AI Assistant
+        </div>
+        <p className="text-foreground/90">{msg}</p>
+      </div>
+    </div>
+  );
+}
+
