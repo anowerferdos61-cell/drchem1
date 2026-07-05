@@ -159,6 +159,13 @@ const EXPERIMENTS: Array<{
     icon: Wind,
     gradient: "from-emerald-100 via-teal-50 to-cyan-100",
   },
+  {
+    id: "physical_vs_chemical",
+    title: "Physical vs Chemical Change · ভৌত বনাম রাসায়নিক পরিবর্তন",
+    subtitle: "Microscopic view · Ice → Water বনাম C + O₂ → CO₂",
+    icon: Sparkles,
+    gradient: "from-amber-100 via-emerald-50 to-cyan-100",
+  },
 ];
 
 
