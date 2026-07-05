@@ -159,6 +159,13 @@ const EXPERIMENTS: Array<{
     icon: Wind,
     gradient: "from-emerald-100 via-teal-50 to-cyan-100",
   },
+  {
+    id: "daniel_cell",
+    title: "Daniel Cell · ড্যানিয়েল সেল",
+    subtitle: "Zn | Zn²⁺ ‖ Cu²⁺ | Cu · E°cell = +1.10 V · গ্যালভানিক কোষ",
+    icon: Zap,
+    gradient: "from-amber-100 via-yellow-50 to-orange-100",
+  },
 ];
 
 
