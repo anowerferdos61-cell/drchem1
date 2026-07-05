@@ -34,6 +34,7 @@ const listeners = new Set<Listener>();
 let initialized = false;
 let profileLoadSeq = 0;
 const PROFILE_LOAD_TIMEOUT_MS = 8_000;
+const SESSION_LOAD_TIMEOUT_MS = 6_000;
 
 function setState(next: Partial<AuthState>) {
   state = { ...state, ...next };
@@ -101,10 +102,6 @@ function initialize() {
       return;
     }
 
-    if (event === "INITIAL_SESSION") {
-      return;
-    }
-
     const user = session?.user ?? null;
     const sameUser = !!user && state.user?.id === user.id;
     setState({
@@ -123,7 +120,15 @@ function initialize() {
   });
 
   // Then hydrate
+  const sessionTimeout = window.setTimeout(() => {
+    if (!state.loading) return;
+    console.warn("Auth session restore timed out; showing signed-out state.");
+    profileLoadSeq += 1;
+    setState({ user: null, profile: null, roles: [], loading: false, rolesLoaded: true });
+  }, SESSION_LOAD_TIMEOUT_MS);
+
   supabase.auth.getSession().then(({ data }) => {
+    window.clearTimeout(sessionTimeout);
     const user = data.session?.user ?? null;
     const sameUser = !!user && state.user?.id === user.id;
     setState({
@@ -135,6 +140,7 @@ function initialize() {
     });
     if (user && (!sameUser || !state.rolesLoaded)) void loadProfileAndRoles(user.id);
   }).catch((error) => {
+    window.clearTimeout(sessionTimeout);
     console.error(error);
     profileLoadSeq += 1;
     setState({ user: null, profile: null, roles: [], loading: false, rolesLoaded: true });
