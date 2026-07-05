@@ -74,6 +74,7 @@ const LAB_COMPONENTS: Partial<Record<ExperimentId, LazyExoticComponent<LabCompon
   aufbau_principle: lazy(() => import("@/components/lab/AufbauLab")),
   isotope_stability: lazy(() => import("@/components/lab/IsotopeStabilityLab")),
   metallic_bonding: lazy(() => import("@/components/lab/MetallicBondingLab")),
+  ionic_vs_covalent_theory: lazy(() => import("@/components/lab/IonicVsCovalentTheoryLab")),
 };
 
 function LabLoadingFallback({ onBack }: { onBack: () => void }) {
