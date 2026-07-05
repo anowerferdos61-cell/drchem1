@@ -76,6 +76,8 @@ const LAB_COMPONENTS: Partial<Record<ExperimentId, LazyExoticComponent<LabCompon
   metallic_bonding: lazy(() => import("@/components/lab/MetallicBondingLab")),
   ionic_vs_covalent_theory: lazy(() => import("@/components/lab/IonicVsCovalentTheoryLab")),
   mole_concept: lazy(() => import("@/components/lab/MoleConceptLab")),
+  molarity_dilution: lazy(() => import("@/components/lab/MolarityLab")),
+  empirical_formula: lazy(() => import("@/components/lab/EmpiricalFormulaLab")),
 };
 
 function LabLoadingFallback({ onBack }: { onBack: () => void }) {

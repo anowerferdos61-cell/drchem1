@@ -30,12 +30,10 @@ export interface Entitlements {
 
 // Labs that are FREE for the Free tier:
 // - First 2 practical labs (Titration, Oxygen Preparation)
-// - Chapter 6 theory lab (Mole & Avogadro / Molarity)
 // - Chapter 10 labs (pH Scale, Indicator Comparison)
 export const FREE_TIER_LABS = [
   "titration",
   "oxygen_prep",
-  "mole_concept",
   "ph_scale",
   "indicator_compare",
 ] as const;
