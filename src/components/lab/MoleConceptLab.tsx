@@ -1322,3 +1322,596 @@ function MolarityHint({ s1, s2, v1, v2 }: { s1: number; s2: number; v1: number; 
   );
 }
 
+// ═══════════════════════════════════════════════════════════
+// MODE 3 — Empirical & Molecular Formula Builder
+// ═══════════════════════════════════════════════════════════
+
+type ElemSym = "C" | "H" | "O" | "N" | "S" | "Na" | "Cl" | "K" | "Ca" | "Fe" | "P";
+interface ElemInfo {
+  sym: ElemSym;
+  name: string;
+  mass: number;
+  color: string;   // atom fill
+  ring: string;    // atom ring / stroke
+  chart: string;   // pie hex
+}
+const ELEMS: Record<ElemSym, ElemInfo> = {
+  C:  { sym: "C",  name: "Carbon",   mass: 12,   color: "#1f2937", ring: "#4b5563", chart: "#374151" },
+  H:  { sym: "H",  name: "Hydrogen", mass: 1,    color: "#67e8f9", ring: "#22d3ee", chart: "#67e8f9" },
+  O:  { sym: "O",  name: "Oxygen",   mass: 16,   color: "#ef4444", ring: "#b91c1c", chart: "#ef4444" },
+  N:  { sym: "N",  name: "Nitrogen", mass: 14,   color: "#3b82f6", ring: "#1d4ed8", chart: "#3b82f6" },
+  S:  { sym: "S",  name: "Sulfur",   mass: 32,   color: "#eab308", ring: "#a16207", chart: "#eab308" },
+  Na: { sym: "Na", name: "Sodium",   mass: 23,   color: "#a855f7", ring: "#7e22ce", chart: "#a855f7" },
+  Cl: { sym: "Cl", name: "Chlorine", mass: 35.5, color: "#22c55e", ring: "#15803d", chart: "#22c55e" },
+  K:  { sym: "K",  name: "Potassium",mass: 39,   color: "#f472b6", ring: "#db2777", chart: "#f472b6" },
+  Ca: { sym: "Ca", name: "Calcium",  mass: 40,   color: "#94a3b8", ring: "#475569", chart: "#94a3b8" },
+  Fe: { sym: "Fe", name: "Iron",     mass: 56,   color: "#d97706", ring: "#92400e", chart: "#d97706" },
+  P:  { sym: "P",  name: "Phosphorus",mass: 31,  color: "#fb923c", ring: "#c2410c", chart: "#fb923c" },
+};
+
+interface Compound {
+  key: string;
+  nameBn: string;
+  formula: string;
+  molecular: string;
+  molarMass: number;
+  percents: { sym: ElemSym; pct: number }[];
+  layout: { sym: ElemSym; x: number; y: number; r: number }[]; // 0..1 space
+  bonds: [number, number][]; // indices into layout
+}
+
+const PRESETS: Compound[] = [
+  {
+    key: "h2o",
+    nameBn: "পানি",
+    formula: "H₂O",
+    molecular: "H₂O",
+    molarMass: 18,
+    percents: [
+      { sym: "H", pct: 11.11 },
+      { sym: "O", pct: 88.89 },
+    ],
+    layout: [
+      { sym: "O", x: 0.5, y: 0.5, r: 34 },
+      { sym: "H", x: 0.28, y: 0.72, r: 20 },
+      { sym: "H", x: 0.72, y: 0.72, r: 20 },
+    ],
+    bonds: [[0, 1], [0, 2]],
+  },
+  {
+    key: "co2",
+    nameBn: "কার্বন ডাই অক্সাইড",
+    formula: "CO₂",
+    molecular: "CO₂",
+    molarMass: 44,
+    percents: [
+      { sym: "C", pct: 27.27 },
+      { sym: "O", pct: 72.73 },
+    ],
+    layout: [
+      { sym: "O", x: 0.18, y: 0.5, r: 30 },
+      { sym: "C", x: 0.5,  y: 0.5, r: 28 },
+      { sym: "O", x: 0.82, y: 0.5, r: 30 },
+    ],
+    bonds: [[0, 1], [1, 2]],
+  },
+  {
+    key: "glucose",
+    nameBn: "গ্লুকোজ",
+    formula: "CH₂O",
+    molecular: "C₆H₁₂O₆",
+    molarMass: 180,
+    percents: [
+      { sym: "C", pct: 40.0 },
+      { sym: "H", pct: 6.67 },
+      { sym: "O", pct: 53.33 },
+    ],
+    // hexagonal-ish ring: 6 C's with O's / H's around
+    layout: (() => {
+      const items: { sym: ElemSym; x: number; y: number; r: number }[] = [];
+      const cx = 0.5, cy = 0.5, R = 0.24;
+      for (let i = 0; i < 6; i++) {
+        const a = (-Math.PI / 2) + (i * Math.PI) / 3;
+        items.push({ sym: "C", x: cx + Math.cos(a) * R, y: cy + Math.sin(a) * R, r: 20 });
+      }
+      // outer O's
+      for (let i = 0; i < 6; i++) {
+        const a = (-Math.PI / 2) + (i * Math.PI) / 3;
+        items.push({ sym: "O", x: cx + Math.cos(a) * (R + 0.16), y: cy + Math.sin(a) * (R + 0.16), r: 14 });
+      }
+      return items;
+    })(),
+    bonds: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,0],[0,6],[1,7],[2,8],[3,9],[4,10],[5,11]],
+  },
+];
+
+function EmpiricalMode() {
+  const [preset, setPreset] = useState<string>("glucose");
+  const [rows, setRows] = useState<{ sym: ElemSym; pct: string }[]>(() =>
+    PRESETS[2].percents.map((p) => ({ sym: p.sym, pct: String(p.pct) })),
+  );
+  const [molarMass, setMolarMass] = useState<string>("180");
+  const [tab, setTab] = useState<"compounds" | "visualizer" | "formula">("visualizer");
+  const [assembleKey, setAssembleKey] = useState(0);
+
+  const loadPreset = (key: string) => {
+    const p = PRESETS.find((x) => x.key === key);
+    if (!p) return;
+    setPreset(key);
+    setRows(p.percents.map((r) => ({ sym: r.sym, pct: String(r.pct) })));
+    setMolarMass(String(p.molarMass));
+    setAssembleKey((k) => k + 1);
+    toast.success(`${p.nameBn} লোড হয়েছে`);
+  };
+
+  const parsed = rows
+    .map((r) => ({ sym: r.sym, pct: parseFloat(r.pct) || 0 }))
+    .filter((r) => r.pct > 0);
+  const total = parsed.reduce((a, b) => a + b.pct, 0);
+  const totalOk = Math.abs(total - 100) < 0.5;
+
+  // Empirical formula math
+  const steps = useMemo(() => {
+    if (!parsed.length) return null;
+    const moles = parsed.map((r) => ({ ...r, mol: r.pct / ELEMS[r.sym].mass }));
+    const minMol = Math.min(...moles.map((m) => m.mol));
+    const ratios = moles.map((m) => ({ ...m, ratio: m.mol / minMol }));
+    // simple integerization
+    let mult = 1;
+    for (let m = 1; m <= 6; m++) {
+      const ok = ratios.every((r) => Math.abs(r.ratio * m - Math.round(r.ratio * m)) < 0.08);
+      if (ok) { mult = m; break; }
+    }
+    const ints = ratios.map((r) => ({ ...r, n: Math.max(1, Math.round(r.ratio * mult)) }));
+    const empFormula = ints.map((r) => r.n === 1 ? r.sym : `${r.sym}${sub(r.n)}`).join("");
+    const empMass = ints.reduce((a, r) => a + ELEMS[r.sym].mass * r.n, 0);
+    const mm = parseFloat(molarMass) || 0;
+    const n = mm > 0 ? Math.max(1, Math.round(mm / empMass)) : 1;
+    const molFormula = ints.map((r) => (r.n * n) === 1 ? r.sym : `${r.sym}${sub(r.n * n)}`).join("");
+    return { moles, ratios, ints, empFormula, empMass, n, molFormula, mm };
+  }, [rows, molarMass]);
+
+  const compound = PRESETS.find((p) => p.key === preset) ?? PRESETS[2];
+
+  return (
+    <main className="flex-1 p-2 pb-24 sm:p-3 lg:min-h-0 lg:overflow-hidden lg:pb-3">
+      {/* Mobile tabs */}
+      <div className="mb-2 grid grid-cols-3 gap-1 rounded-xl border bg-muted/60 p-1 lg:hidden">
+        {([
+          { k: "compounds",  label: "Compounds", icon: FlaskConical },
+          { k: "visualizer", label: "Visualizer", icon: Atom },
+          { k: "formula",    label: "Formula",   icon: FileText },
+        ] as const).map(({ k, label, icon: Icon }) => (
+          <button
+            key={k}
+            onClick={() => setTab(k)}
+            className={cn(
+              "flex items-center justify-center gap-1 rounded-lg px-2 py-1.5 text-[11px] font-semibold transition",
+              tab === k ? "bg-gradient-to-br from-fuchsia-500 to-violet-600 text-white shadow" : "text-muted-foreground",
+            )}
+          >
+            <Icon className="h-3.5 w-3.5" />
+            {label}
+          </button>
+        ))}
+      </div>
+
+      <div className="flex flex-col gap-2 lg:grid lg:h-[calc(100dvh-140px)] lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.35fr)_minmax(0,1fr)] lg:gap-3">
+        {/* LEFT — Compounds & percent inputs */}
+        <aside className={cn("flex flex-col gap-2 lg:min-h-0 lg:overflow-y-auto lg:pr-1", tab !== "compounds" && "hidden lg:flex")}>
+          <Card className="p-3 shadow-sm">
+            <div className="mb-2 flex items-center gap-2">
+              <div className="grid h-7 w-7 place-items-center rounded-lg bg-gradient-to-br from-fuchsia-500 to-violet-600 text-white shadow">
+                <FlaskConical className="h-4 w-4" />
+              </div>
+              <div className="min-w-0">
+                <div className="text-xs font-black">প্রিসেট যৌগ</div>
+                <div className="text-[10px] text-muted-foreground">Quick-load compounds</div>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 gap-1.5">
+              {PRESETS.map((p) => (
+                <button
+                  key={p.key}
+                  onClick={() => loadPreset(p.key)}
+                  className={cn(
+                    "flex items-center justify-between gap-2 rounded-lg border px-2.5 py-2 text-left text-xs transition",
+                    preset === p.key
+                      ? "border-fuchsia-400 bg-fuchsia-500/10 shadow-sm"
+                      : "hover:border-fuchsia-300 hover:bg-fuchsia-500/5",
+                  )}
+                >
+                  <div className="min-w-0">
+                    <div className="truncate font-bold">{p.nameBn}</div>
+                    <div className="truncate text-[10px] text-muted-foreground">
+                      {p.molecular} · M = {p.molarMass}
+                    </div>
+                  </div>
+                  <div className="flex shrink-0 -space-x-1.5">
+                    {p.percents.map((e) => (
+                      <span
+                        key={e.sym}
+                        className="grid h-6 w-6 place-items-center rounded-full text-[9px] font-black text-white ring-2 ring-background"
+                        style={{ background: ELEMS[e.sym].color }}
+                      >
+                        {e.sym}
+                      </span>
+                    ))}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </Card>
+
+          <Card className="p-3 shadow-sm">
+            <div className="mb-2 flex items-center justify-between">
+              <div className="text-xs font-black">শতকরা সংযুতি</div>
+              <Badge
+                variant="outline"
+                className={cn(
+                  "h-5 px-1.5 text-[10px]",
+                  totalOk ? "border-emerald-400 text-emerald-600" : "border-amber-400 text-amber-600",
+                )}
+              >
+                Σ = {total.toFixed(2)}%
+              </Badge>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              {rows.map((r, i) => (
+                <div key={i} className="flex items-center gap-1.5">
+                  <select
+                    value={r.sym}
+                    onChange={(e) => {
+                      const next = [...rows];
+                      next[i] = { ...next[i], sym: e.target.value as ElemSym };
+                      setRows(next);
+                    }}
+                    className="h-8 rounded-md border bg-background px-1.5 text-xs font-bold"
+                  >
+                    {(Object.keys(ELEMS) as ElemSym[]).map((s) => (
+                      <option key={s} value={s}>{s}</option>
+                    ))}
+                  </select>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={r.pct}
+                    onChange={(e) => {
+                      const next = [...rows];
+                      next[i] = { ...next[i], pct: e.target.value };
+                      setRows(next);
+                    }}
+                    className="h-8 w-full rounded-md border bg-background px-2 text-xs tabular-nums"
+                    placeholder="%"
+                  />
+                  <span className="text-[10px] text-muted-foreground">%</span>
+                  <button
+                    onClick={() => setRows(rows.filter((_, j) => j !== i))}
+                    className="grid h-7 w-7 shrink-0 place-items-center rounded-md border text-xs text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                    aria-label="remove"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+              <button
+                onClick={() => setRows([...rows, { sym: "C", pct: "" }])}
+                className="mt-1 rounded-md border border-dashed py-1.5 text-[11px] font-semibold text-muted-foreground hover:border-fuchsia-400 hover:text-fuchsia-600"
+              >
+                + মৌল যোগ করো
+              </button>
+            </div>
+            <div className="mt-3 border-t pt-2">
+              <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                আণবিক ভর (Molar Mass)
+              </label>
+              <div className="flex items-center gap-1.5">
+                <input
+                  type="number"
+                  value={molarMass}
+                  onChange={(e) => setMolarMass(e.target.value)}
+                  className="h-8 w-full rounded-md border bg-background px-2 text-xs tabular-nums"
+                  placeholder="e.g. 180"
+                />
+                <span className="text-[10px] text-muted-foreground">g/mol</span>
+              </div>
+            </div>
+          </Card>
+        </aside>
+
+        {/* CENTER — visualizer */}
+        <section className={cn("flex min-h-0 flex-col gap-2", tab !== "visualizer" && "hidden lg:flex")}>
+          <Card className="relative flex flex-1 flex-col overflow-hidden border-fuchsia-200/60 bg-gradient-to-br from-white via-fuchsia-50/40 to-violet-50/60 shadow-sm dark:from-slate-950 dark:via-fuchsia-950/20 dark:to-violet-950/30">
+            <div className="flex items-center justify-between border-b border-fuchsia-200/50 bg-white/50 px-3 py-1.5 backdrop-blur dark:bg-slate-900/40">
+              <div className="text-[11px] font-black">{compound.nameBn}</div>
+              <Badge className="h-5 bg-gradient-to-br from-fuchsia-500 to-violet-600 px-1.5 text-[10px] text-white">
+                {compound.molecular}
+              </Badge>
+            </div>
+            <div
+              className="relative flex w-full items-center justify-center"
+              style={{ height: "min(70vh, 460px)" }}
+            >
+              <div className="grid h-full w-full grid-rows-[1fr_auto] gap-1 p-2">
+                {/* Molecule assembly */}
+                <div className="relative overflow-hidden rounded-xl border border-fuchsia-200/50 bg-white/60 backdrop-blur dark:bg-slate-900/50">
+                  <MoleculeAssembly key={assembleKey + preset} compound={compound} />
+                </div>
+                {/* Pie */}
+                <div className="rounded-xl border border-fuchsia-200/50 bg-white/60 p-2 backdrop-blur dark:bg-slate-900/50">
+                  <PercentPie rows={parsed} />
+                </div>
+              </div>
+            </div>
+          </Card>
+        </section>
+
+        {/* RIGHT — Formula lab */}
+        <aside className={cn("flex flex-col gap-2 lg:min-h-0 lg:overflow-y-auto lg:pl-1", tab !== "formula" && "hidden lg:flex")}>
+          <Card className="p-3 shadow-sm">
+            <div className="mb-2 flex items-center gap-2">
+              <div className="grid h-7 w-7 place-items-center rounded-lg bg-gradient-to-br from-fuchsia-500 to-violet-600 text-white shadow">
+                <FileText className="h-4 w-4" />
+              </div>
+              <div className="text-xs font-black">সংকেত নির্ণয় (Step-by-step)</div>
+            </div>
+            {!steps ? (
+              <div className="rounded-lg bg-muted/50 p-3 text-center text-[11px] text-muted-foreground">
+                শতকরা মান দিন…
+              </div>
+            ) : (
+              <div className="space-y-2.5 text-[11px]">
+                {/* Step 1 */}
+                <StepBlock n={1} title="Percentage ÷ Atomic Mass">
+                  <div className="space-y-1 font-mono">
+                    {steps.moles.map((m) => (
+                      <div key={m.sym} className="flex items-center justify-between rounded bg-muted/50 px-2 py-1">
+                        <span>
+                          <b style={{ color: ELEMS[m.sym].color }}>{m.sym}</b>: {m.pct.toFixed(2)} ÷ {ELEMS[m.sym].mass}
+                        </span>
+                        <span className="font-bold tabular-nums">= {m.mol.toFixed(4)}</span>
+                      </div>
+                    ))}
+                  </div>
+                </StepBlock>
+                {/* Step 2 */}
+                <StepBlock n={2} title="Divide by smallest → integer ratio">
+                  <div className="space-y-1 font-mono">
+                    {steps.ints.map((r) => (
+                      <div key={r.sym} className="flex items-center justify-between rounded bg-muted/50 px-2 py-1">
+                        <span>
+                          <b style={{ color: ELEMS[r.sym].color }}>{r.sym}</b>: {r.mol.toFixed(4)} ÷ {Math.min(...steps.moles.map((x) => x.mol)).toFixed(4)}
+                        </span>
+                        <span className="font-bold tabular-nums">≈ {r.n}</span>
+                      </div>
+                    ))}
+                  </div>
+                </StepBlock>
+                {/* Step 3 */}
+                <StepBlock n={3} title="স্থূল সংকেত · Empirical Formula">
+                  <div className="rounded-lg bg-gradient-to-r from-fuchsia-500/10 to-violet-500/10 px-3 py-2 text-center">
+                    <FormulaText text={steps.empFormula} className="text-lg font-black" />
+                    <div className="mt-0.5 text-[10px] text-muted-foreground">
+                      Empirical mass = {steps.empMass.toFixed(1)} g/mol
+                    </div>
+                  </div>
+                </StepBlock>
+                {/* Step 4 */}
+                <StepBlock n={4} title="আণবিক সংকেত · Molecular Formula">
+                  {steps.mm > 0 ? (
+                    <>
+                      <div className="mb-1.5 rounded bg-muted/50 px-2 py-1 font-mono text-[11px]">
+                        n = M / m = {steps.mm} / {steps.empMass.toFixed(1)} ≈ <b>{steps.n}</b>
+                      </div>
+                      <div className="rounded-lg bg-gradient-to-r from-emerald-500/15 to-teal-500/15 px-3 py-2 text-center">
+                        <FormulaText text={steps.molFormula} className="text-xl font-black" />
+                      </div>
+                    </>
+                  ) : (
+                    <div className="text-[10px] text-muted-foreground">Molar mass দিন…</div>
+                  )}
+                </StepBlock>
+              </div>
+            )}
+          </Card>
+          <EmpiricalAssistant compound={compound} steps={steps} totalOk={totalOk} />
+        </aside>
+      </div>
+    </main>
+  );
+}
+
+// Subscript helper
+function sub(n: number): string {
+  const map: Record<string, string> = { "0":"₀","1":"₁","2":"₂","3":"₃","4":"₄","5":"₅","6":"₆","7":"₇","8":"₈","9":"₉" };
+  return String(n).split("").map((c) => map[c] ?? c).join("");
+}
+
+function FormulaText({ text, className }: { text: string; className?: string }) {
+  return <span className={cn("tracking-wide", className)}>{text}</span>;
+}
+
+function StepBlock({ n, title, children }: { n: number; title: string; children: React.ReactNode }) {
+  return (
+    <div className="rounded-lg border border-fuchsia-200/50 bg-white/60 p-2 dark:bg-slate-900/40">
+      <div className="mb-1.5 flex items-center gap-1.5">
+        <span className="grid h-5 w-5 place-items-center rounded-full bg-gradient-to-br from-fuchsia-500 to-violet-600 text-[10px] font-black text-white">
+          {n}
+        </span>
+        <div className="text-[10.5px] font-bold uppercase tracking-wider text-fuchsia-700 dark:text-fuchsia-300">
+          {title}
+        </div>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function PercentPie({ rows }: { rows: { sym: ElemSym; pct: number }[] }) {
+  const total = rows.reduce((a, b) => a + b.pct, 0) || 1;
+  const R = 42;
+  const C = 2 * Math.PI * R;
+  let offset = 0;
+  return (
+    <div className="flex items-center gap-3">
+      <svg viewBox="0 0 120 120" className="h-24 w-24 shrink-0 -rotate-90">
+        <circle cx="60" cy="60" r={R} fill="none" stroke="hsl(var(--muted))" strokeWidth="16" />
+        {rows.map((r) => {
+          const frac = r.pct / total;
+          const dash = C * frac;
+          const seg = (
+            <circle
+              key={r.sym}
+              cx="60"
+              cy="60"
+              r={R}
+              fill="none"
+              stroke={ELEMS[r.sym].chart}
+              strokeWidth="16"
+              strokeDasharray={`${dash} ${C - dash}`}
+              strokeDashoffset={-offset}
+              className="transition-all duration-500"
+            />
+          );
+          offset += dash;
+          return seg;
+        })}
+      </svg>
+      <div className="min-w-0 flex-1 space-y-1">
+        {rows.map((r) => (
+          <div key={r.sym} className="flex items-center gap-2 text-[11px]">
+            <span
+              className="h-3 w-3 shrink-0 rounded-sm"
+              style={{ background: ELEMS[r.sym].chart }}
+            />
+            <span className="font-bold">{r.sym}</span>
+            <span className="text-muted-foreground">{ELEMS[r.sym].name}</span>
+            <span className="ml-auto font-mono font-bold tabular-nums">{r.pct.toFixed(2)}%</span>
+          </div>
+        ))}
+        {!rows.length && <div className="text-[11px] text-muted-foreground">No data</div>}
+      </div>
+    </div>
+  );
+}
+
+function MoleculeAssembly({ compound }: { compound: Compound }) {
+  const [assembled, setAssembled] = useState(false);
+  useEffect(() => {
+    setAssembled(false);
+    const t = setTimeout(() => setAssembled(true), 80);
+    return () => clearTimeout(t);
+  }, [compound.key]);
+
+  // Container size measured via viewBox → use a fixed 400x300 coord space
+  const W = 400, H = 300;
+  return (
+    <div className="absolute inset-0">
+      <svg viewBox={`0 0 ${W} ${H}`} className="h-full w-full">
+        <defs>
+          {(Object.keys(ELEMS) as ElemSym[]).map((s) => (
+            <radialGradient key={s} id={`atom-${s}`} cx="35%" cy="30%" r="70%">
+              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.9" />
+              <stop offset="40%" stopColor={ELEMS[s].color} />
+              <stop offset="100%" stopColor={ELEMS[s].ring} />
+            </radialGradient>
+          ))}
+        </defs>
+        {/* Bonds */}
+        <g style={{ opacity: assembled ? 1 : 0, transition: "opacity 500ms ease 350ms" }}>
+          {compound.bonds.map(([a, b], i) => {
+            const A = compound.layout[a];
+            const B = compound.layout[b];
+            if (!A || !B) return null;
+            return (
+              <line
+                key={i}
+                x1={A.x * W} y1={A.y * H}
+                x2={B.x * W} y2={B.y * H}
+                stroke="hsl(var(--foreground) / 0.35)"
+                strokeWidth={3}
+                strokeLinecap="round"
+              />
+            );
+          })}
+        </g>
+        {/* Atoms */}
+        {compound.layout.map((a, i) => {
+          const targetX = a.x * W;
+          const targetY = a.y * H;
+          // fly-in start position from screen edge
+          const angle = (i / compound.layout.length) * Math.PI * 2;
+          const startX = W / 2 + Math.cos(angle) * W;
+          const startY = H / 2 + Math.sin(angle) * H;
+          return (
+            <g
+              key={i}
+              style={{
+                transform: assembled
+                  ? `translate(${targetX}px, ${targetY}px)`
+                  : `translate(${startX}px, ${startY}px)`,
+                transition: `transform 700ms cubic-bezier(.2,.9,.3,1.05) ${i * 45}ms, opacity 400ms ${i * 45}ms`,
+                opacity: assembled ? 1 : 0,
+              }}
+            >
+              <circle r={a.r} fill={`url(#atom-${a.sym})`} stroke={ELEMS[a.sym].ring} strokeWidth={1.5} />
+              <text
+                textAnchor="middle"
+                dominantBaseline="central"
+                fontSize={a.r * 0.9}
+                fontWeight={900}
+                fill={a.sym === "H" || a.sym === "C" && ELEMS.C.color === "#1f2937" ? (a.sym === "H" ? "#0e7490" : "#ffffff") : "#ffffff"}
+                style={{ pointerEvents: "none" }}
+              >
+                {a.sym}
+              </text>
+            </g>
+          );
+        })}
+      </svg>
+      {/* Reassemble button */}
+      <button
+        onClick={() => setAssembled(false) || setTimeout(() => setAssembled(true), 60)}
+        className="absolute bottom-2 right-2 flex items-center gap-1 rounded-full border border-fuchsia-400/40 bg-white/80 px-2.5 py-1 text-[10px] font-bold text-fuchsia-700 shadow-sm backdrop-blur transition hover:bg-fuchsia-500 hover:text-white dark:bg-slate-900/70 dark:text-fuchsia-300"
+      >
+        <Sparkles className="h-3 w-3" /> Re-assemble
+      </button>
+    </div>
+  );
+}
+
+function EmpiricalAssistant({
+  compound,
+  steps,
+  totalOk,
+}: {
+  compound: Compound;
+  steps: { empFormula: string; molFormula: string; n: number; empMass: number; mm: number } | null;
+  totalOk: boolean;
+}) {
+  let msg: string;
+  if (!steps) {
+    msg = "শুরু করতে বাম দিক থেকে একটি প্রিসেট যৌগ নির্বাচন কর অথবা মৌলের শতকরা মান দাও।";
+  } else if (!totalOk) {
+    msg = "শতকরা সংযুতির যোগফল ১০০% হওয়া উচিত — মান একটু সমন্বয় কর, নইলে হিসাব নির্ভুল হবে না।";
+  } else if (steps.mm > 0 && steps.n > 1 && steps.empFormula !== steps.molFormula) {
+    msg = `খেয়াল করো — ${compound.nameBn} এর স্থূল সংকেত ${steps.empFormula} হলেও, আণবিক ভর (${steps.mm}) থেকে n = ${steps.n} পাই। তাই আসল আণবিক সংকেত ${steps.molFormula}। যেমন গ্লুকোজ ও ফরমালডিহাইড উভয়েরই স্থূল সংকেত CH₂O!`;
+  } else {
+    msg = `শতকরা সংযুতি থেকে সরাসরি আসল সংকেত পাই না — প্রথমে পাই স্থূল সংকেত (${steps.empFormula})। আণবিক ভর দিলে তবেই আণবিক সংকেত (${steps.molFormula}) বের করা যায়।`;
+  }
+  return (
+    <div className="flex items-start gap-2 rounded-xl border border-fuchsia-500/30 bg-fuchsia-500/5 p-2.5 text-[11.5px] leading-relaxed shadow-sm">
+      <div className="grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-fuchsia-500 to-violet-600 text-white">
+        <Bot className="h-3.5 w-3.5" />
+      </div>
+      <div className="min-w-0">
+        <div className="mb-0.5 text-[10px] font-bold uppercase tracking-wider text-fuchsia-600 dark:text-fuchsia-300">
+          Lab AI Assistant
+        </div>
+        <p className="text-foreground/90">{msg}</p>
+      </div>
+    </div>
+  );
+}
+
+
