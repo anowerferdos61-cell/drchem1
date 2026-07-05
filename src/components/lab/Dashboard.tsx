@@ -294,14 +294,17 @@ export default function Dashboard({ onPickExperiment }: DashboardProps) {
 
       <section className="mx-auto max-w-7xl px-4 py-5 md:px-6 md:py-10">
         {view === "home" && (
-          <HomeGrid
-            onCurriculum={() => setView("curriculum")}
-            onPractical={() => setView("practical")}
-            onVideos={() => navigate({ to: "/app/videos" })}
-            onNotes={() => navigate({ to: "/app/notes" })}
-            onComingSoon={handleComingSoon}
-            practicalCount={PRACTICAL_LABS.length}
-          />
+          <>
+            <FeaturedChapterSixLab onOpen={() => openLab("mole_concept")} />
+            <HomeGrid
+              onCurriculum={() => setView("curriculum")}
+              onPractical={() => setView("practical")}
+              onVideos={() => navigate({ to: "/app/videos" })}
+              onNotes={() => navigate({ to: "/app/notes" })}
+              onComingSoon={handleComingSoon}
+              practicalCount={PRACTICAL_LABS.length}
+            />
+          </>
         )}
 
         {view === "curriculum" && (
@@ -428,6 +431,38 @@ export default function Dashboard({ onPickExperiment }: DashboardProps) {
 // ─────────────────────────────────────────────────────────────
 // Home — 4 main cards
 // ─────────────────────────────────────────────────────────────
+
+function FeaturedChapterSixLab({ onOpen }: { onOpen: () => void }) {
+  return (
+    <Card
+      onClick={onOpen}
+      className="group mb-4 cursor-pointer overflow-hidden border-emerald-500/25 bg-gradient-to-br from-emerald-500/10 via-teal-500/10 to-cyan-500/10 p-4 shadow-xl shadow-emerald-500/10 transition-all duration-300 hover:-translate-y-0.5 hover:border-emerald-500/50 md:mb-5 md:p-5"
+    >
+      <div className="flex items-center gap-3">
+        <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25">
+          <TestTubes className="h-6 w-6" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge className="bg-emerald-500/10 text-emerald-700 dark:text-emerald-300" variant="secondary">
+              নতুন · CH 06 Theory
+            </Badge>
+            <Badge variant="outline" className="text-[10px]">Free</Badge>
+          </div>
+          <h2 className="mt-1 text-base font-extrabold leading-tight tracking-tight md:text-xl">
+            মোল ও রাসায়নিক গণনা — অ্যাভোগেড্রো সংখ্যা ও মোলারিটি Lab
+          </h2>
+          <p className="mt-1 line-clamp-2 text-xs text-muted-foreground md:text-sm">
+            ১. মোল ও অ্যাভোগাড্রো সংখ্যা · ২. মোলারিটি এবং দ্রবণ লঘুকরণ — সরাসরি শুরু করো।
+          </p>
+        </div>
+        <Button size="sm" className="hidden shrink-0 gap-1.5 sm:inline-flex" onClick={(event) => { event.stopPropagation(); onOpen(); }}>
+          Open Lab <ChevronRight className="h-4 w-4" />
+        </Button>
+      </div>
+    </Card>
+  );
+}
 
 function HomeGrid({
   onCurriculum,
