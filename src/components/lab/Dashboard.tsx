@@ -307,8 +307,10 @@ export default function Dashboard({ onPickExperiment }: DashboardProps) {
         {view === "curriculum" && (
           <CurriculumGrid
             isPro={isPro}
+            canAccessLab={canAccessLab}
             onPick={(ch) => {
-              if (!isPro && ch.number !== 10) {
+              const hasUnlockedLab = ch.labIds.some((id) => canAccessLab(id));
+              if (!isPro && !hasUnlockedLab) {
                 setPaywallLab(`অধ্যায় ${ch.number}: ${ch.titleBn}`);
                 setPaywallOpen(true);
                 return;
@@ -535,7 +537,15 @@ function HomeGrid({
 // Curriculum view
 // ─────────────────────────────────────────────────────────────
 
-function CurriculumGrid({ onPick, isPro }: { onPick: (c: ChapterMeta) => void; isPro: boolean }) {
+function CurriculumGrid({
+  onPick,
+  isPro,
+  canAccessLab,
+}: {
+  onPick: (c: ChapterMeta) => void;
+  isPro: boolean;
+  canAccessLab: (id: ExperimentId) => boolean;
+}) {
   return (
     <>
       <div className="mb-5">
@@ -550,7 +560,7 @@ function CurriculumGrid({ onPick, isPro }: { onPick: (c: ChapterMeta) => void; i
           const pct = total > 0 ? Math.round((done / total) * 100) : 0;
           const Icon = ch.icon;
           const hasLabs = labCount > 0;
-          const locked = !isPro && ch.number !== 10;
+          const locked = !isPro && !ch.labIds.some((id) => canAccessLab(id));
 
           return (
             <Card
