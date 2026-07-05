@@ -1086,183 +1086,210 @@ function MolarityMode({ onBack: _onBack }: { onBack: () => void }) {
   );
 }
 
+// Ion count is CONSERVED across dilution (mass W is fixed → moles fixed).
+const ION_PAIRS = 22;
+
 function MolarityVisual({
-  s1: _s1, s2, v1, v2, sat, massW,
+  s1: _s1, s2, v1: _v1, v2, sat, massW,
 }: { s1: number; s2: number; v1: number; v2: number; sat: number; massW: number }) {
-  // Flask visual: fill height maps to v2 (max 500).
-  const fillPct = Math.min(1, v2 / 500);
-  // color interpolation from faint sky to midnight blue.
-  const r = Math.round(186 - sat * 156); // 186 → 30
-  const g = Math.round(230 - sat * 180); // 230 → 50
-  const b = Math.round(253 - sat * 100); // 253 → 153 (keep some blue)
+  // Flask visual: fill height maps to v2 (max 500 mL).
+  const fillPct = Math.min(1, Math.max(0.08, v2 / 500));
+  // Liquid color: 0.1M → faint sky · 1.0M → rich cobalt.
+  const r = Math.round(186 - sat * 156);
+  const g = Math.round(230 - sat * 180);
+  const b = Math.round(253 - sat * 100);
   const liquid = `rgb(${r}, ${g}, ${b})`;
   const liquidDeep = `rgb(${Math.max(r - 40, 8)}, ${Math.max(g - 40, 20)}, ${Math.max(b - 20, 90)})`;
+  // Opacity: faint at low molarity, rich at high molarity.
+  const fillOpacity = 0.28 + sat * 0.65;
 
   return (
-    <div className="grid h-full w-full grid-rows-[minmax(0,1fr)_auto] gap-2">
-      {/* Flask + ions canvas */}
-      <div className="relative min-h-0 overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-slate-900 to-black shadow-lg">
-        <IonCanvas sat={sat} v2={v2} liquid={liquid} />
+    <div className="relative h-full w-full overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-slate-950 via-slate-900 to-black shadow-lg">
+      <FlaskWithIons
+        fillPct={fillPct}
+        liquid={liquid}
+        liquidDeep={liquidDeep}
+        fillOpacity={fillOpacity}
+        sat={sat}
+      />
 
-        {/* SVG flask overlay */}
-        <svg viewBox="0 0 200 260" className="pointer-events-none absolute inset-0 mx-auto h-full" preserveAspectRatio="xMidYMid meet">
-          <defs>
-            <linearGradient id="glass" x1="0" x2="1">
-              <stop offset="0" stopColor="rgba(255,255,255,0.25)" />
-              <stop offset="0.5" stopColor="rgba(255,255,255,0.05)" />
-              <stop offset="1" stopColor="rgba(255,255,255,0.2)" />
-            </linearGradient>
-            <linearGradient id="liq" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0" stopColor={liquid} stopOpacity="0.85" />
-              <stop offset="1" stopColor={liquidDeep} stopOpacity="0.95" />
-            </linearGradient>
-            <clipPath id="flaskClip">
-              <path d="M85 30 L85 100 L40 220 Q40 240 60 240 L140 240 Q160 240 160 220 L115 100 L115 30 Z" />
-            </clipPath>
-          </defs>
-          {/* liquid fill */}
-          <g clipPath="url(#flaskClip)">
-            <rect x="20" y={240 - fillPct * 210} width="160" height={fillPct * 210} fill="url(#liq)" />
-            {/* meniscus */}
-            <ellipse cx="100" cy={240 - fillPct * 210} rx="70" ry="4" fill="rgba(255,255,255,0.25)" />
-          </g>
-          {/* glass outline */}
-          <path
-            d="M85 30 L85 100 L40 220 Q40 240 60 240 L140 240 Q160 240 160 220 L115 100 L115 30 Z"
-            fill="url(#glass)"
-            stroke="rgba(255,255,255,0.55)"
-            strokeWidth="1.5"
-          />
-          {/* neck rim */}
-          <rect x="80" y="24" width="40" height="8" rx="2" fill="rgba(255,255,255,0.4)" stroke="rgba(255,255,255,0.7)" />
-          {/* volume graduations */}
-          {[0.25, 0.5, 0.75].map((p) => (
-            <g key={p}>
-              <line x1="45" x2="55" y1={240 - p * 210} y2={240 - p * 210} stroke="rgba(255,255,255,0.6)" strokeWidth="1" />
-              <text x="58" y={240 - p * 210 + 3} fill="rgba(255,255,255,0.6)" fontSize="7">
-                {Math.round(p * 500)}
-              </text>
-            </g>
-          ))}
-        </svg>
-
-        {/* HUD */}
-        <div className="pointer-events-none absolute inset-x-0 top-1.5 flex flex-col items-center gap-0.5 px-3 text-center">
-          <span className="rounded-full bg-white/10 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-widest text-white/80 backdrop-blur">
-            Molarity Meter
-          </span>
-          <div className="font-mono text-lg font-black text-sky-300 drop-shadow-[0_0_8px_rgba(56,189,248,0.6)] sm:text-2xl">
-            {s2.toFixed(3)} <span className="text-xs opacity-80">mol/L</span>
-          </div>
-        </div>
-        <div className="pointer-events-none absolute bottom-1.5 left-2 rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-medium text-white/80 backdrop-blur">
-          🔬 Cu²⁺ + SO₄²⁻ ions
-        </div>
-        <div className="pointer-events-none absolute bottom-1.5 right-2 rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-medium text-white/80 backdrop-blur">
-          V₂ = {v2} mL · W = {massW}g
+      {/* HUD — Molarity Meter */}
+      <div className="pointer-events-none absolute inset-x-0 top-1.5 flex flex-col items-center gap-0.5 px-3 text-center">
+        <span className="rounded-full bg-white/10 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-widest text-white/80 backdrop-blur">
+          Molarity Meter · S₂
+        </span>
+        <div className="font-mono text-lg font-black text-sky-300 drop-shadow-[0_0_8px_rgba(56,189,248,0.6)] sm:text-2xl">
+          {s2.toFixed(3)} <span className="text-xs opacity-80">mol/L</span>
         </div>
       </div>
 
-      {/* Comparison chip */}
-      <div className="mx-auto flex w-full max-w-md items-center justify-between gap-2 rounded-xl border bg-background/70 p-2 text-[11px] backdrop-blur">
-        <div className="flex flex-1 items-center gap-1.5">
-          <span className="h-3 w-3 rounded-full border border-white/40" style={{ background: `rgb(${Math.round(186 - Math.min(1, ((massW * 1000) / (CUSO4_M * v1)) / 1.5) * 156)}, ${Math.round(230 - Math.min(1, ((massW * 1000) / (CUSO4_M * v1)) / 1.5) * 180)}, ${Math.round(253 - Math.min(1, ((massW * 1000) / (CUSO4_M * v1)) / 1.5) * 100)})` }} />
-          <span className="font-semibold">V₁ {v1}mL</span>
-          <span className="tabular-nums text-muted-foreground">→ dilute →</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <span className="h-3 w-3 rounded-full border border-white/40" style={{ background: liquid }} />
-          <span className="font-semibold">V₂ {v2}mL</span>
-        </div>
+      {/* Corner labels */}
+      <div className="pointer-events-none absolute bottom-1.5 left-2 rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-medium text-white/80 backdrop-blur">
+        Cu²⁺ · SO₄²⁻
+      </div>
+      <div className="pointer-events-none absolute bottom-1.5 right-2 rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-medium text-white/80 backdrop-blur">
+        V = {v2} mL · W = {massW}g
       </div>
     </div>
   );
 }
 
-function IonCanvas({ sat, v2, liquid }: { sat: number; v2: number; liquid: string }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const stateRef = useRef<{ ps: Array<{ x: number; y: number; vx: number; vy: number; kind: "cu" | "so4"; r: number }>; W: number; H: number }>({ ps: [], W: 0, H: 0 });
+// Flask geometry in viewBox 200×260
+// Neck: x∈[85,115], y∈[30,100]
+// Body: trapezoid from (85,100)-(115,100) widening to (40,220)-(160,220)
+// Base curve: (40,220)→(60,240) & (160,220)→(140,240)
+function flaskBoundsAt(y: number): { xMin: number; xMax: number } {
+  if (y < 30) return { xMin: 100, xMax: 100 };
+  if (y <= 100) return { xMin: 87, xMax: 113 };
+  if (y <= 220) {
+    const t = (y - 100) / 120;
+    return { xMin: 87 - t * 45, xMax: 113 + t * 45 };
+  }
+  // curved base — approximate inset
+  const t = Math.min(1, (y - 220) / 20);
+  return { xMin: 42 + t * 18, xMax: 158 - t * 18 };
+}
 
-  // ion count scales with concentration & clamps to a viewable range.
-  const targetCount = Math.max(6, Math.round(sat * 60));
+interface Ion { x: number; y: number; vx: number; vy: number; kind: "cu" | "so4"; r: number; seed: number }
+
+function FlaskWithIons({
+  fillPct,
+  liquid,
+  liquidDeep,
+  fillOpacity,
+  sat,
+}: { fillPct: number; liquid: string; liquidDeep: string; fillOpacity: number; sat: number }) {
+  const ionsRef = useRef<Ion[]>([]);
+  const [, force] = useState(0);
+
+  // one-time init: conserved ion population
+  if (ionsRef.current.length === 0) {
+    const rng = mulberry32(7);
+    ionsRef.current = Array.from({ length: ION_PAIRS * 2 }).map((_, i) => {
+      const kind: "cu" | "so4" = i % 2 === 0 ? "cu" : "so4";
+      return {
+        x: 100 + (rng() - 0.5) * 40,
+        y: 200,
+        vx: (rng() - 0.5) * 0.35,
+        vy: (rng() - 0.5) * 0.35,
+        kind,
+        r: kind === "cu" ? 4.2 : 5.2,
+        seed: rng() * 1000,
+      };
+    });
+  }
+
+  // Liquid top y in viewBox coords
+  const liquidTopY = 240 - fillPct * 210;
 
   useEffect(() => {
-    const rng = mulberry32(42);
-    stateRef.current.ps = Array.from({ length: targetCount * 2 }).map((_, i) => ({
-      x: 0.15 + rng() * 0.7,
-      y: 0.3 + rng() * 0.55,
-      vx: (rng() - 0.5) * 0.3,
-      vy: (rng() - 0.5) * 0.3,
-      kind: i % 2 === 0 ? "cu" : "so4",
-      r: i % 2 === 0 ? 7 : 9,
-    }));
-  }, [targetCount]);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const container = containerRef.current;
-    if (!canvas || !container) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const resize = () => {
-      const rect = container.getBoundingClientRect();
-      stateRef.current.W = rect.width;
-      stateRef.current.H = rect.height;
-      canvas.width = Math.max(1, Math.floor(rect.width * dpr));
-      canvas.height = Math.max(1, Math.floor(rect.height * dpr));
-      canvas.style.width = `${rect.width}px`;
-      canvas.style.height = `${rect.height}px`;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    };
-    resize();
-    const ro = new ResizeObserver(resize);
-    ro.observe(container);
-
     let raf = 0;
-    const draw = () => {
-      const { W, H, ps } = stateRef.current;
-      ctx.clearRect(0, 0, W, H);
-      for (const p of ps) {
-        p.x += p.vx / W;
-        p.y += p.vy / H;
-        if (p.x < 0.12 || p.x > 0.88) p.vx *= -1;
-        if (p.y < 0.28 || p.y > 0.9) p.vy *= -1;
-        const cx = p.x * W;
-        const cy = p.y * H;
-        const g = ctx.createRadialGradient(cx - p.r * 0.3, cy - p.r * 0.3, p.r * 0.1, cx, cy, p.r);
-        if (p.kind === "cu") {
-          g.addColorStop(0, "#e0f2fe");
-          g.addColorStop(1, "#0369a1");
-        } else {
-          g.addColorStop(0, "#fef9c3");
-          g.addColorStop(1, "#a16207");
-        }
-        ctx.beginPath();
-        ctx.arc(cx, cy, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = g;
-        ctx.fill();
-        ctx.fillStyle = "rgba(255,255,255,0.9)";
-        ctx.font = `bold ${p.r * 0.8}px ui-sans-serif`;
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(p.kind === "cu" ? "Cu²⁺" : "SO₄²⁻", cx, cy);
-      }
-      raf = requestAnimationFrame(draw);
-    };
-    raf = requestAnimationFrame(draw);
-    return () => { cancelAnimationFrame(raf); ro.disconnect(); };
-  }, []);
+    let last = performance.now();
+    const tick = (now: number) => {
+      const dt = Math.min(48, now - last);
+      last = now;
+      const ions = ionsRef.current;
+      for (const p of ions) {
+        // Brownian jitter — gentler when concentrated (more crowded)
+        const jitter = 0.02 + (1 - sat) * 0.05;
+        p.vx += (Math.random() - 0.5) * jitter;
+        p.vy += (Math.random() - 0.5) * jitter;
+        // damping
+        p.vx *= 0.96;
+        p.vy *= 0.96;
+        // step
+        p.x += p.vx * dt * 0.06;
+        p.y += p.vy * dt * 0.06;
 
-  // silence unused vars (v2, liquid used elsewhere / for visual key)
-  void v2; void liquid;
+        // Confine to liquid volume:
+        // Vertical: between liquidTopY (+ ion r) and 238 (- ion r)
+        const yMin = liquidTopY + p.r + 2;
+        const yMax = 238 - p.r;
+        if (p.y < yMin) { p.y = yMin; p.vy = Math.abs(p.vy) * 0.6; }
+        if (p.y > yMax) { p.y = yMax; p.vy = -Math.abs(p.vy) * 0.6; }
+
+        // Horizontal: bounded by flask walls at current y
+        const b = flaskBoundsAt(p.y);
+        const xMin = b.xMin + p.r;
+        const xMax = b.xMax - p.r;
+        if (xMin >= xMax) {
+          p.x = (b.xMin + b.xMax) / 2;
+          p.vx = 0;
+        } else {
+          if (p.x < xMin) { p.x = xMin; p.vx = Math.abs(p.vx) * 0.6; }
+          if (p.x > xMax) { p.x = xMax; p.vx = -Math.abs(p.vx) * 0.6; }
+        }
+      }
+      force((n) => (n + 1) % 1000000);
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [liquidTopY, sat]);
 
   return (
-    <div ref={containerRef} className="absolute inset-0">
-      <canvas ref={canvasRef} className="block h-full w-full" />
-    </div>
+    <svg viewBox="0 0 200 260" className="absolute inset-0 mx-auto h-full" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <linearGradient id="glass" x1="0" x2="1">
+          <stop offset="0" stopColor="rgba(255,255,255,0.28)" />
+          <stop offset="0.5" stopColor="rgba(255,255,255,0.05)" />
+          <stop offset="1" stopColor="rgba(255,255,255,0.22)" />
+        </linearGradient>
+        <linearGradient id="liq" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0" stopColor={liquid} stopOpacity={fillOpacity} />
+          <stop offset="1" stopColor={liquidDeep} stopOpacity={Math.min(0.98, fillOpacity + 0.08)} />
+        </linearGradient>
+        <clipPath id="flaskClip">
+          <path d="M85 30 L85 100 L40 220 Q40 240 60 240 L140 240 Q160 240 160 220 L115 100 L115 30 Z" />
+        </clipPath>
+        <radialGradient id="cuGrad" cx="0.35" cy="0.35" r="0.7">
+          <stop offset="0" stopColor="#e0f2fe" />
+          <stop offset="1" stopColor="#0369a1" />
+        </radialGradient>
+        <radialGradient id="so4Grad" cx="0.35" cy="0.35" r="0.7">
+          <stop offset="0" stopColor="#fef9c3" />
+          <stop offset="1" stopColor="#b45309" />
+        </radialGradient>
+      </defs>
+
+      {/* liquid + ions — everything strictly clipped to the flask */}
+      <g clipPath="url(#flaskClip)">
+        <rect x="20" y={liquidTopY} width="160" height={240 - liquidTopY} fill="url(#liq)" />
+        {/* meniscus */}
+        <ellipse cx="100" cy={liquidTopY} rx="70" ry="3.2" fill="rgba(255,255,255,0.28)" />
+        {/* ions — only rendered inside liquid volume */}
+        {ionsRef.current.map((p, i) => (
+          <circle
+            key={i}
+            cx={p.x}
+            cy={p.y}
+            r={p.r}
+            fill={p.kind === "cu" ? "url(#cuGrad)" : "url(#so4Grad)"}
+            stroke="rgba(255,255,255,0.55)"
+            strokeWidth="0.35"
+          />
+        ))}
+      </g>
+
+      {/* glass outline */}
+      <path
+        d="M85 30 L85 100 L40 220 Q40 240 60 240 L140 240 Q160 240 160 220 L115 100 L115 30 Z"
+        fill="url(#glass)"
+        stroke="rgba(255,255,255,0.55)"
+        strokeWidth="1.5"
+      />
+      {/* neck rim */}
+      <rect x="80" y="24" width="40" height="8" rx="2" fill="rgba(255,255,255,0.4)" stroke="rgba(255,255,255,0.7)" />
+      {/* graduation ticks */}
+      {[0.25, 0.5, 0.75].map((p) => (
+        <g key={p}>
+          <line x1="45" x2="55" y1={240 - p * 210} y2={240 - p * 210} stroke="rgba(255,255,255,0.55)" strokeWidth="1" />
+          <text x="58" y={240 - p * 210 + 3} fill="rgba(255,255,255,0.6)" fontSize="7">
+            {Math.round(p * 500)}
+          </text>
+        </g>
+      ))}
+    </svg>
   );
 }
 
