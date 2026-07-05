@@ -1400,7 +1400,7 @@ const PRESETS: Compound[] = [
   },
 ];
 
-function EmpiricalMode() {
+function EmpiricalMode(_props: { onBack: () => void }) {
   const [preset, setPreset] = useState<string>("glucose");
   const [rows, setRows] = useState<{ sym: ElemSym; pct: string }[]>(() =>
     PRESETS[2].percents.map((p) => ({ sym: p.sym, pct: String(p.pct) })),
