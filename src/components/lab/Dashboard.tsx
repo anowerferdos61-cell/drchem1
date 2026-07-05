@@ -166,7 +166,7 @@ const CHAPTERS: ChapterMeta[] = [
     accent: "from-emerald-500 to-teal-500", icon: TestTubes },
   { number: 7, titleBn: "রাসায়নিক বিক্রিয়া", titleEn: "Chemical Reactions",
     descBn: "বিক্রিয়ার ধরন, দ্রাব্যতা ও গ্যাস প্রস্তুতি।",
-    labIds: ["physical_vs_chemical"],
+    labIds: [], comingSoonCount: 1,
     accent: "from-amber-500 to-orange-500", icon: Beaker },
   { number: 8, titleBn: "রসায়ন ও শক্তি", titleEn: "Chemistry & Energy",
     descBn: "তাপ পরিবর্তন, তড়িৎ-রাসায়নিক সারি।",
