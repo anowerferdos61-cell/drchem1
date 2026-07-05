@@ -511,7 +511,8 @@ function AvogadroMode({ onBack }: { onBack: () => void }) {
   };
 
   return (
-    <div className="relative flex min-h-[100dvh] w-full flex-col bg-gradient-to-br from-emerald-50 via-white to-teal-50 dark:from-slate-950 dark:via-background dark:to-emerald-950/40 lg:h-[100dvh] lg:overflow-hidden">
+    <div className="relative flex flex-1 min-h-0 w-full flex-col lg:overflow-hidden">
+
       <header className="sticky top-0 z-20 shrink-0 border-b bg-background/85 backdrop-blur-xl lg:static">
         <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-3 py-2">
           <div className="flex min-w-0 items-center gap-2">
