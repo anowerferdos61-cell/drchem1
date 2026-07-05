@@ -1871,7 +1871,7 @@ function MoleculeAssembly({ compound }: { compound: Compound }) {
       </svg>
       {/* Reassemble button */}
       <button
-        onClick={() => setAssembled(false) || setTimeout(() => setAssembled(true), 60)}
+        onClick={() => { setAssembled(false); setTimeout(() => setAssembled(true), 60); }}
         className="absolute bottom-2 right-2 flex items-center gap-1 rounded-full border border-fuchsia-400/40 bg-white/80 px-2.5 py-1 text-[10px] font-bold text-fuchsia-700 shadow-sm backdrop-blur transition hover:bg-fuchsia-500 hover:text-white dark:bg-slate-900/70 dark:text-fuchsia-300"
       >
         <Sparkles className="h-3 w-3" /> Re-assemble
