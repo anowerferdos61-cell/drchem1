@@ -869,7 +869,7 @@ export default function LimitingReactantLab({ onBack }: { onBack: () => void }) 
                 running={running}
                 paused={paused}
                 onReactionEnd={onReactionEnd}
-                limitingKind={reactionEnded ? (stoich.limiting as Kind) : null}
+                resetKey={resetKey}
               />
             </div>
           </section>
