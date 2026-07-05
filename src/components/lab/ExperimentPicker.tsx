@@ -152,6 +152,13 @@ const EXPERIMENTS: Array<{
     icon: Zap,
     gradient: "from-orange-100 via-rose-50 to-cyan-100",
   },
+  {
+    id: "stp_molar_volume",
+    title: "STP & Molar Volume · STP ও মোলার আয়তন",
+    subtitle: "V = n × 22.4 L · Piston chamber locks at 1 mol · H₂ / O₂ / CO₂",
+    icon: Wind,
+    gradient: "from-emerald-100 via-teal-50 to-cyan-100",
+  },
 ];
 
 

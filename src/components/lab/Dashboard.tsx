@@ -40,6 +40,7 @@ import {
   Lock,
   Video,
   NotebookPen,
+  Wind,
 } from "lucide-react";
 import { useEntitlements } from "@/hooks/useEntitlements";
 import { PaywallModal } from "@/components/subscription/PaywallModal";
@@ -90,6 +91,8 @@ const ALL_LABS: LabMeta[] = [
     icon: Sparkles, tint: "from-fuchsia-500/15 to-violet-500/10", iconColor: "text-fuchsia-500", isCoreBoard: false },
   { id: "limiting_reactant", title: "Limiting Reactant & Yield Predictor", titleBn: "লিমিটিং বিক্রিয়ক ও উৎপাদ",
     icon: Zap, tint: "from-orange-500/15 to-rose-500/10", iconColor: "text-orange-500", isCoreBoard: false },
+  { id: "stp_molar_volume", title: "STP & Molar Volume Explorer", titleBn: "STP ও মোলার আয়তন",
+    icon: Wind, tint: "from-emerald-500/15 to-cyan-500/10", iconColor: "text-emerald-500", isCoreBoard: false },
   { id: "na2co3_standard", title: "0.1 M Na₂CO₃ Standard", titleBn: "০.১ M Na₂CO₃ প্রমাণ দ্রবণ",
     icon: FlaskConical, tint: "from-emerald-500/15 to-green-500/10", iconColor: "text-emerald-500", isCoreBoard: true },
   { id: "cuso4_water", title: "CuSO₄·5H₂O Water of Crystallisation", titleBn: "CuSO₄·5H₂O কেলাস পানি",
@@ -159,7 +162,7 @@ const CHAPTERS: ChapterMeta[] = [
     accent: "from-indigo-500 to-violet-500", icon: Atom },
   { number: 6, titleBn: "মোল ও রাসায়নিক গণনা", titleEn: "Mole & Chemical Calculations",
     descBn: "মোল ধারণা, মোলারিটি ও প্রমাণ দ্রবণ।",
-    labIds: ["mole_concept", "molarity_dilution", "empirical_formula", "limiting_reactant"],
+    labIds: ["mole_concept", "molarity_dilution", "empirical_formula", "limiting_reactant", "stp_molar_volume"],
     accent: "from-emerald-500 to-teal-500", icon: TestTubes },
   { number: 7, titleBn: "রাসায়নিক বিক্রিয়া", titleEn: "Chemical Reactions",
     descBn: "বিক্রিয়ার ধরন, দ্রাব্যতা ও গ্যাস প্রস্তুতি।",
