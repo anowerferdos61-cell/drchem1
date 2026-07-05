@@ -30,8 +30,7 @@ export type ExperimentId =
   | "molarity_dilution"
   | "empirical_formula"
   | "limiting_reactant"
-  | "stp_molar_volume"
-  | "physical_vs_chemical";
+  | "stp_molar_volume";
 
 
 export type Mode = "guide" | "student" | "classroom";
