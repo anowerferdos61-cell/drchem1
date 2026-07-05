@@ -562,12 +562,11 @@ function MoleculeIcon() {
   );
 }
 
-/* ─── Melting scene (SVG) ─── */
+/* ─── Melting scene — pseudo-3D glassmorphism apparatus ─── */
 
 function MeltingScene({
   temp,
   heating,
-  melted,
   sugarState,
   isIonic,
 }: {
@@ -577,144 +576,349 @@ function MeltingScene({
   sugarState?: "solid" | "melting" | "molten" | "browning" | "charred";
   isIonic: boolean;
 }) {
-  const maxT = isIonic ? 850 : 240;
+  const maxT = isIonic ? 900 : 240;
   const thermFrac = Math.min(1, Math.max(0.06, (temp - 20) / (maxT - 20)));
+  const reachedNaCl = isIonic && temp >= NACL_MP;
+  const reachedSugar = !isIonic && (sugarState === "charred" || sugarState === "browning");
 
-  const sampleColor =
-    isIonic
-      ? "#ffffff"
-      : sugarState === "solid"
-        ? "#ffffff"
-        : sugarState === "melting"
-          ? "#fef3c7"
-          : sugarState === "molten"
-            ? "#fde68a"
-            : sugarState === "browning"
-              ? "#b45309"
-              : "#1c1917";
+  const gradId = isIonic ? "flameBlue" : "flameOrange";
 
   return (
-    <svg viewBox="0 0 200 240" className="h-full w-full">
-      {/* Thermometer */}
-      <g transform="translate(10 20)">
-        <rect x="0" y="0" width="14" height="180" rx="7" fill="#e2e8f0" stroke="#94a3b8" />
+    <svg viewBox="0 0 220 260" className="h-full w-full" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        {/* Tabletop */}
+        <linearGradient id={`table-${isIonic ? "i" : "c"}`} x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0" stopColor={isIonic ? "#1e293b" : "#292524"} />
+          <stop offset="1" stopColor={isIonic ? "#0f172a" : "#1c1917"} />
+        </linearGradient>
+        {/* Metal tripod / gauze / stand */}
+        <linearGradient id="metal" x1="0" x2="1">
+          <stop offset="0" stopColor="#334155" />
+          <stop offset="0.5" stopColor="#cbd5e1" />
+          <stop offset="1" stopColor="#334155" />
+        </linearGradient>
+        {/* Crucible ceramic */}
+        <radialGradient id="crucible" cx="0.5" cy="0.3" r="0.9">
+          <stop offset="0" stopColor="#f8fafc" />
+          <stop offset="0.6" stopColor="#e2e8f0" />
+          <stop offset="1" stopColor="#64748b" />
+        </radialGradient>
+        {/* Glass beaker */}
+        <linearGradient id="beakerG" x1="0" x2="1">
+          <stop offset="0" stopColor="rgba(255,255,255,0.85)" />
+          <stop offset="0.4" stopColor="rgba(186,230,253,0.25)" />
+          <stop offset="0.6" stopColor="rgba(186,230,253,0.15)" />
+          <stop offset="1" stopColor="rgba(255,255,255,0.7)" />
+        </linearGradient>
+        {/* Clay triangle */}
+        <linearGradient id="clay" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0" stopColor="#c2410c" />
+          <stop offset="1" stopColor="#7c2d12" />
+        </linearGradient>
+        {/* Flames */}
+        <radialGradient id="flameOrange" cx="0.5" cy="0.9" r="0.7">
+          <stop offset="0" stopColor="#fef3c7" />
+          <stop offset="0.35" stopColor="#fbbf24" />
+          <stop offset="0.75" stopColor="#ea580c" />
+          <stop offset="1" stopColor="#7f1d1d" stopOpacity="0.1" />
+        </radialGradient>
+        <radialGradient id="flameBlue" cx="0.5" cy="0.9" r="0.75">
+          <stop offset="0" stopColor="#f5d0fe" />
+          <stop offset="0.25" stopColor="#c4b5fd" />
+          <stop offset="0.55" stopColor="#4f46e5" />
+          <stop offset="0.85" stopColor="#1e1b4b" />
+          <stop offset="1" stopColor="#000" stopOpacity="0" />
+        </radialGradient>
+        {/* Crystal sparkle */}
+        <linearGradient id="crystal" x1="0" x2="1" y1="0" y2="1">
+          <stop offset="0" stopColor="#ffffff" />
+          <stop offset="0.5" stopColor="#f1f5f9" />
+          <stop offset="1" stopColor="#94a3b8" />
+        </linearGradient>
+        {/* Molten pool */}
+        <radialGradient id="molten" cx="0.5" cy="0.5" r="0.6">
+          <stop offset="0" stopColor="#fef08a" />
+          <stop offset="1" stopColor="#ca8a04" />
+        </radialGradient>
+        <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="3" />
+        </filter>
+      </defs>
+
+      {/* Ambient backdrop glow when heating */}
+      {heating && (
+        <rect
+          x="0"
+          y="0"
+          width="220"
+          height="260"
+          fill={isIonic ? "#6366f1" : "#f97316"}
+          opacity={reachedNaCl || reachedSugar ? 0.12 : 0.06}
+        />
+      )}
+
+      {/* Tabletop (isometric slab) */}
+      <g>
+        <polygon points="10,220 210,220 200,238 20,238" fill={`url(#table-${isIonic ? "i" : "c"})`} />
+        <polygon points="10,220 20,238 20,244 10,226" fill="#000" opacity="0.35" />
+        <polygon points="210,220 200,238 200,244 210,226" fill="#000" opacity="0.35" />
+      </g>
+
+      {/* Thermometer (glass tube, floating right) */}
+      <g transform="translate(188 20)">
+        <rect x="0" y="0" width="12" height="150" rx="6" fill="rgba(255,255,255,0.55)" stroke="#94a3b8" strokeWidth="0.8" />
         <rect
           x="3"
-          y={180 - thermFrac * 170}
-          width="8"
-          height={thermFrac * 170}
-          rx="4"
-          fill="url(#thermGrad)"
+          y={150 - thermFrac * 142}
+          width="6"
+          height={thermFrac * 142}
+          rx="3"
+          fill={isIonic ? "url(#thermIon)" : "url(#thermCov)"}
         />
-        <circle cx="7" cy="188" r="10" fill="#ef4444" />
+        <circle cx="6" cy="158" r="8" fill="#ef4444" />
+        <circle cx="4" cy="156" r="2" fill="#fecaca" opacity="0.8" />
         <defs>
-          <linearGradient id="thermGrad" x1="0" x2="0" y1="1" y2="0">
-            <stop offset="0" stopColor="#f87171" />
-            <stop offset="1" stopColor="#dc2626" />
+          <linearGradient id="thermIon" x1="0" x2="0" y1="1" y2="0">
+            <stop offset="0" stopColor="#fb7185" />
+            <stop offset="1" stopColor="#7f1d1d" />
+          </linearGradient>
+          <linearGradient id="thermCov" x1="0" x2="0" y1="1" y2="0">
+            <stop offset="0" stopColor="#fbbf24" />
+            <stop offset="1" stopColor="#b45309" />
           </linearGradient>
         </defs>
-        <text x="7" y="-4" textAnchor="middle" fontSize="9" fill="#334155" fontWeight="700">
+        <rect x="-30" y="0" width="26" height="14" rx="3" fill="rgba(15,23,42,0.85)" />
+        <text x="-17" y="10" textAnchor="middle" fontSize="8" fontWeight="800" fill="#fef3c7" fontFamily="ui-monospace, monospace">
           {Math.round(temp)}°C
         </text>
       </g>
 
-      {/* Watch glass with sample */}
-      <g transform="translate(60 100)">
-        <ellipse cx="60" cy="42" rx="60" ry="8" fill="rgba(0,0,0,0.15)" />
-        <path
-          d="M0 40 Q60 -6 120 40 Z"
-          fill="url(#glassGrad)"
-          stroke="#64748b"
-          strokeWidth="1"
-        />
-        <defs>
-          <linearGradient id="glassGrad" x1="0" x2="1">
-            <stop offset="0" stopColor="rgba(255,255,255,0.7)" />
-            <stop offset="0.5" stopColor="rgba(255,255,255,0.35)" />
-            <stop offset="1" stopColor="rgba(255,255,255,0.7)" />
-          </linearGradient>
-        </defs>
-        {/* Sample pile / puddle */}
-        {isIonic || sugarState === "solid" || sugarState === "melting" ? (
-          // crystalline pile
-          <g>
-            {[...Array(14)].map((_, i) => {
-              const x = 25 + (i % 7) * 10 + (i > 6 ? 5 : 0);
-              const y = 34 - (i > 6 ? 4 : 0) - Math.random() * 0.5;
-              return (
-                <rect
-                  key={i}
-                  x={x}
-                  y={y}
-                  width="6"
-                  height="6"
-                  rx="1"
-                  fill={sampleColor}
-                  stroke="#cbd5e1"
-                  strokeWidth="0.5"
-                />
-              );
-            })}
-          </g>
-        ) : (
-          // puddle / char
-          <ellipse cx="60" cy="36" rx="34" ry="6" fill={sampleColor} />
-        )}
-        {/* Char smoke */}
-        {sugarState === "browning" || sugarState === "charred" ? (
-          <g opacity="0.75">
-            {[0, 1, 2].map((i) => (
-              <circle
-                key={i}
-                cx={45 + i * 15}
-                cy="10"
-                r="5"
-                fill="#78716c"
-              >
-                <animate attributeName="cy" values="10;-30" dur="2.2s" begin={`${i * 0.5}s`} repeatCount="indefinite" />
-                <animate attributeName="opacity" values="0;0.7;0" dur="2.2s" begin={`${i * 0.5}s`} repeatCount="indefinite" />
-              </circle>
-            ))}
-          </g>
-        ) : null}
+      {/* Retort stand upright */}
+      <g>
+        <rect x="24" y="90" width="4" height="140" fill="url(#metal)" />
+        <rect x="14" y="228" width="24" height="6" rx="1" fill="#475569" />
       </g>
 
-      {/* Bunsen burner */}
-      <g transform="translate(90 170)">
-        <rect x="-6" y="30" width="12" height="30" fill="#475569" />
-        <rect x="-20" y="60" width="40" height="10" rx="2" fill="#334155" />
+      {/* ── Apparatus: NaCl (crucible + clay triangle) or Sugar (beaker + gauze) ── */}
+      {isIonic ? (
+        <g>
+          {/* Tripod legs (perspective) */}
+          <line x1="70" y1="140" x2="55" y2="222" stroke="url(#metal)" strokeWidth="3.5" />
+          <line x1="150" y1="140" x2="165" y2="222" stroke="url(#metal)" strokeWidth="3.5" />
+          <line x1="110" y1="145" x2="110" y2="222" stroke="url(#metal)" strokeWidth="3.5" opacity="0.55" />
+          {/* Tripod ring */}
+          <ellipse cx="110" cy="140" rx="46" ry="8" fill="none" stroke="url(#metal)" strokeWidth="3" />
+          {/* Clay triangle */}
+          <polygon points="72,138 148,138 110,120" fill="url(#clay)" stroke="#431407" strokeWidth="0.6" />
+          <polygon points="78,136 142,136 110,122" fill="#ea580c" opacity="0.55" />
+
+          {/* Porcelain crucible */}
+          <ellipse cx="110" cy="238" rx="42" ry="6" fill="#000" opacity="0.35" filter="url(#softShadow)" />
+          <path
+            d="M76 100 L144 100 L134 138 Q134 148 110 148 Q86 148 86 138 Z"
+            fill="url(#crucible)"
+            stroke="#475569"
+            strokeWidth="1"
+          />
+          {/* Crucible rim highlight */}
+          <ellipse cx="110" cy="100" rx="34" ry="5" fill="#0f172a" opacity="0.75" />
+          <ellipse cx="110" cy="99" rx="34" ry="4" fill="none" stroke="#f8fafc" strokeWidth="0.6" />
+
+          {/* NaCl 3D crystal cubes — multi-layer sparkle pile */}
+          <g clipPath="url(#crucibleClip)">
+            <defs>
+              <clipPath id="crucibleClip">
+                <path d="M78 100 L142 100 L132 138 Q132 146 110 146 Q88 146 88 138 Z" />
+              </clipPath>
+            </defs>
+            {[
+              // layer 1 (back)
+              { x: 92, y: 118, s: 9 }, { x: 104, y: 116, s: 10 }, { x: 117, y: 118, s: 9 }, { x: 127, y: 120, s: 8 },
+              // layer 2
+              { x: 88, y: 126, s: 10 }, { x: 100, y: 124, s: 11 }, { x: 113, y: 125, s: 10 }, { x: 124, y: 128, s: 9 },
+              // layer 3 (front)
+              { x: 95, y: 134, s: 11 }, { x: 108, y: 133, s: 12 }, { x: 121, y: 135, s: 10 },
+            ].map((c, i) => (
+              <g key={i} transform={`translate(${c.x} ${c.y})`}>
+                {/* cube: top / left / right faces */}
+                <polygon points={`0,0 ${c.s},-3 ${c.s * 2},0 ${c.s},3`} fill="#f1f5f9" stroke="#94a3b8" strokeWidth="0.4" />
+                <polygon points={`0,0 ${c.s},3 ${c.s},${c.s + 3} 0,${c.s}`} fill="url(#crystal)" stroke="#64748b" strokeWidth="0.4" />
+                <polygon points={`${c.s * 2},0 ${c.s},3 ${c.s},${c.s + 3} ${c.s * 2},${c.s}`} fill="#cbd5e1" stroke="#64748b" strokeWidth="0.4" />
+                {/* sparkle */}
+                <circle cx={c.s * 0.5} cy={c.s * 0.35} r="0.7" fill="#fff">
+                  <animate attributeName="opacity" values="0;1;0" dur={`${1.4 + (i % 4) * 0.3}s`} repeatCount="indefinite" />
+                </circle>
+              </g>
+            ))}
+          </g>
+        </g>
+      ) : (
+        <g>
+          {/* Tripod */}
+          <line x1="70" y1="170" x2="55" y2="222" stroke="url(#metal)" strokeWidth="3.5" />
+          <line x1="150" y1="170" x2="165" y2="222" stroke="url(#metal)" strokeWidth="3.5" />
+          <line x1="110" y1="175" x2="110" y2="222" stroke="url(#metal)" strokeWidth="3.5" opacity="0.55" />
+          <ellipse cx="110" cy="170" rx="46" ry="7" fill="none" stroke="url(#metal)" strokeWidth="3" />
+          {/* Wire gauze */}
+          <ellipse cx="110" cy="168" rx="42" ry="6" fill="#94a3b8" stroke="#334155" strokeWidth="0.7" />
+          <g stroke="#334155" strokeWidth="0.4" opacity="0.6">
+            {[-30, -20, -10, 0, 10, 20, 30].map((dx) => (
+              <line key={`v${dx}`} x1={110 + dx} y1={163} x2={110 + dx} y2={173} />
+            ))}
+            {[-4, -2, 0, 2, 4].map((dy) => (
+              <ellipse key={`h${dy}`} cx="110" cy={168 + dy} rx={42 - Math.abs(dy) * 2} ry="0.4" fill="none" />
+            ))}
+          </g>
+          {/* Ceramic pad center */}
+          <rect x="98" y="164" width="24" height="4" rx="1" fill="#fef3c7" opacity="0.7" />
+
+          {/* Glass beaker */}
+          <ellipse cx="110" cy="238" rx="42" ry="5" fill="#000" opacity="0.3" filter="url(#softShadow)" />
+          <path
+            d="M78 110 L142 110 L138 158 Q138 168 122 168 L98 168 Q82 168 82 158 Z"
+            fill="url(#beakerG)"
+            stroke="#475569"
+            strokeWidth="1"
+          />
+          {/* Beaker highlights */}
+          <path d="M85 116 L85 156" stroke="#fff" strokeWidth="1.2" opacity="0.7" />
+          <path d="M132 118 L134 150" stroke="#fff" strokeWidth="0.8" opacity="0.4" />
+          <ellipse cx="110" cy="110" rx="32" ry="3.5" fill="none" stroke="#475569" strokeWidth="0.8" />
+
+          {/* Sample contents */}
+          <g clipPath="url(#beakerClip)">
+            <defs>
+              <clipPath id="beakerClip">
+                <path d="M80 112 L140 112 L136 156 Q136 166 122 166 L98 166 Q84 166 84 156 Z" />
+              </clipPath>
+            </defs>
+            {sugarState === "solid" || sugarState === "melting" ? (
+              <g>
+                {/* Granular sugar (translucent) */}
+                {[...Array(22)].map((_, i) => {
+                  const x = 88 + (i % 8) * 6 + ((i / 8) | 0) * 2;
+                  const y = 158 - ((i / 8) | 0) * 4;
+                  const op = sugarState === "melting" ? 0.55 : 0.9;
+                  return (
+                    <circle key={i} cx={x} cy={y} r="2.5" fill="#fef9c3" stroke="#fde68a" strokeWidth="0.4" opacity={op} />
+                  );
+                })}
+              </g>
+            ) : sugarState === "molten" ? (
+              <g>
+                <path d="M84 148 Q110 142 136 148 L136 166 L84 166 Z" fill="url(#molten)" opacity="0.95" />
+                <ellipse cx="110" cy="148" rx="24" ry="2.5" fill="#fef9c3" opacity="0.7" />
+              </g>
+            ) : sugarState === "browning" ? (
+              <g>
+                <path d="M84 146 Q110 140 136 146 L136 166 L84 166 Z" fill="#92400e" />
+                <ellipse cx="110" cy="146" rx="24" ry="2.5" fill="#b45309" opacity="0.8" />
+                {[0, 1, 2, 3].map((i) => (
+                  <circle key={i} cx={92 + i * 12} cy={152 + (i % 2) * 4} r="1.8" fill="#78350f">
+                    <animate attributeName="cy" values={`${152};${148};${152}`} dur="0.9s" begin={`${i * 0.2}s`} repeatCount="indefinite" />
+                  </circle>
+                ))}
+              </g>
+            ) : (
+              <g>
+                {/* Charred black carbon */}
+                <path d="M84 144 Q110 138 136 144 L136 166 L84 166 Z" fill="#0c0a09" />
+                <path d="M88 148 Q100 142 112 146 Q124 150 134 145" stroke="#292524" strokeWidth="1.5" fill="none" />
+                {[0, 1, 2, 3, 4].map((i) => (
+                  <circle key={i} cx={90 + i * 11} cy={150} r={1.5 + (i % 2)} fill="#1c1917">
+                    <animate attributeName="cy" values="150;146;150" dur={`${0.7 + i * 0.1}s`} repeatCount="indefinite" />
+                  </circle>
+                ))}
+              </g>
+            )}
+          </g>
+
+          {/* Smoke rising from beaker */}
+          {(sugarState === "browning" || sugarState === "charred") && (
+            <g opacity="0.75">
+              {[0, 1, 2, 3].map((i) => (
+                <circle key={i} cx={95 + i * 11} cy="105" r={4 + (i % 2)} fill="#57534e">
+                  <animate attributeName="cy" values="105;40" dur="2.6s" begin={`${i * 0.5}s`} repeatCount="indefinite" />
+                  <animate attributeName="opacity" values="0;0.7;0" dur="2.6s" begin={`${i * 0.5}s`} repeatCount="indefinite" />
+                  <animate attributeName="r" values={`${3 + i};${8 + i}`} dur="2.6s" begin={`${i * 0.5}s`} repeatCount="indefinite" />
+                </circle>
+              ))}
+            </g>
+          )}
+        </g>
+      )}
+
+      {/* ── Bunsen burner ── */}
+      <g transform="translate(110 200)">
+        {/* Flame first (behind barrel) */}
         {heating && (
           <g>
+            {/* Outer flame */}
             <path
-              d="M0 30 Q-14 10 -6 -8 Q0 4 0 -6 Q0 4 6 -8 Q14 10 0 30 Z"
-              fill="url(#flameGrad)"
+              d={
+                isIonic
+                  ? "M0 22 Q-22 -6 -10 -40 Q-4 -14 0 -30 Q4 -14 10 -40 Q22 -6 0 22 Z"
+                  : "M0 22 Q-16 4 -6 -18 Q0 -4 0 -12 Q0 -4 6 -18 Q16 4 0 22 Z"
+              }
+              fill={`url(#${gradId})`}
             >
               <animate
                 attributeName="d"
-                values="M0 30 Q-14 10 -6 -8 Q0 4 0 -6 Q0 4 6 -8 Q14 10 0 30 Z;
-                        M0 30 Q-16 12 -6 -12 Q0 2 0 -8 Q0 2 6 -12 Q16 12 0 30 Z;
-                        M0 30 Q-14 10 -6 -8 Q0 4 0 -6 Q0 4 6 -8 Q14 10 0 30 Z"
-                dur="0.35s"
+                values={
+                  isIonic
+                    ? "M0 22 Q-22 -6 -10 -40 Q-4 -14 0 -30 Q4 -14 10 -40 Q22 -6 0 22 Z;M0 22 Q-24 -8 -10 -48 Q-4 -18 0 -34 Q4 -18 10 -48 Q24 -8 0 22 Z;M0 22 Q-22 -6 -10 -40 Q-4 -14 0 -30 Q4 -14 10 -40 Q22 -6 0 22 Z"
+                    : "M0 22 Q-16 4 -6 -18 Q0 -4 0 -12 Q0 -4 6 -18 Q16 4 0 22 Z;M0 22 Q-18 2 -6 -24 Q0 -6 0 -16 Q0 -6 6 -24 Q18 2 0 22 Z;M0 22 Q-16 4 -6 -18 Q0 -4 0 -12 Q0 -4 6 -18 Q16 4 0 22 Z"
+                }
+                dur={isIonic ? "0.28s" : "0.4s"}
                 repeatCount="indefinite"
               />
             </path>
+            {/* Inner cone */}
+            <path
+              d={isIonic ? "M0 20 Q-4 4 0 -14 Q4 4 0 20 Z" : "M0 20 Q-3 8 0 -4 Q3 8 0 20 Z"}
+              fill={isIonic ? "#1e1b4b" : "#f59e0b"}
+              opacity="0.85"
+            />
+            {/* Roaring glow for NaCl */}
+            {isIonic && (
+              <circle cx="0" cy="-10" r="26" fill="#818cf8" opacity="0.25">
+                <animate attributeName="opacity" values="0.15;0.4;0.15" dur="0.5s" repeatCount="indefinite" />
+              </circle>
+            )}
           </g>
         )}
-        <defs>
-          <radialGradient id="flameGrad" cx="0.5" cy="0.85" r="0.6">
-            <stop offset="0" stopColor="#bfdbfe" />
-            <stop offset="0.4" stopColor="#fbbf24" />
-            <stop offset="1" stopColor="#dc2626" stopOpacity="0.2" />
-          </radialGradient>
-        </defs>
+        {/* Barrel */}
+        <rect x="-5" y="20" width="10" height="26" rx="1" fill="url(#metal)" stroke="#0f172a" strokeWidth="0.5" />
+        <rect x="-6" y="18" width="12" height="4" rx="1" fill="#0f172a" />
+        {/* Base */}
+        <polygon points="-18,46 18,46 14,58 -14,58" fill="#334155" />
+        <ellipse cx="0" cy="58" rx="16" ry="3" fill="#0f172a" opacity="0.55" />
+        {/* Gas line */}
+        <path d="M14 52 Q30 54 34 58" stroke="#334155" strokeWidth="1.5" fill="none" />
       </g>
 
-      {/* Label */}
-      <foreignObject x="4" y="210" width="192" height="28">
-        <div className="rounded-md bg-background/85 px-2 py-1 text-center text-[9.5px] font-medium leading-tight text-foreground shadow-sm ring-1 ring-border/60">
+      {/* ── Alert badges when phase reached ── */}
+      {reachedSugar && (
+        <foreignObject x="6" y="6" width="176" height="34">
+          <div className="rounded-lg border border-amber-300/60 bg-gradient-to-r from-amber-500/95 to-orange-600/95 px-2 py-1 text-[9px] font-semibold leading-tight text-white shadow-lg backdrop-blur">
+            ⚠ Sucrose melted &amp; decomposed — weak intermolecular forces.
+          </div>
+        </foreignObject>
+      )}
+      {reachedNaCl && (
+        <foreignObject x="6" y="6" width="176" height="34">
+          <div className="rounded-lg border border-indigo-300/60 bg-gradient-to-r from-indigo-600/95 to-violet-700/95 px-2 py-1 text-[9px] font-semibold leading-tight text-white shadow-lg backdrop-blur">
+            🔒 NaCl solid at {Math.round(temp)}°C — ionic lattice needs &gt;801°C.
+          </div>
+        </foreignObject>
+      )}
+
+      {/* Bottom caption */}
+      <foreignObject x="4" y="242" width="212" height="18">
+        <div className="truncate rounded-md bg-background/85 px-2 py-0.5 text-center text-[9px] font-medium leading-tight text-foreground shadow-sm ring-1 ring-border/60">
           {isIonic
-            ? "Lattice energy is high; melting requires extreme heat (801°C)."
-            : "Intermolecular forces are weak; melts and decomposes quickly."}
+            ? "Porcelain crucible · roaring blue flame (>801°C required)"
+            : "Glass beaker · gentle orange flame (~186°C melts sugar)"}
         </div>
       </foreignObject>
     </svg>
