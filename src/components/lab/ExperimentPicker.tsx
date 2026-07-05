@@ -123,6 +123,14 @@ const EXPERIMENTS: Array<{
     icon: Zap,
     gradient: "from-violet-100 via-fuchsia-50 to-rose-100",
   },
+  {
+    id: "mole_concept",
+    title: "Avogadro & Mole Concept · অ্যাভোগেড্রো সংখ্যা",
+    subtitle:
+      "n = W/M · Digital scale + particle viewer showing 6.023 × 10²³ particles",
+    icon: Atom,
+    gradient: "from-emerald-100 via-teal-50 to-cyan-100",
+  },
 ];
 
 
