@@ -74,7 +74,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Dr. Chem — AI-Powered Virtual Chemistry Lab" },
+      { title: "Dr. Chem — AI-Powered Virtual Chemistry Lab for Class 9-10" },
       {
         name: "description",
         content:
@@ -82,7 +82,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { name: "author", content: "Dr. Chem" },
       { property: "og:site_name", content: "Dr. Chem" },
-      { property: "og:title", content: "Dr. Chem — AI-Powered Virtual Chemistry Lab" },
+      { property: "og:title", content: "Dr. Chem — AI-Powered Virtual Chemistry Lab for Class 9-10" },
       {
         property: "og:description",
         content:
@@ -90,15 +90,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Dr. Chem — AI-Powered Virtual Chemistry Lab" },
+      { name: "twitter:title", content: "Dr. Chem — AI-Powered Virtual Chemistry Lab for Class 9-10" },
       {
         name: "twitter:description",
         content:
           "Safe, visual, AI-guided chemistry experiments for Class 9-10 students and teachers.",
       },
-      { name: "description", content: "Master chemistry concepts with Dr. Chem. Perform virtual experiments, get instant AI tutoring, and make learning science easy, safe, and accessible anywhere." },
-      { property: "og:description", content: "Master chemistry concepts with Dr. Chem. Perform virtual experiments, get instant AI tutoring, and make learning science easy, safe, and accessible anywhere." },
-      { name: "twitter:description", content: "Master chemistry concepts with Dr. Chem. Perform virtual experiments, get instant AI tutoring, and make learning science easy, safe, and accessible anywhere." },
+      { name: "description", content: "Perform chemistry experiments safely, learn visually, and get instant help from the Dr. Chem AI tutor. Built for Bangladeshi Class 9-10 students and teachers." },
+      { property: "og:description", content: "Perform chemistry experiments safely, learn visually, and get instant help from the Dr. Chem AI tutor. Built for Bangladeshi Class 9-10 students and teachers." },
+      { name: "twitter:description", content: "Perform chemistry experiments safely, learn visually, and get instant help from the Dr. Chem AI tutor. Built for Bangladeshi Class 9-10 students and teachers." },
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/BNbspVP1QLgQXV1xmKzQ4H5W7yJ2/social-images/social-1780481523006-Gemini_Generated_Image_2no3022no3022no3.webp" },
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/BNbspVP1QLgQXV1xmKzQ4H5W7yJ2/social-images/social-1780481523006-Gemini_Generated_Image_2no3022no3022no3.webp" },
     ],
