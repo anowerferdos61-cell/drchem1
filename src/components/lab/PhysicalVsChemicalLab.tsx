@@ -230,6 +230,7 @@ export default function PhysicalVsChemicalLab({ onBack }: Props) {
   const waterRef = useRef<WaterMol[]>([]);
   const chemRef = useRef<ChemMol[]>([]);
   const sparksRef = useRef<Spark[]>([]);
+  const emitTimerRef = useRef(0);
   const co2CountRef = useRef(0);
 
   // Rebuild particles based on the current mode + size.
