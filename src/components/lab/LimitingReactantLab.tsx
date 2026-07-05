@@ -663,12 +663,14 @@ export default function LimitingReactantLab({ onBack }: { onBack: () => void }) 
   const [producedMolecules, setProducedMolecules] = useState(0);
   const [reactionEnded, setReactionEnded] = useState(false);
   const [tab, setTab] = useState<"reactants" | "sim" | "math">("sim");
+  const [resetKey, setResetKey] = useState(0);
 
   const stoich = useMemo(() => computeLimiting(h2, o2), [h2, o2]);
 
   const start = useCallback(() => {
     setProducedMolecules(0);
     setReactionEnded(false);
+    setResetKey((k) => k + 1);
     setRunning(true);
     setPaused(false);
   }, []);
@@ -678,9 +680,10 @@ export default function LimitingReactantLab({ onBack }: { onBack: () => void }) 
     setPaused(false);
     setProducedMolecules(0);
     setReactionEnded(false);
+    setResetKey((k) => k + 1);
   }, []);
 
-  const onReactionEnd = useCallback((produced: number) => {
+  const onReactionEnd = useCallback((produced: number, _limiting: Kind) => {
     setProducedMolecules(produced);
     setReactionEnded(true);
     setPaused(true);
