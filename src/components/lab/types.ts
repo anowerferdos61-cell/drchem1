@@ -28,7 +28,8 @@ export type ExperimentId =
   | "ionic_vs_covalent_theory"
   | "mole_concept"
   | "molarity_dilution"
-  | "empirical_formula";
+  | "empirical_formula"
+  | "limiting_reactant";
 
 
 export type Mode = "guide" | "student" | "classroom";

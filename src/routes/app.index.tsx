@@ -78,6 +78,7 @@ const LAB_COMPONENTS: Partial<Record<ExperimentId, LazyExoticComponent<LabCompon
   mole_concept: lazy(() => import("@/components/lab/MoleConceptLab")),
   molarity_dilution: lazy(() => import("@/components/lab/MolarityLab")),
   empirical_formula: lazy(() => import("@/components/lab/EmpiricalFormulaLab")),
+  limiting_reactant: lazy(() => import("@/components/lab/LimitingReactantLab")),
 };
 
 function LabLoadingFallback({ onBack }: { onBack: () => void }) {

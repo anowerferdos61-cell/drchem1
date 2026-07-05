@@ -145,6 +145,13 @@ const EXPERIMENTS: Array<{
     icon: Sparkles,
     gradient: "from-fuchsia-100 via-violet-50 to-pink-100",
   },
+  {
+    id: "limiting_reactant",
+    title: "Limiting Reactant & Yield · লিমিটিং বিক্রিয়ক ও উৎপাদ",
+    subtitle: "2H₂ + O₂ → 2H₂O · Molecular collision + % yield predictor",
+    icon: Zap,
+    gradient: "from-orange-100 via-rose-50 to-cyan-100",
+  },
 ];
 
 
