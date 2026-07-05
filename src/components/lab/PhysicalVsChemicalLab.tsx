@@ -67,47 +67,121 @@ function initWater(w: number, h: number): WaterMol[] {
 }
 
 /* ──────────────────────────────────────────────────────────────
- * CHEMICAL — C + O2 → CO2
+ * CHEMICAL — Three-Vessel Reaction Transfer Pipeline
+ * C (flask A) + O₂ (flask B) → REACTION ZONE → CO₂ (product flask)
  * ────────────────────────────────────────────────────────────── */
 type ChemKind = "C" | "O2" | "CO2";
+type ChemPhase = "source" | "travelIn" | "waiting" | "travelOut" | "collected";
 interface ChemMol {
   kind: ChemKind;
+  phase: ChemPhase;
   x: number; y: number;
   vx: number; vy: number;
   rot: number;
-  reacting: number;   // 0..1 flash timer
+  // bezier travel
+  fromX: number; fromY: number;
+  toX: number; toY: number;
+  ctrlX: number; ctrlY: number;
+  t: number;
+  reacting: number;
   alive: boolean;
 }
 interface Spark {
   x: number; y: number; vx: number; vy: number; life: number;
 }
 
+interface FlaskRect { cx: number; cy: number; w: number; h: number }
+interface ChemLayout {
+  fA: FlaskRect; fB: FlaskRect; prod: FlaskRect;
+  zone: { cx: number; cy: number; r: number };
+}
+
+function chemLayout(w: number, h: number): ChemLayout {
+  const fW = Math.min(Math.max(w * 0.18, 90), 130);
+  const fH = Math.min(Math.max(h * 0.32, 110), 150);
+  const pW = Math.min(Math.max(w * 0.2, 100), 160);
+  const pH = Math.min(Math.max(h * 0.7, 200), 340);
+  return {
+    fB: { cx: 20 + fW / 2, cy: 40 + fH / 2, w: fW, h: fH },              // top-left: O₂
+    fA: { cx: 20 + fW / 2, cy: h - 20 - fH / 2, w: fW, h: fH },          // bottom-left: C
+    zone: { cx: w * 0.5, cy: h * 0.5, r: Math.min(w, h) * 0.13 },
+    prod: { cx: w - 20 - pW / 2, cy: h / 2, w: pW, h: pH },
+  };
+}
+
 function initChem(w: number, h: number): ChemMol[] {
+  const L = chemLayout(w, h);
   const arr: ChemMol[] = [];
-  const leftMax = Math.max(140, w * 0.45);
-  const rightMin = Math.min(w - 140, w * 0.55);
-  const availH = Math.max(120, h - 120);
-  for (let i = 0; i < 6; i++) {
+  const spawn = (kind: ChemKind, f: FlaskRect) => {
     arr.push({
-      kind: "C",
-      x: 60 + Math.random() * (leftMax - 60),
-      y: 60 + Math.random() * availH,
-      vx: (Math.random() - 0.5) * 1.2,
-      vy: (Math.random() - 0.5) * 1.2,
-      rot: 0, reacting: 0, alive: true,
+      kind, phase: "source",
+      x: f.cx + (Math.random() - 0.5) * (f.w - 30),
+      y: f.cy + (Math.random() - 0.5) * (f.h - 40),
+      vx: (Math.random() - 0.5) * 0.6, vy: (Math.random() - 0.5) * 0.6,
+      rot: Math.random() * Math.PI * 2,
+      fromX: 0, fromY: 0, toX: 0, toY: 0, ctrlX: 0, ctrlY: 0,
+      t: 0, reacting: 0, alive: true,
     });
-  }
-  for (let i = 0; i < 6; i++) {
-    arr.push({
-      kind: "O2",
-      x: rightMin + Math.random() * (w - 60 - rightMin),
-      y: 60 + Math.random() * availH,
-      vx: (Math.random() - 0.5) * 1.2,
-      vy: (Math.random() - 0.5) * 1.2,
-      rot: Math.random() * Math.PI * 2, reacting: 0, alive: true,
-    });
-  }
+  };
+  for (let i = 0; i < 8; i++) spawn("C", L.fA);
+  for (let i = 0; i < 8; i++) spawn("O2", L.fB);
   return arr;
+}
+
+/* ── Canvas helpers (shared) ─────────────────────────────── */
+function drawPipe(
+  ctx: CanvasRenderingContext2D,
+  x1: number, y1: number, x2: number, y2: number,
+  cx: number, cy: number,
+  outer: string, inner: string,
+) {
+  ctx.lineCap = "round";
+  ctx.strokeStyle = outer;
+  ctx.lineWidth = 14;
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.quadraticCurveTo(cx, cy, x2, y2);
+  ctx.stroke();
+  ctx.strokeStyle = inner;
+  ctx.lineWidth = 8;
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.quadraticCurveTo(cx, cy, x2, y2);
+  ctx.stroke();
+}
+
+function drawFlask(
+  ctx: CanvasRenderingContext2D,
+  f: FlaskRect, label: string, tint: string, accent: string,
+) {
+  const x = f.cx - f.w / 2;
+  const y = f.cy - f.h / 2;
+  const r = 12;
+  ctx.fillStyle = tint;
+  ctx.strokeStyle = accent;
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + f.w - r, y);
+  ctx.quadraticCurveTo(x + f.w, y, x + f.w, y + r);
+  ctx.lineTo(x + f.w, y + f.h - r);
+  ctx.quadraticCurveTo(x + f.w, y + f.h, x + f.w - r, y + f.h);
+  ctx.lineTo(x + r, y + f.h);
+  ctx.quadraticCurveTo(x, y + f.h, x, y + f.h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  // highlight
+  ctx.fillStyle = "rgba(255,255,255,0.06)";
+  ctx.fillRect(x + 5, y + 5, 5, f.h - 10);
+  // label
+  ctx.font = "600 10px ui-sans-serif, system-ui";
+  ctx.fillStyle = "#e2e8f0";
+  ctx.textAlign = "center";
+  ctx.fillText(label, f.cx, y - 6);
+  ctx.textAlign = "left";
 }
 
 /* ──────────────────────────────────────────────────────────────
@@ -156,6 +230,7 @@ export default function PhysicalVsChemicalLab({ onBack }: Props) {
   const waterRef = useRef<WaterMol[]>([]);
   const chemRef = useRef<ChemMol[]>([]);
   const sparksRef = useRef<Spark[]>([]);
+  const emitTimerRef = useRef(0);
   const co2CountRef = useRef(0);
 
   // Rebuild particles based on the current mode + size.
@@ -294,56 +369,120 @@ export default function PhysicalVsChemicalLab({ onBack }: Props) {
 
   /* ── Physics: chemical ─────────────────────────────────── */
   function stepChemical(t: number, w: number, h: number) {
+    const L = chemLayout(w, h);
     const mols = chemRef.current;
-    const react = t > 55;
-    const speed = 0.4 + (t / 100) * 2;
+    const react = t > 45;
+
+    // Per-particle physics
     for (const mo of mols) {
       if (!mo.alive) continue;
-      mo.vx += (Math.random() - 0.5) * 0.1;
-      mo.vy += (Math.random() - 0.5) * 0.1;
-      const sp = Math.hypot(mo.vx, mo.vy);
-      if (sp > speed) { mo.vx = (mo.vx / sp) * speed; mo.vy = (mo.vy / sp) * speed; }
-      mo.x += mo.vx;
-      mo.y += mo.vy;
-      mo.rot += 0.03;
-      if (mo.reacting > 0) mo.reacting = Math.max(0, mo.reacting - 0.03);
-      if (mo.x < 20) { mo.x = 20; mo.vx *= -1; }
-      if (mo.x > w - 20) { mo.x = w - 20; mo.vx *= -1; }
-      if (mo.y < 20) { mo.y = 20; mo.vy *= -1; }
-      if (mo.y > h - 20) { mo.y = h - 20; mo.vy *= -1; }
-    }
+      if (mo.reacting > 0) mo.reacting = Math.max(0, mo.reacting - 0.04);
 
-    if (react) {
-      for (let i = 0; i < mols.length; i++) {
-        const a = mols[i];
-        if (!a.alive || a.kind !== "C") continue;
-        for (let j = 0; j < mols.length; j++) {
-          const bMol = mols[j];
-          if (!bMol.alive || bMol.kind !== "O2") continue;
-          const dx = a.x - bMol.x, dy = a.y - bMol.y;
-          if (dx * dx + dy * dy < 30 * 30) {
-            a.alive = false;
-            bMol.kind = "CO2";
-            bMol.reacting = 1;
-            bMol.vx *= 0.5; bMol.vy *= 0.5;
-            co2CountRef.current += 1;
-            setCo2Count(co2CountRef.current);
-            const cx = (a.x + bMol.x) / 2, cy = (a.y + bMol.y) / 2;
-            for (let k = 0; k < 14; k++) {
-              const ang = Math.random() * Math.PI * 2;
-              const s = 1 + Math.random() * 2.5;
-              sparksRef.current.push({
-                x: cx, y: cy,
-                vx: Math.cos(ang) * s, vy: Math.sin(ang) * s,
-                life: 1,
-              });
-            }
-            break;
+      if (mo.phase === "source") {
+        const flask = mo.kind === "C" ? L.fA : L.fB;
+        const minX = flask.cx - flask.w / 2 + 12;
+        const maxX = flask.cx + flask.w / 2 - 12;
+        const minY = flask.cy - flask.h / 2 + 16;
+        const maxY = flask.cy + flask.h / 2 - 12;
+        mo.vx += (Math.random() - 0.5) * 0.12;
+        mo.vy += (Math.random() - 0.5) * 0.12;
+        const cap = 0.9;
+        const sp = Math.hypot(mo.vx, mo.vy);
+        if (sp > cap) { mo.vx = (mo.vx / sp) * cap; mo.vy = (mo.vy / sp) * cap; }
+        mo.x += mo.vx; mo.y += mo.vy;
+        mo.rot += 0.02;
+        if (mo.x < minX) { mo.x = minX; mo.vx *= -1; }
+        if (mo.x > maxX) { mo.x = maxX; mo.vx *= -1; }
+        if (mo.y < minY) { mo.y = minY; mo.vy *= -1; }
+        if (mo.y > maxY) { mo.y = maxY; mo.vy *= -1; }
+      } else if (mo.phase === "travelIn" || mo.phase === "travelOut") {
+        mo.t += 0.014 + (t / 100) * 0.012;
+        if (mo.t >= 1) {
+          mo.t = 1;
+          mo.x = mo.toX; mo.y = mo.toY;
+          if (mo.phase === "travelIn") {
+            mo.phase = "waiting";
+          } else {
+            mo.phase = "collected";
+            const pf = L.prod;
+            mo.x = pf.cx + (Math.random() - 0.5) * (pf.w - 30);
+            mo.y = pf.cy + (Math.random() - 0.4) * (pf.h - 40);
           }
+        } else {
+          const u = mo.t, iu = 1 - u;
+          mo.x = iu * iu * mo.fromX + 2 * iu * u * mo.ctrlX + u * u * mo.toX;
+          mo.y = iu * iu * mo.fromY + 2 * iu * u * mo.ctrlY + u * u * mo.toY;
+          mo.rot += 0.06;
         }
+      } else if (mo.phase === "waiting") {
+        mo.x += (Math.random() - 0.5) * 0.4;
+        mo.y += (Math.random() - 0.5) * 0.4;
+        mo.rot += 0.02;
+      } else if (mo.phase === "collected") {
+        mo.x += (Math.random() - 0.5) * 0.15;
+        mo.y += (Math.random() - 0.5) * 0.15;
       }
     }
 
+    // Emit pair toward zone
+    if (react) {
+      emitTimerRef.current += 1;
+      const cadence = Math.max(28, 110 - t);
+      if (emitTimerRef.current > cadence) {
+        emitTimerRef.current = 0;
+        const c = mols.find(m => m.alive && m.kind === "C" && m.phase === "source");
+        const o = mols.find(m => m.alive && m.kind === "O2" && m.phase === "source");
+        if (c && o) {
+          const launch = (mo: ChemMol, ctrlOffY: number) => {
+            const dx = L.zone.cx - mo.x, dy = L.zone.cy - mo.y;
+            const dist = Math.max(1, Math.hypot(dx, dy));
+            const tx = L.zone.cx - (dx / dist) * (L.zone.r * 0.4);
+            const ty = L.zone.cy - (dy / dist) * (L.zone.r * 0.4);
+            mo.fromX = mo.x; mo.fromY = mo.y;
+            mo.toX = tx; mo.toY = ty;
+            mo.ctrlX = (mo.x + tx) / 2;
+            mo.ctrlY = (mo.y + ty) / 2 + ctrlOffY;
+            mo.t = 0;
+            mo.phase = "travelIn";
+          };
+          launch(c, 30);
+          launch(o, -30);
+        }
+      }
+
+      // Pair up waiting C + O2 into CO2
+      const waitC = mols.filter(m => m.alive && m.kind === "C" && m.phase === "waiting");
+      const waitO = mols.filter(m => m.alive && m.kind === "O2" && m.phase === "waiting");
+      const pairs = Math.min(waitC.length, waitO.length);
+      for (let i = 0; i < pairs; i++) {
+        const c = waitC[i], o = waitO[i];
+        const zx = L.zone.cx, zy = L.zone.cy;
+        for (let k = 0; k < 16; k++) {
+          const ang = Math.random() * Math.PI * 2;
+          const s = 1 + Math.random() * 2.5;
+          sparksRef.current.push({
+            x: zx, y: zy,
+            vx: Math.cos(ang) * s, vy: Math.sin(ang) * s,
+            life: 1,
+          });
+        }
+        c.alive = false;
+        o.kind = "CO2";
+        o.reacting = 1;
+        o.x = zx; o.y = zy;
+        o.fromX = zx; o.fromY = zy;
+        o.toX = L.prod.cx - L.prod.w / 2 + 20 + Math.random() * 20;
+        o.toY = L.prod.cy + (Math.random() - 0.5) * 40;
+        o.ctrlX = (zx + o.toX) / 2;
+        o.ctrlY = zy - 50;
+        o.t = 0;
+        o.phase = "travelOut";
+        co2CountRef.current += 1;
+        setCo2Count(co2CountRef.current);
+      }
+    }
+
+    // Sparks
     for (const s of sparksRef.current) {
       s.x += s.vx; s.y += s.vy;
       s.vx *= 0.94; s.vy *= 0.94;
@@ -423,7 +562,69 @@ export default function PhysicalVsChemicalLab({ onBack }: Props) {
     bonds: boolean,
     w: number, h: number,
   ) {
+    const L = chemLayout(w, h);
     const mols = chemRef.current;
+
+    // 1) Pipes A→zone, B→zone, zone→product
+    const outerPipe = "rgba(148,163,184,0.35)";
+    const innerPipe = "rgba(15,23,42,0.85)";
+    const aRight = { x: L.fA.cx + L.fA.w / 2, y: L.fA.cy };
+    const bRight = { x: L.fB.cx + L.fB.w / 2, y: L.fB.cy };
+    const zLeft  = { x: L.zone.cx - L.zone.r, y: L.zone.cy };
+    const zRight = { x: L.zone.cx + L.zone.r, y: L.zone.cy };
+    const pLeft  = { x: L.prod.cx - L.prod.w / 2, y: L.prod.cy };
+    drawPipe(ctx, aRight.x, aRight.y, zLeft.x, zLeft.y,
+      (aRight.x + zLeft.x) / 2, (aRight.y + zLeft.y) / 2 + 20, outerPipe, innerPipe);
+    drawPipe(ctx, bRight.x, bRight.y, zLeft.x, zLeft.y,
+      (bRight.x + zLeft.x) / 2, (bRight.y + zLeft.y) / 2 - 20, outerPipe, innerPipe);
+    drawPipe(ctx, zRight.x, zRight.y, pLeft.x, pLeft.y,
+      (zRight.x + pLeft.x) / 2, L.zone.cy - 10, outerPipe, innerPipe);
+
+    // 2) Flasks
+    drawFlask(ctx, L.fA, "Reactant A: Carbon (C)", "rgba(55,65,81,0.28)", "rgba(148,163,184,0.6)");
+    drawFlask(ctx, L.fB, "Reactant B: Oxygen (O₂)", "rgba(239,68,68,0.16)", "rgba(248,113,113,0.65)");
+    drawFlask(ctx, L.prod, "Product: Carbon Dioxide (CO₂)", "rgba(16,185,129,0.14)", "rgba(52,211,153,0.7)");
+
+    // Product-flask fill based on collected count
+    const collected = mols.filter(m => m.phase === "collected").length;
+    const fillFrac = Math.min(1, collected / 10);
+    if (fillFrac > 0) {
+      const pf = L.prod;
+      const inX = pf.cx - pf.w / 2 + 4;
+      const inW = pf.w - 8;
+      const bottomY = pf.cy + pf.h / 2 - 4;
+      const fh = (pf.h - 12) * fillFrac;
+      ctx.fillStyle = "rgba(52,211,153,0.22)";
+      ctx.fillRect(inX, bottomY - fh, inW, fh);
+      ctx.strokeStyle = "rgba(52,211,153,0.5)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(inX, bottomY - fh);
+      ctx.lineTo(inX + inW, bottomY - fh);
+      ctx.stroke();
+    }
+
+    // 3) Reaction zone
+    const activeZone = mols.some(m => m.phase === "waiting" || (m.kind === "CO2" && m.reacting > 0.3));
+    const zg = ctx.createRadialGradient(L.zone.cx, L.zone.cy, 4, L.zone.cx, L.zone.cy, L.zone.r);
+    zg.addColorStop(0, activeZone ? "rgba(251,191,36,0.55)" : "rgba(251,191,36,0.22)");
+    zg.addColorStop(1, "rgba(251,191,36,0.02)");
+    ctx.fillStyle = zg;
+    ctx.beginPath();
+    ctx.arc(L.zone.cx, L.zone.cy, L.zone.r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = activeZone ? "rgba(251,191,36,0.95)" : "rgba(251,191,36,0.5)";
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 4]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.font = "600 9px ui-sans-serif";
+    ctx.fillStyle = "#fbbf24";
+    ctx.textAlign = "center";
+    ctx.fillText("REACTION ZONE", L.zone.cx, L.zone.cy - L.zone.r - 6);
+    ctx.textAlign = "left";
+
+    // 4) Molecules
     for (const mo of mols) {
       if (!mo.alive) continue;
       if (mo.kind === "C") {
@@ -431,14 +632,16 @@ export default function PhysicalVsChemicalLab({ onBack }: Props) {
         ctx.strokeStyle = "#f59e0b";
         ctx.lineWidth = 1.5;
         ctx.beginPath();
-        ctx.arc(mo.x, mo.y, 10, 0, Math.PI * 2);
+        ctx.arc(mo.x, mo.y, 9, 0, Math.PI * 2);
         ctx.fill(); ctx.stroke();
-        ctx.font = "700 10px ui-sans-serif";
+        ctx.font = "700 9px ui-sans-serif";
         ctx.fillStyle = "#fbbf24";
-        ctx.fillText("C", mo.x - 3, mo.y + 3);
+        ctx.textAlign = "center";
+        ctx.fillText("C", mo.x, mo.y + 3);
+        ctx.textAlign = "left";
       } else if (mo.kind === "O2") {
-        const dx = Math.cos(mo.rot) * 8;
-        const dy = Math.sin(mo.rot) * 8;
+        const dx = Math.cos(mo.rot) * 7;
+        const dy = Math.sin(mo.rot) * 7;
         if (bonds) {
           ctx.strokeStyle = "#f87171";
           ctx.lineWidth = 2;
@@ -450,12 +653,13 @@ export default function PhysicalVsChemicalLab({ onBack }: Props) {
         for (const s of [-1, 1]) {
           ctx.fillStyle = "#ef4444";
           ctx.beginPath();
-          ctx.arc(mo.x + dx * s, mo.y + dy * s, 7, 0, Math.PI * 2);
+          ctx.arc(mo.x + dx * s, mo.y + dy * s, 6, 0, Math.PI * 2);
           ctx.fill();
         }
       } else {
-        const dx = Math.cos(mo.rot) * 11;
-        const dy = Math.sin(mo.rot) * 11;
+        // CO2: central C with two O
+        const dx = Math.cos(mo.rot) * 10;
+        const dy = Math.sin(mo.rot) * 10;
         if (bonds) {
           ctx.strokeStyle = "#34d399";
           ctx.lineWidth = 2;
@@ -465,22 +669,24 @@ export default function PhysicalVsChemicalLab({ onBack }: Props) {
           ctx.stroke();
         }
         ctx.fillStyle = "#111827";
-        ctx.beginPath(); ctx.arc(mo.x, mo.y, 8, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(mo.x, mo.y, 7, 0, Math.PI * 2); ctx.fill();
         for (const s of [-1, 1]) {
           ctx.fillStyle = "#10b981";
           ctx.beginPath();
-          ctx.arc(mo.x + dx * s, mo.y + dy * s, 7, 0, Math.PI * 2);
+          ctx.arc(mo.x + dx * s, mo.y + dy * s, 6, 0, Math.PI * 2);
           ctx.fill();
         }
         if (mo.reacting > 0) {
           ctx.strokeStyle = `rgba(52,211,153,${mo.reacting})`;
           ctx.lineWidth = 2;
           ctx.beginPath();
-          ctx.arc(mo.x, mo.y, 18 + (1 - mo.reacting) * 8, 0, Math.PI * 2);
+          ctx.arc(mo.x, mo.y, 16 + (1 - mo.reacting) * 8, 0, Math.PI * 2);
           ctx.stroke();
         }
       }
     }
+
+    // 5) Sparks
     for (const s of sparksRef.current) {
       ctx.fillStyle = `rgba(251,191,36,${s.life})`;
       ctx.beginPath();
@@ -488,11 +694,23 @@ export default function PhysicalVsChemicalLab({ onBack }: Props) {
       ctx.fill();
     }
 
+    // 6) Status overlay inside zone
+    if (activeZone) {
+      ctx.font = "700 10px ui-sans-serif";
+      ctx.fillStyle = "#fde68a";
+      ctx.textAlign = "center";
+      ctx.fillText("Reaction and Bonding", L.zone.cx, L.zone.cy + L.zone.r + 14);
+      ctx.fillText("In Progress", L.zone.cx, L.zone.cy + L.zone.r + 26);
+      ctx.textAlign = "left";
+    }
+
+    // 7) Legend (all three)
     ctx.font = "600 11px ui-sans-serif";
-    ctx.fillStyle = "#fbbf24"; ctx.fillText("● C", w - 150, h - 40);
-    ctx.fillStyle = "#f87171"; ctx.fillText("● O₂", w - 110, h - 40);
-    ctx.fillStyle = "#34d399"; ctx.fillText("● CO₂", w - 150, h - 22);
+    ctx.fillStyle = "#fbbf24"; ctx.fillText("● C", w - 190, h - 22);
+    ctx.fillStyle = "#f87171"; ctx.fillText("● O₂", w - 150, h - 22);
+    ctx.fillStyle = "#34d399"; ctx.fillText("● CO₂", w - 100, h - 22);
   }
+
 
   /* ── Derived status text ───────────────────────────────── */
   const status = useMemo(() => {
@@ -501,8 +719,8 @@ export default function PhysicalVsChemicalLab({ onBack }: Props) {
       if (temp < 60) return { bn: "গলছে · Melting", en: "Lattice loosening — bonds intact" };
       return { bn: "তরল পানি · Liquid", en: "Molecules sliding — H₂O unchanged" };
     }
-    if (temp < 55) return { bn: "বিক্রিয়ার আগে · Below activation", en: "Bonds intact — no new substance" };
-    return { bn: "বন্ধন ভাঙছে · Reacting", en: "Bonds breaking → CO₂ forming" };
+    if (temp < 45) return { bn: "বিক্রিয়ার আগে · Below activation", en: "Reactants isolated in their vessels" };
+    return { bn: "বিক্রিয়া চলছে · Reaction in Progress", en: "C + O₂ → CO₂ (bonding & transfer)" };
   }, [mode, temp]);
 
   /* ── UI blocks ─────────────────────────────────────────── */
@@ -713,7 +931,7 @@ function AIBanner({ mode }: { mode: Mode }) {
           <p className="text-muted-foreground">
             {mode === "physical"
               ? "খেয়াল করো — বরফ গলে পানি হলেও প্রতিটি অণু কিন্তু এখনও H₂O-ই থেকে যাচ্ছে। শুধু অণুগুলোর সাজানো ভাঙছে, বন্ধন নয়। তাই এটা ভৌত পরিবর্তন — reversible!"
-              : "দেখো, তাপমাত্রা বাড়ালে C ও O₂ এর বন্ধন ভেঙে সম্পূর্ণ নতুন অণু CO₂ তৈরি হচ্ছে। নতুন পদার্থ = রাসায়নিক পরিবর্তন। এটি সাধারণত irreversible!"}
+              : "দেখো, তাপমাত্রা বাড়ালে C ও O₂ অণুগুলো তাদের নির্দিষ্ট পাত্র থেকে বেরিয়ে এসে মাঝে মিলে যাচ্ছে এবং সম্পূর্ণ নতুন যৌগ CO₂ তৈরি করছে। নতুন পদার্থ = রাসায়নিক পরিবর্তন। একটি নির্দিষ্ট ক্রমে পরীক্ষাটি দেখো।"}
           </p>
         </div>
       </div>
