@@ -120,7 +120,7 @@ function SciNumber({ value, className }: { value: number; className?: string }) 
 // Counter with rAF animation, locks onto target
 function useCountUp(target: number, duration = 900) {
   const [val, setVal] = useState(target);
-  const raf = useRef<number>();
+  const rafRef = useRef<number | null>(null);
   useEffect(() => {
     const from = val;
     const start = performance.now();
@@ -128,11 +128,13 @@ function useCountUp(target: number, duration = 900) {
       const p = Math.min(1, (t - start) / duration);
       const eased = 1 - Math.pow(1 - p, 3);
       setVal(from + (target - from) * eased);
-      if (p < 1) raf.current = requestAnimationFrame(tick);
+      if (p < 1) rafRef.current = requestAnimationFrame(tick);
       else setVal(target);
     };
-    raf.current = requestAnimationFrame(tick);
-    return () => raf.current && cancelAnimationFrame(raf.current);
+    rafRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [target]);
   return val;
