@@ -482,7 +482,7 @@ export default function MoleConceptLab({ onBack }: { onBack: () => void }) {
   );
 }
 
-function AvogadroMode({ onBack: _onBack }: { onBack: () => void }) {
+function AvogadroMode({ onBack }: { onBack: () => void }) {
 
   const [sub, setSub] = useState<SubKey | null>("water");
   const [moleIdx, setMoleIdx] = useState(1);
