@@ -14,6 +14,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import DraggableTheoryFab from "./DraggableTheoryFab";
 
 type Step = {
   id: string;
@@ -266,6 +267,25 @@ export default function MetallurgyStepsLab({ onBack }: { onBack: () => void }) {
           </Card>
         </div>
       </main>
+
+      <DraggableTheoryFab storageKey="metallurgy-steps">
+        <h3>ধাতু নিষ্কাশন (Metallurgy) কী?</h3>
+        <p>আকরিক থেকে বিশুদ্ধ ধাতু আলাদা করার সামগ্রিক প্রক্রিয়াকে ধাতু নিষ্কাশন বা Metallurgy বলা হয়। এতে সাধারণত ৬টি ধাপ থাকে।</p>
+        <ol>
+          <li><strong>Crushing (আকরিক গুঁড়া করা):</strong> বড় শিলাখণ্ডকে জ-ক্রাশার/বল-মিলে ছোট কণায় পরিণত করা হয়, যাতে পৃষ্ঠতল বেড়ে পরবর্তী বিক্রিয়া দ্রুত হয়।</li>
+          <li><strong>Concentration (ঘনীভবন):</strong> পাথর/মাটির মতো অপদ্রব্য (gangue) সরিয়ে ধাতব অংশ বাড়ানো হয়। পদ্ধতি — Froth Floatation (সালফাইড আকরিক), Magnetic Separation (চুম্বকীয় আকরিক), Gravity/Hydraulic separation।</li>
+          <li><strong>Roasting / Calcination (ভস্মীকরণ):</strong>
+            <ul>
+              <li>Roasting — সালফাইড আকরিককে বায়ুর উপস্থিতিতে উত্তপ্ত করে অক্সাইডে রূপান্তর: 2ZnS + 3O₂ → 2ZnO + 2SO₂</li>
+              <li>Calcination — কার্বনেট আকরিককে বায়ুশূন্যে উত্তপ্ত করে অক্সাইড ও CO₂ পাওয়া যায়: CaCO₃ → CaO + CO₂</li>
+            </ul>
+          </li>
+          <li><strong>Reduction (বিজারণ):</strong> ধাতব অক্সাইড থেকে ধাতু আলাদা করা হয়। কার্বন-বিজারণ (Fe, Zn, Pb) অথবা তড়িৎ-বিজারণ (Na, Al, Mg) ব্যবহৃত হয়। উদাহরণ: Fe₂O₃ + 3CO → 2Fe + 3CO₂।</li>
+          <li><strong>Refining (বিশোধন):</strong> প্রাপ্ত অপরিশুদ্ধ ধাতুকে Electrolytic refining, Distillation বা Zone refining দ্বারা বিশুদ্ধ করা হয়।</li>
+          <li><strong>Alloying / Use (সংকরণ):</strong> প্রয়োজনমতো অন্য ধাতুর সঙ্গে মিশিয়ে সংকর ধাতু তৈরি করা হয় (যেমন Steel = Fe + C)।</li>
+        </ol>
+        <p><em>প্রতিটি ধাপের উদ্দেশ্য — কম শক্তিতে সর্বোচ্চ বিশুদ্ধ ধাতু পাওয়া।</em></p>
+      </DraggableTheoryFab>
     </div>
   );
 }

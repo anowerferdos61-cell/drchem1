@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { ArrowLeft, Languages, Gem, Layers, TrendingUp, Info, Sparkles } from "lucide-react";
+import DraggableTheoryFab from "./DraggableTheoryFab";
 
 type Lang = "bn" | "en";
 
@@ -153,6 +154,26 @@ export default function OresVsMineralsLab({ onBack }: { onBack: () => void }) {
           </div>
         </div>
       </main>
+
+      <DraggableTheoryFab storageKey="ores-vs-minerals">
+        <h3>খনিজ (Mineral) কী?</h3>
+        <p>প্রকৃতিতে প্রাপ্ত যে সকল অজৈব পদার্থের নির্দিষ্ট রাসায়নিক সংকেত ও স্ফটিক গঠন থাকে, তাদের খনিজ বলে। যেমন — কোয়ার্টজ (SiO₂), হ্যালাইট (NaCl), হেমাটাইট (Fe₂O₃), বক্সাইট (Al₂O₃·2H₂O)।</p>
+        <h3>আকরিক (Ore) কী?</h3>
+        <p>যে সকল খনিজ থেকে সহজে ও লাভজনকভাবে (economically & profitably) ধাতু নিষ্কাশন করা যায়, তাকে আকরিক বলে। অর্থাৎ প্রতিটি আকরিকই একটি খনিজ, কিন্তু প্রতিটি খনিজ আকরিক নয়।</p>
+        <h3>প্রধান শর্ত (Conditions for an Ore)</h3>
+        <ul>
+          <li>ধাতুর পরিমাণ (Metal content) যথেষ্ট বেশি হতে হবে।</li>
+          <li>নিষ্কাশন-প্রক্রিয়া অর্থনৈতিকভাবে লাভজনক হতে হবে।</li>
+          <li>ধাতুটি সহজে আলাদা করা যায় এমন যৌগ (সাধারণত অক্সাইড / সালফাইড / কার্বনেট) হিসেবে থাকতে হবে।</li>
+        </ul>
+        <h3>উদাহরণ</h3>
+        <ul>
+          <li>বক্সাইট (Al₂O₃·2H₂O) — অ্যালুমিনিয়ামের আকরিক ✅</li>
+          <li>হেমাটাইট (Fe₂O₃) — লোহার আকরিক ✅</li>
+          <li>ক্লে/কেওলিন — অ্যালুমিনিয়াম থাকলেও নিষ্কাশন লাভজনক নয়, তাই শুধু খনিজ ❌</li>
+        </ul>
+        <p><em>Key takeaway — "All ores are minerals, but all minerals are not ores."</em></p>
+      </DraggableTheoryFab>
     </div>
   );
 }

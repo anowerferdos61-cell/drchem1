@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowDown, Flame, RefreshCw, Dna, ChevronLeft, ChevronRight,
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import DraggableTheoryFab from "./DraggableTheoryFab";
 
 interface Props {
   onBack: () => void;
@@ -316,6 +317,25 @@ export default function BlastFurnaceLab({ onBack }: Props) {
           </AnimatePresence>
         </section>
       </main>
+
+      <DraggableTheoryFab storageKey="blast-furnace">
+        <h3>বাতচুল্লী (Blast Furnace) — লোহা নিষ্কাশন</h3>
+        <p>হেমাটাইট (Fe₂O₃) থেকে গলিত লোহা (pig iron) তৈরির জন্য ব্যবহৃত উল্লম্ব চুল্লি। উপরের দিক থেকে <strong>আকরিক (Fe₂O₃) : কোক (C) : চুনাপাথর (CaCO₃) = ৮ : ৪ : ১</strong> অনুপাতে যোগ করা হয় এবং নিচে টুয়ারের মাধ্যমে গরম বাতাস (hot blast) প্রবেশ করানো হয়।</p>
+        <h4>প্রধান জোন ও বিক্রিয়াসমূহ</h4>
+        <ul>
+          <li><strong>দহন অঞ্চল (Combustion, ~1900°C):</strong> C + O₂ → CO₂ + তাপ; CO₂ + C → 2CO (বিজারক গ্যাস তৈরি)।</li>
+          <li><strong>গলন অঞ্চল (Fusion, ~1200°C):</strong> CaCO₃ → CaO + CO₂; CaO + SiO₂ → CaSiO₃ (স্ল্যাগ)।</li>
+          <li><strong>স্ল্যাগ অঞ্চল (Slag Zone, ~1000°C):</strong> হালকা CaSiO₃ গলিত লোহার উপরে ভাসে, অশুদ্ধি আটকায়।</li>
+          <li><strong>বিজারণ অঞ্চল (Reduction, ~400–700°C):</strong> Fe₂O₃ + 3CO → 2Fe + 3CO₂ (মূল বিজারণ)।</li>
+        </ul>
+        <h4>উৎপাদ (Products)</h4>
+        <ul>
+          <li><strong>Pig Iron</strong> — ~৯৪% Fe, ~৪% C, বাকিটা Si, Mn, P, S। এটি চুল্লির নিচে টেপ-হোল দিয়ে বের করা হয়।</li>
+          <li><strong>Slag (CaSiO₃)</strong> — সিমেন্ট ও রাস্তা তৈরিতে ব্যবহৃত হয়।</li>
+          <li><strong>Flue gas</strong> — মূলত N₂ ও CO₂, তাপ পুনর্ব্যবহার করে "hot blast" গরম করা হয়।</li>
+        </ul>
+        <p><em>মূল ধারণা: চুল্লির ভেতর গরম CO গ্যাসই আসল বিজারক (reducing agent), এবং চুনাপাথর অপদ্রব্য (SiO₂) সরিয়ে স্ল্যাগ তৈরি করে।</em></p>
+      </DraggableTheoryFab>
     </div>
   );
 }
