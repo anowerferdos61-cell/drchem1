@@ -31,7 +31,8 @@ export type ExperimentId =
   | "empirical_formula"
   | "limiting_reactant"
   | "stp_molar_volume"
-  | "daniel_cell";
+  | "daniel_cell"
+  | "electrolytic_cell";
 
 
 export type Mode = "guide" | "student" | "classroom";

@@ -129,6 +129,8 @@ const ALL_LABS: LabMeta[] = [
     icon: Atom, tint: "from-emerald-500/15 to-rose-500/10", iconColor: "text-emerald-400", isCoreBoard: false },
   { id: "daniel_cell", title: "Daniel Cell (Galvanic Cell)", titleBn: "ড্যানিয়েল সেল · গ্যালভানিক কোষ",
     icon: Zap, tint: "from-amber-500/15 to-yellow-500/10", iconColor: "text-amber-500", isCoreBoard: false },
+  { id: "electrolytic_cell", title: "Electrolytic Cell (Electrolysis + Plating)", titleBn: "তড়িৎবিশ্লেষ্য কোষ · পানি বিশ্লেষণ ও প্লেটিং",
+    icon: Zap, tint: "from-orange-500/15 to-amber-500/10", iconColor: "text-orange-500", isCoreBoard: false },
 ];
 
 type ChapterMeta = {
@@ -172,7 +174,7 @@ const CHAPTERS: ChapterMeta[] = [
     accent: "from-amber-500 to-orange-500", icon: Beaker },
   { number: 8, titleBn: "রসায়ন ও শক্তি", titleEn: "Chemistry & Energy",
     descBn: "তাপ পরিবর্তন, তড়িৎ-রাসায়নিক সারি।",
-    labIds: ["electrochemical_series", "daniel_cell"],
+    labIds: ["electrochemical_series", "daniel_cell", "electrolytic_cell"],
     accent: "from-yellow-500 to-amber-500", icon: Zap },
   { number: 9, titleBn: "এসিড-ক্ষারক সাম্য", titleEn: "Acid-Base Equilibrium",
     descBn: "pH, Ka/Kb এবং দ্রাব্যতার ধারণা।",

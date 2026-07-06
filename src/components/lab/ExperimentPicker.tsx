@@ -166,6 +166,13 @@ const EXPERIMENTS: Array<{
     icon: Zap,
     gradient: "from-amber-100 via-yellow-50 to-orange-100",
   },
+  {
+    id: "electrolytic_cell",
+    title: "Electrolytic Cell · তড়িৎবিশ্লেষ্য কোষ",
+    subtitle: "Water electrolysis (H₂:O₂ = 2:1) + Electroplating (Cu on Fe spoon)",
+    icon: Zap,
+    gradient: "from-orange-100 via-amber-50 to-yellow-100",
+  },
 ];
 
 
