@@ -129,6 +129,8 @@ const ALL_LABS: LabMeta[] = [
     icon: Atom, tint: "from-emerald-500/15 to-rose-500/10", iconColor: "text-emerald-400", isCoreBoard: false },
   { id: "daniel_cell", title: "Daniel Cell (Galvanic Cell)", titleBn: "ড্যানিয়েল সেল · গ্যালভানিক কোষ",
     icon: Zap, tint: "from-amber-500/15 to-yellow-500/10", iconColor: "text-amber-500", isCoreBoard: false },
+  { id: "electrolytic_cell", title: "Electrolytic Cell (Electrolysis + Plating)", titleBn: "তড়িৎবিশ্লেষ্য কোষ · পানি বিশ্লেষণ ও প্লেটিং",
+    icon: Zap, tint: "from-orange-500/15 to-amber-500/10", iconColor: "text-orange-500", isCoreBoard: false },
 ];
 
 type ChapterMeta = {
