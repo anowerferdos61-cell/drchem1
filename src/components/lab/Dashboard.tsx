@@ -174,7 +174,7 @@ const CHAPTERS: ChapterMeta[] = [
     accent: "from-amber-500 to-orange-500", icon: Beaker },
   { number: 8, titleBn: "রসায়ন ও শক্তি", titleEn: "Chemistry & Energy",
     descBn: "তাপ পরিবর্তন, তড়িৎ-রাসায়নিক সারি।",
-    labIds: ["electrochemical_series", "daniel_cell"],
+    labIds: ["electrochemical_series", "daniel_cell", "electrolytic_cell"],
     accent: "from-yellow-500 to-amber-500", icon: Zap },
   { number: 9, titleBn: "এসিড-ক্ষারক সাম্য", titleEn: "Acid-Base Equilibrium",
     descBn: "pH, Ka/Kb এবং দ্রাব্যতার ধারণা।",
