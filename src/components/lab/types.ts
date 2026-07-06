@@ -44,7 +44,8 @@ export type ExperimentId =
   | "ores_vs_minerals"
   | "metallurgy_steps"
   | "blast_furnace"
-  | "electrolytic_refining";
+  | "electrolytic_refining"
+  | "corrosion_rusting";
 
 
 export type Mode = "guide" | "student" | "classroom";

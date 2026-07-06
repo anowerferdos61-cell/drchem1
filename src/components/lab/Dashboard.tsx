@@ -157,6 +157,8 @@ const ALL_LABS: LabMeta[] = [
     icon: Flame, tint: "from-rose-500/15 to-fuchsia-500/10", iconColor: "text-rose-500", isCoreBoard: false },
   { id: "electrolytic_refining", title: "Electrolytic Refining (Cu)", titleBn: "তড়িৎ বিশোধন · কপার",
     icon: Zap, tint: "from-orange-500/15 to-amber-500/10", iconColor: "text-orange-500", isCoreBoard: false },
+  { id: "corrosion_rusting", title: "Corrosion & Rusting of Iron", titleBn: "ধাতুর ক্ষয় ও মরিচা ধরা",
+    icon: Droplets, tint: "from-orange-600/15 to-red-700/10", iconColor: "text-orange-600", isCoreBoard: false },
 ];
 
 type ChapterMeta = {
@@ -208,7 +210,7 @@ const CHAPTERS: ChapterMeta[] = [
     accent: "from-rose-500 to-pink-500", icon: Droplets },
   { number: 10, titleBn: "খনিজ সম্পদ: ধাতু ও অধাতু", titleEn: "Mineral Resources: Metals & Non-metals",
     descBn: "খনিজ ও শিলার পার্থক্য, ধাতু, অধাতু, সংকর ধাতু ও আকরিক।",
-    labIds: ["minerals_vs_rocks", "ores_vs_minerals", "metallurgy_steps", "blast_furnace", "electrolytic_refining"],
+    labIds: ["minerals_vs_rocks", "ores_vs_minerals", "metallurgy_steps", "blast_furnace", "electrolytic_refining", "corrosion_rusting"],
     accent: "from-pink-500 to-fuchsia-500", icon: Gem },
   { number: 11, titleBn: "খনিজ সম্পদ: জীবাশ্ম", titleEn: "Mineral Resources: Fossil Fuels",
     descBn: "হাইড্রোকার্বন, পেট্রোলিয়াম ও পলিমার।",
