@@ -173,6 +173,13 @@ const EXPERIMENTS: Array<{
     icon: Zap,
     gradient: "from-orange-100 via-amber-50 to-yellow-100",
   },
+  {
+    id: "dry_cell",
+    title: "Dry Cell · ড্রাই সেল",
+    subtitle: "Zn-C battery · অভ্যন্তরীণ লেয়ার + মাইক্রোস্কোপিক বিক্রিয়া · 1.5 V",
+    icon: Zap,
+    gradient: "from-yellow-100 via-amber-50 to-orange-100",
+  },
 ];
 
 
