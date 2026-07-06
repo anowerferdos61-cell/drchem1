@@ -35,7 +35,8 @@ export type ExperimentId =
   | "electrolytic_cell"
   | "dry_cell"
   | "fuel_combustion"
-  | "bond_energy_calorimeter";
+  | "bond_energy_calorimeter"
+  | "role_of_water";
 
 
 export type Mode = "guide" | "student" | "classroom";

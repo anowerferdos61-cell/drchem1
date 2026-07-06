@@ -194,6 +194,13 @@ const EXPERIMENTS: Array<{
     icon: Flame,
     gradient: "from-amber-100 via-orange-50 to-rose-100",
   },
+  {
+    id: "role_of_water",
+    title: "Role of Water · এসিড-ক্ষারকে পানির ভূমিকা",
+    subtitle: "Dry HCl / Ethanol / NaOH — litmus stays put till water arrives · H⁺ ≠ acid without H₂O",
+    icon: Droplet,
+    gradient: "from-sky-100 via-cyan-50 to-blue-100",
+  },
 ];
 
 
