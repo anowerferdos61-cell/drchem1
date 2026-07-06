@@ -43,7 +43,8 @@ export type ExperimentId =
   | "minerals_vs_rocks"
   | "ores_vs_minerals"
   | "metallurgy_steps"
-  | "blast_furnace";
+  | "blast_furnace"
+  | "electrolytic_refining";
 
 
 export type Mode = "guide" | "student" | "classroom";
