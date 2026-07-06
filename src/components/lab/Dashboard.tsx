@@ -146,6 +146,8 @@ const ALL_LABS: LabMeta[] = [
     icon: FlaskConical, tint: "from-rose-500/15 to-pink-500/10", iconColor: "text-rose-500", isCoreBoard: false },
   { id: "antacid_action", title: "Stomach Acidity & Antacid Action", titleBn: "পাকস্থলীর এসিডিটি ও এন্টাসিডের ভূমিকা",
     icon: Droplets, tint: "from-pink-500/15 to-rose-500/10", iconColor: "text-pink-500", isCoreBoard: false },
+  { id: "minerals_vs_rocks", title: "Minerals vs Rocks", titleBn: "খনিজ ও শিলা",
+    icon: Gem, tint: "from-fuchsia-500/15 to-pink-500/10", iconColor: "text-fuchsia-500", isCoreBoard: false },
 ];
 
 type ChapterMeta = {
