@@ -201,6 +201,13 @@ const EXPERIMENTS: Array<{
     icon: Droplet,
     gradient: "from-sky-100 via-cyan-50 to-blue-100",
   },
+  {
+    id: "acid_base_strength",
+    title: "Acid/Base Strength · Strong vs Weak",
+    subtitle: "HCl vs CH₃COOH · NaOH vs NH₄OH · Ionization degree α + bulb brightness test",
+    icon: Zap,
+    gradient: "from-amber-100 via-yellow-50 to-orange-100",
+  },
 ];
 
 
