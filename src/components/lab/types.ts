@@ -39,7 +39,8 @@ export type ExperimentId =
   | "role_of_water"
   | "acid_base_strength"
   | "neutralization_reaction"
-  | "antacid_action";
+  | "antacid_action"
+  | "minerals_vs_rocks";
 
 
 export type Mode = "guide" | "student" | "classroom";

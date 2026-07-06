@@ -42,6 +42,7 @@ import {
   NotebookPen,
   Wind,
   Battery,
+  Gem,
 } from "lucide-react";
 import { useEntitlements } from "@/hooks/useEntitlements";
 import { PaywallModal } from "@/components/subscription/PaywallModal";
@@ -146,6 +147,8 @@ const ALL_LABS: LabMeta[] = [
     icon: FlaskConical, tint: "from-rose-500/15 to-pink-500/10", iconColor: "text-rose-500", isCoreBoard: false },
   { id: "antacid_action", title: "Stomach Acidity & Antacid Action", titleBn: "পাকস্থলীর এসিডিটি ও এন্টাসিডের ভূমিকা",
     icon: Droplets, tint: "from-pink-500/15 to-rose-500/10", iconColor: "text-pink-500", isCoreBoard: false },
+  { id: "minerals_vs_rocks", title: "Minerals vs Rocks", titleBn: "খনিজ ও শিলা",
+    icon: Gem, tint: "from-fuchsia-500/15 to-pink-500/10", iconColor: "text-fuchsia-500", isCoreBoard: false },
 ];
 
 type ChapterMeta = {
@@ -196,9 +199,9 @@ const CHAPTERS: ChapterMeta[] = [
     labIds: ["ph_scale", "indicator_compare", "role_of_water", "acid_base_strength", "neutralization_reaction", "antacid_action", "solubility_rules"],
     accent: "from-rose-500 to-pink-500", icon: Droplets },
   { number: 10, titleBn: "খনিজ সম্পদ: ধাতু ও অধাতু", titleEn: "Mineral Resources: Metals & Non-metals",
-    descBn: "ধাতু, অধাতু, সংকর ধাতু ও আকরিক।",
-    labIds: [], comingSoonCount: 3,
-    accent: "from-pink-500 to-fuchsia-500", icon: FlaskConical },
+    descBn: "খনিজ ও শিলার পার্থক্য, ধাতু, অধাতু, সংকর ধাতু ও আকরিক।",
+    labIds: ["minerals_vs_rocks"], comingSoonCount: 2,
+    accent: "from-pink-500 to-fuchsia-500", icon: Gem },
   { number: 11, titleBn: "খনিজ সম্পদ: জীবাশ্ম", titleEn: "Mineral Resources: Fossil Fuels",
     descBn: "হাইড্রোকার্বন, পেট্রোলিয়াম ও পলিমার।",
     labIds: ["fuel_combustion"], comingSoonCount: 1, accent: "from-orange-500 to-red-500", icon: Flame },
