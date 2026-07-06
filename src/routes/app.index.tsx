@@ -92,6 +92,7 @@ const LAB_COMPONENTS: Partial<Record<ExperimentId, LazyExoticComponent<LabCompon
   minerals_vs_rocks: lazy(() => import("@/components/lab/MineralsVsRocksLab")),
   ores_vs_minerals: lazy(() => import("@/components/lab/OresVsMineralsLab")),
   metallurgy_steps: lazy(() => import("@/components/lab/MetallurgyStepsLab")),
+  blast_furnace: lazy(() => import("@/components/lab/BlastFurnaceLab")),
 };
 
 function LabLoadingFallback({ onBack }: { onBack: () => void }) {
