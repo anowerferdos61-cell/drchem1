@@ -14,6 +14,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import DraggableTheoryFab from "./DraggableTheoryFab";
 
 type Step = {
   id: string;
