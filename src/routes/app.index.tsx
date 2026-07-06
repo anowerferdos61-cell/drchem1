@@ -83,8 +83,7 @@ const LAB_COMPONENTS: Partial<Record<ExperimentId, LazyExoticComponent<LabCompon
   daniel_cell: lazy(() => import("@/components/lab/DanielCellLab")),
   electrolytic_cell: lazy(() => import("@/components/lab/ElectrolyticCellLab")),
   dry_cell: lazy(() => import("@/components/lab/DryCellMechanismLab")),
-  
-  
+  fuel_combustion: lazy(() => import("@/components/lab/FuelCombustionEnvLab")),
 };
 
 function LabLoadingFallback({ onBack }: { onBack: () => void }) {

@@ -134,6 +134,8 @@ const ALL_LABS: LabMeta[] = [
     icon: Zap, tint: "from-orange-500/15 to-amber-500/10", iconColor: "text-orange-500", isCoreBoard: false },
   { id: "dry_cell", title: "Dry Cell Mechanism (Zn-C battery)", titleBn: "ড্রাই সেল · অভ্যন্তরীণ গঠন ও বিক্রিয়া",
     icon: Battery, tint: "from-yellow-500/15 to-amber-500/10", iconColor: "text-yellow-600", isCoreBoard: false },
+  { id: "fuel_combustion", title: "Fuel Combustion & Environment", titleBn: "জ্বালানি দহন ও পরিবেশ",
+    icon: Flame, tint: "from-orange-500/15 to-red-500/10", iconColor: "text-orange-500", isCoreBoard: false },
 ];
 
 type ChapterMeta = {
@@ -189,7 +191,7 @@ const CHAPTERS: ChapterMeta[] = [
     accent: "from-pink-500 to-fuchsia-500", icon: FlaskConical },
   { number: 11, titleBn: "খনিজ সম্পদ: জীবাশ্ম", titleEn: "Mineral Resources: Fossil Fuels",
     descBn: "হাইড্রোকার্বন, পেট্রোলিয়াম ও পলিমার।",
-    labIds: [], comingSoonCount: 2, accent: "from-orange-500 to-red-500", icon: Flame },
+    labIds: ["fuel_combustion"], comingSoonCount: 1, accent: "from-orange-500 to-red-500", icon: Flame },
   { number: 12, titleBn: "আমাদের জীবনে রসায়ন", titleEn: "Chemistry in Our Lives",
     descBn: "খাদ্য, ঔষধ, প্রসাধনী ও পরিবেশ।",
     labIds: [], comingSoonCount: 3, accent: "from-lime-500 to-emerald-500", icon: Sparkles },

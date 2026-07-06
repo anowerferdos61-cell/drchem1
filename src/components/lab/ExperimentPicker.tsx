@@ -180,6 +180,13 @@ const EXPERIMENTS: Array<{
     icon: Zap,
     gradient: "from-yellow-100 via-amber-50 to-orange-100",
   },
+  {
+    id: "fuel_combustion",
+    title: "Fuel Combustion · জ্বালানি দহন ও পরিবেশ",
+    subtitle: "CH₄ · C₄H₁₀ · Coal · Ethanol · CO₂ footprint + soot vs clean flame",
+    icon: Flame,
+    gradient: "from-orange-100 via-red-50 to-yellow-100",
+  },
 ];
 
 

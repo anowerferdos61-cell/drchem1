@@ -33,7 +33,8 @@ export type ExperimentId =
   | "stp_molar_volume"
   | "daniel_cell"
   | "electrolytic_cell"
-  | "dry_cell";
+  | "dry_cell"
+  | "fuel_combustion";
 
 
 export type Mode = "guide" | "student" | "classroom";
