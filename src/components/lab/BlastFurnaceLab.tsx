@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowDown, Flame, RefreshCw, Dna, ChevronLeft, ChevronRight,
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import DraggableTheoryFab from "./DraggableTheoryFab";
 
 interface Props {
   onBack: () => void;
