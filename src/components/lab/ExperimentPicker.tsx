@@ -215,6 +215,13 @@ const EXPERIMENTS: Array<{
     icon: FlaskConical,
     gradient: "from-rose-100 via-pink-50 to-fuchsia-100",
   },
+  {
+    id: "antacid_action",
+    title: "Antacid Action · পাকস্থলীর এসিডিটি ও এন্টাসিড",
+    subtitle: "Mg(OH)₂ / Al(OH)₃ + HCl → salt + H₂O · real-world neutralization",
+    icon: Droplet,
+    gradient: "from-pink-100 via-rose-50 to-fuchsia-100",
+  },
 ];
 
 

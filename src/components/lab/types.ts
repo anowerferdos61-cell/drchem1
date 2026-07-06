@@ -38,7 +38,8 @@ export type ExperimentId =
   | "bond_energy_calorimeter"
   | "role_of_water"
   | "acid_base_strength"
-  | "neutralization_reaction";
+  | "neutralization_reaction"
+  | "antacid_action";
 
 
 export type Mode = "guide" | "student" | "classroom";
