@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { ArrowLeft, Languages, Gem, Layers, TrendingUp, Info, Sparkles } from "lucide-react";
+import DraggableTheoryFab from "./DraggableTheoryFab";
 
 type Lang = "bn" | "en";
 
