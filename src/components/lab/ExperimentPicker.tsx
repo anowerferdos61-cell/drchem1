@@ -208,6 +208,13 @@ const EXPERIMENTS: Array<{
     icon: Zap,
     gradient: "from-amber-100 via-yellow-50 to-orange-100",
   },
+  {
+    id: "neutralization_reaction",
+    title: "Neutralization Reaction · প্রশমন বিক্রিয়া ও লবণের গঠন",
+    subtitle: "HCl+NaOH → NaCl · H⁺+OH⁻ ion exchange + exothermic ΔH=−57.3 kJ/mol",
+    icon: FlaskConical,
+    gradient: "from-rose-100 via-pink-50 to-fuchsia-100",
+  },
 ];
 
 
