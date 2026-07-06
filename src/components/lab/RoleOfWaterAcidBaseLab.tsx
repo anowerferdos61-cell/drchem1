@@ -459,7 +459,7 @@ function LabScene({
 }) {
   // Animate ion particles when water present + touching
   const [tick, setTick] = useState(0);
-  const raf = useRef<number>();
+  const raf = useRef<number | null>(null);
   useEffect(() => {
     if (!isWaterPresent || !touching) return;
     const loop = () => {
@@ -467,7 +467,9 @@ function LabScene({
       raf.current = requestAnimationFrame(loop);
     };
     raf.current = requestAnimationFrame(loop);
-    return () => raf.current && cancelAnimationFrame(raf.current);
+    return () => {
+      if (raf.current) cancelAnimationFrame(raf.current);
+    };
   }, [isWaterPresent, touching]);
 
   const paperFill =
