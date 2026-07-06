@@ -40,7 +40,8 @@ export type ExperimentId =
   | "acid_base_strength"
   | "neutralization_reaction"
   | "antacid_action"
-  | "minerals_vs_rocks";
+  | "minerals_vs_rocks"
+  | "ores_vs_minerals";
 
 
 export type Mode = "guide" | "student" | "classroom";

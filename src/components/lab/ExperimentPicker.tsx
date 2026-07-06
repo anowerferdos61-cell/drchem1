@@ -229,6 +229,13 @@ const EXPERIMENTS: Array<{
     icon: Gem,
     gradient: "from-fuchsia-100 via-pink-50 to-rose-100",
   },
+  {
+    id: "ores_vs_minerals",
+    title: "Ores vs Minerals · খনিজ ও আকরিক (Venn)",
+    subtitle: "সকল আকরিকই খনিজ, কিন্তু সকল খনিজ আকরিক নয় · Bauxite vs Clay",
+    icon: Gem,
+    gradient: "from-emerald-100 via-sky-50 to-blue-100",
+  },
 ];
 
 
