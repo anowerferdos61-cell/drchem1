@@ -37,7 +37,8 @@ export type ExperimentId =
   | "fuel_combustion"
   | "bond_energy_calorimeter"
   | "role_of_water"
-  | "acid_base_strength";
+  | "acid_base_strength"
+  | "neutralization_reaction";
 
 
 export type Mode = "guide" | "student" | "classroom";

@@ -87,6 +87,7 @@ const LAB_COMPONENTS: Partial<Record<ExperimentId, LazyExoticComponent<LabCompon
   bond_energy_calorimeter: lazy(() => import("@/components/lab/BondEnergyCalorimeterLab")),
   role_of_water: lazy(() => import("@/components/lab/RoleOfWaterAcidBaseLab")),
   acid_base_strength: lazy(() => import("@/components/lab/AcidBaseStrengthLab")),
+  neutralization_reaction: lazy(() => import("@/components/lab/NeutralizationReactionLab")),
 };
 
 function LabLoadingFallback({ onBack }: { onBack: () => void }) {
