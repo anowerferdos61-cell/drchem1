@@ -138,6 +138,8 @@ const ALL_LABS: LabMeta[] = [
     icon: Flame, tint: "from-orange-500/15 to-red-500/10", iconColor: "text-orange-500", isCoreBoard: false },
   { id: "bond_energy_calorimeter", title: "Bond Energy & Calorimeter", titleBn: "বন্ধন শক্তি ও ΔH ক্যালোরিমিটার",
     icon: Flame, tint: "from-amber-500/15 to-orange-500/10", iconColor: "text-amber-500", isCoreBoard: false },
+  { id: "role_of_water", title: "Role of Water in Acids & Bases", titleBn: "এসিড-ক্ষারকে পানির ভূমিকা",
+    icon: Droplets, tint: "from-sky-500/15 to-cyan-500/10", iconColor: "text-sky-500", isCoreBoard: false },
 ];
 
 type ChapterMeta = {
@@ -189,7 +191,7 @@ const CHAPTERS: ChapterMeta[] = [
     accent: "from-rose-500 to-pink-500", icon: Droplets },
   { number: 10, titleBn: "এসিড, ক্ষারক ও লবণ", titleEn: "Acids, Bases & Salts",
     descBn: "pH স্কেল, নির্দেশক ও দৈনন্দিন প্রয়োগ।",
-    labIds: ["ph_scale", "indicator_compare"],
+    labIds: ["ph_scale", "indicator_compare", "role_of_water"],
     accent: "from-pink-500 to-fuchsia-500", icon: FlaskConical },
   { number: 11, titleBn: "খনিজ সম্পদ: জীবাশ্ম", titleEn: "Mineral Resources: Fossil Fuels",
     descBn: "হাইড্রোকার্বন, পেট্রোলিয়াম ও পলিমার।",
