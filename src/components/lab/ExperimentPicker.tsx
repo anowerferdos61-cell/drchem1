@@ -257,6 +257,13 @@ const EXPERIMENTS: Array<{
     icon: Zap,
     gradient: "from-orange-100 via-amber-50 to-yellow-100",
   },
+  {
+    id: "corrosion_rusting",
+    title: "Corrosion & Rusting · মরিচা ধরা",
+    subtitle: "লোহার পৃষ্ঠে প্রাকৃতিক তড়িৎ-রাসায়নিক কোষ · ৪-ধাপ মাইক্রোস্কোপিক অ্যানিমেশন",
+    icon: Droplet,
+    gradient: "from-orange-100 via-rose-50 to-red-100",
+  },
 ];
 
 
