@@ -236,6 +236,13 @@ const EXPERIMENTS: Array<{
     icon: Gem,
     gradient: "from-emerald-100 via-sky-50 to-blue-100",
   },
+  {
+    id: "metallurgy_steps",
+    title: "Steps of Metallurgy · ধাতু নিষ্কাশনের ধাপ",
+    subtitle: "Crush → Concentrate → Roast → Oxide → Reduce → Refine · ৬-ধাপের ইন্টারেক্টিভ পাইপলাইন",
+    icon: Flame,
+    gradient: "from-indigo-100 via-violet-50 to-fuchsia-100",
+  },
 ];
 
 
