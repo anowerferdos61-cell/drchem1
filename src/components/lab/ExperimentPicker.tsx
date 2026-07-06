@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FlaskConical, Wind, FlaskRound, Gem, Zap, Beaker, Droplet, Activity, TestTubes, Layers, Atom, Sparkles } from "lucide-react";
+import { FlaskConical, Wind, FlaskRound, Gem, Zap, Beaker, Droplet, Activity, TestTubes, Layers, Atom, Sparkles, Flame } from "lucide-react";
 import type { ExperimentId } from "./types";
 
 interface Props {
@@ -179,6 +179,13 @@ const EXPERIMENTS: Array<{
     subtitle: "Zn-C battery · অভ্যন্তরীণ লেয়ার + মাইক্রোস্কোপিক বিক্রিয়া · 1.5 V",
     icon: Zap,
     gradient: "from-yellow-100 via-amber-50 to-orange-100",
+  },
+  {
+    id: "fuel_combustion",
+    title: "Fuel Combustion · জ্বালানি দহন ও পরিবেশ",
+    subtitle: "CH₄ · C₄H₁₀ · Coal · Ethanol · CO₂ footprint + soot vs clean flame",
+    icon: Flame,
+    gradient: "from-orange-100 via-red-50 to-yellow-100",
   },
 ];
 
