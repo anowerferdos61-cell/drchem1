@@ -249,7 +249,8 @@ function MicroScene({ on }: { on: boolean }) {
           <animate attributeName="r" values="30;38;30" dur="1s" repeatCount="indefinite" />
         </circle>}
         <circle r="18" fill={on ? "#fef08a" : "#e2e8f0"} stroke="#a16207" strokeWidth="1.5" />
-        <Lightbulb-svg />
+        <LightbulbSvg />
+
         <path d="M-6 12 L6 12 L4 20 L-4 20 Z" fill="#64748b" />
         <text y="-22" textAnchor="middle" fontSize="10" fontWeight="700" fill={on ? "#a16207" : "#64748b"}>
           {on ? "Glowing" : "Bulb"}
