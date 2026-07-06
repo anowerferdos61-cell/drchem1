@@ -136,6 +136,8 @@ const ALL_LABS: LabMeta[] = [
     icon: Battery, tint: "from-yellow-500/15 to-amber-500/10", iconColor: "text-yellow-600", isCoreBoard: false },
   { id: "fuel_combustion", title: "Fuel Combustion & Environment", titleBn: "জ্বালানি দহন ও পরিবেশ",
     icon: Flame, tint: "from-orange-500/15 to-red-500/10", iconColor: "text-orange-500", isCoreBoard: false },
+  { id: "bond_energy_calorimeter", title: "Bond Energy & Calorimeter", titleBn: "বন্ধন শক্তি ও ΔH ক্যালোরিমিটার",
+    icon: Flame, tint: "from-amber-500/15 to-orange-500/10", iconColor: "text-amber-500", isCoreBoard: false },
 ];
 
 type ChapterMeta = {
@@ -179,7 +181,7 @@ const CHAPTERS: ChapterMeta[] = [
     accent: "from-amber-500 to-orange-500", icon: Beaker },
   { number: 8, titleBn: "রসায়ন ও শক্তি", titleEn: "Chemistry & Energy",
     descBn: "তাপ পরিবর্তন, তড়িৎ-রাসায়নিক সারি।",
-    labIds: ["electrochemical_series", "daniel_cell", "electrolytic_cell", "dry_cell"],
+    labIds: ["bond_energy_calorimeter", "electrochemical_series", "daniel_cell", "electrolytic_cell", "dry_cell"],
     accent: "from-yellow-500 to-amber-500", icon: Zap },
   { number: 9, titleBn: "এসিড-ক্ষারক সাম্য", titleEn: "Acid-Base Equilibrium",
     descBn: "pH, Ka/Kb এবং দ্রাব্যতার ধারণা।",

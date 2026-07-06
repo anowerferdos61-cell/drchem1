@@ -187,6 +187,13 @@ const EXPERIMENTS: Array<{
     icon: Flame,
     gradient: "from-orange-100 via-red-50 to-yellow-100",
   },
+  {
+    id: "bond_energy_calorimeter",
+    title: "Bond Energy & ΔH · বন্ধন শক্তি ও তাপের পরিবর্তন",
+    subtitle: "ΔH = ΣE(broken) − ΣE(formed) · Snip bonds, build products, watch the thermometer",
+    icon: Flame,
+    gradient: "from-amber-100 via-orange-50 to-rose-100",
+  },
 ];
 
 
