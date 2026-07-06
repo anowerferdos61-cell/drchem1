@@ -222,6 +222,13 @@ const EXPERIMENTS: Array<{
     icon: Droplet,
     gradient: "from-pink-100 via-rose-50 to-fuchsia-100",
   },
+  {
+    id: "minerals_vs_rocks",
+    title: "Minerals vs Rocks · খনিজ ও শিলা",
+    subtitle: "Quartz, Mica, Feldspar → Granite · খনিজের 'প্যাকেট' হলো শিলা",
+    icon: Gem,
+    gradient: "from-fuchsia-100 via-pink-50 to-rose-100",
+  },
 ];
 
 
