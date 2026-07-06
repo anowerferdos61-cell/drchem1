@@ -250,6 +250,13 @@ const EXPERIMENTS: Array<{
     icon: Flame,
     gradient: "from-rose-100 via-orange-50 to-amber-100",
   },
+  {
+    id: "electrolytic_refining",
+    title: "Electrolytic Refining · তড়িৎ বিশোধন",
+    subtitle: "Cu 99.9% বিশুদ্ধকরণ · অ্যানোড কাদা · Down's / Hall-Héroult রেফারেন্স",
+    icon: Zap,
+    gradient: "from-orange-100 via-amber-50 to-yellow-100",
+  },
 ];
 
 
