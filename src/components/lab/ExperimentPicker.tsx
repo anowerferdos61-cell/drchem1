@@ -243,6 +243,13 @@ const EXPERIMENTS: Array<{
     icon: Flame,
     gradient: "from-indigo-100 via-violet-50 to-fuchsia-100",
   },
+  {
+    id: "blast_furnace",
+    title: "Blast Furnace · বাতচুল্লী (Fe নিষ্কাশন)",
+    subtitle: "৪ থার্মাল Zone · হেমাটাইট → গলিত লোহা · ইন্টারেক্টিভ ক্রস-সেকশন",
+    icon: Flame,
+    gradient: "from-rose-100 via-orange-50 to-amber-100",
+  },
 ];
 
 

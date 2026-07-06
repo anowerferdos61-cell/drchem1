@@ -42,7 +42,8 @@ export type ExperimentId =
   | "antacid_action"
   | "minerals_vs_rocks"
   | "ores_vs_minerals"
-  | "metallurgy_steps";
+  | "metallurgy_steps"
+  | "blast_furnace";
 
 
 export type Mode = "guide" | "student" | "classroom";
