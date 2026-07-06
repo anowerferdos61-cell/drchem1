@@ -41,6 +41,7 @@ import {
   Video,
   NotebookPen,
   Wind,
+  Battery,
 } from "lucide-react";
 import { useEntitlements } from "@/hooks/useEntitlements";
 import { PaywallModal } from "@/components/subscription/PaywallModal";
