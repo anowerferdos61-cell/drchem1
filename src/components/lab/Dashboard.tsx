@@ -144,6 +144,8 @@ const ALL_LABS: LabMeta[] = [
     icon: Zap, tint: "from-amber-500/15 to-orange-500/10", iconColor: "text-amber-500", isCoreBoard: false },
   { id: "neutralization_reaction", title: "Neutralization & Salt Formation", titleBn: "প্রশমন বিক্রিয়া ও লবণের গঠন",
     icon: FlaskConical, tint: "from-rose-500/15 to-pink-500/10", iconColor: "text-rose-500", isCoreBoard: false },
+  { id: "antacid_action", title: "Stomach Acidity & Antacid Action", titleBn: "পাকস্থলীর এসিডিটি ও এন্টাসিডের ভূমিকা",
+    icon: Droplets, tint: "from-pink-500/15 to-rose-500/10", iconColor: "text-pink-500", isCoreBoard: false },
 ];
 
 type ChapterMeta = {
@@ -191,7 +193,7 @@ const CHAPTERS: ChapterMeta[] = [
     accent: "from-yellow-500 to-amber-500", icon: Zap },
   { number: 9, titleBn: "এসিড, ক্ষারক ও লবণ", titleEn: "Acids, Bases & Salts",
     descBn: "pH, নির্দেশক, দ্রাব্যতা, পানির ভূমিকা ও প্রশমন বিক্রিয়া।",
-    labIds: ["ph_scale", "indicator_compare", "role_of_water", "acid_base_strength", "neutralization_reaction", "solubility_rules"],
+    labIds: ["ph_scale", "indicator_compare", "role_of_water", "acid_base_strength", "neutralization_reaction", "antacid_action", "solubility_rules"],
     accent: "from-rose-500 to-pink-500", icon: Droplets },
   { number: 10, titleBn: "খনিজ সম্পদ: ধাতু ও অধাতু", titleEn: "Mineral Resources: Metals & Non-metals",
     descBn: "ধাতু, অধাতু, সংকর ধাতু ও আকরিক।",
