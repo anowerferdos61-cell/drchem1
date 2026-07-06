@@ -140,6 +140,8 @@ const ALL_LABS: LabMeta[] = [
     icon: Flame, tint: "from-amber-500/15 to-orange-500/10", iconColor: "text-amber-500", isCoreBoard: false },
   { id: "role_of_water", title: "Role of Water in Acids & Bases", titleBn: "এসিড-ক্ষারকে পানির ভূমিকা",
     icon: Droplets, tint: "from-sky-500/15 to-cyan-500/10", iconColor: "text-sky-500", isCoreBoard: false },
+  { id: "acid_base_strength", title: "Acid & Base Strength (Strong vs Weak)", titleBn: "এসিড-ক্ষারকের তীব্রতা · Strong vs Weak",
+    icon: Zap, tint: "from-amber-500/15 to-orange-500/10", iconColor: "text-amber-500", isCoreBoard: false },
 ];
 
 type ChapterMeta = {
@@ -187,7 +189,7 @@ const CHAPTERS: ChapterMeta[] = [
     accent: "from-yellow-500 to-amber-500", icon: Zap },
   { number: 9, titleBn: "এসিড, ক্ষারক ও লবণ", titleEn: "Acids, Bases & Salts",
     descBn: "pH, নির্দেশক, দ্রাব্যতা ও পানির ভূমিকা।",
-    labIds: ["ph_scale", "indicator_compare", "role_of_water", "solubility_rules"],
+    labIds: ["ph_scale", "indicator_compare", "role_of_water", "acid_base_strength", "solubility_rules"],
     accent: "from-rose-500 to-pink-500", icon: Droplets },
   { number: 10, titleBn: "খনিজ সম্পদ: ধাতু ও অধাতু", titleEn: "Mineral Resources: Metals & Non-metals",
     descBn: "ধাতু, অধাতু, সংকর ধাতু ও আকরিক।",
