@@ -292,6 +292,13 @@ const EXPERIMENTS: Array<{
     icon: Sparkles,
     gradient: "from-emerald-100 via-cyan-50 to-sky-100",
   },
+  {
+    id: "polymerization",
+    title: "Polymerization · পলিমারকরণ (Polyethene & PVC)",
+    subtitle: "Ethene → Polyethene · Vinyl Chloride → PVC · Pressure + Temperature + Catalyst simulator with chain animation",
+    icon: Sparkles,
+    gradient: "from-sky-100 via-emerald-50 to-cyan-100",
+  },
 ];
 
 
