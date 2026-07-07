@@ -45,7 +45,8 @@ export type ExperimentId =
   | "metallurgy_steps"
   | "blast_furnace"
   | "electrolytic_refining"
-  | "corrosion_rusting";
+  | "corrosion_rusting"
+  | "petroleum_distillation";
 
 
 export type Mode = "guide" | "student" | "classroom";

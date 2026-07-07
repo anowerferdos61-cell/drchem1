@@ -264,6 +264,13 @@ const EXPERIMENTS: Array<{
     icon: Droplet,
     gradient: "from-orange-100 via-rose-50 to-red-100",
   },
+  {
+    id: "petroleum_distillation",
+    title: "Fractional Distillation · পেট্রোলিয়ামের আংশিক পাতন",
+    subtitle: "Crude Oil → LPG/Petrol/Kerosene/Diesel/Bitumen · Temperature slider + molecular chains + BP graph",
+    icon: Flame,
+    gradient: "from-orange-100 via-amber-50 to-rose-100",
+  },
 ];
 
 
