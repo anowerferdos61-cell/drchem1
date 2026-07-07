@@ -95,6 +95,7 @@ const LAB_COMPONENTS: Partial<Record<ExperimentId, LazyExoticComponent<LabCompon
   blast_furnace: lazy(() => import("@/components/lab/BlastFurnaceLab")),
   electrolytic_refining: lazy(() => import("@/components/lab/ElectrolyticRefiningLab")),
   corrosion_rusting: lazy(() => import("@/components/lab/CorrosionRustingLab")),
+  petroleum_distillation: lazy(() => import("@/components/lab/PetroleumDistillationLab")),
 };
 
 function LabLoadingFallback({ onBack }: { onBack: () => void }) {
