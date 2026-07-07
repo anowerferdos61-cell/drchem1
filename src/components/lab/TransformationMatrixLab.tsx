@@ -469,21 +469,19 @@ export default function TransformationMatrixLab({ onBack }: Props) {
             </div>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
               {REAGENTS.map((r) => (
-                <motion.button
+                <button
                   key={r.id}
                   type="button"
                   draggable
-                  onDragStart={(e: React.DragEvent<HTMLButtonElement>) => {
+                  onDragStart={(e) => {
                     e.dataTransfer.setData("text/plain", r.id);
                     e.dataTransfer.effectAllowed = "move";
                     setDragging(r.id);
                   }}
                   onDragEnd={() => setDragging(null)}
                   onClick={() => applyReagent(r.id)}
-                  whileHover={{ y: -3, rotate: -1 }}
-                  whileTap={{ scale: 0.96 }}
                   className={cn(
-                    "group rounded-xl border border-slate-700/70 bg-gradient-to-br p-2 text-left ring-1 ring-transparent transition-shadow hover:shadow-lg",
+                    "group rounded-xl border border-slate-700/70 bg-gradient-to-br p-2 text-left ring-1 ring-transparent transition-all hover:-translate-y-0.5 hover:rotate-[-1deg] hover:shadow-lg active:scale-95",
                     r.tint,
                     dragging === r.id && `${r.ring} shadow-xl`,
                   )}
@@ -491,7 +489,7 @@ export default function TransformationMatrixLab({ onBack }: Props) {
                   <div className="font-mono text-xs font-bold text-slate-100">{r.formula}</div>
                   <div className="mt-0.5 text-[11px] text-slate-200">{r.nameBn}</div>
                   <div className="mt-1 text-[10px] italic text-slate-300/80">{r.hint}</div>
-                </motion.button>
+                </button>
               ))}
             </div>
           </Card>
