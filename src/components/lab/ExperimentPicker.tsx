@@ -271,6 +271,13 @@ const EXPERIMENTS: Array<{
     icon: Flame,
     gradient: "from-orange-100 via-amber-50 to-rose-100",
   },
+  {
+    id: "hydrocarbon_3d",
+    title: "3D Hydrocarbon Models · হাইড্রোকার্বনের ৩ডি মডেল",
+    subtitle: "Methane / Ethane / Ethene / Ethyne · Ball-and-stick 3D · Bond angles 109.5°/120°/180°",
+    icon: Atom,
+    gradient: "from-emerald-100 via-teal-50 to-cyan-100",
+  },
 ];
 
 
