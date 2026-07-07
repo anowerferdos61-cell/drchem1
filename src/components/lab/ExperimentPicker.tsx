@@ -278,6 +278,13 @@ const EXPERIMENTS: Array<{
     icon: Atom,
     gradient: "from-emerald-100 via-teal-50 to-cyan-100",
   },
+  {
+    id: "unsaturation_test",
+    title: "Unsaturation Test · অসম্পৃক্ততা পরীক্ষা",
+    subtitle: "Br₂/H₂O ও Baeyer's (KMnO₄) — Hexane vs Ethene, রঙ পরিবর্তন + π-বন্ড ভাঙার অ্যানিমেশন",
+    icon: TestTubes,
+    gradient: "from-amber-100 via-rose-50 to-fuchsia-100",
+  },
 ];
 
 

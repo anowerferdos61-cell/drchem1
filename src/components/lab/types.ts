@@ -47,7 +47,8 @@ export type ExperimentId =
   | "electrolytic_refining"
   | "corrosion_rusting"
   | "petroleum_distillation"
-  | "hydrocarbon_3d";
+  | "hydrocarbon_3d"
+  | "unsaturation_test";
 
 
 export type Mode = "guide" | "student" | "classroom";
