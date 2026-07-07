@@ -165,6 +165,8 @@ const ALL_LABS: LabMeta[] = [
     icon: Atom, tint: "from-emerald-500/15 to-teal-500/10", iconColor: "text-emerald-500", isCoreBoard: false },
   { id: "unsaturation_test", title: "Unsaturation Test (Br₂ / KMnO₄)", titleBn: "অসম্পৃক্ততা পরীক্ষা",
     icon: TestTubes, tint: "from-amber-500/15 to-rose-500/10", iconColor: "text-amber-500", isCoreBoard: false },
+  { id: "transformation_matrix", title: "Functional Group Transformation Matrix", titleBn: "জৈব যৌগ রূপান্তর ম্যাট্রিক্স",
+    icon: Sparkles, tint: "from-emerald-500/15 to-cyan-500/10", iconColor: "text-emerald-500", isCoreBoard: false },
 ];
 
 type ChapterMeta = {
@@ -220,7 +222,7 @@ const CHAPTERS: ChapterMeta[] = [
     accent: "from-pink-500 to-fuchsia-500", icon: Gem },
   { number: 11, titleBn: "খনিজ সম্পদ: জীবাশ্ম", titleEn: "Mineral Resources: Fossil Fuels",
     descBn: "হাইড্রোকার্বন, পেট্রোলিয়াম ও পলিমার।",
-    labIds: ["fuel_combustion", "petroleum_distillation", "hydrocarbon_3d", "unsaturation_test"], accent: "from-orange-500 to-red-500", icon: Flame },
+    labIds: ["fuel_combustion", "petroleum_distillation", "hydrocarbon_3d", "unsaturation_test", "transformation_matrix"], accent: "from-orange-500 to-red-500", icon: Flame },
   { number: 12, titleBn: "আমাদের জীবনে রসায়ন", titleEn: "Chemistry in Our Lives",
     descBn: "খাদ্য, ঔষধ, প্রসাধনী ও পরিবেশ।",
     labIds: [], comingSoonCount: 3, accent: "from-lime-500 to-emerald-500", icon: Sparkles },

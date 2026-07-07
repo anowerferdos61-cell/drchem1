@@ -285,6 +285,13 @@ const EXPERIMENTS: Array<{
     icon: TestTubes,
     gradient: "from-amber-100 via-rose-50 to-fuchsia-100",
   },
+  {
+    id: "transformation_matrix",
+    title: "Transformation Matrix · জৈব যৌগ রূপান্তর",
+    subtitle: "Alkane → Halide → Alcohol → Aldehyde → Acid · Drag-and-drop reagent mission (gamified)",
+    icon: Sparkles,
+    gradient: "from-emerald-100 via-cyan-50 to-sky-100",
+  },
 ];
 
 
