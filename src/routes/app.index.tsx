@@ -99,6 +99,7 @@ const LAB_COMPONENTS: Partial<Record<ExperimentId, LazyExoticComponent<LabCompon
   hydrocarbon_3d: lazy(() => import("@/components/lab/Hydrocarbon3DLab")),
   unsaturation_test: lazy(() => import("@/components/lab/UnsaturationTestLab")),
   transformation_matrix: lazy(() => import("@/components/lab/TransformationMatrixLab")),
+  polymerization: lazy(() => import("@/components/lab/PolymerizationLab")),
 };
 
 function LabLoadingFallback({ onBack }: { onBack: () => void }) {

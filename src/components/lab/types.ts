@@ -49,7 +49,8 @@ export type ExperimentId =
   | "petroleum_distillation"
   | "hydrocarbon_3d"
   | "unsaturation_test"
-  | "transformation_matrix";
+  | "transformation_matrix"
+  | "polymerization";
 
 
 export type Mode = "guide" | "student" | "classroom";

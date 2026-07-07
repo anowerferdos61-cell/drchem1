@@ -167,6 +167,8 @@ const ALL_LABS: LabMeta[] = [
     icon: TestTubes, tint: "from-amber-500/15 to-rose-500/10", iconColor: "text-amber-500", isCoreBoard: false },
   { id: "transformation_matrix", title: "Functional Group Transformation Matrix", titleBn: "জৈব যৌগ রূপান্তর ম্যাট্রিক্স",
     icon: Sparkles, tint: "from-emerald-500/15 to-cyan-500/10", iconColor: "text-emerald-500", isCoreBoard: false },
+  { id: "polymerization", title: "Polymerization (Polyethene & PVC)", titleBn: "পলিমারকরণ · পলিথিন ও পিভিসি",
+    icon: Sparkles, tint: "from-sky-500/15 to-emerald-500/10", iconColor: "text-sky-500", isCoreBoard: false },
 ];
 
 type ChapterMeta = {
