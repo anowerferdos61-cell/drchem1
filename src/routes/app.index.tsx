@@ -97,6 +97,7 @@ const LAB_COMPONENTS: Partial<Record<ExperimentId, LazyExoticComponent<LabCompon
   corrosion_rusting: lazy(() => import("@/components/lab/CorrosionRustingLab")),
   petroleum_distillation: lazy(() => import("@/components/lab/PetroleumDistillationLab")),
   hydrocarbon_3d: lazy(() => import("@/components/lab/Hydrocarbon3DLab")),
+  unsaturation_test: lazy(() => import("@/components/lab/UnsaturationTestLab")),
 };
 
 function LabLoadingFallback({ onBack }: { onBack: () => void }) {
