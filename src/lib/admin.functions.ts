@@ -31,6 +31,7 @@ export interface AdminUserRow {
     trial_ends_at: string | null;
   } | null;
   last_sign_in_at: string | null;
+  banned_until: string | null;
 }
 
 // ─── listAllUsers ───────────────────────────────────────────────────────
