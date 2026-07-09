@@ -551,22 +551,22 @@ function Footer() {
           <div className="flex flex-col gap-4 animate-fade-in" style={{ animationDelay: "100ms" }}>
             <h3 className="font-bold text-xl text-foreground">যোগাযোগ করুন</h3>
             <a
-              href="mailto:drchem.bd@gmail.com"
+              href="mailto:drchemhelp247@gmail.com"
               className="group flex items-center gap-3 text-base text-muted-foreground hover:text-primary transition-colors"
             >
               <span className="h-10 w-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-all group-hover:scale-110">
                 ✉️
               </span>
-              <span className="font-medium">drchem.bd@gmail.com</span>
+              <span className="font-medium">drchemhelp247@gmail.com</span>
             </a>
             <a
-              href="tel:+8801303446161"
+              href="tel:+8801581553923"
               className="group flex items-center gap-3 text-base text-muted-foreground hover:text-primary transition-colors"
             >
               <span className="h-10 w-10 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center group-hover:bg-emerald-500 group-hover:text-white transition-all group-hover:scale-110">
                 📞
               </span>
-              <span className="font-medium">01303-446161</span>
+              <span className="font-medium">01581-553923</span>
             </a>
             <a
               href="https://www.facebook.com/share/p/1EakXVp6i2/"
