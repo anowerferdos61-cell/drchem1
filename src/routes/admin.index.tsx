@@ -663,6 +663,7 @@ function AdminDashboard() {
                           !!u.banned_until &&
                           new Date(u.banned_until).getTime() > Date.now();
                         const isAdminRow = u.roles.includes("admin");
+                        const isSelf = u.user_id === user?.id;
                         return (
                           <div className="flex gap-1 justify-end flex-wrap">
                             <Button
