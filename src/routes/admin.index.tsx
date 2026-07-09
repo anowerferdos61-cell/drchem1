@@ -708,6 +708,27 @@ function AdminDashboard() {
                                   <Ban className="h-3.5 w-3.5 text-amber-600" />
                                 </Button>
                               ))}
+                            {isAdminRow
+                              ? !isSelf && (
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    title="Revoke admin role"
+                                    onClick={() => doRevoke(u)}
+                                  >
+                                    <ShieldMinus className="h-3.5 w-3.5 text-rose-600" />
+                                  </Button>
+                                )
+                              : (
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    title="Make admin"
+                                    onClick={() => doPromote(u)}
+                                  >
+                                    <ShieldPlus className="h-3.5 w-3.5 text-indigo-600" />
+                                  </Button>
+                                )}
                             {!isAdminRow && (
                               <Button
                                 variant="ghost"
