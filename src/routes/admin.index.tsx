@@ -28,6 +28,8 @@ import {
   Ban,
   Undo2,
   Trash2,
+  ShieldPlus,
+  ShieldMinus,
 } from "lucide-react";
 import {
   Area,
