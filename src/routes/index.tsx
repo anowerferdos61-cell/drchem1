@@ -67,6 +67,7 @@ function Landing() {
       <Teachers />
       <Students />
       <Testimonials />
+      <FaqSection />
       <FinalCTA />
       <Footer />
       <VideoModal open={demoOpen} onOpenChange={setDemoOpen} />
