@@ -17,7 +17,7 @@ import { Copy, Plus, Trash2, Users, ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-store";
 
-export const Route = createFileRoute("/teacher/classes")({
+export const Route = createFileRoute("/teacher/classes/")({
   component: ClassesPage,
 });
 
