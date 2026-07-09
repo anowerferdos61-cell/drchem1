@@ -50,6 +50,68 @@ export type Database = {
         }
         Relationships: []
       }
+      class_members: {
+        Row: {
+          class_id: string
+          id: string
+          joined_at: string
+          student_id: string
+        }
+        Insert: {
+          class_id: string
+          id?: string
+          joined_at?: string
+          student_id: string
+        }
+        Update: {
+          class_id?: string
+          id?: string
+          joined_at?: string
+          student_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "class_members_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      classes: {
+        Row: {
+          class_code: string
+          created_at: string
+          id: string
+          name: string
+          section: string | null
+          subject: string | null
+          teacher_id: string
+          updated_at: string
+        }
+        Insert: {
+          class_code?: string
+          created_at?: string
+          id?: string
+          name: string
+          section?: string | null
+          subject?: string | null
+          teacher_id: string
+          updated_at?: string
+        }
+        Update: {
+          class_code?: string
+          created_at?: string
+          id?: string
+          name?: string
+          section?: string | null
+          subject?: string | null
+          teacher_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       kb_documents: {
         Row: {
           chapter: string | null
@@ -402,6 +464,7 @@ export type Database = {
         Args: { _plan_code: string; _user_id: string }
         Returns: undefined
       }
+      generate_class_code: { Args: never; Returns: string }
       get_auth_email_by_phone: { Args: { _phone: string }; Returns: string }
       has_active_pro: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
@@ -412,6 +475,7 @@ export type Database = {
         Returns: boolean
       }
       increment_ai_usage: { Args: { _usage_date: string }; Returns: number }
+      join_class: { Args: { _code: string }; Returns: string }
       match_kb_documents: {
         Args: {
           filter_source?: string
@@ -431,6 +495,7 @@ export type Database = {
           subject: string
         }[]
       }
+      regenerate_class_code: { Args: { _class_id: string }; Returns: string }
     }
     Enums: {
       app_role: "student" | "teacher" | "admin"
