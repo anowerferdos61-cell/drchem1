@@ -27,6 +27,7 @@ import { Route as TeacherClassesRouteImport } from './routes/teacher.classes'
 import { Route as AppVideosRouteImport } from './routes/app.videos'
 import { Route as AppNotesRouteImport } from './routes/app.notes'
 import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
+import { Route as TeacherClassesIndexRouteImport } from './routes/teacher.classes.index'
 import { Route as TeacherClassesClassIdRouteImport } from './routes/teacher.classes.$classId'
 import { Route as ApiTutorStreamRouteImport } from './routes/api/tutor/stream'
 
@@ -120,6 +121,11 @@ const AdminPaymentsRoute = AdminPaymentsRouteImport.update({
   path: '/admin/payments',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TeacherClassesIndexRoute = TeacherClassesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => TeacherClassesRoute,
+} as any)
 const TeacherClassesClassIdRoute = TeacherClassesClassIdRouteImport.update({
   id: '/$classId',
   path: '/$classId',
@@ -152,6 +158,7 @@ export interface FileRoutesByFullPath {
   '/teacher/': typeof TeacherIndexRoute
   '/api/tutor/stream': typeof ApiTutorStreamRoute
   '/teacher/classes/$classId': typeof TeacherClassesClassIdRoute
+  '/teacher/classes/': typeof TeacherClassesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -166,12 +173,12 @@ export interface FileRoutesByTo {
   '/admin/payments': typeof AdminPaymentsRoute
   '/app/notes': typeof AppNotesRoute
   '/app/videos': typeof AppVideosRoute
-  '/teacher/classes': typeof TeacherClassesRouteWithChildren
   '/admin': typeof AdminIndexRoute
   '/app': typeof AppIndexRoute
   '/teacher': typeof TeacherIndexRoute
   '/api/tutor/stream': typeof ApiTutorStreamRoute
   '/teacher/classes/$classId': typeof TeacherClassesClassIdRoute
+  '/teacher/classes': typeof TeacherClassesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -195,6 +202,7 @@ export interface FileRoutesById {
   '/teacher/': typeof TeacherIndexRoute
   '/api/tutor/stream': typeof ApiTutorStreamRoute
   '/teacher/classes/$classId': typeof TeacherClassesClassIdRoute
+  '/teacher/classes/': typeof TeacherClassesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -219,6 +227,7 @@ export interface FileRouteTypes {
     | '/teacher/'
     | '/api/tutor/stream'
     | '/teacher/classes/$classId'
+    | '/teacher/classes/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -233,12 +242,12 @@ export interface FileRouteTypes {
     | '/admin/payments'
     | '/app/notes'
     | '/app/videos'
-    | '/teacher/classes'
     | '/admin'
     | '/app'
     | '/teacher'
     | '/api/tutor/stream'
     | '/teacher/classes/$classId'
+    | '/teacher/classes'
   id:
     | '__root__'
     | '/'
@@ -261,6 +270,7 @@ export interface FileRouteTypes {
     | '/teacher/'
     | '/api/tutor/stream'
     | '/teacher/classes/$classId'
+    | '/teacher/classes/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -408,6 +418,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPaymentsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/teacher/classes/': {
+      id: '/teacher/classes/'
+      path: '/'
+      fullPath: '/teacher/classes/'
+      preLoaderRoute: typeof TeacherClassesIndexRouteImport
+      parentRoute: typeof TeacherClassesRoute
+    }
     '/teacher/classes/$classId': {
       id: '/teacher/classes/$classId'
       path: '/$classId'
@@ -441,10 +458,12 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 interface TeacherClassesRouteChildren {
   TeacherClassesClassIdRoute: typeof TeacherClassesClassIdRoute
+  TeacherClassesIndexRoute: typeof TeacherClassesIndexRoute
 }
 
 const TeacherClassesRouteChildren: TeacherClassesRouteChildren = {
   TeacherClassesClassIdRoute: TeacherClassesClassIdRoute,
+  TeacherClassesIndexRoute: TeacherClassesIndexRoute,
 }
 
 const TeacherClassesRouteWithChildren = TeacherClassesRoute._addFileChildren(
