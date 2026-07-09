@@ -72,6 +72,8 @@ import {
   deleteUser,
   grantSubscription,
   listAllUsers,
+  promoteToAdmin,
+  revokeAdmin,
   unbanUser,
   type AdminUserRow,
 } from "@/lib/admin.functions";
