@@ -132,6 +132,9 @@ function AdminDashboard() {
   const statsFn = useServerFn(adminStats);
   const grantFn = useServerFn(grantSubscription);
   const cancelFn = useServerFn(cancelUserSubscription);
+  const banFn = useServerFn(banUser);
+  const unbanFn = useServerFn(unbanUser);
+  const deleteFn = useServerFn(deleteUser);
   const aiDailyFn = useServerFn(adminAiUsageDaily);
   const revenueDailyFn = useServerFn(adminRevenueDaily);
 
