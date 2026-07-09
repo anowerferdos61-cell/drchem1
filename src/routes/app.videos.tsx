@@ -101,15 +101,18 @@ function VideosPage() {
                 <PremiumLockCard kind="video" />
               ) : (
                 <Card className="overflow-hidden border-0 shadow-2xl shadow-rose-500/10">
-                  <div className="aspect-video w-full bg-black">
+                  <div className="relative aspect-video w-full bg-black">
                     <iframe
                       key={selected.id}
-                      className="h-full w-full"
-                      src={`https://www.youtube.com/embed/${selected.video_id}?modestbranding=1&rel=0`}
+                      className="absolute inset-0 h-full w-full"
+                      src={`https://www.youtube-nocookie.com/embed/${selected.video_id}?modestbranding=1&rel=0&fs=1&disablekb=1&iv_load_policy=3&playsinline=1`}
                       title={selected.title}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
                     />
+                    {/* Overlay to block YouTube's share / watch-later / title-bar clicks */}
+                    <div className="pointer-events-auto absolute inset-x-0 top-0 h-14 z-10" />
+                    <div className="pointer-events-auto absolute right-0 top-0 h-full w-16 z-10" />
                   </div>
                   <div className="flex items-center justify-between gap-3 p-4">
                     <div>
