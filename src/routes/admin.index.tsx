@@ -65,9 +65,12 @@ import {
   adminAiUsageDaily,
   adminRevenueDaily,
   adminStats,
+  banUser,
   cancelUserSubscription,
+  deleteUser,
   grantSubscription,
   listAllUsers,
+  unbanUser,
   type AdminUserRow,
 } from "@/lib/admin.functions";
 
