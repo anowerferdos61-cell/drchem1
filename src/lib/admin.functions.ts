@@ -76,8 +76,9 @@ export const listAllUsers = createServerFn({ method: "GET" })
       }
     }
 
-    // Hydrate last_sign_in_at from auth.users via admin API
+    // Hydrate last_sign_in_at + banned_until from auth.users via admin API
     const lastSignInMap = new Map<string, string | null>();
+    const bannedUntilMap = new Map<string, string | null>();
     try {
       const { data: authData } = await supabaseAdmin.auth.admin.listUsers({
         page: 1,
@@ -85,6 +86,8 @@ export const listAllUsers = createServerFn({ method: "GET" })
       });
       for (const u of authData?.users ?? []) {
         lastSignInMap.set(u.id, u.last_sign_in_at ?? null);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        bannedUntilMap.set(u.id, ((u as any).banned_until as string | null) ?? null);
       }
     } catch {
       /* ignore */
@@ -101,7 +104,83 @@ export const listAllUsers = createServerFn({ method: "GET" })
       roles: rolesByUser.get(p.user_id as string) ?? [],
       subscription: subByUser.get(p.user_id as string) ?? null,
       last_sign_in_at: lastSignInMap.get(p.user_id as string) ?? null,
+      banned_until: bannedUntilMap.get(p.user_id as string) ?? null,
     }));
+  });
+
+// ─── banUser ───────────────────────────────────────────────────────────
+// Ban duration examples: '24h', '168h' (7d), '876000h' (~100y = permanent)
+export const banUser = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) =>
+    z
+      .object({
+        userId: z.string().uuid(),
+        durationHours: z.number().int().positive().default(876000),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    await ensureAdmin(context.supabase, context.userId);
+    if (data.userId === context.userId) throw new Error("You cannot ban yourself");
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    // Safety: refuse to ban another admin
+    const { data: targetRoles } = await supabaseAdmin
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", data.userId);
+    if ((targetRoles ?? []).some((r) => r.role === "admin")) {
+      throw new Error("Cannot ban another admin");
+    }
+
+    const { error } = await supabaseAdmin.auth.admin.updateUserById(data.userId, {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ban_duration: `${data.durationHours}h`,
+    } as any);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+// ─── unbanUser ─────────────────────────────────────────────────────────
+export const unbanUser = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) => z.object({ userId: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    await ensureAdmin(context.supabase, context.userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin.auth.admin.updateUserById(data.userId, {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ban_duration: "none",
+    } as any);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+// ─── deleteUser ────────────────────────────────────────────────────────
+// Permanently removes the user from auth.users; cascades to profiles/roles/subs.
+export const deleteUser = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) => z.object({ userId: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    await ensureAdmin(context.supabase, context.userId);
+    if (data.userId === context.userId) throw new Error("You cannot delete yourself");
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    // Safety: refuse to delete another admin
+    const { data: targetRoles } = await supabaseAdmin
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", data.userId);
+    if ((targetRoles ?? []).some((r) => r.role === "admin")) {
+      throw new Error("Cannot delete another admin");
+    }
+
+    const { error } = await supabaseAdmin.auth.admin.deleteUser(data.userId);
+    if (error) throw new Error(error.message);
+    return { ok: true };
   });
 
 // ─── grantSubscription ─────────────────────────────────────────────────
