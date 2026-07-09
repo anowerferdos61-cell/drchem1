@@ -281,6 +281,29 @@ function AdminDashboard() {
     }
   };
 
+  const doPromote = async (u: AdminUserRow) => {
+    if (!confirm(`Make ${u.email} an ADMIN?\n\nএই ইউজার full admin access পাবে।`)) return;
+    try {
+      await promoteFn({ data: { userId: u.user_id } });
+      toast.success(`🛡️ ${u.email} is now an admin`);
+      void qc.invalidateQueries({ queryKey: ["admin"] });
+    } catch (err) {
+      toast.error((err as Error).message);
+    }
+  };
+
+  const doRevoke = async (u: AdminUserRow) => {
+    if (!confirm(`Revoke admin role from ${u.email}?`)) return;
+    try {
+      await revokeFn({ data: { userId: u.user_id } });
+      toast.success(`Admin role revoked from ${u.email}`);
+      void qc.invalidateQueries({ queryKey: ["admin"] });
+    } catch (err) {
+      toast.error((err as Error).message);
+    }
+  };
+
+
   if (loading || !rolesLoaded || (isAuthenticated && !isAdmin)) {
     return (
       <div className="min-h-screen flex items-center justify-center">
