@@ -23,6 +23,18 @@ export const getAssignedTests = createServerFn({ method: "GET" })
       .order("published_at", { ascending: false });
 
     const setIds = (sets ?? []).map((s) => s.id);
+    const { data: qCounts } = setIds.length
+      ? await supabase.from("questions").select("set_id").in("set_id", setIds)
+      : { data: [] as { set_id: string }[] };
+    const countBySet = new Map<string, number>();
+    for (const r of qCounts ?? []) {
+      countBySet.set(r.set_id, (countBySet.get(r.set_id) ?? 0) + 1);
+    }
+    const setsWithCount = (sets ?? []).map((s) => ({
+      ...s,
+      question_count: countBySet.get(s.id) ?? 0,
+    }));
+
     const { data: attempts } = setIds.length
       ? await supabase
           .from("test_attempts")
@@ -30,7 +42,8 @@ export const getAssignedTests = createServerFn({ method: "GET" })
           .eq("student_id", userId)
           .in("set_id", setIds)
       : { data: [] };
-    return { sets: sets ?? [], attempts: attempts ?? [] };
+    return { sets: setsWithCount, attempts: attempts ?? [] };
+
   });
 
 /** Fetch a published test for the student to take. Strips correct_index/explanation. */
