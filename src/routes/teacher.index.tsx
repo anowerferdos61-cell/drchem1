@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-store";
-import { Users, ArrowRight } from "lucide-react";
+import { Users, ArrowRight, Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/teacher/")({
   component: TeacherHome,
@@ -46,7 +46,8 @@ function TeacherHome() {
   ] as const;
 
   const links = [
-    { to: "/teacher/classes", label: "Manage Classes · ক্লাস ব্যবস্থাপনা", desc: "Create classes, share join codes. Open a class to see students, lab analytics, reports, assignments & viva.", icon: Users },
+    { to: "/teacher/classes", label: "Manage Classes · ক্লাস ব্যবস্থাপনা", desc: "Create classes, share join codes, see student progress.", icon: Users },
+    { to: "/teacher/questions", label: "AI Question Generator · AI প্রশ্ন", desc: "AI দিয়ে NCTB standard MCQ / সৃজনশীল প্রশ্ন বানাও, ক্লাসে assign করো।", icon: Sparkles },
   ] as const;
 
   return (
