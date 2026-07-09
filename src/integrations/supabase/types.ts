@@ -366,6 +366,7 @@ export type Database = {
         Args: { _plan_code: string; _user_id: string }
         Returns: undefined
       }
+      get_auth_email_by_phone: { Args: { _phone: string }; Returns: string }
       has_active_pro: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
         Args: {

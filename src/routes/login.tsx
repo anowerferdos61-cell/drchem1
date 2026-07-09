@@ -8,6 +8,7 @@ import { useAuth } from "@/lib/auth-store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { normalizeBdPhone, syntheticAuthEmailForPhone } from "@/lib/phone";
 
 export const Route = createFileRoute("/login")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -21,27 +22,55 @@ export const Route = createFileRoute("/login")({
       {
         name: "description",
         content:
-          "Log in to Dr. Chem to continue your virtual chemistry experiments, AI tutoring sessions and viva practice for Class 9-10.",
+          "Log in to Dr. Chem with your phone number or email to continue virtual chemistry experiments, AI tutoring and viva practice for Class 9-10.",
       },
       { property: "og:title", content: "লগইন · Dr. Chem" },
       {
         property: "og:description",
         content:
-          "Log in to your Dr. Chem account to continue learning chemistry with the virtual lab and AI tutor.",
+          "Log in to your Dr. Chem account with phone or email to continue learning chemistry with the virtual lab and AI tutor.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://drchem.lovable.app/login" },
     ],
     links: [{ rel: "canonical", href: "https://drchem.lovable.app/login" }],
   }),
-
 });
+
+/** Resolve any user-entered identifier (phone or email) into the auth email. */
+async function resolveAuthEmail(identifier: string): Promise<string | null> {
+  const trimmed = identifier.trim();
+  if (!trimmed) return null;
+
+  // Looks like an email → use as-is.
+  if (trimmed.includes("@")) return trimmed;
+
+  // Otherwise treat as a BD phone number.
+  const normalized = normalizeBdPhone(trimmed);
+  if (!normalized) return null;
+
+  // First try the synthetic email (phone-only signups).
+  const synthetic = syntheticAuthEmailForPhone(normalized);
+
+  // Then look up in profiles for accounts where user provided a real email.
+  const { data, error } = await (
+    supabase.rpc as unknown as (
+      fn: string,
+      args: Record<string, unknown>,
+    ) => Promise<{ data: string | null; error: { message: string } | null }>
+  )("get_auth_email_by_phone", { _phone: normalized });
+  if (error) {
+    console.warn("phone lookup failed", error);
+    return synthetic;
+  }
+  return data ?? synthetic;
+}
 
 function LoginPage() {
   const navigate = useNavigate();
   const { redirect } = useSearch({ from: "/login" });
   const { isAuthenticated, loading } = useAuth();
-  const [email, setEmail] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -51,13 +80,22 @@ function LoginPage() {
     }
   }, [loading, isAuthenticated, navigate, redirect]);
 
-  const handleEmailLogin = async (e: FormEvent) => {
+  const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const authEmail = await resolveAuthEmail(identifier);
+    if (!authEmail) {
+      setSubmitting(false);
+      toast.error("সঠিক ফোন নাম্বার বা ইমেইল দিন");
+      return;
+    }
+    const { error } = await supabase.auth.signInWithPassword({
+      email: authEmail,
+      password,
+    });
     setSubmitting(false);
     if (error) {
-      toast.error(error.message);
+      toast.error("ফোন/ইমেইল বা পাসওয়ার্ড ভুল");
       return;
     }
     toast.success("স্বাগতম!");
@@ -79,16 +117,16 @@ function LoginPage() {
           ভার্চুয়াল কেমিস্ট্রি ল্যাবে লগইন করুন
         </p>
 
-        <form onSubmit={handleEmailLogin} className="space-y-3">
+        <form onSubmit={handleLogin} className="space-y-3">
           <div>
-            <Label htmlFor="email">ইমেইল</Label>
+            <Label htmlFor="identifier">ফোন নাম্বার বা ইমেইল</Label>
             <Input
-              id="email"
-              type="email"
+              id="identifier"
               required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
+              value={identifier}
+              onChange={(e) => setIdentifier(e.target.value)}
+              placeholder="01XXXXXXXXX অথবা you@example.com"
+              autoComplete="username"
             />
           </div>
           <div>
@@ -108,12 +146,17 @@ function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
+              autoComplete="current-password"
             />
           </div>
           <Button type="submit" className="w-full" disabled={submitting}>
             {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : "লগইন"}
           </Button>
         </form>
+
+        <p className="text-xs text-muted-foreground text-center mt-3">
+          পাসওয়ার্ড রিসেট শুধু ইমেইলে সম্ভব। ফোন-অনলি অ্যাকাউন্টের জন্য অ্যাডমিনের সাথে যোগাযোগ করুন।
+        </p>
 
         <p className="text-sm text-center mt-6 text-muted-foreground">
           নতুন এখানে?{" "}

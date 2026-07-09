@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
 import { toast, Toaster } from "sonner";
-import { FlaskConical, GraduationCap, Loader2, UserCog } from "lucide-react";
+import { FlaskConical, GraduationCap, Loader2, UserCog, Phone, Mail } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-store";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { normalizeBdPhone, syntheticAuthEmailForPhone } from "@/lib/phone";
 
 export const Route = createFileRoute("/signup")({
   component: SignupPage,
@@ -19,7 +20,7 @@ export const Route = createFileRoute("/signup")({
       {
         name: "description",
         content:
-          "Create a free Dr. Chem account to start running virtual chemistry experiments, chatting with the AI tutor and practicing viva for Class 9-10.",
+          "Create a free Dr. Chem account with your phone number to start virtual chemistry experiments, AI tutoring and viva practice for Class 9-10.",
       },
       { property: "og:title", content: "সাইনআপ · Dr. Chem" },
       {
@@ -32,7 +33,6 @@ export const Route = createFileRoute("/signup")({
     ],
     links: [{ rel: "canonical", href: "https://drchem.lovable.app/signup" }],
   }),
-
 });
 
 function SignupPage() {
@@ -43,6 +43,7 @@ function SignupPage() {
   const [displayName, setDisplayName] = useState("");
   const [school, setSchool] = useState("");
   const [klass, setKlass] = useState("");
+  const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -59,13 +60,24 @@ function SignupPage() {
       toast.error("আগে শিক্ষার্থী বা শিক্ষক রোল সিলেক্ট করুন");
       return;
     }
+    const normalizedPhone = normalizeBdPhone(phone);
+    if (!normalizedPhone) {
+      toast.error("সঠিক ফোন নাম্বার দিন (যেমন: 01XXXXXXXXX)");
+      return;
+    }
     if (password.length < 6) {
       toast.error("পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে");
       return;
     }
     setSubmitting(true);
+
+    // If user provided a real email use it; otherwise use a synthetic email
+    // derived from the phone so Supabase auth (which requires an email) works.
+    const trimmedEmail = email.trim();
+    const authEmail = trimmedEmail || syntheticAuthEmailForPhone(normalizedPhone);
+
     const { data, error } = await supabase.auth.signUp({
-      email,
+      email: authEmail,
       password,
       options: {
         emailRedirectTo: `${window.location.origin}/app`,
@@ -74,23 +86,29 @@ function SignupPage() {
           school,
           class: klass,
           role,
+          phone: normalizedPhone,
         },
       },
     });
     setSubmitting(false);
+
     if (error) {
-      toast.error(error.message);
+      const msg = error.message?.toLowerCase() ?? "";
+      if (msg.includes("already") || msg.includes("registered")) {
+        toast.error("এই ফোন/ইমেইলে অ্যাকাউন্ট আছে। লগইন করুন।");
+      } else {
+        toast.error(error.message);
+      }
       return;
     }
 
     if (!data.session) {
       const { error: signInError } = await supabase.auth.signInWithPassword({
-        email,
+        email: authEmail,
         password,
       });
-
       if (signInError) {
-        toast.success("অ্যাকাউন্ট তৈরি হয়েছে। এখন একই ইমেইল-পাসওয়ার্ড দিয়ে লগইন করুন।");
+        toast.success("অ্যাকাউন্ট তৈরি হয়েছে। এখন লগইন করুন।");
         navigate({ to: "/login" });
         return;
       }
@@ -177,14 +195,34 @@ function SignupPage() {
             </div>
           </div>
           <div>
-            <Label htmlFor="email">ইমেইল</Label>
+            <Label htmlFor="phone" className="flex items-center gap-1">
+              <Phone className="h-3.5 w-3.5" /> ফোন নাম্বার <span className="text-rose-500">*</span>
+            </Label>
+            <Input
+              id="phone"
+              type="tel"
+              required
+              inputMode="numeric"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="01XXXXXXXXX"
+              autoComplete="tel"
+            />
+            <p className="text-[11px] text-muted-foreground mt-1">
+              বাংলাদেশের ১১ ডিজিটের নাম্বার (যেমন: 01712345678)
+            </p>
+          </div>
+          <div>
+            <Label htmlFor="email" className="flex items-center gap-1">
+              <Mail className="h-3.5 w-3.5" /> ইমেইল <span className="text-muted-foreground text-xs">(না দিলেও চলবে)</span>
+            </Label>
             <Input
               id="email"
               type="email"
-              required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
+              autoComplete="email"
             />
           </div>
           <div>
@@ -197,6 +235,7 @@ function SignupPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="কমপক্ষে ৬ অক্ষর"
+              autoComplete="new-password"
             />
           </div>
           <Button type="submit" className="w-full" disabled={submitting || !role}>
