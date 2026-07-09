@@ -139,6 +139,8 @@ function AdminDashboard() {
   const banFn = useServerFn(banUser);
   const unbanFn = useServerFn(unbanUser);
   const deleteFn = useServerFn(deleteUser);
+  const promoteFn = useServerFn(promoteToAdmin);
+  const revokeFn = useServerFn(revokeAdmin);
   const aiDailyFn = useServerFn(adminAiUsageDaily);
   const revenueDailyFn = useServerFn(adminRevenueDaily);
 
