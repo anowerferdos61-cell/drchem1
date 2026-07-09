@@ -112,7 +112,7 @@ function StatusBadge({ status }: { status: string | undefined }) {
 }
 
 function AdminDashboard() {
-  const { isAuthenticated, loading, roles, rolesLoaded } = useAuth();
+  const { isAuthenticated, loading, roles, rolesLoaded, user } = useAuth();
   const navigate = useNavigate();
   const isAdmin = roles.includes("admin");
 
