@@ -1,111 +1,127 @@
-# Teacher Dashboard — Full Plan
+# AI Question Generator (MCQ + CQ) — Full Feature Plan
 
-হ্যাঁ, বানানো যাবে। কিন্তু একবারে ৪টা পিলার একসাথে বানালে বাগ ধরা কঠিন হবে + স্কোপ বড়। তাই ধাপে ধাপে করব। নিচে পুরো A-to-Z প্লান দিলাম, তারপর একটা একটা করে বানাবো।
+শিক্ষকরা AI দিয়ে NCTB-স্ট্যান্ডার্ড প্রশ্ন বানাবেন, এডিট করবেন, ক্লাসে অ্যাসাইন বা PDF এক্সপোর্ট করবেন। স্টুডেন্ট MCQ দিলে অটো-গ্রেড, CQ দিলে AI-সাজেস্টেড স্কোর সহ ম্যানুয়াল গ্রেডিং।
 
----
+## Scope (একবারে যা বানাব)
 
-## Route Structure
-নতুন গেটেড সেকশন: `/teacher/*` (শুধু `teacher` বা `admin` role)
+1. **Teacher Question Generator** — 3-step wizard (Setup → AI Generate → Editor)
+2. **Assign to Class** flow — publish as a test
+3. **PDF Export** — সুন্দর NCTB-স্টাইল লেআউট
+4. **Student Test Taking** — MCQ auto-submit + CQ text answer
+5. **Auto-grading (MCQ)** + **AI-assist grading (CQ)** — টিচার রেজাল্ট শিট দেখবে
 
+## Database (new tables)
+
+```text
+question_sets           পুরো টেস্ট/প্রশ্নপত্র
+  ├─ teacher_id, class_id (nullable — draft হতে পারে)
+  ├─ title, chapter, question_type (mcq|cq|mixed)
+  ├─ difficulty, source_experiment (nullable)
+  ├─ status (draft|published|archived)
+  └─ published_at, due_at
+
+questions               সেটের ভেতরের আলাদা প্রশ্ন
+  ├─ set_id, order_index, type (mcq|cq)
+  ├─ MCQ: question_text, options (jsonb[4]), correct_index, explanation
+  └─ CQ: stem, parts (jsonb {ka, kha, ga, gha with marks + sample_answer})
+
+test_attempts           স্টুডেন্ট এর সাবমিশন
+  ├─ set_id, student_id, submitted_at
+  ├─ answers (jsonb) — mcq indexes + cq text answers
+  ├─ mcq_score, mcq_total (auto)
+  └─ cq_score, cq_graded_at, cq_graded_by (manual)
+
+cq_grades               প্রতি CQ পার্টের মার্কস + AI similarity score
+  ├─ attempt_id, question_id, part (ka|kha|ga|gha)
+  ├─ marks_awarded, ai_similarity_score
+  └─ teacher_note
 ```
-/teacher                    → Teacher home (KPI + quick links)
-/teacher/classes            → Class list + create
-/teacher/classes/$classId   → Roster, code, students
-/teacher/lab-analytics      → Class-wide lab progress + AI insights
-/teacher/lab-reports        → Submitted reports (review + grade)
-/teacher/viva               → Assign viva + view attempts
-/teacher/assignments        → Create/list assignments
-/teacher/assignments/new    → AI quiz/CQ generator
+
+RLS: টিচার নিজের set + own class-এর attempts দেখবে, স্টুডেন্ট published set (own class) দেখবে ও নিজের attempt দেখবে।
+
+## Backend (TanStack server functions)
+
+`src/lib/questions.functions.ts`:
+- `generateQuestions({ chapter, type, difficulty, count, experiment? })` — Gemini structured JSON call, returns preview (save না)
+- `saveQuestionSet({ title, chapter, questions[], ... })` — draft হিসেবে save
+- `publishToClass({ set_id, class_id, due_at })`
+- `getMyQuestionSets()`, `getSet(id)`, `updateQuestion(...)`, `deleteQuestion(...)`
+
+`src/lib/tests.functions.ts` (student side):
+- `getAssignedTests()`, `startAttempt(set_id)`, `submitAttempt(attempt_id, answers)` — MCQ instant grade
+- `getMyResults()`
+
+`src/lib/grading.functions.ts` (teacher):
+- `getClassResults(set_id)` — leaderboard
+- `getAttemptDetail(attempt_id)` — CQ পড়ার জন্য
+- `aiSuggestCqScore({ sample_answer, student_answer })` — Gemini similarity call
+- `saveCqGrade(attempt_id, question_id, part, marks, note)`
+
+Gemini প্রম্পট: প্ল্যানের spec অনুযায়ী `responseSchema` সহ strict JSON। বাংলা কন্টেন্ট। `structuredOutputs: false` (Gemini-এ default fine).
+
+## Frontend Routes
+
+```text
+/teacher/questions                 — সব question set list + "Create New" বাটন
+/teacher/questions/new             — 3-step wizard (Setup → Generate → Edit)
+/teacher/questions/$setId          — Edit + Assign/Export panel
+/teacher/questions/$setId/results  — ক্লাসের রেজাল্ট শিট (MCQ auto, CQ grade UI)
+
+/app/tests                         — স্টুডেন্ট: assigned tests list
+/app/tests/$setId                  — টেস্ট দেওয়ার UI (MCQ radio / CQ textarea)
+/app/tests/$setId/result           — নিজের রেজাল্ট
 ```
 
-Guard: `useAuth().isTeacher` (already exists) → redirect non-teachers.
+ক্লাস ডিটেল পেজে "Questions & Tests" ট্যাব থেকে ওই ক্লাসের set-গুলোয় jump করা যাবে।
 
----
+## UI Highlights
 
-## Pillar 1 — Classroom & Student Management
+- **Wizard Step 1**: Class/Chapter/Type/Difficulty dropdowns + optional experiment picker + question count slider
+- **Wizard Step 2**: Loading state ("AI প্রশ্ন বানাচ্ছে..."), fail হলে retry
+- **Wizard Step 3 — Editor**:
+  - MCQ: card list, inline edit, correct option toggle
+  - CQ: **split-screen** — বামে stem editor, ডানে ক/খ/গ/ঘ scroll panel; sample answer collapsible
+  - Top-right: "Save Draft" / "Assign to Class" / "Export PDF"
+- **PDF Export**: `jspdf` + custom Bangla font (Noto Sans Bengali) — hero, prints "SN Chemistry Lab" header, questions numbered, marks column
+- **Results Sheet**: MCQ স্কোর টেবিল instant; CQ pending → click → grading modal with AI similarity badge (0-100%) beside each part
 
-### DB (new tables)
-- `classes` — `id, teacher_id, name, section, class_code (unique 6-char), subject, created_at`
-- `class_members` — `id, class_id, student_id, joined_at, unique(class_id, student_id)`
+## Technical Notes
 
-RLS:
-- Teacher: full CRUD on own classes; read members of own classes.
-- Student: read own memberships; insert self via `join_class(code)` RPC.
+- Gemini call: `gemini-2.5-flash` for generation, `gemini-embedding-001` + cosine similarity for CQ AI-assist
+- Log every AI call via existing `logAiUsage`
+- Rate limit: reuse `usage_counters` (count generate calls per teacher/day, e.g. 50/day)
+- PDF: dynamic import `jspdf` inside handler to keep bundle slim
+- Bengali font: base64 embed in a `.ts` const file
 
-### UI
-- **`/teacher/classes`** — grid of class cards (name, section, member count, class code with copy button), "Create Class" dialog.
-- **`/teacher/classes/$classId`** — roster table (name, email, subscription status via `has_active_pro`, join date, last active), remove-student action, regenerate code.
-- Student side: `/app` এ small "Join Class" button → enter code → `join_class` RPC.
+## Files to Create/Change
 
----
+**New:**
+- migration: 4 tables + RLS + GRANTs
+- `src/lib/questions.functions.ts`, `tests.functions.ts`, `grading.functions.ts`
+- `src/lib/gemini-questions.server.ts` (prompt builders + JSON schemas)
+- `src/lib/pdf-export.ts` (client-side PDF)
+- routes: `teacher.questions.*`, `app.tests.*` (7 files)
+- components: `QuestionWizard.tsx`, `McqEditor.tsx`, `CqEditor.tsx`, `TestRunner.tsx`, `ResultsSheet.tsx`, `CqGradingPanel.tsx`
 
-## Pillar 2 — Live Lab Analytics & Monitoring
+**Edit:**
+- `src/routes/teacher.index.tsx` — "AI Question Generator" card
+- `src/routes/teacher.classes.$classId.tsx` — "Tests" tab দেখাবে ওই ক্লাসের set
 
-### DB
-- `lab_sessions` — `id, student_id, experiment_id, started_at, completed_at, accuracy, grade, mistakes jsonb, steps jsonb, duration_sec` (submitted from existing LabReport).
-- `lab_report_feedback` — `id, session_id, teacher_id, marks, comment, created_at`.
+## Rollout Order
 
-Hook LabReport submit → insert into `lab_sessions` (currently just displays, doesn't persist).
+1. Migration (tables + RLS)
+2. Backend server functions + Gemini prompts
+3. Teacher wizard + editor UI
+4. Assign to class + PDF export
+5. Student test-taking UI
+6. Auto-grade + CQ grading panel
 
-### UI
-- **`/teacher/lab-analytics`** — class picker → shows:
-  - Per-student: experiments completed / total, avg accuracy.
-  - Per-experiment heatmap: completion rate + avg grade across class.
-  - **AI Common-Mistakes card**: server fn aggregates `mistakes` jsonb across class + calls Gemini to summarize top 3 misconceptions in Bangla ("৭০% শিক্ষার্থী X ভুল করছে").
-- **`/teacher/lab-reports`** — list of submitted reports (filter by class/experiment) → drawer with full report + marks input + comment.
+বেশ বড় ফিচার — ৬টা ধাপে ছাড়ব, প্রতি ধাপ শেষে চালিয়ে দেখতে পারবে।
 
----
+## Questions / Confirmations
 
-## Pillar 3 — AI Viva Monitor
+1. **Question count per generation** — একবারে কতগুলো MCQ (৫/১০) এবং কতগুলো CQ (১/৩) default দেব?
+2. **PDF branding** — SN Chemistry Lab header + স্কুল/টিচার নাম bass থাকবে; আলাদা কিছু চাই?
+3. **Free vs Pro** — এই ফিচার কি premium (paywall) নাকি সবাই ফ্রি পাবে?
 
-### DB
-- `viva_assignments` — `id, teacher_id, class_id, topic, experiment_id, question_count, due_at, created_at`
-- `viva_attempts` — `id, assignment_id, student_id, questions jsonb, answers jsonb, per_question_scores jsonb, overall_score, gaps jsonb, transcript, submitted_at`
-
-Existing `generateViva` / `gradeViva` server fns → wire into this flow instead of the current ephemeral in-memory usage.
-
-### UI
-- **`/teacher/viva`** — "Assign Viva" form (class + topic + count + due date) → generates + saves. List of assignments with attempt count + avg score.
-- Click assignment → attempt list → per-student transcript, AI score, gap analysis.
-- Student side: `/app/viva` → sees pending assignments → takes viva → auto-graded.
-
----
-
-## Pillar 4 — Homework & Assignment Creator
-
-### DB
-- `assignments` — `id, teacher_id, class_id, type ('lab'|'quiz'|'cq'), title, payload jsonb (experiment_id OR questions[]), due_at, published, created_at`
-- `assignment_submissions` — `id, assignment_id, student_id, answers jsonb, score, submitted_at, feedback`
-
-### UI
-- **`/teacher/assignments`** — list, publish/unpublish toggle, submission counts.
-- **`/teacher/assignments/new`** — 3 tabs:
-  1. **Lab HW** — pick experiment from existing 50+ list.
-  2. **AI MCQ** — topic + count → Gemini generates NCTB-style MCQs → editable table → save.
-  3. **AI CQ (সৃজনশীল)** — topic → Gemini generates 4-part CQ (জ্ঞান/অনুধাবন/প্রয়োগ/উচ্চতর) → editable → save.
-- Student side: `/app` dashboard shows pending assignments card.
-
----
-
-## Shared / Cross-cutting
-
-- **Teacher navigation**: add "Teacher" link in UserMenu (visible when `isTeacher`).
-- **Server functions**: all admin-style calls via `createServerFn` + `requireSupabaseAuth` + role check (`has_role(uid, 'teacher') OR has_role(uid, 'admin')`).
-- **AI cost**: reuse existing `logAiUsage` for all Gemini calls (viva gen/grade, mistake analysis, quiz/CQ gen).
-- **i18n**: bilingual labels (English · বাংলা) — matches existing app style.
-
----
-
-## Rollout Order (আমার সাজেশন)
-
-**Step 1 — Pillar 1** (Classroom & Roster) — foundation, বাকি সব এটার উপর dependent (class_id দরকার সবখানে)।
-**Step 2 — Pillar 2** (Lab Analytics + Report review) — high student-facing value.
-**Step 3 — Pillar 4** (Assignments + AI Quiz gen) — teachers এর daily use।
-**Step 4 — Pillar 3** (Viva Monitor) — existing viva fns কে persistent করা।
-
-প্রতি step এর পর আপনি check করে confirm দিলে পরের step এ যাব।
-
----
-
-## এখন শুরু করব?
-"হ্যাঁ, Step 1 শুরু কর" বললে **Pillar 1: Classroom & Student Management** এর migration + `/teacher/classes` UI দিয়ে শুরু করব।
+উত্তর দিলে সাথে সাথে migration দিয়ে শুরু করব।
