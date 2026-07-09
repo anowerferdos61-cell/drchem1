@@ -28,6 +28,7 @@ import { useAuth } from "@/lib/auth-store";
 import { useState } from "react";
 import { DemoVideoSection } from "@/components/landing/DemoVideoSection";
 import { VideoModal } from "@/components/landing/VideoModal";
+import { FaqSection, GuideFaqButton } from "@/components/landing/FaqSection";
 import heroImg from "@/assets/landing-hero.jpg";
 
 export const Route = createFileRoute("/")({
