@@ -46,11 +46,7 @@ function TeacherHome() {
   ] as const;
 
   const links = [
-    { to: "/teacher/classes", label: "Manage Classes · ক্লাস ব্যবস্থাপনা", desc: "Create classes, share join codes, manage rosters.", icon: Users },
-    { to: "/teacher/lab-analytics", label: "Lab Analytics", desc: "See per-student experiment progress and AI-driven insights on common mistakes.", icon: BarChart3 },
-    { to: "/teacher/lab-reports", label: "Lab Reports", desc: "Review submitted lab reports, grade, and give feedback.", icon: FileCheck2 },
-    { to: "/teacher/assignments", label: "Assignments", desc: "Create AI-generated MCQ / সৃজনশীল and lab homework.", icon: ClipboardList },
-    { to: "/teacher/viva", label: "Viva", desc: "Assign AI viva sessions and review transcripts.", icon: Mic2 },
+    { to: "/teacher/classes", label: "Manage Classes · ক্লাস ব্যবস্থাপনা", desc: "Create classes, share join codes. Open a class to see students, lab analytics, reports, assignments & viva.", icon: Users },
   ] as const;
 
   return (
