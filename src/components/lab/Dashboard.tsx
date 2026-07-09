@@ -49,6 +49,7 @@ import { PaywallModal } from "@/components/subscription/PaywallModal";
 import { PendingPaymentBanner } from "@/components/subscription/PendingPaymentBanner";
 import { PersonalHero } from "./PersonalHero";
 import JoinClassButton from "@/components/JoinClassButton";
+import UserMenu from "@/components/auth/UserMenu";
 
 interface DashboardProps {
   onEnterExperiments: () => void;
@@ -329,6 +330,7 @@ export default function Dashboard({ onPickExperiment }: DashboardProps) {
             <Button variant="outline" size="sm" onClick={goTutor} className="gap-1.5">
               <Bot className="h-4 w-4" /> <span className="hidden sm:inline">AI Tutor</span>
             </Button>
+            <UserMenu />
           </div>
         </div>
       </header>

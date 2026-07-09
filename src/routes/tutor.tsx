@@ -7,6 +7,7 @@ import ChatWindow from "@/components/tutor/ChatWindow";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { usePresenceTracker } from "@/hooks/usePresence";
+import UserMenu from "@/components/auth/UserMenu";
 
 export const Route = createFileRoute("/tutor")({
   component: TutorPage,
