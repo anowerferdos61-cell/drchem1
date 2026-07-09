@@ -167,51 +167,84 @@ function ClassDetail() {
         </div>
       </Card>
 
-      <Card className="overflow-hidden">
-        {members.length === 0 ? (
-          <div className="p-8 text-center text-sm text-muted-foreground">
-            No students have joined yet. Share the code <span className="font-mono font-bold">{info.class_code}</span>.
-          </div>
-        ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-muted/40 text-left text-xs uppercase text-muted-foreground">
-              <tr>
-                <th className="px-4 py-2">Name</th>
-                <th className="px-4 py-2">Email</th>
-                <th className="px-4 py-2">School / Class</th>
-                <th className="px-4 py-2">Joined</th>
-                <th className="px-4 py-2"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {members.map((m) => {
-                const name = m.display_name || m.email?.split("@")[0] || "Student";
-                return (
-                  <tr key={m.id} className="border-t">
-                    <td className="px-4 py-2 font-medium">{name}</td>
-                    <td className="px-4 py-2 text-muted-foreground">{m.email ?? "—"}</td>
-                    <td className="px-4 py-2 text-muted-foreground">
-                      {[m.school, m.class].filter(Boolean).join(" · ") || "—"}
-                    </td>
-                    <td className="px-4 py-2 text-muted-foreground">
-                      {new Date(m.joined_at).toLocaleDateString()}
-                    </td>
-                    <td className="px-4 py-2 text-right">
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => removeMember(m.id, name)}
-                      >
-                        <UserMinus className="h-4 w-4 text-rose-500" />
-                      </Button>
-                    </td>
+      <Tabs defaultValue="students" className="w-full">
+        <TabsList className="w-full justify-start overflow-x-auto">
+          <TabsTrigger value="students"><Users className="h-4 w-4 mr-1" />Students · ছাত্র</TabsTrigger>
+          <TabsTrigger value="analytics"><BarChart3 className="h-4 w-4 mr-1" />Lab Analytics</TabsTrigger>
+          <TabsTrigger value="reports"><FileCheck2 className="h-4 w-4 mr-1" />Lab Reports</TabsTrigger>
+          <TabsTrigger value="assignments"><ClipboardList className="h-4 w-4 mr-1" />Assignments</TabsTrigger>
+          <TabsTrigger value="viva"><Mic2 className="h-4 w-4 mr-1" />Viva</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="students">
+          <Card className="overflow-hidden">
+            {members.length === 0 ? (
+              <div className="p-8 text-center text-sm text-muted-foreground">
+                No students have joined yet. Share the code <span className="font-mono font-bold">{info.class_code}</span>.
+              </div>
+            ) : (
+              <table className="w-full text-sm">
+                <thead className="bg-muted/40 text-left text-xs uppercase text-muted-foreground">
+                  <tr>
+                    <th className="px-4 py-2">Name</th>
+                    <th className="px-4 py-2">Email</th>
+                    <th className="px-4 py-2">School / Class</th>
+                    <th className="px-4 py-2">Joined</th>
+                    <th className="px-4 py-2"></th>
                   </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        )}
-      </Card>
+                </thead>
+                <tbody>
+                  {members.map((m) => {
+                    const name = m.display_name || m.email?.split("@")[0] || "Student";
+                    return (
+                      <tr key={m.id} className="border-t">
+                        <td className="px-4 py-2 font-medium">{name}</td>
+                        <td className="px-4 py-2 text-muted-foreground">{m.email ?? "—"}</td>
+                        <td className="px-4 py-2 text-muted-foreground">
+                          {[m.school, m.class].filter(Boolean).join(" · ") || "—"}
+                        </td>
+                        <td className="px-4 py-2 text-muted-foreground">
+                          {new Date(m.joined_at).toLocaleDateString()}
+                        </td>
+                        <td className="px-4 py-2 text-right">
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => removeMember(m.id, name)}
+                          >
+                            <UserMinus className="h-4 w-4 text-rose-500" />
+                          </Button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            )}
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="analytics">
+          <Card className="p-8 text-center text-sm text-muted-foreground">
+            Lab Analytics for <span className="font-semibold">{label}</span> · শীঘ্রই আসছে
+          </Card>
+        </TabsContent>
+        <TabsContent value="reports">
+          <Card className="p-8 text-center text-sm text-muted-foreground">
+            Lab Reports for <span className="font-semibold">{label}</span> · শীঘ্রই আসছে
+          </Card>
+        </TabsContent>
+        <TabsContent value="assignments">
+          <Card className="p-8 text-center text-sm text-muted-foreground">
+            Assignments for <span className="font-semibold">{label}</span> · শীঘ্রই আসছে
+          </Card>
+        </TabsContent>
+        <TabsContent value="viva">
+          <Card className="p-8 text-center text-sm text-muted-foreground">
+            Viva sessions for <span className="font-semibold">{label}</span> · শীঘ্রই আসছে
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
