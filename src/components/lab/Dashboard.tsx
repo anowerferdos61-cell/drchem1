@@ -47,6 +47,7 @@ import {
 import { useEntitlements } from "@/hooks/useEntitlements";
 import { PaywallModal } from "@/components/subscription/PaywallModal";
 import { PendingPaymentBanner } from "@/components/subscription/PendingPaymentBanner";
+import { PersonalHero } from "./PersonalHero";
 
 interface DashboardProps {
   onEnterExperiments: () => void;
@@ -272,6 +273,18 @@ export default function Dashboard({ onPickExperiment }: DashboardProps) {
       setPaywallOpen(true);
       return;
     }
+    // Track last-opened lab for the "Continue where you left off" hero card
+    try {
+      const meta = ALL_LABS.find((l) => l.id === id);
+      if (meta && typeof window !== "undefined") {
+        localStorage.setItem(
+          "drchem:last_lab",
+          JSON.stringify({ id, title: meta.titleBn || meta.title })
+        );
+      }
+    } catch {
+      /* ignore storage errors */
+    }
     onPickExperiment(id);
   }, [onPickExperiment, canAccessLab, entLoading]);
 
@@ -320,28 +333,16 @@ export default function Dashboard({ onPickExperiment }: DashboardProps) {
 
       <PendingPaymentBanner />
 
-      {/* Compact greeting */}
-      <section className="mx-auto max-w-7xl px-4 pt-4 md:px-6 md:pt-8">
-        <Card className="overflow-hidden border-0 bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-700 p-4 text-white shadow-xl shadow-emerald-500/10 md:p-6">
-          <div className="flex items-center gap-2 text-[11px] font-medium opacity-90 md:text-xs">
-            <Sparkles className="h-3.5 w-3.5" /> AI-Powered · দ্বিভাষিক
-          </div>
-          <h1 className="mt-1 text-lg font-extrabold tracking-tight md:text-3xl">
-            স্বাগতম, <span className="underline decoration-white/40 underline-offset-4">{displayName}</span>! 🧪
-          </h1>
-          <p className="mt-1 hidden max-w-xl text-sm text-white/85 md:block md:text-base">
-            NCTB কারিকুলামের ১২টি অধ্যায় ভ্রমণ করো, ভার্চুয়াল ল্যাবে পরীক্ষণ চালাও আর AI টিউটরের সাহায্য নাও।
-          </p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            <Button size="sm" variant="secondary" className="h-8 bg-white text-emerald-700 hover:bg-white/90" onClick={() => setView("curriculum")}>
-              <BookOpen className="h-4 w-4" /> কারিকুলাম
-            </Button>
-            <Button size="sm" variant="outline" className="h-8 border-white/30 bg-white/10 text-white hover:bg-white/20" onClick={goTutor}>
-              <Bot className="h-4 w-4" /> AI টিউটর
-            </Button>
-          </div>
-        </Card>
-      </section>
+      {/* Personal Hero Strip — home view only */}
+      {view === "home" && (
+        <section className="mx-auto max-w-7xl px-4 pt-4 md:px-6 md:pt-8">
+          <PersonalHero
+            displayName={displayName}
+            onResumeLab={openLab}
+            onExplore={() => setView("practical")}
+          />
+        </section>
+      )}
 
       <section className="mx-auto max-w-7xl px-4 py-5 md:px-6 md:py-10">
         {view === "home" && (
