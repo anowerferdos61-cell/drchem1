@@ -231,6 +231,50 @@ function AdminDashboard() {
     }
   };
 
+  const doBan = async (u: AdminUserRow) => {
+    const input = prompt(
+      `Ban ${u.email} — কত ঘণ্টা?\n\n24 = 1 day, 168 = 7 days, 720 = 30 days.\nখালি রেখে OK দিলে permanent ban হবে।`,
+      "",
+    );
+    if (input === null) return;
+    const hours = input.trim() === "" ? 876000 : Number(input.trim());
+    if (!Number.isFinite(hours) || hours <= 0) {
+      toast.error("Invalid hours");
+      return;
+    }
+    try {
+      await banFn({ data: { userId: u.user_id, durationHours: Math.floor(hours) } });
+      toast.success(`🚫 ${u.email} banned`);
+      void qc.invalidateQueries({ queryKey: ["admin"] });
+    } catch (err) {
+      toast.error((err as Error).message);
+    }
+  };
+
+  const doUnban = async (u: AdminUserRow) => {
+    try {
+      await unbanFn({ data: { userId: u.user_id } });
+      toast.success(`✅ ${u.email} unbanned`);
+      void qc.invalidateQueries({ queryKey: ["admin"] });
+    } catch (err) {
+      toast.error((err as Error).message);
+    }
+  };
+
+  const doDelete = async (u: AdminUserRow) => {
+    const confirmText = prompt(
+      `⚠️ PERMANENTLY delete ${u.email}?\n\nএটা undo করা যাবে না। কনফার্ম করতে "DELETE" টাইপ করুন।`,
+    );
+    if (confirmText !== "DELETE") return;
+    try {
+      await deleteFn({ data: { userId: u.user_id } });
+      toast.success(`🗑️ ${u.email} deleted`);
+      void qc.invalidateQueries({ queryKey: ["admin"] });
+    } catch (err) {
+      toast.error((err as Error).message);
+    }
+  };
+
   if (loading || !rolesLoaded || (isAuthenticated && !isAdmin)) {
     return (
       <div className="min-h-screen flex items-center justify-center">
