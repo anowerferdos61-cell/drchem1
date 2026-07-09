@@ -154,6 +154,7 @@ function Hero({ onWatchDemo }: { onWatchDemo: () => void }) {
             >
               <PlayCircle className="h-4 w-4" /> Watch Demo
             </Button>
+            <GuideFaqButton />
           </div>
           <div className="mt-6 flex flex-wrap gap-5 text-xs text-muted-foreground">
             <span className="flex items-center gap-1.5">
