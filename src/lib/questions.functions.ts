@@ -169,7 +169,7 @@ export const saveQuestionSet = createServerFn({ method: "POST" })
       });
     }
     if (rows.length > 0) {
-      const { error } = await supabase.from("questions").insert(rows);
+      const { error } = await supabase.from("questions").insert(rows as never);
       if (error) return { error: error.message, set_id: setId };
     }
     return { error: null as string | null, set_id: setId };
