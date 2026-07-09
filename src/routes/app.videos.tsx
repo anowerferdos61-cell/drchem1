@@ -110,9 +110,8 @@ function VideosPage() {
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
                     />
-                    {/* Overlay to block YouTube's share / watch-later / title-bar clicks */}
+                    {/* Overlay strip to block YouTube's title-bar (share / watch-later / open-in-youtube) */}
                     <div className="pointer-events-auto absolute inset-x-0 top-0 h-14 z-10" />
-                    <div className="pointer-events-auto absolute right-0 top-0 h-full w-16 z-10" />
                   </div>
                   <div className="flex items-center justify-between gap-3 p-4">
                     <div>
