@@ -25,6 +25,9 @@ import {
   Bot,
   Radio,
   Cpu,
+  Ban,
+  Undo2,
+  Trash2,
 } from "lucide-react";
 import {
   Area,
@@ -62,9 +65,12 @@ import {
   adminAiUsageDaily,
   adminRevenueDaily,
   adminStats,
+  banUser,
   cancelUserSubscription,
+  deleteUser,
   grantSubscription,
   listAllUsers,
+  unbanUser,
   type AdminUserRow,
 } from "@/lib/admin.functions";
 
@@ -126,6 +132,9 @@ function AdminDashboard() {
   const statsFn = useServerFn(adminStats);
   const grantFn = useServerFn(grantSubscription);
   const cancelFn = useServerFn(cancelUserSubscription);
+  const banFn = useServerFn(banUser);
+  const unbanFn = useServerFn(unbanUser);
+  const deleteFn = useServerFn(deleteUser);
   const aiDailyFn = useServerFn(adminAiUsageDaily);
   const revenueDailyFn = useServerFn(adminRevenueDaily);
 
@@ -216,6 +225,50 @@ function AdminDashboard() {
     try {
       await cancelFn({ data: { userId: u.user_id } });
       toast.success("Subscription cancelled");
+      void qc.invalidateQueries({ queryKey: ["admin"] });
+    } catch (err) {
+      toast.error((err as Error).message);
+    }
+  };
+
+  const doBan = async (u: AdminUserRow) => {
+    const input = prompt(
+      `Ban ${u.email} — কত ঘণ্টা?\n\n24 = 1 day, 168 = 7 days, 720 = 30 days.\nখালি রেখে OK দিলে permanent ban হবে।`,
+      "",
+    );
+    if (input === null) return;
+    const hours = input.trim() === "" ? 876000 : Number(input.trim());
+    if (!Number.isFinite(hours) || hours <= 0) {
+      toast.error("Invalid hours");
+      return;
+    }
+    try {
+      await banFn({ data: { userId: u.user_id, durationHours: Math.floor(hours) } });
+      toast.success(`🚫 ${u.email} banned`);
+      void qc.invalidateQueries({ queryKey: ["admin"] });
+    } catch (err) {
+      toast.error((err as Error).message);
+    }
+  };
+
+  const doUnban = async (u: AdminUserRow) => {
+    try {
+      await unbanFn({ data: { userId: u.user_id } });
+      toast.success(`✅ ${u.email} unbanned`);
+      void qc.invalidateQueries({ queryKey: ["admin"] });
+    } catch (err) {
+      toast.error((err as Error).message);
+    }
+  };
+
+  const doDelete = async (u: AdminUserRow) => {
+    const confirmText = prompt(
+      `⚠️ PERMANENTLY delete ${u.email}?\n\nএটা undo করা যাবে না। কনফার্ম করতে "DELETE" টাইপ করুন।`,
+    );
+    if (confirmText !== "DELETE") return;
+    try {
+      await deleteFn({ data: { userId: u.user_id } });
+      toast.success(`🗑️ ${u.email} deleted`);
       void qc.invalidateQueries({ queryKey: ["admin"] });
     } catch (err) {
       toast.error((err as Error).message);
@@ -521,7 +574,15 @@ function AdminDashboard() {
                 {filtered.map((u) => (
                   <tr key={u.user_id} className="border-t hover:bg-muted/30">
                     <td className="px-4 py-3">
-                      <div className="font-medium">{u.display_name ?? "—"}</div>
+                      <div className="font-medium flex items-center gap-1.5">
+                        {u.display_name ?? "—"}
+                        {u.banned_until &&
+                          new Date(u.banned_until).getTime() > Date.now() && (
+                            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-rose-500/15 text-rose-700 dark:text-rose-400 font-semibold">
+                              BANNED
+                            </span>
+                          )}
+                      </div>
                       <div className="text-xs text-muted-foreground">{u.email}</div>
                       {u.phone && (
                         <div className="text-xs text-muted-foreground font-mono">{u.phone}</div>
@@ -568,25 +629,68 @@ function AdminDashboard() {
                         : "—"}
                     </td>
                     <td className="px-4 py-3 text-right">
-                      <div className="flex gap-1 justify-end">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            setGrantTarget(u);
-                            setGrantPlan("student_monthly");
-                          }}
-                        >
-                          <Sparkles className="h-3.5 w-3.5" /> Grant Pro
-                        </Button>
-                        {u.subscription &&
-                          (u.subscription.status === "active" ||
-                            u.subscription.status === "trialing") && (
-                            <Button variant="ghost" size="sm" onClick={() => doCancel(u)}>
-                              <XCircle className="h-3.5 w-3.5" />
+                      {(() => {
+                        const isBanned =
+                          !!u.banned_until &&
+                          new Date(u.banned_until).getTime() > Date.now();
+                        const isAdminRow = u.roles.includes("admin");
+                        return (
+                          <div className="flex gap-1 justify-end flex-wrap">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                setGrantTarget(u);
+                                setGrantPlan("student_monthly");
+                              }}
+                            >
+                              <Sparkles className="h-3.5 w-3.5" /> Grant Pro
                             </Button>
-                          )}
-                      </div>
+                            {u.subscription &&
+                              (u.subscription.status === "active" ||
+                                u.subscription.status === "trialing") && (
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  title="Cancel subscription"
+                                  onClick={() => doCancel(u)}
+                                >
+                                  <XCircle className="h-3.5 w-3.5" />
+                                </Button>
+                              )}
+                            {!isAdminRow &&
+                              (isBanned ? (
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  title="Unban user"
+                                  onClick={() => doUnban(u)}
+                                >
+                                  <Undo2 className="h-3.5 w-3.5 text-emerald-600" />
+                                </Button>
+                              ) : (
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  title="Ban user"
+                                  onClick={() => doBan(u)}
+                                >
+                                  <Ban className="h-3.5 w-3.5 text-amber-600" />
+                                </Button>
+                              ))}
+                            {!isAdminRow && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                title="Delete user permanently"
+                                onClick={() => doDelete(u)}
+                              >
+                                <Trash2 className="h-3.5 w-3.5 text-rose-600" />
+                              </Button>
+                            )}
+                          </div>
+                        );
+                      })()}
                     </td>
                   </tr>
                 ))}
