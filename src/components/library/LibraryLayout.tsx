@@ -13,6 +13,7 @@ import { useEntitlements } from "@/hooks/useEntitlements";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import UserMenu from "@/components/auth/UserMenu";
 import {
   ArrowLeft,
   Lock,
@@ -182,6 +183,7 @@ export function LibraryShell({
                 {module === "videos" ? "📝 Smart Notes" : "🎬 Video Lessons"}
               </Button>
             </Link>
+            <UserMenu />
           </div>
         </div>
       </header>

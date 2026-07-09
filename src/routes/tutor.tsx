@@ -7,6 +7,7 @@ import ChatWindow from "@/components/tutor/ChatWindow";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { usePresenceTracker } from "@/hooks/usePresence";
+import UserMenu from "@/components/auth/UserMenu";
 
 export const Route = createFileRoute("/tutor")({
   component: TutorPage,
@@ -59,31 +60,34 @@ function TutorPage() {
 
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Mobile top bar */}
-        <div className="flex h-12 shrink-0 items-center gap-2 border-b px-2 md:hidden">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setSidebarOpen((v) => !v)}
-            className="h-8 w-8"
-            aria-label="Toggle sidebar"
-          >
-            {sidebarOpen ? (
-              <X className="h-4 w-4" />
-            ) : (
-              <Menu className="h-4 w-4" />
-            )}
-          </Button>
-          <Link
-            to="/"
-            className="flex items-center gap-1 text-xs text-muted-foreground"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" />
-            হোম
-          </Link>
+        <div className="flex h-12 shrink-0 items-center justify-between gap-2 border-b px-2 md:hidden">
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setSidebarOpen((v) => !v)}
+              className="h-8 w-8"
+              aria-label="Toggle sidebar"
+            >
+              {sidebarOpen ? (
+                <X className="h-4 w-4" />
+              ) : (
+                <Menu className="h-4 w-4" />
+              )}
+            </Button>
+            <Link
+              to="/"
+              className="flex items-center gap-1 text-xs text-muted-foreground"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" />
+              হোম
+            </Link>
+          </div>
+          <UserMenu />
         </div>
 
         {/* Desktop back link */}
-        <div className="hidden h-9 shrink-0 items-center border-b px-3 md:flex">
+        <div className="hidden h-10 shrink-0 items-center justify-between border-b px-3 md:flex">
           <Link
             to="/"
             className="flex items-center gap-1.5 text-xs text-muted-foreground transition hover:text-foreground"
@@ -91,6 +95,7 @@ function TutorPage() {
             <ArrowLeft className="h-3.5 w-3.5" />
             Dashboard-এ ফিরুন
           </Link>
+          <UserMenu />
         </div>
 
         <div className="min-h-0 flex-1">
