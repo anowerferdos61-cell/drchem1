@@ -28,6 +28,7 @@ import { useAuth } from "@/lib/auth-store";
 import { useState } from "react";
 import { DemoVideoSection } from "@/components/landing/DemoVideoSection";
 import { VideoModal } from "@/components/landing/VideoModal";
+import { FaqSection, GuideFaqButton } from "@/components/landing/FaqSection";
 import heroImg from "@/assets/landing-hero.jpg";
 
 export const Route = createFileRoute("/")({
@@ -66,6 +67,7 @@ function Landing() {
       <Teachers />
       <Students />
       <Testimonials />
+      <FaqSection />
       <FinalCTA />
       <Footer />
       <VideoModal open={demoOpen} onOpenChange={setDemoOpen} />
@@ -96,6 +98,9 @@ function Nav() {
           </a>
           <a href="#testimonials" className="text-muted-foreground hover:text-foreground">
             Reviews
+          </a>
+          <a href="#faq" className="text-muted-foreground hover:text-foreground">
+            Guide & FAQ
           </a>
         </nav>
         <UserMenu />
@@ -149,6 +154,7 @@ function Hero({ onWatchDemo }: { onWatchDemo: () => void }) {
             >
               <PlayCircle className="h-4 w-4" /> Watch Demo
             </Button>
+            <GuideFaqButton />
           </div>
           <div className="mt-6 flex flex-wrap gap-5 text-xs text-muted-foreground">
             <span className="flex items-center gap-1.5">
