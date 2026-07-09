@@ -133,7 +133,11 @@ export const chatWithAssistant = createServerFn({ method: "POST" })
       content: m.content,
     }));
     try {
-      const reply = await chatComplete({ apiKey: key, systemPrompt, history });
+      const { text: reply, usage, model } = await chatComplete({
+        apiKey: key,
+        systemPrompt,
+        history,
+      });
 
       // Record usage (only for free tier) via SECURITY DEFINER RPC
       if (!isPaid) {
@@ -143,6 +147,15 @@ export const chatWithAssistant = createServerFn({ method: "POST" })
         await supabase.rpc("increment_ai_usage", { _usage_date: today });
       }
 
+      // Log AI token usage & cost for admin dashboard (fire-and-forget).
+      const { logAiUsage } = await import("./ai-usage.server");
+      void logAiUsage({
+        userId,
+        endpoint: "lab_assistant",
+        model,
+        inputTokens: usage.inputTokens,
+        outputTokens: usage.outputTokens,
+      });
 
       return { reply, error: null as string | null };
     } catch (e) {

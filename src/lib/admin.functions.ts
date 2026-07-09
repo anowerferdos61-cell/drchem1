@@ -200,6 +200,9 @@ export const adminStats = createServerFn({ method: "GET" })
       { count: rejectedToday },
       { data: revenueAll },
       { data: revenueMonth },
+      { count: signupsToday },
+      { count: studentCount },
+      { count: teacherCount },
     ] = await Promise.all([
       supabaseAdmin.from("profiles").select("*", { count: "exact", head: true }),
       supabaseAdmin
@@ -233,10 +236,36 @@ export const adminStats = createServerFn({ method: "GET" })
         .select("amount_bdt")
         .eq("status", "approved")
         .gte("reviewed_at", monthStartUtc),
+      supabaseAdmin
+        .from("profiles")
+        .select("*", { count: "exact", head: true })
+        .gte("created_at", todayStartUtc),
+      supabaseAdmin
+        .from("user_roles")
+        .select("*", { count: "exact", head: true })
+        .eq("role", "student"),
+      supabaseAdmin
+        .from("user_roles")
+        .select("*", { count: "exact", head: true })
+        .eq("role", "teacher"),
     ]);
 
     const sum = (rows: { amount_bdt: number | null }[] | null) =>
       (rows ?? []).reduce((acc, r) => acc + (Number(r.amount_bdt) || 0), 0);
+
+    // AI cost so far this month (from ai_usage_logs)
+    const { data: aiMonthRows } = await supabaseAdmin
+      .from("ai_usage_logs")
+      .select("cost_usd, total_tokens")
+      .gte("created_at", monthStartUtc);
+    const aiMonthlyCostUsd = (aiMonthRows ?? []).reduce(
+      (a, r) => a + (Number(r.cost_usd) || 0),
+      0,
+    );
+    const aiMonthlyTokens = (aiMonthRows ?? []).reduce(
+      (a, r) => a + (Number(r.total_tokens) || 0),
+      0,
+    );
 
     return {
       totalUsers: totalUsers ?? 0,
@@ -247,5 +276,105 @@ export const adminStats = createServerFn({ method: "GET" })
       rejectedToday: rejectedToday ?? 0,
       totalRevenue: sum(revenueAll),
       monthlyRevenue: sum(revenueMonth),
+      signupsToday: signupsToday ?? 0,
+      studentCount: studentCount ?? 0,
+      teacherCount: teacherCount ?? 0,
+      aiMonthlyCostUsd,
+      aiMonthlyTokens,
     };
   });
+
+// ─── adminAiUsageDaily ─────────────────────────────────────────────────
+// Returns daily aggregated AI usage for the last N days (Asia/Dhaka),
+// used by the admin dashboard cost chart.
+export const adminAiUsageDaily = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(
+    async ({
+      context,
+    }): Promise<
+      Array<{ date: string; tokens: number; cost_usd: number; requests: number }>
+    > => {
+      await ensureAdmin(context.supabase, context.userId);
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+      const days = 14;
+      const dhakaOffsetMs = 6 * 60 * 60 * 1000;
+      const now = new Date();
+      const dhakaNow = new Date(now.getTime() + dhakaOffsetMs);
+      const dhakaMidnight = new Date(
+        Date.UTC(dhakaNow.getUTCFullYear(), dhakaNow.getUTCMonth(), dhakaNow.getUTCDate()),
+      );
+      const startUtc = new Date(
+        dhakaMidnight.getTime() - dhakaOffsetMs - (days - 1) * 86_400_000,
+      ).toISOString();
+
+      const { data } = await supabaseAdmin
+        .from("ai_usage_logs")
+        .select("created_at, total_tokens, cost_usd")
+        .gte("created_at", startUtc);
+
+      const buckets = new Map<string, { tokens: number; cost_usd: number; requests: number }>();
+      // Seed with zeros so gaps still render on the chart.
+      for (let i = 0; i < days; i++) {
+        const t = new Date(dhakaMidnight.getTime() - (days - 1 - i) * 86_400_000);
+        const key = t.toISOString().slice(0, 10);
+        buckets.set(key, { tokens: 0, cost_usd: 0, requests: 0 });
+      }
+      for (const row of data ?? []) {
+        const t = new Date(new Date(row.created_at as string).getTime() + dhakaOffsetMs);
+        const key = t.toISOString().slice(0, 10);
+        const b = buckets.get(key) ?? { tokens: 0, cost_usd: 0, requests: 0 };
+        b.tokens += Number(row.total_tokens) || 0;
+        b.cost_usd += Number(row.cost_usd) || 0;
+        b.requests += 1;
+        buckets.set(key, b);
+      }
+      return Array.from(buckets.entries()).map(([date, v]) => ({ date, ...v }));
+    },
+  );
+
+// ─── adminRevenueDaily ────────────────────────────────────────────────
+export const adminRevenueDaily = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(
+    async ({
+      context,
+    }): Promise<Array<{ date: string; amount_bdt: number; count: number }>> => {
+      await ensureAdmin(context.supabase, context.userId);
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+      const days = 14;
+      const dhakaOffsetMs = 6 * 60 * 60 * 1000;
+      const now = new Date();
+      const dhakaNow = new Date(now.getTime() + dhakaOffsetMs);
+      const dhakaMidnight = new Date(
+        Date.UTC(dhakaNow.getUTCFullYear(), dhakaNow.getUTCMonth(), dhakaNow.getUTCDate()),
+      );
+      const startUtc = new Date(
+        dhakaMidnight.getTime() - dhakaOffsetMs - (days - 1) * 86_400_000,
+      ).toISOString();
+
+      const { data } = await supabaseAdmin
+        .from("payment_requests")
+        .select("reviewed_at, amount_bdt")
+        .eq("status", "approved")
+        .gte("reviewed_at", startUtc);
+
+      const buckets = new Map<string, { amount_bdt: number; count: number }>();
+      for (let i = 0; i < days; i++) {
+        const t = new Date(dhakaMidnight.getTime() - (days - 1 - i) * 86_400_000);
+        buckets.set(t.toISOString().slice(0, 10), { amount_bdt: 0, count: 0 });
+      }
+      for (const row of data ?? []) {
+        if (!row.reviewed_at) continue;
+        const t = new Date(new Date(row.reviewed_at as string).getTime() + dhakaOffsetMs);
+        const key = t.toISOString().slice(0, 10);
+        const b = buckets.get(key) ?? { amount_bdt: 0, count: 0 };
+        b.amount_bdt += Number(row.amount_bdt) || 0;
+        b.count += 1;
+        buckets.set(key, b);
+      }
+      return Array.from(buckets.entries()).map(([date, v]) => ({ date, ...v }));
+    },
+  );

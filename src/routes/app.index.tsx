@@ -4,6 +4,7 @@
  */
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth-store";
+import { usePresenceTracker } from "@/hooks/usePresence";
 import { Component, Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type ErrorInfo, type LazyExoticComponent, type ReactNode } from "react";
 import { Toaster, toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -219,6 +220,9 @@ function Index() {
   const isAdmin = roles.includes("admin");
   const rolesReady = rolesLoaded;
   const [rolesWaitExpired, setRolesWaitExpired] = useState(false);
+
+  // Realtime presence — count this user as "active in lab" for admin dashboard.
+  usePresenceTracker("lab");
 
   // STICKY auth-pass: once we've successfully rendered the dashboard for this
   // signed-in user, never bounce back to the loading screen on the same

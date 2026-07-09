@@ -6,6 +6,7 @@ import ChatSidebar from "@/components/tutor/ChatSidebar";
 import ChatWindow from "@/components/tutor/ChatWindow";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { usePresenceTracker } from "@/hooks/usePresence";
 
 export const Route = createFileRoute("/tutor")({
   component: TutorPage,
@@ -28,6 +29,7 @@ export const Route = createFileRoute("/tutor")({
 });
 
 function TutorPage() {
+  usePresenceTracker("tutor");
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (

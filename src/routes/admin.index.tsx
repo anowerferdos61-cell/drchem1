@@ -20,7 +20,23 @@ import {
   XCircle,
   TrendingUp,
   Calendar,
+  UserPlus,
+  GraduationCap,
+  Bot,
+  Radio,
+  Cpu,
 } from "lucide-react";
+import {
+  Area,
+  AreaChart,
+  Bar,
+  BarChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,8 +56,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useAuth } from "@/lib/auth-store";
+import { useActiveUserCount } from "@/hooks/usePresence";
 import UserMenu from "@/components/auth/UserMenu";
 import {
+  adminAiUsageDaily,
+  adminRevenueDaily,
   adminStats,
   cancelUserSubscription,
   grantSubscription,
@@ -107,6 +126,10 @@ function AdminDashboard() {
   const statsFn = useServerFn(adminStats);
   const grantFn = useServerFn(grantSubscription);
   const cancelFn = useServerFn(cancelUserSubscription);
+  const aiDailyFn = useServerFn(adminAiUsageDaily);
+  const revenueDailyFn = useServerFn(adminRevenueDaily);
+
+  const active = useActiveUserCount(isAuthenticated && rolesLoaded && isAdmin);
 
   const { data: users = [], isLoading: usersLoading, error: usersError } = useQuery({
     queryKey: ["admin", "users"],
@@ -123,6 +146,23 @@ function AdminDashboard() {
     refetchInterval: 60_000,
     retry: 1,
   });
+
+  const { data: aiDaily = [] } = useQuery({
+    queryKey: ["admin", "ai-daily"],
+    queryFn: () => aiDailyFn(),
+    enabled: isAuthenticated && rolesLoaded && isAdmin,
+    refetchInterval: 120_000,
+    retry: 1,
+  });
+
+  const { data: revenueDaily = [] } = useQuery({
+    queryKey: ["admin", "revenue-daily"],
+    queryFn: () => revenueDailyFn(),
+    enabled: isAuthenticated && rolesLoaded && isAdmin,
+    refetchInterval: 120_000,
+    retry: 1,
+  });
+
 
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState<"all" | "student" | "teacher" | "admin">("all");
@@ -241,23 +281,62 @@ function AdminDashboard() {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold">Admin Dashboard</h1>
-          <p className="text-muted-foreground text-sm">
-            Users, subscriptions, and platform overview
-          </p>
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h1 className="text-2xl font-bold">Command Center</h1>
+            <p className="text-muted-foreground text-sm">
+              Live overview — users, revenue, AI cost, activity
+            </p>
+          </div>
+          <LiveActivePill active={active} />
         </div>
 
-        {/* Stats */}
+        {/* Top KPI row — the "at-a-glance" strip */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <StatCard icon={UsersIcon} label="Total Users" value={stats?.totalUsers} tint="primary" />
+          <StatCard
+            icon={UserPlus}
+            label="New Signups Today"
+            value={stats?.signupsToday}
+            tint="emerald"
+          />
           <StatCard
             icon={CheckCircle2}
             label="Active Subs"
             value={stats?.activeSubs}
             tint="emerald"
           />
-          <StatCard icon={Sparkles} label="On Trial" value={stats?.trialingSubs} tint="amber" />
+          <StatCard
+            icon={Calendar}
+            label="This Month Revenue"
+            value={stats?.monthlyRevenue}
+            tint="amber"
+            prefix="৳"
+          />
+        </div>
+
+        {/* Second KPI row — roles + AI budget + pending payments */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <StatCard
+            icon={GraduationCap}
+            label="Students"
+            value={stats?.studentCount}
+            tint="primary"
+          />
+          <StatCard
+            icon={GraduationCap}
+            label="Teachers"
+            value={stats?.teacherCount}
+            tint="primary"
+          />
+          <StatCard
+            icon={Bot}
+            label="AI Cost (this month)"
+            value={stats?.aiMonthlyCostUsd}
+            tint="rose"
+            prefix="$"
+            fraction={4}
+          />
           <StatCard
             icon={AlertCircle}
             label="Pending Payments"
@@ -265,6 +344,89 @@ function AdminDashboard() {
             tint="rose"
             link="/admin/payments"
           />
+        </div>
+
+        {/* Charts row: Revenue + AI cost, 14-day trailing */}
+        <div className="grid gap-4 lg:grid-cols-2">
+          <ChartCard
+            title="Revenue (৳) — last 14 days"
+            subtitle={`Total: ৳${(stats?.totalRevenue ?? 0).toLocaleString("bn-BD")}`}
+            icon={TrendingUp}
+          >
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={revenueDaily}>
+                <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
+                <XAxis
+                  dataKey="date"
+                  tickFormatter={(v: string) => v.slice(5)}
+                  fontSize={11}
+                />
+                <YAxis fontSize={11} />
+                <Tooltip
+                  formatter={(v: number) => [`৳${Number(v).toLocaleString("bn-BD")}`, "Revenue"]}
+                  labelStyle={{ color: "hsl(var(--foreground))" }}
+                  contentStyle={{
+                    background: "hsl(var(--card))",
+                    border: "1px solid hsl(var(--border))",
+                    borderRadius: 8,
+                    fontSize: 12,
+                  }}
+                />
+                <Bar dataKey="amount_bdt" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </ChartCard>
+
+          <ChartCard
+            title="AI cost ($) — last 14 days"
+            subtitle={`Tokens this month: ${(stats?.aiMonthlyTokens ?? 0).toLocaleString("en-US")}`}
+            icon={Cpu}
+          >
+            <ResponsiveContainer width="100%" height={220}>
+              <AreaChart data={aiDaily}>
+                <defs>
+                  <linearGradient id="aicost" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="hsl(var(--destructive))" stopOpacity={0.5} />
+                    <stop offset="95%" stopColor="hsl(var(--destructive))" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
+                <XAxis
+                  dataKey="date"
+                  tickFormatter={(v: string) => v.slice(5)}
+                  fontSize={11}
+                />
+                <YAxis
+                  fontSize={11}
+                  tickFormatter={(v: number) => `$${v.toFixed(3)}`}
+                />
+                <Tooltip
+                  formatter={(v: number, name) => {
+                    if (name === "cost_usd") return [`$${Number(v).toFixed(4)}`, "Cost"];
+                    return [v, name];
+                  }}
+                  labelStyle={{ color: "hsl(var(--foreground))" }}
+                  contentStyle={{
+                    background: "hsl(var(--card))",
+                    border: "1px solid hsl(var(--border))",
+                    borderRadius: 8,
+                    fontSize: 12,
+                  }}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="cost_usd"
+                  stroke="hsl(var(--destructive))"
+                  fill="url(#aicost)"
+                  strokeWidth={2}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </ChartCard>
+        </div>
+
+        {/* Payments-today mini row */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <StatCard
             icon={CheckCircle2}
             label="Approved Today"
@@ -277,13 +439,7 @@ function AdminDashboard() {
             value={stats?.rejectedToday}
             tint="rose"
           />
-          <StatCard
-            icon={Calendar}
-            label="This Month Revenue"
-            value={stats?.monthlyRevenue}
-            tint="amber"
-            prefix="৳"
-          />
+          <StatCard icon={Sparkles} label="On Trial" value={stats?.trialingSubs} tint="amber" />
           <StatCard
             icon={TrendingUp}
             label="Total Revenue"
@@ -292,6 +448,7 @@ function AdminDashboard() {
             prefix="৳"
           />
         </div>
+
 
         {/* Filters */}
         <div className="flex flex-col md:flex-row gap-2">
@@ -490,6 +647,7 @@ function StatCard({
   tint,
   link,
   prefix,
+  fraction,
 }: {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
@@ -497,6 +655,8 @@ function StatCard({
   tint: "primary" | "emerald" | "amber" | "rose";
   link?: string;
   prefix?: string;
+  /** Fractional digits (for currency like USD cost). Bangla numerals otherwise. */
+  fraction?: number;
 }) {
   const tintMap: Record<string, string> = {
     primary: "bg-primary/10 text-primary",
@@ -504,8 +664,16 @@ function StatCard({
     amber: "bg-amber-500/15 text-amber-600",
     rose: "bg-rose-500/15 text-rose-600",
   };
-  const display =
-    value === undefined ? "—" : `${prefix ?? ""}${value.toLocaleString("bn-BD")}`;
+  const formatted =
+    value === undefined
+      ? "—"
+      : fraction !== undefined
+        ? value.toLocaleString("en-US", {
+            minimumFractionDigits: fraction,
+            maximumFractionDigits: fraction,
+          })
+        : value.toLocaleString("bn-BD");
+  const display = value === undefined ? "—" : `${prefix ?? ""}${formatted}`;
   const inner = (
     <div className="rounded-xl border bg-card p-4 flex items-center gap-3 hover:shadow-md transition-shadow">
       <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${tintMap[tint]}`}>
@@ -519,3 +687,55 @@ function StatCard({
   );
   return link ? <Link to={link}>{inner}</Link> : inner;
 }
+
+function ChartCard({
+  title,
+  subtitle,
+  icon: Icon,
+  children,
+}: {
+  title: string;
+  subtitle?: string;
+  icon: React.ComponentType<{ className?: string }>;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="rounded-xl border bg-card p-4 space-y-2">
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <Icon className="h-4 w-4 text-muted-foreground" />
+          <h3 className="text-sm font-semibold">{title}</h3>
+        </div>
+        {subtitle && (
+          <span className="text-xs text-muted-foreground">{subtitle}</span>
+        )}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function LiveActivePill({
+  active,
+}: {
+  active: { total: number; byLocation: Record<string, number> };
+}) {
+  const parts: string[] = [];
+  if (active.byLocation.lab) parts.push(`${active.byLocation.lab} lab`);
+  if (active.byLocation.tutor) parts.push(`${active.byLocation.tutor} tutor`);
+  const detail = parts.length ? ` · ${parts.join(" + ")}` : "";
+  return (
+    <div className="flex items-center gap-2 rounded-full border bg-card px-3 py-1.5 shadow-sm">
+      <span className="relative flex h-2.5 w-2.5">
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+        <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
+      </span>
+      <Radio className="h-3.5 w-3.5 text-emerald-600" />
+      <span className="text-sm font-semibold">
+        {active.total} live
+      </span>
+      <span className="text-xs text-muted-foreground">{detail}</span>
+    </div>
+  );
+}
+
