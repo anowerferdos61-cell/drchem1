@@ -1,73 +1,48 @@
-# Mobile UI/UX Fix — Theory Labs
 
-## সমস্যা (এখন যা হচ্ছে)
+## লক্ষ্য
+YouTube ডেমো ভিডিও (`EADWRKtshCY`) landing page-এ ২ জায়গায় দেখানো — একটা প্রমিনেন্ট সেকশনে embed, আরেকটা "Watch Demo" বাটনে click → modal।
 
-- প্রতিটি ল্যাব আলাদা layout দিয়ে বানানো — কোনটায় 2-column, কোনটায় 3-column, কোনটায় scroll লাগে।
-- মোবাইল landscape-এ visual (বিকার/canvas) কখনো বড়, কখনো ছোট — inconsistent।
-- Theory panel এবং controls একই স্ক্রিনে গাদাগাদি করে, পড়া কঠিন।
-- User বারবার scroll করে বিরক্ত হয়।
-- প্রতিবার একটা ল্যাব ঠিক করলে অন্যটা ভাঙে — কারণ shared pattern নেই।
+---
 
-## সমাধানের মূল আইডিয়া
+## 📍 প্লেসমেন্ট প্ল্যান
 
-একটা **reusable `<TheoryLabShell>` component** বানাব যেটা সব theory ল্যাব use করবে। এতে একবার UX ঠিক করলে সব ল্যাবে একসাথে ঠিক হবে।
+### ১. নতুন সেকশন: **"What is Dr. Chem?"**
+- **কোথায়:** Hero-এর ঠিক নিচে, Problem section-এর আগে (স্ক্রল করলে সাথে সাথে চোখে পড়বে)
+- **কেন এখানে:** Hero-তে user attention পিক-এ থাকে; নিচে এলেই ভিডিও — highest engagement zone
+- **Layout:** Full-width সেকশন, centered
+  - **Eyebrow badge:** ▶ "৯০ সেকেন্ডে দেখে নিন" (or similar)
+  - **Title (H2):** `What is Dr. Chem?`
+  - **Subtitle (Bangla):** "ভিডিও দেখে জেনে নিন আমাদের কাজ সম্পর্কে — ভার্চুয়াল ল্যাব, AI টিউটর ও ভাইভা প্র্যাকটিস কীভাবে কাজ করে।"
+  - **Video player:** 16:9 responsive YouTube embed, rounded corners, soft gradient glow behind
+  - **নিচে ২টা bullet chip:** "🧪 4০+ ল্যাব" · "🤖 AI টিউটর" · "🎓 ভাইভা প্র্যাকটিস"
+  - **CTA button:** "এখনই ফ্রি শুরু করো →" (link to `/app`)
 
-## Shell-এর Layout (Mobile Landscape)
+### ২. Hero-এর "Login" বাটন → "Watch Demo" বাটন
+- বর্তমান Hero-তে `Try Free` + `Login` আছে
+- `Login` বাটন এমনিতেই top-right UserMenu-তে আছে → duplicate
+- সেটা replace করে **"▶ Watch Demo"** — click করলে একই ভিডিও একটা modal-এ open হবে (autoplay)
+- Modal বন্ধ করার জন্য `Esc` / backdrop click / X বাটন
 
-```text
-┌─────────────────────────────────────────────┐
-│  ← Back    Lab Title              [Badge]   │  ← 40px header
-├──────────┬───────────────────────┬──────────┤
-│          │                       │          │
-│  INFO    │      VISUAL           │ CONTROL  │
-│  (25%)   │      (50%)            │  (25%)   │
-│          │      centered         │          │
-│  swipe-  │      auto-fit         │  sliders │
-│  able    │                       │  buttons │
-│  cards   │                       │          │
-│          │                       │          │
-├──────────┴───────────────────────┴──────────┤
-│  [Theory ▲]  bottom sheet — pull up for docs│  ← collapsed by default
-└─────────────────────────────────────────────┘
-```
+---
 
-**Mobile portrait / tablet / desktop:** shell auto-switches to a stacked/wider layout — same 3 slots, different arrangement.
+## 🛠️ Technical
 
-## Key UX Rules (Shell-এর মধ্যে enforce হবে)
+- **নতুন কম্পোনেন্ট:** `src/components/landing/DemoVideoSection.tsx` — YouTube iframe embed (privacy-enhanced `youtube-nocookie.com`, `?rel=0`)
+- **নতুন কম্পোনেন্ট:** `src/components/landing/VideoModal.tsx` — Radix Dialog wrapper, autoplay when open
+- **`src/routes/index.tsx` পরিবর্তন:**
+  - `Hero` → `Login` বাটন replace with "Watch Demo" (opens modal via shared state)
+  - `Landing()`-এ `<DemoVideoSection />` inject Hero-এর পরে
+  - `useState` দিয়ে modal open state manage (Hero + Section দুটাই একই modal trigger করতে পারে)
+- Video ID constant: `EADWRKtshCY` — একটা জায়গায় রাখা হবে (`VIDEO_ID`)
+- Lazy load: iframe শুধু modal open হলে render হবে (bandwidth save)
 
-1. **Visual always centered, always fits** — `object-fit: contain` behavior, max-height = viewport height minus header.
-2. **No page scroll ever** on the main experiment surface. Theory/docs go into a pull-up bottom sheet.
-3. **Text sizes are tokenized** — `text-lab-sm`, `text-lab-base`, `text-lab-lg` — one place to tune globally.
-4. **Controls always on right thumb** (right column on landscape) — reachable while holding phone.
-5. **Info cards swipeable** on left if content overflows — no vertical scroll inside them.
+---
 
-## Rollout Plan
+## রিভিউ চাই
 
-**Phase A — Build the shell (this turn)**
-- Create `src/components/lab/TheoryLabShell.tsx` with the 3-slot API: `info`, `visual`, `controls`, plus optional `theory` (bottom sheet).
-- Add lab typography tokens to `src/styles.css`.
-- Migrate `KineticTheoryLab` as the reference implementation.
+উপরের প্ল্যান ঠিক আছে? বিশেষ করে:
+1. "What is Dr. Chem" সেকশনটা Hero-এর ঠিক পরে বসাবো — নাকি Problem/Solution-এর পরে?
+2. Hero-এর `Login` বাটন কি "Watch Demo" দিয়ে replace করব, নাকি ৩টা বাটন (Try Free + Watch Demo + Login) রাখব?
+3. Bangla subtitle টা ঠিক আছে, নাকি অন্য কিছু লিখব?
 
-**Phase B — Migrate remaining theory labs (next turns, batched)**
-- pH Scale, Indicator, Diffusion, Heating Curve, Atom Builder, Atom Models, Aufbau, Isotope, Electron Config, Periodic Trends, Group Reactivity, Periodic Anomalies, Electrochemical Series, Bonding, Ionic, Solubility.
-- Each migration = swap outer layout for `<TheoryLabShell>`, keep the lab's own logic untouched.
-
-**Phase C — Polish**
-- Test on real mobile viewport (Playwright screenshots at 812×375 landscape).
-- Tune tokens once, applies everywhere.
-
-## Technical Details
-
-- `TheoryLabShell` uses CSS Grid with `grid-template-columns: 25% 50% 25%` on landscape, `1fr` stacked on portrait.
-- Visual slot uses `aspect-ratio` + `max-h-full` + flexbox centering — child SVG/canvas auto-shrinks.
-- Bottom sheet uses shadcn `Drawer` (already installed) — no new deps.
-- Info cards use horizontal snap-scroll on mobile, vertical stack on desktop.
-- `LandscapeGate` stays as-is — shell just responds to whatever viewport it gets.
-
-## এই turn-এ কী deliver হবে
-
-1. `TheoryLabShell.tsx` — reusable component
-2. Typography tokens in `styles.css`
-3. `KineticTheoryLab.tsx` refactored to use the shell (reference)
-
-তারপর তুমি দেখে বলবে ভালো লাগছে কিনা — ভালো হলে বাকি ১৫টা ল্যাব একই প্যাটার্নে দ্রুত migrate করব।
+OK বললেই বিল্ড শুরু করি।

@@ -25,6 +25,9 @@ import {
 import { Button } from "@/components/ui/button";
 import UserMenu from "@/components/auth/UserMenu";
 import { useAuth } from "@/lib/auth-store";
+import { useState } from "react";
+import { DemoVideoSection } from "@/components/landing/DemoVideoSection";
+import { VideoModal } from "@/components/landing/VideoModal";
 import heroImg from "@/assets/landing-hero.jpg";
 
 export const Route = createFileRoute("/")({
@@ -51,10 +54,12 @@ export const Route = createFileRoute("/")({
 });
 
 function Landing() {
+  const [demoOpen, setDemoOpen] = useState(false);
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Nav />
-      <Hero />
+      <Hero onWatchDemo={() => setDemoOpen(true)} />
+      <DemoVideoSection />
       <Problem />
       <Solution />
       <Experiments />
@@ -63,6 +68,7 @@ function Landing() {
       <Testimonials />
       <FinalCTA />
       <Footer />
+      <VideoModal open={demoOpen} onOpenChange={setDemoOpen} />
     </div>
   );
 }
@@ -99,7 +105,7 @@ function Nav() {
 }
 
 /* ───────────── Hero ───────────── */
-function Hero() {
+function Hero({ onWatchDemo }: { onWatchDemo: () => void }) {
   const { isAuthenticated } = useAuth();
   return (
     <section className="relative overflow-hidden">
@@ -134,13 +140,15 @@ function Hero() {
                 )}
               </Link>
             </Button>
-            {!isAuthenticated && (
-              <Button asChild size="lg" variant="outline" className="text-base">
-                <Link to="/login">
-                  <PlayCircle className="h-4 w-4" /> Login
-                </Link>
-              </Button>
-            )}
+            <Button
+              type="button"
+              size="lg"
+              variant="outline"
+              className="text-base"
+              onClick={onWatchDemo}
+            >
+              <PlayCircle className="h-4 w-4" /> Watch Demo
+            </Button>
           </div>
           <div className="mt-6 flex flex-wrap gap-5 text-xs text-muted-foreground">
             <span className="flex items-center gap-1.5">
