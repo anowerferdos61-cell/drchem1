@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useAuth } from "@/lib/auth-store";
 import UserMenu from "@/components/auth/UserMenu";
 import { Button } from "@/components/ui/button";
-import { GraduationCap, Users, ArrowLeft } from "lucide-react";
+import { GraduationCap, Users, ArrowLeft, Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/teacher")({
   head: () => ({
@@ -13,13 +13,14 @@ export const Route = createFileRoute("/teacher")({
 });
 
 const NAV: Array<{
-  to: "/teacher" | "/teacher/classes";
+  to: "/teacher" | "/teacher/classes" | "/teacher/questions";
   label: string;
   icon: typeof GraduationCap;
   exact?: boolean;
 }> = [
   { to: "/teacher", label: "Overview", icon: GraduationCap, exact: true },
   { to: "/teacher/classes", label: "Classes · ক্লাস", icon: Users },
+  { to: "/teacher/questions", label: "AI Questions · প্রশ্ন", icon: Sparkles },
 ];
 
 function TeacherLayout() {

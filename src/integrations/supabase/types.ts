@@ -112,6 +112,60 @@ export type Database = {
         }
         Relationships: []
       }
+      cq_grades: {
+        Row: {
+          ai_similarity_score: number | null
+          attempt_id: string
+          created_at: string
+          graded_by: string | null
+          id: string
+          marks_awarded: number
+          part: string
+          question_id: string
+          teacher_note: string | null
+          updated_at: string
+        }
+        Insert: {
+          ai_similarity_score?: number | null
+          attempt_id: string
+          created_at?: string
+          graded_by?: string | null
+          id?: string
+          marks_awarded?: number
+          part: string
+          question_id: string
+          teacher_note?: string | null
+          updated_at?: string
+        }
+        Update: {
+          ai_similarity_score?: number | null
+          attempt_id?: string
+          created_at?: string
+          graded_by?: string | null
+          id?: string
+          marks_awarded?: number
+          part?: string
+          question_id?: string
+          teacher_note?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cq_grades_attempt_id_fkey"
+            columns: ["attempt_id"]
+            isOneToOne: false
+            referencedRelation: "test_attempts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cq_grades_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       kb_documents: {
         Row: {
           chapter: string | null
@@ -294,6 +348,115 @@ export type Database = {
         }
         Relationships: []
       }
+      question_sets: {
+        Row: {
+          chapter: string
+          class_id: string | null
+          created_at: string
+          difficulty: string
+          due_at: string | null
+          id: string
+          published_at: string | null
+          question_type: string
+          source_experiment: string | null
+          status: string
+          teacher_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          chapter: string
+          class_id?: string | null
+          created_at?: string
+          difficulty?: string
+          due_at?: string | null
+          id?: string
+          published_at?: string | null
+          question_type: string
+          source_experiment?: string | null
+          status?: string
+          teacher_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          chapter?: string
+          class_id?: string | null
+          created_at?: string
+          difficulty?: string
+          due_at?: string | null
+          id?: string
+          published_at?: string | null
+          question_type?: string
+          source_experiment?: string | null
+          status?: string
+          teacher_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "question_sets_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      questions: {
+        Row: {
+          correct_index: number | null
+          created_at: string
+          explanation: string | null
+          id: string
+          options: Json | null
+          order_index: number
+          parts: Json | null
+          question_text: string | null
+          set_id: string
+          stem: string | null
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          correct_index?: number | null
+          created_at?: string
+          explanation?: string | null
+          id?: string
+          options?: Json | null
+          order_index?: number
+          parts?: Json | null
+          question_text?: string | null
+          set_id: string
+          stem?: string | null
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          correct_index?: number | null
+          created_at?: string
+          explanation?: string | null
+          id?: string
+          options?: Json | null
+          order_index?: number
+          parts?: Json | null
+          question_text?: string | null
+          set_id?: string
+          stem?: string | null
+          type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "questions_set_id_fkey"
+            columns: ["set_id"]
+            isOneToOne: false
+            referencedRelation: "question_sets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       subscription_plans: {
         Row: {
           billing_cycle: string
@@ -377,6 +540,59 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "subscription_plans"
             referencedColumns: ["code"]
+          },
+        ]
+      }
+      test_attempts: {
+        Row: {
+          answers: Json
+          cq_graded_at: string | null
+          cq_graded_by: string | null
+          cq_score: number | null
+          created_at: string
+          id: string
+          mcq_score: number
+          mcq_total: number
+          set_id: string
+          student_id: string
+          submitted_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          answers?: Json
+          cq_graded_at?: string | null
+          cq_graded_by?: string | null
+          cq_score?: number | null
+          created_at?: string
+          id?: string
+          mcq_score?: number
+          mcq_total?: number
+          set_id: string
+          student_id: string
+          submitted_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          answers?: Json
+          cq_graded_at?: string | null
+          cq_graded_by?: string | null
+          cq_score?: number | null
+          created_at?: string
+          id?: string
+          mcq_score?: number
+          mcq_total?: number
+          set_id?: string
+          student_id?: string
+          submitted_at?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "test_attempts_set_id_fkey"
+            columns: ["set_id"]
+            isOneToOne: false
+            referencedRelation: "question_sets"
+            referencedColumns: ["id"]
           },
         ]
       }
