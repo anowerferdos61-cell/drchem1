@@ -91,7 +91,11 @@ function EditSet() {
     await persist();
     const r = await pub({ data: { set_id: setId, class_id: selectedClass, due_at: null } });
     if (r.error) return toast.error(r.error);
-    toast.success("Published to class!");
+    toast.success(
+      `✓ Published! ${r.class_name} ক্লাসের ${r.student_count} জন স্টুডেন্টকে assign করা হয়েছে।`,
+      { duration: 5000 },
+    );
+
     void navigate({ to: "/teacher/questions/$setId/results", params: { setId } });
   };
 
