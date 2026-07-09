@@ -3,15 +3,7 @@ import { useEffect } from "react";
 import { useAuth } from "@/lib/auth-store";
 import UserMenu from "@/components/auth/UserMenu";
 import { Button } from "@/components/ui/button";
-import {
-  GraduationCap,
-  Users,
-  BarChart3,
-  FileCheck2,
-  ClipboardList,
-  Mic2,
-  ArrowLeft,
-} from "lucide-react";
+import { GraduationCap, Users, ArrowLeft } from "lucide-react";
 
 export const Route = createFileRoute("/teacher")({
   head: () => ({
@@ -21,17 +13,13 @@ export const Route = createFileRoute("/teacher")({
 });
 
 const NAV: Array<{
-  to: "/teacher" | "/teacher/classes" | "/teacher/lab-analytics" | "/teacher/lab-reports" | "/teacher/assignments" | "/teacher/viva";
+  to: "/teacher" | "/teacher/classes";
   label: string;
   icon: typeof GraduationCap;
   exact?: boolean;
 }> = [
   { to: "/teacher", label: "Overview", icon: GraduationCap, exact: true },
   { to: "/teacher/classes", label: "Classes · ক্লাস", icon: Users },
-  { to: "/teacher/lab-analytics", label: "Lab Analytics", icon: BarChart3 },
-  { to: "/teacher/lab-reports", label: "Lab Reports", icon: FileCheck2 },
-  { to: "/teacher/assignments", label: "Assignments", icon: ClipboardList },
-  { to: "/teacher/viva", label: "Viva", icon: Mic2 },
 ];
 
 function TeacherLayout() {
