@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-store";
-import { Users, BarChart3, FileCheck2, ClipboardList, Mic2, ArrowRight } from "lucide-react";
+import { Users, ArrowRight } from "lucide-react";
 
 export const Route = createFileRoute("/teacher/")({
   component: TeacherHome,
