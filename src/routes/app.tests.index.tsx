@@ -70,8 +70,9 @@ function MyTests() {
                 <div className="min-w-0">
                   <h3 className="font-semibold truncate">{s.title}</h3>
                   <p className="text-xs text-muted-foreground">
-                    {s.chapter} · {s.question_type.toUpperCase()}
+                    {s.chapter} · {s.question_type.toUpperCase()} · {s.question_count} প্রশ্ন
                   </p>
+
                   {a?.submitted_at && (
                     <p className="text-xs text-emerald-600 dark:text-emerald-400">
                       Submitted · MCQ {a.mcq_score}/{a.mcq_total}
