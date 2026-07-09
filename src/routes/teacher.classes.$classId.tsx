@@ -2,9 +2,10 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowLeft, Copy, RefreshCw, Trash2, UserMinus } from "lucide-react";
+import { ArrowLeft, Copy, RefreshCw, Trash2, UserMinus, Users, BarChart3, FileCheck2, ClipboardList, Mic2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { regenerateClassCode } from "@/lib/teacher.functions";
 
