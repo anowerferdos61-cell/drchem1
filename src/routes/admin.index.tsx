@@ -28,6 +28,8 @@ import {
   Ban,
   Undo2,
   Trash2,
+  ShieldPlus,
+  ShieldMinus,
 } from "lucide-react";
 import {
   Area,
@@ -70,6 +72,8 @@ import {
   deleteUser,
   grantSubscription,
   listAllUsers,
+  promoteToAdmin,
+  revokeAdmin,
   unbanUser,
   type AdminUserRow,
 } from "@/lib/admin.functions";
@@ -108,7 +112,7 @@ function StatusBadge({ status }: { status: string | undefined }) {
 }
 
 function AdminDashboard() {
-  const { isAuthenticated, loading, roles, rolesLoaded } = useAuth();
+  const { isAuthenticated, loading, roles, rolesLoaded, user } = useAuth();
   const navigate = useNavigate();
   const isAdmin = roles.includes("admin");
 
@@ -135,6 +139,8 @@ function AdminDashboard() {
   const banFn = useServerFn(banUser);
   const unbanFn = useServerFn(unbanUser);
   const deleteFn = useServerFn(deleteUser);
+  const promoteFn = useServerFn(promoteToAdmin);
+  const revokeFn = useServerFn(revokeAdmin);
   const aiDailyFn = useServerFn(adminAiUsageDaily);
   const revenueDailyFn = useServerFn(adminRevenueDaily);
 
@@ -274,6 +280,29 @@ function AdminDashboard() {
       toast.error((err as Error).message);
     }
   };
+
+  const doPromote = async (u: AdminUserRow) => {
+    if (!confirm(`Make ${u.email} an ADMIN?\n\nএই ইউজার full admin access পাবে।`)) return;
+    try {
+      await promoteFn({ data: { userId: u.user_id } });
+      toast.success(`🛡️ ${u.email} is now an admin`);
+      void qc.invalidateQueries({ queryKey: ["admin"] });
+    } catch (err) {
+      toast.error((err as Error).message);
+    }
+  };
+
+  const doRevoke = async (u: AdminUserRow) => {
+    if (!confirm(`Revoke admin role from ${u.email}?`)) return;
+    try {
+      await revokeFn({ data: { userId: u.user_id } });
+      toast.success(`Admin role revoked from ${u.email}`);
+      void qc.invalidateQueries({ queryKey: ["admin"] });
+    } catch (err) {
+      toast.error((err as Error).message);
+    }
+  };
+
 
   if (loading || !rolesLoaded || (isAuthenticated && !isAdmin)) {
     return (
@@ -634,6 +663,7 @@ function AdminDashboard() {
                           !!u.banned_until &&
                           new Date(u.banned_until).getTime() > Date.now();
                         const isAdminRow = u.roles.includes("admin");
+                        const isSelf = u.user_id === user?.id;
                         return (
                           <div className="flex gap-1 justify-end flex-wrap">
                             <Button
@@ -678,6 +708,27 @@ function AdminDashboard() {
                                   <Ban className="h-3.5 w-3.5 text-amber-600" />
                                 </Button>
                               ))}
+                            {isAdminRow
+                              ? !isSelf && (
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    title="Revoke admin role"
+                                    onClick={() => doRevoke(u)}
+                                  >
+                                    <ShieldMinus className="h-3.5 w-3.5 text-rose-600" />
+                                  </Button>
+                                )
+                              : (
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    title="Make admin"
+                                    onClick={() => doPromote(u)}
+                                  >
+                                    <ShieldPlus className="h-3.5 w-3.5 text-indigo-600" />
+                                  </Button>
+                                )}
                             {!isAdminRow && (
                               <Button
                                 variant="ghost"

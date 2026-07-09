@@ -183,6 +183,40 @@ export const deleteUser = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+// ─── promoteToAdmin ────────────────────────────────────────────────────
+export const promoteToAdmin = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) => z.object({ userId: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    await ensureAdmin(context.supabase, context.userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin
+      .from("user_roles")
+      .insert({ user_id: data.userId, role: "admin" });
+    // 23505 = unique_violation → already admin, treat as no-op
+    if (error && error.code !== "23505") throw new Error(error.message);
+    return { ok: true };
+  });
+
+// ─── revokeAdmin ───────────────────────────────────────────────────────
+export const revokeAdmin = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) => z.object({ userId: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    await ensureAdmin(context.supabase, context.userId);
+    if (data.userId === context.userId) throw new Error("You cannot revoke your own admin");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin
+      .from("user_roles")
+      .delete()
+      .eq("user_id", data.userId)
+      .eq("role", "admin");
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+
+
 // ─── grantSubscription ─────────────────────────────────────────────────
 export const grantSubscription = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
