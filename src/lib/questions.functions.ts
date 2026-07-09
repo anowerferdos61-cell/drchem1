@@ -135,11 +135,22 @@ export const saveQuestionSet = createServerFn({ method: "POST" })
       setId = ins.id;
     }
 
-    const rows: Array<Record<string, unknown>> = [];
+    type QRow = {
+      set_id: string;
+      order_index: number;
+      type: "mcq" | "cq";
+      question_text?: string;
+      options?: string[];
+      correct_index?: number;
+      explanation?: string;
+      stem?: string;
+      parts?: Record<string, unknown>;
+    };
+    const rows: QRow[] = [];
     let idx = 0;
     for (const m of data.mcq_items) {
       rows.push({
-        set_id: setId,
+        set_id: setId!,
         order_index: idx++,
         type: "mcq",
         question_text: m.question,
@@ -150,7 +161,7 @@ export const saveQuestionSet = createServerFn({ method: "POST" })
     }
     for (const c of data.cq_items) {
       rows.push({
-        set_id: setId,
+        set_id: setId!,
         order_index: idx++,
         type: "cq",
         stem: c.stem,
