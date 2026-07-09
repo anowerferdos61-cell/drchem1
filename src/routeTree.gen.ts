@@ -23,6 +23,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as TeacherIndexRouteImport } from './routes/teacher.index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as TeacherClassesRouteImport } from './routes/teacher.classes'
 import { Route as AppVideosRouteImport } from './routes/app.videos'
 import { Route as AppNotesRouteImport } from './routes/app.notes'
 import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
@@ -100,6 +101,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/admin/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TeacherClassesRoute = TeacherClassesRouteImport.update({
+  id: '/classes',
+  path: '/classes',
+  getParentRoute: () => TeacherRoute,
+} as any)
 const AppVideosRoute = AppVideosRouteImport.update({
   id: '/videos',
   path: '/videos',
@@ -116,14 +122,14 @@ const AdminPaymentsRoute = AdminPaymentsRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const TeacherClassesIndexRoute = TeacherClassesIndexRouteImport.update({
-  id: '/classes/',
-  path: '/classes/',
-  getParentRoute: () => TeacherRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => TeacherClassesRoute,
 } as any)
 const TeacherClassesClassIdRoute = TeacherClassesClassIdRouteImport.update({
-  id: '/classes/$classId',
-  path: '/classes/$classId',
-  getParentRoute: () => TeacherRoute,
+  id: '/$classId',
+  path: '/$classId',
+  getParentRoute: () => TeacherClassesRoute,
 } as any)
 const ApiTutorStreamRoute = ApiTutorStreamRouteImport.update({
   id: '/api/tutor/stream',
@@ -146,6 +152,7 @@ export interface FileRoutesByFullPath {
   '/admin/payments': typeof AdminPaymentsRoute
   '/app/notes': typeof AppNotesRoute
   '/app/videos': typeof AppVideosRoute
+  '/teacher/classes': typeof TeacherClassesRouteWithChildren
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
   '/teacher/': typeof TeacherIndexRoute
@@ -189,6 +196,7 @@ export interface FileRoutesById {
   '/admin/payments': typeof AdminPaymentsRoute
   '/app/notes': typeof AppNotesRoute
   '/app/videos': typeof AppVideosRoute
+  '/teacher/classes': typeof TeacherClassesRouteWithChildren
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
   '/teacher/': typeof TeacherIndexRoute
@@ -213,6 +221,7 @@ export interface FileRouteTypes {
     | '/admin/payments'
     | '/app/notes'
     | '/app/videos'
+    | '/teacher/classes'
     | '/admin/'
     | '/app/'
     | '/teacher/'
@@ -255,6 +264,7 @@ export interface FileRouteTypes {
     | '/admin/payments'
     | '/app/notes'
     | '/app/videos'
+    | '/teacher/classes'
     | '/admin/'
     | '/app/'
     | '/teacher/'
@@ -380,6 +390,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/teacher/classes': {
+      id: '/teacher/classes'
+      path: '/classes'
+      fullPath: '/teacher/classes'
+      preLoaderRoute: typeof TeacherClassesRouteImport
+      parentRoute: typeof TeacherRoute
+    }
     '/app/videos': {
       id: '/app/videos'
       path: '/videos'
@@ -403,17 +420,17 @@ declare module '@tanstack/react-router' {
     }
     '/teacher/classes/': {
       id: '/teacher/classes/'
-      path: '/classes'
+      path: '/'
       fullPath: '/teacher/classes/'
       preLoaderRoute: typeof TeacherClassesIndexRouteImport
-      parentRoute: typeof TeacherRoute
+      parentRoute: typeof TeacherClassesRoute
     }
     '/teacher/classes/$classId': {
       id: '/teacher/classes/$classId'
-      path: '/classes/$classId'
+      path: '/$classId'
       fullPath: '/teacher/classes/$classId'
       preLoaderRoute: typeof TeacherClassesClassIdRouteImport
-      parentRoute: typeof TeacherRoute
+      parentRoute: typeof TeacherClassesRoute
     }
     '/api/tutor/stream': {
       id: '/api/tutor/stream'
@@ -439,16 +456,28 @@ const AppRouteChildren: AppRouteChildren = {
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
-interface TeacherRouteChildren {
-  TeacherIndexRoute: typeof TeacherIndexRoute
+interface TeacherClassesRouteChildren {
   TeacherClassesClassIdRoute: typeof TeacherClassesClassIdRoute
   TeacherClassesIndexRoute: typeof TeacherClassesIndexRoute
 }
 
-const TeacherRouteChildren: TeacherRouteChildren = {
-  TeacherIndexRoute: TeacherIndexRoute,
+const TeacherClassesRouteChildren: TeacherClassesRouteChildren = {
   TeacherClassesClassIdRoute: TeacherClassesClassIdRoute,
   TeacherClassesIndexRoute: TeacherClassesIndexRoute,
+}
+
+const TeacherClassesRouteWithChildren = TeacherClassesRoute._addFileChildren(
+  TeacherClassesRouteChildren,
+)
+
+interface TeacherRouteChildren {
+  TeacherClassesRoute: typeof TeacherClassesRouteWithChildren
+  TeacherIndexRoute: typeof TeacherIndexRoute
+}
+
+const TeacherRouteChildren: TeacherRouteChildren = {
+  TeacherClassesRoute: TeacherClassesRouteWithChildren,
+  TeacherIndexRoute: TeacherIndexRoute,
 }
 
 const TeacherRouteWithChildren =
