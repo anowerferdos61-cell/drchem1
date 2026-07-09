@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { CreditCard, LogIn, LogOut, ShieldCheck, Sparkles, User as UserIcon } from "lucide-react";
+import { CreditCard, GraduationCap, LogIn, LogOut, ShieldCheck, Sparkles, User as UserIcon } from "lucide-react";
 import { useAuth } from "@/lib/auth-store";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,6 +18,7 @@ import {
  */
 export default function UserMenu() {
   const { user, profile, roles, isAuthenticated, loading, signOut } = useAuth();
+  const isTeacher = roles.includes("teacher") || roles.includes("admin");
 
   if (loading) {
     return <div className="h-9 w-24 rounded-md bg-muted animate-pulse" />;
@@ -84,6 +85,16 @@ export default function UserMenu() {
             <Sparkles className="h-4 w-4" /> Pricing
           </Link>
         </DropdownMenuItem>
+        {isTeacher && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link to="/teacher">
+                <GraduationCap className="h-4 w-4" /> Teacher Dashboard
+              </Link>
+            </DropdownMenuItem>
+          </>
+        )}
         {isAdmin && (
           <>
             <DropdownMenuSeparator />
