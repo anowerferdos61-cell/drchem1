@@ -99,6 +99,9 @@ function Nav() {
           <a href="#testimonials" className="text-muted-foreground hover:text-foreground">
             Reviews
           </a>
+          <a href="#faq" className="text-muted-foreground hover:text-foreground">
+            Guide & FAQ
+          </a>
         </nav>
         <UserMenu />
       </div>
