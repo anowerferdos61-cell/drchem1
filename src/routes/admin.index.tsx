@@ -629,25 +629,68 @@ function AdminDashboard() {
                         : "—"}
                     </td>
                     <td className="px-4 py-3 text-right">
-                      <div className="flex gap-1 justify-end">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            setGrantTarget(u);
-                            setGrantPlan("student_monthly");
-                          }}
-                        >
-                          <Sparkles className="h-3.5 w-3.5" /> Grant Pro
-                        </Button>
-                        {u.subscription &&
-                          (u.subscription.status === "active" ||
-                            u.subscription.status === "trialing") && (
-                            <Button variant="ghost" size="sm" onClick={() => doCancel(u)}>
-                              <XCircle className="h-3.5 w-3.5" />
+                      {(() => {
+                        const isBanned =
+                          !!u.banned_until &&
+                          new Date(u.banned_until).getTime() > Date.now();
+                        const isAdminRow = u.roles.includes("admin");
+                        return (
+                          <div className="flex gap-1 justify-end flex-wrap">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                setGrantTarget(u);
+                                setGrantPlan("student_monthly");
+                              }}
+                            >
+                              <Sparkles className="h-3.5 w-3.5" /> Grant Pro
                             </Button>
-                          )}
-                      </div>
+                            {u.subscription &&
+                              (u.subscription.status === "active" ||
+                                u.subscription.status === "trialing") && (
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  title="Cancel subscription"
+                                  onClick={() => doCancel(u)}
+                                >
+                                  <XCircle className="h-3.5 w-3.5" />
+                                </Button>
+                              )}
+                            {!isAdminRow &&
+                              (isBanned ? (
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  title="Unban user"
+                                  onClick={() => doUnban(u)}
+                                >
+                                  <Undo2 className="h-3.5 w-3.5 text-emerald-600" />
+                                </Button>
+                              ) : (
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  title="Ban user"
+                                  onClick={() => doBan(u)}
+                                >
+                                  <Ban className="h-3.5 w-3.5 text-amber-600" />
+                                </Button>
+                              ))}
+                            {!isAdminRow && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                title="Delete user permanently"
+                                onClick={() => doDelete(u)}
+                              >
+                                <Trash2 className="h-3.5 w-3.5 text-rose-600" />
+                              </Button>
+                            )}
+                          </div>
+                        );
+                      })()}
                     </td>
                   </tr>
                 ))}
