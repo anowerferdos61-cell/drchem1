@@ -23,11 +23,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as TeacherIndexRouteImport } from './routes/teacher.index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as TeacherVivaRouteImport } from './routes/teacher.viva'
-import { Route as TeacherLabReportsRouteImport } from './routes/teacher.lab-reports'
-import { Route as TeacherLabAnalyticsRouteImport } from './routes/teacher.lab-analytics'
 import { Route as TeacherClassesRouteImport } from './routes/teacher.classes'
-import { Route as TeacherAssignmentsRouteImport } from './routes/teacher.assignments'
 import { Route as AppVideosRouteImport } from './routes/app.videos'
 import { Route as AppNotesRouteImport } from './routes/app.notes'
 import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
@@ -104,29 +100,9 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/admin/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TeacherVivaRoute = TeacherVivaRouteImport.update({
-  id: '/viva',
-  path: '/viva',
-  getParentRoute: () => TeacherRoute,
-} as any)
-const TeacherLabReportsRoute = TeacherLabReportsRouteImport.update({
-  id: '/lab-reports',
-  path: '/lab-reports',
-  getParentRoute: () => TeacherRoute,
-} as any)
-const TeacherLabAnalyticsRoute = TeacherLabAnalyticsRouteImport.update({
-  id: '/lab-analytics',
-  path: '/lab-analytics',
-  getParentRoute: () => TeacherRoute,
-} as any)
 const TeacherClassesRoute = TeacherClassesRouteImport.update({
   id: '/classes',
   path: '/classes',
-  getParentRoute: () => TeacherRoute,
-} as any)
-const TeacherAssignmentsRoute = TeacherAssignmentsRouteImport.update({
-  id: '/assignments',
-  path: '/assignments',
   getParentRoute: () => TeacherRoute,
 } as any)
 const AppVideosRoute = AppVideosRouteImport.update({
@@ -170,11 +146,7 @@ export interface FileRoutesByFullPath {
   '/admin/payments': typeof AdminPaymentsRoute
   '/app/notes': typeof AppNotesRoute
   '/app/videos': typeof AppVideosRoute
-  '/teacher/assignments': typeof TeacherAssignmentsRoute
   '/teacher/classes': typeof TeacherClassesRouteWithChildren
-  '/teacher/lab-analytics': typeof TeacherLabAnalyticsRoute
-  '/teacher/lab-reports': typeof TeacherLabReportsRoute
-  '/teacher/viva': typeof TeacherVivaRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
   '/teacher/': typeof TeacherIndexRoute
@@ -194,11 +166,7 @@ export interface FileRoutesByTo {
   '/admin/payments': typeof AdminPaymentsRoute
   '/app/notes': typeof AppNotesRoute
   '/app/videos': typeof AppVideosRoute
-  '/teacher/assignments': typeof TeacherAssignmentsRoute
   '/teacher/classes': typeof TeacherClassesRouteWithChildren
-  '/teacher/lab-analytics': typeof TeacherLabAnalyticsRoute
-  '/teacher/lab-reports': typeof TeacherLabReportsRoute
-  '/teacher/viva': typeof TeacherVivaRoute
   '/admin': typeof AdminIndexRoute
   '/app': typeof AppIndexRoute
   '/teacher': typeof TeacherIndexRoute
@@ -221,11 +189,7 @@ export interface FileRoutesById {
   '/admin/payments': typeof AdminPaymentsRoute
   '/app/notes': typeof AppNotesRoute
   '/app/videos': typeof AppVideosRoute
-  '/teacher/assignments': typeof TeacherAssignmentsRoute
   '/teacher/classes': typeof TeacherClassesRouteWithChildren
-  '/teacher/lab-analytics': typeof TeacherLabAnalyticsRoute
-  '/teacher/lab-reports': typeof TeacherLabReportsRoute
-  '/teacher/viva': typeof TeacherVivaRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
   '/teacher/': typeof TeacherIndexRoute
@@ -249,11 +213,7 @@ export interface FileRouteTypes {
     | '/admin/payments'
     | '/app/notes'
     | '/app/videos'
-    | '/teacher/assignments'
     | '/teacher/classes'
-    | '/teacher/lab-analytics'
-    | '/teacher/lab-reports'
-    | '/teacher/viva'
     | '/admin/'
     | '/app/'
     | '/teacher/'
@@ -273,11 +233,7 @@ export interface FileRouteTypes {
     | '/admin/payments'
     | '/app/notes'
     | '/app/videos'
-    | '/teacher/assignments'
     | '/teacher/classes'
-    | '/teacher/lab-analytics'
-    | '/teacher/lab-reports'
-    | '/teacher/viva'
     | '/admin'
     | '/app'
     | '/teacher'
@@ -299,11 +255,7 @@ export interface FileRouteTypes {
     | '/admin/payments'
     | '/app/notes'
     | '/app/videos'
-    | '/teacher/assignments'
     | '/teacher/classes'
-    | '/teacher/lab-analytics'
-    | '/teacher/lab-reports'
-    | '/teacher/viva'
     | '/admin/'
     | '/app/'
     | '/teacher/'
@@ -428,39 +380,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/teacher/viva': {
-      id: '/teacher/viva'
-      path: '/viva'
-      fullPath: '/teacher/viva'
-      preLoaderRoute: typeof TeacherVivaRouteImport
-      parentRoute: typeof TeacherRoute
-    }
-    '/teacher/lab-reports': {
-      id: '/teacher/lab-reports'
-      path: '/lab-reports'
-      fullPath: '/teacher/lab-reports'
-      preLoaderRoute: typeof TeacherLabReportsRouteImport
-      parentRoute: typeof TeacherRoute
-    }
-    '/teacher/lab-analytics': {
-      id: '/teacher/lab-analytics'
-      path: '/lab-analytics'
-      fullPath: '/teacher/lab-analytics'
-      preLoaderRoute: typeof TeacherLabAnalyticsRouteImport
-      parentRoute: typeof TeacherRoute
-    }
     '/teacher/classes': {
       id: '/teacher/classes'
       path: '/classes'
       fullPath: '/teacher/classes'
       preLoaderRoute: typeof TeacherClassesRouteImport
-      parentRoute: typeof TeacherRoute
-    }
-    '/teacher/assignments': {
-      id: '/teacher/assignments'
-      path: '/assignments'
-      fullPath: '/teacher/assignments'
-      preLoaderRoute: typeof TeacherAssignmentsRouteImport
       parentRoute: typeof TeacherRoute
     }
     '/app/videos': {
@@ -528,20 +452,12 @@ const TeacherClassesRouteWithChildren = TeacherClassesRoute._addFileChildren(
 )
 
 interface TeacherRouteChildren {
-  TeacherAssignmentsRoute: typeof TeacherAssignmentsRoute
   TeacherClassesRoute: typeof TeacherClassesRouteWithChildren
-  TeacherLabAnalyticsRoute: typeof TeacherLabAnalyticsRoute
-  TeacherLabReportsRoute: typeof TeacherLabReportsRoute
-  TeacherVivaRoute: typeof TeacherVivaRoute
   TeacherIndexRoute: typeof TeacherIndexRoute
 }
 
 const TeacherRouteChildren: TeacherRouteChildren = {
-  TeacherAssignmentsRoute: TeacherAssignmentsRoute,
   TeacherClassesRoute: TeacherClassesRouteWithChildren,
-  TeacherLabAnalyticsRoute: TeacherLabAnalyticsRoute,
-  TeacherLabReportsRoute: TeacherLabReportsRoute,
-  TeacherVivaRoute: TeacherVivaRoute,
   TeacherIndexRoute: TeacherIndexRoute,
 }
 
