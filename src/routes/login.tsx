@@ -53,14 +53,17 @@ async function resolveAuthEmail(identifier: string): Promise<string | null> {
   const synthetic = syntheticAuthEmailForPhone(normalized);
 
   // Then look up in profiles for accounts where user provided a real email.
-  const { data, error } = await supabase.rpc("get_auth_email_by_phone", {
-    _phone: normalized,
-  });
+  const { data, error } = await (
+    supabase.rpc as unknown as (
+      fn: string,
+      args: Record<string, unknown>,
+    ) => Promise<{ data: string | null; error: { message: string } | null }>
+  )("get_auth_email_by_phone", { _phone: normalized });
   if (error) {
     console.warn("phone lookup failed", error);
     return synthetic;
   }
-  return (data as string | null) ?? synthetic;
+  return data ?? synthetic;
 }
 
 function LoginPage() {
