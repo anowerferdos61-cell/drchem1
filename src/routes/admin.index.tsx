@@ -25,6 +25,9 @@ import {
   Bot,
   Radio,
   Cpu,
+  Ban,
+  Undo2,
+  Trash2,
 } from "lucide-react";
 import {
   Area,
