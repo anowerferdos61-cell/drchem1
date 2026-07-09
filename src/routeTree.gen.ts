@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TutorRouteImport } from './routes/tutor'
+import { Route as TeacherRouteImport } from './routes/teacher'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
@@ -19,16 +20,24 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as BillingRouteImport } from './routes/billing'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TeacherIndexRouteImport } from './routes/teacher.index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as TeacherClassesRouteImport } from './routes/teacher.classes'
 import { Route as AppVideosRouteImport } from './routes/app.videos'
 import { Route as AppNotesRouteImport } from './routes/app.notes'
 import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
+import { Route as TeacherClassesClassIdRouteImport } from './routes/teacher.classes.$classId'
 import { Route as ApiTutorStreamRouteImport } from './routes/api/tutor/stream'
 
 const TutorRoute = TutorRouteImport.update({
   id: '/tutor',
   path: '/tutor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TeacherRoute = TeacherRouteImport.update({
+  id: '/teacher',
+  path: '/teacher',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -76,6 +85,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TeacherIndexRoute = TeacherIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => TeacherRoute,
+} as any)
 const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -85,6 +99,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/admin/',
   path: '/admin/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const TeacherClassesRoute = TeacherClassesRouteImport.update({
+  id: '/classes',
+  path: '/classes',
+  getParentRoute: () => TeacherRoute,
 } as any)
 const AppVideosRoute = AppVideosRouteImport.update({
   id: '/videos',
@@ -100,6 +119,11 @@ const AdminPaymentsRoute = AdminPaymentsRouteImport.update({
   id: '/admin/payments',
   path: '/admin/payments',
   getParentRoute: () => rootRouteImport,
+} as any)
+const TeacherClassesClassIdRoute = TeacherClassesClassIdRouteImport.update({
+  id: '/$classId',
+  path: '/$classId',
+  getParentRoute: () => TeacherClassesRoute,
 } as any)
 const ApiTutorStreamRoute = ApiTutorStreamRouteImport.update({
   id: '/api/tutor/stream',
@@ -117,13 +141,17 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/teacher': typeof TeacherRouteWithChildren
   '/tutor': typeof TutorRoute
   '/admin/payments': typeof AdminPaymentsRoute
   '/app/notes': typeof AppNotesRoute
   '/app/videos': typeof AppVideosRoute
+  '/teacher/classes': typeof TeacherClassesRouteWithChildren
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
+  '/teacher/': typeof TeacherIndexRoute
   '/api/tutor/stream': typeof ApiTutorStreamRoute
+  '/teacher/classes/$classId': typeof TeacherClassesClassIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -138,9 +166,12 @@ export interface FileRoutesByTo {
   '/admin/payments': typeof AdminPaymentsRoute
   '/app/notes': typeof AppNotesRoute
   '/app/videos': typeof AppVideosRoute
+  '/teacher/classes': typeof TeacherClassesRouteWithChildren
   '/admin': typeof AdminIndexRoute
   '/app': typeof AppIndexRoute
+  '/teacher': typeof TeacherIndexRoute
   '/api/tutor/stream': typeof ApiTutorStreamRoute
+  '/teacher/classes/$classId': typeof TeacherClassesClassIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -153,13 +184,17 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/teacher': typeof TeacherRouteWithChildren
   '/tutor': typeof TutorRoute
   '/admin/payments': typeof AdminPaymentsRoute
   '/app/notes': typeof AppNotesRoute
   '/app/videos': typeof AppVideosRoute
+  '/teacher/classes': typeof TeacherClassesRouteWithChildren
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
+  '/teacher/': typeof TeacherIndexRoute
   '/api/tutor/stream': typeof ApiTutorStreamRoute
+  '/teacher/classes/$classId': typeof TeacherClassesClassIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -173,13 +208,17 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/sitemap.xml'
+    | '/teacher'
     | '/tutor'
     | '/admin/payments'
     | '/app/notes'
     | '/app/videos'
+    | '/teacher/classes'
     | '/admin/'
     | '/app/'
+    | '/teacher/'
     | '/api/tutor/stream'
+    | '/teacher/classes/$classId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -194,9 +233,12 @@ export interface FileRouteTypes {
     | '/admin/payments'
     | '/app/notes'
     | '/app/videos'
+    | '/teacher/classes'
     | '/admin'
     | '/app'
+    | '/teacher'
     | '/api/tutor/stream'
+    | '/teacher/classes/$classId'
   id:
     | '__root__'
     | '/'
@@ -208,13 +250,17 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/sitemap.xml'
+    | '/teacher'
     | '/tutor'
     | '/admin/payments'
     | '/app/notes'
     | '/app/videos'
+    | '/teacher/classes'
     | '/admin/'
     | '/app/'
+    | '/teacher/'
     | '/api/tutor/stream'
+    | '/teacher/classes/$classId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -227,6 +273,7 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   SignupRoute: typeof SignupRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TeacherRoute: typeof TeacherRouteWithChildren
   TutorRoute: typeof TutorRoute
   AdminPaymentsRoute: typeof AdminPaymentsRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -240,6 +287,13 @@ declare module '@tanstack/react-router' {
       path: '/tutor'
       fullPath: '/tutor'
       preLoaderRoute: typeof TutorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/teacher': {
+      id: '/teacher'
+      path: '/teacher'
+      fullPath: '/teacher'
+      preLoaderRoute: typeof TeacherRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -305,6 +359,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/teacher/': {
+      id: '/teacher/'
+      path: '/'
+      fullPath: '/teacher/'
+      preLoaderRoute: typeof TeacherIndexRouteImport
+      parentRoute: typeof TeacherRoute
+    }
     '/app/': {
       id: '/app/'
       path: '/'
@@ -318,6 +379,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/teacher/classes': {
+      id: '/teacher/classes'
+      path: '/classes'
+      fullPath: '/teacher/classes'
+      preLoaderRoute: typeof TeacherClassesRouteImport
+      parentRoute: typeof TeacherRoute
     }
     '/app/videos': {
       id: '/app/videos'
@@ -339,6 +407,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/payments'
       preLoaderRoute: typeof AdminPaymentsRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/teacher/classes/$classId': {
+      id: '/teacher/classes/$classId'
+      path: '/$classId'
+      fullPath: '/teacher/classes/$classId'
+      preLoaderRoute: typeof TeacherClassesClassIdRouteImport
+      parentRoute: typeof TeacherClassesRoute
     }
     '/api/tutor/stream': {
       id: '/api/tutor/stream'
@@ -364,6 +439,31 @@ const AppRouteChildren: AppRouteChildren = {
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
+interface TeacherClassesRouteChildren {
+  TeacherClassesClassIdRoute: typeof TeacherClassesClassIdRoute
+}
+
+const TeacherClassesRouteChildren: TeacherClassesRouteChildren = {
+  TeacherClassesClassIdRoute: TeacherClassesClassIdRoute,
+}
+
+const TeacherClassesRouteWithChildren = TeacherClassesRoute._addFileChildren(
+  TeacherClassesRouteChildren,
+)
+
+interface TeacherRouteChildren {
+  TeacherClassesRoute: typeof TeacherClassesRouteWithChildren
+  TeacherIndexRoute: typeof TeacherIndexRoute
+}
+
+const TeacherRouteChildren: TeacherRouteChildren = {
+  TeacherClassesRoute: TeacherClassesRouteWithChildren,
+  TeacherIndexRoute: TeacherIndexRoute,
+}
+
+const TeacherRouteWithChildren =
+  TeacherRoute._addFileChildren(TeacherRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
@@ -374,6 +474,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   SignupRoute: SignupRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TeacherRoute: TeacherRouteWithChildren,
   TutorRoute: TutorRoute,
   AdminPaymentsRoute: AdminPaymentsRoute,
   AdminIndexRoute: AdminIndexRoute,
