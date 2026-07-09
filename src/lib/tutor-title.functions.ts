@@ -15,11 +15,19 @@ export const generateTitle = createServerFn({ method: "POST" })
     const key = getGeminiApiKey();
     if (!key) return { title: "নতুন চ্যাট" };
     try {
-      const reply = await chatComplete({
+      const { text: reply, usage, model } = await chatComplete({
         apiKey: key,
         systemPrompt:
           "You generate a short conversation title (max 5 words) in Bangla summarizing the user's message. Return ONLY the title, no quotes, no punctuation at the end.",
         history: [{ role: "user", content: data.message }],
+      });
+      const { logAiUsage } = await import("./ai-usage.server");
+      void logAiUsage({
+        userId: null,
+        endpoint: "title_gen",
+        model,
+        inputTokens: usage.inputTokens,
+        outputTokens: usage.outputTokens,
       });
       const title = reply
         .replace(/["“”'`]/g, "")

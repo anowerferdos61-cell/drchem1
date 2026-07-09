@@ -127,10 +127,24 @@ export const generateViva = createServerFn({ method: "POST" })
 
     const ctx = experimentContext(data.experiment);
     try {
-      const { object } = await generateObject({
+      const { object, usage } = await generateObject({
         model,
         schema: GenerateSchema,
         prompt: `You are a high-school chemistry teacher. Generate exactly ${data.count} concise viva (oral exam) questions about: "${data.topic}". Context: ${ctx} For each, return an object with "q" (question) and "expected" (one-sentence model answer). Return JSON: { "questions": [ { "q": "...", "expected": "..." }, ... ] }.`,
+      });
+      const { logAiUsage } = await import("./ai-usage.server");
+      const u = (usage ?? {}) as {
+        inputTokens?: number;
+        outputTokens?: number;
+        promptTokens?: number;
+        completionTokens?: number;
+      };
+      void logAiUsage({
+        userId: null,
+        endpoint: "viva_generate",
+        model: MODEL_ID,
+        inputTokens: u.inputTokens ?? u.promptTokens ?? 0,
+        outputTokens: u.outputTokens ?? u.completionTokens ?? 0,
       });
       return { questions: object.questions, error: null as string | null };
     } catch (e) {
@@ -186,10 +200,24 @@ export const gradeViva = createServerFn({ method: "POST" })
       .join("\n\n");
 
     try {
-      const { object } = await generateObject({
+      const { object, usage } = await generateObject({
         model,
         schema: GradeSchema,
         prompt: `Grade the following chemistry viva. Be fair but rigorous. For each question return { correct: boolean, score: 0-1, feedback: string }. Then overallScore (0-100), gaps (array of strings), summary (one paragraph).\n\n${transcript}`,
+      });
+      const { logAiUsage } = await import("./ai-usage.server");
+      const u = (usage ?? {}) as {
+        inputTokens?: number;
+        outputTokens?: number;
+        promptTokens?: number;
+        completionTokens?: number;
+      };
+      void logAiUsage({
+        userId: null,
+        endpoint: "viva_grade",
+        model: MODEL_ID,
+        inputTokens: u.inputTokens ?? u.promptTokens ?? 0,
+        outputTokens: u.outputTokens ?? u.completionTokens ?? 0,
       });
       return { result: object, error: null as string | null };
     } catch (e) {

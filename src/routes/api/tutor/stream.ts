@@ -269,6 +269,7 @@ export const Route = createFileRoute("/api/tutor/stream")({
           body: JSON.stringify({
             model,
             stream: true,
+            stream_options: { include_usage: true },
             messages: [{ role: "system", content: systemContent }, ...messages],
           }),
         });
@@ -302,6 +303,47 @@ export const Route = createFileRoute("/api/tutor/stream")({
         const encoder = new TextEncoder();
         const reader = upstream.body.getReader();
 
+        // Capture token usage from the final SSE chunk (stream_options.include_usage)
+        let capturedUsage: { input: number; output: number } | null = null;
+        const tryCaptureUsage = (chunk: string) => {
+          // Parse each `data: {...}` line, looking for a `usage` field.
+          for (const line of chunk.split("\n")) {
+            const trimmed = line.trim();
+            if (!trimmed.startsWith("data:")) continue;
+            const payload = trimmed.slice(5).trim();
+            if (!payload || payload === "[DONE]") continue;
+            try {
+              const j = JSON.parse(payload);
+              if (j && typeof j === "object" && j.usage) {
+                capturedUsage = {
+                  input: Number(j.usage.prompt_tokens ?? j.usage.input_tokens ?? 0),
+                  output: Number(j.usage.completion_tokens ?? j.usage.output_tokens ?? 0),
+                };
+              }
+            } catch {
+              /* ignore non-JSON chunks */
+            }
+          }
+        };
+
+        const finalizeLogging = () => {
+          if (!capturedUsage) return;
+          void (async () => {
+            try {
+              const { logAiUsage } = await import("@/lib/ai-usage.server");
+              await logAiUsage({
+                userId,
+                endpoint: body.ragMode ? "tutor_stream_rag" : "tutor_stream",
+                model,
+                inputTokens: capturedUsage!.input,
+                outputTokens: capturedUsage!.output,
+              });
+            } catch (e) {
+              console.error("tutor usage log failed", e);
+            }
+          })();
+        };
+
         const stream = new ReadableStream({
           async start(controller) {
             const decoder = new TextDecoder();
@@ -319,7 +361,9 @@ export const Route = createFileRoute("/api/tutor/stream")({
               while (true) {
                 const { done, value } = await reader.read();
                 if (done) break;
-                buf += decoder.decode(value, { stream: true });
+                const decoded = decoder.decode(value, { stream: true });
+                buf += decoded;
+                tryCaptureUsage(decoded);
 
                 // Detect [DONE] marker → emit sources just before it.
                 if (buf.includes("data: [DONE]")) {
@@ -339,8 +383,10 @@ export const Route = createFileRoute("/api/tutor/stream")({
               if (buf) controller.enqueue(encoder.encode(buf));
               flushSources();
               controller.close();
+              finalizeLogging();
             } catch (e) {
               console.error("stream forward error", e);
+              finalizeLogging();
               try {
                 controller.error(e);
               } catch {
@@ -350,6 +396,7 @@ export const Route = createFileRoute("/api/tutor/stream")({
           },
           cancel() {
             reader.cancel().catch(() => {});
+            finalizeLogging();
           },
         });
 

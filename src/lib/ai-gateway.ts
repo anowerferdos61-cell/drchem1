@@ -34,19 +34,39 @@ export interface ChatCallOptions {
   model?: string;
 }
 
+export interface ChatCompleteResult {
+  text: string;
+  usage: { inputTokens: number; outputTokens: number };
+  model: string;
+}
+
 export async function chatComplete({
   apiKey,
   systemPrompt,
   history,
   model = DEFAULT_CHAT_MODEL,
-}: ChatCallOptions): Promise<string> {
+}: ChatCallOptions): Promise<ChatCompleteResult> {
   const provider = createGeminiProvider(apiKey);
   const messages: ModelMessage[] = [
     { role: "system", content: systemPrompt },
     ...history.map((m) => ({ role: m.role, content: m.content }) as ModelMessage),
   ];
-  const { text } = await generateText({ model: provider(model), messages });
-  return text;
+  const { text, usage } = await generateText({ model: provider(model), messages });
+  // AI SDK v6 uses inputTokens/outputTokens; guard against undefined.
+  const u = (usage ?? {}) as {
+    inputTokens?: number;
+    outputTokens?: number;
+    promptTokens?: number;
+    completionTokens?: number;
+  };
+  return {
+    text,
+    model,
+    usage: {
+      inputTokens: u.inputTokens ?? u.promptTokens ?? 0,
+      outputTokens: u.outputTokens ?? u.completionTokens ?? 0,
+    },
+  };
 }
 
 export async function* chatStream({
