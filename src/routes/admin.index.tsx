@@ -574,7 +574,15 @@ function AdminDashboard() {
                 {filtered.map((u) => (
                   <tr key={u.user_id} className="border-t hover:bg-muted/30">
                     <td className="px-4 py-3">
-                      <div className="font-medium">{u.display_name ?? "—"}</div>
+                      <div className="font-medium flex items-center gap-1.5">
+                        {u.display_name ?? "—"}
+                        {u.banned_until &&
+                          new Date(u.banned_until).getTime() > Date.now() && (
+                            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-rose-500/15 text-rose-700 dark:text-rose-400 font-semibold">
+                              BANNED
+                            </span>
+                          )}
+                      </div>
                       <div className="text-xs text-muted-foreground">{u.email}</div>
                       {u.phone && (
                         <div className="text-xs text-muted-foreground font-mono">{u.phone}</div>
