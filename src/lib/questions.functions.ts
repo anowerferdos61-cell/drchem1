@@ -222,11 +222,11 @@ export const publishQuestionSet = createServerFn({ method: "POST" })
     // Verify class ownership
     const { data: cls } = await context.supabase
       .from("classes")
-      .select("id")
+      .select("id, name")
       .eq("id", data.class_id)
       .eq("teacher_id", context.userId)
       .maybeSingle();
-    if (!cls) return { error: "Class not found or not yours" };
+    if (!cls) return { error: "Class not found or not yours", student_count: 0, class_name: "" };
     const { error } = await context.supabase
       .from("question_sets")
       .update({
@@ -237,8 +237,13 @@ export const publishQuestionSet = createServerFn({ method: "POST" })
       })
       .eq("id", data.set_id)
       .eq("teacher_id", context.userId);
-    return { error: error?.message ?? null };
+    const { count } = await context.supabase
+      .from("class_members")
+      .select("*", { count: "exact", head: true })
+      .eq("class_id", data.class_id);
+    return { error: error?.message ?? null, student_count: count ?? 0, class_name: cls.name };
   });
+
 
 export const deleteQuestionSet = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
