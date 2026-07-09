@@ -273,6 +273,18 @@ export default function Dashboard({ onPickExperiment }: DashboardProps) {
       setPaywallOpen(true);
       return;
     }
+    // Track last-opened lab for the "Continue where you left off" hero card
+    try {
+      const meta = ALL_LABS.find((l) => l.id === id);
+      if (meta && typeof window !== "undefined") {
+        localStorage.setItem(
+          "drchem:last_lab",
+          JSON.stringify({ id, title: meta.titleBn || meta.title })
+        );
+      }
+    } catch {
+      /* ignore storage errors */
+    }
     onPickExperiment(id);
   }, [onPickExperiment, canAccessLab, entLoading]);
 
