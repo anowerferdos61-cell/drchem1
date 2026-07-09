@@ -17,7 +17,9 @@ interface SetRow {
   question_type: string;
   due_at: string | null;
   published_at: string | null;
+  question_count: number;
 }
+
 interface AttemptRow {
   id: string;
   set_id: string;
