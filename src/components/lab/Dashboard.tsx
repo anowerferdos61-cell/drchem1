@@ -47,6 +47,7 @@ import {
 import { useEntitlements } from "@/hooks/useEntitlements";
 import { PaywallModal } from "@/components/subscription/PaywallModal";
 import { PendingPaymentBanner } from "@/components/subscription/PendingPaymentBanner";
+import { PersonalHero } from "./PersonalHero";
 
 interface DashboardProps {
   onEnterExperiments: () => void;
