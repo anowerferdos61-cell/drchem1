@@ -43,6 +43,7 @@ import {
   Wind,
   Battery,
   Gem,
+  ClipboardList,
 } from "lucide-react";
 import { useEntitlements } from "@/hooks/useEntitlements";
 import { PaywallModal } from "@/components/subscription/PaywallModal";
@@ -355,6 +356,7 @@ export default function Dashboard({ onPickExperiment }: DashboardProps) {
             onPractical={() => setView("practical")}
             onVideos={() => navigate({ to: "/app/videos" })}
             onNotes={() => navigate({ to: "/app/notes" })}
+            onTests={() => navigate({ to: "/app/tests" })}
             onComingSoon={handleComingSoon}
             practicalCount={PRACTICAL_LABS.length}
           />
@@ -522,6 +524,7 @@ function HomeGrid({
   onPractical,
   onVideos,
   onNotes,
+  onTests,
   onComingSoon: _onComingSoon,
   practicalCount,
 }: {
@@ -529,6 +532,7 @@ function HomeGrid({
   onPractical: () => void;
   onVideos: () => void;
   onNotes: () => void;
+  onTests: () => void;
   onComingSoon: (what: string) => void;
   practicalCount: number;
 }) {
@@ -579,6 +583,18 @@ function HomeGrid({
       shadow: "shadow-amber-500/20",
       meta: "নতুন",
       onClick: onNotes,
+      available: true,
+    },
+    {
+      key: "tests",
+      title: "My Tests",
+      titleBn: "আমার পরীক্ষা",
+      desc: "শিক্ষকের অ্যাসাইন করা MCQ / সৃজনশীল পরীক্ষায় অংশ নাও।",
+      icon: ClipboardList,
+      accent: "from-violet-500 to-fuchsia-600",
+      shadow: "shadow-violet-500/20",
+      meta: "নতুন",
+      onClick: onTests,
       available: true,
     },
   ];
