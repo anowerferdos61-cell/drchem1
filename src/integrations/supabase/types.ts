@@ -475,6 +475,14 @@ export type Database = {
         Returns: boolean
       }
       increment_ai_usage: { Args: { _usage_date: string }; Returns: number }
+      is_class_member: {
+        Args: { _class_id: string; _user_id: string }
+        Returns: boolean
+      }
+      is_class_teacher: {
+        Args: { _class_id: string; _user_id: string }
+        Returns: boolean
+      }
       join_class: { Args: { _code: string }; Returns: string }
       match_kb_documents: {
         Args: {
