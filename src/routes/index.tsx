@@ -569,7 +569,7 @@ function Footer() {
               <span className="font-medium">01581-553923</span>
             </a>
             <a
-              href="https://www.facebook.com/share/p/1EakXVp6i2/"
+              href="https://www.facebook.com/profile.php?id=61590260023432"
               target="_blank"
               rel="noopener noreferrer"
               className="group flex items-center gap-3 text-base text-muted-foreground hover:text-primary transition-colors"
