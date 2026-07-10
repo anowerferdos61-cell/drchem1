@@ -10,7 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { getSetDetail, saveQuestionSet, publishQuestionSet } from "@/lib/questions.functions";
 import { useAuth } from "@/lib/auth-store";
 
-export const Route = createFileRoute("/teacher/questions/$setId")({
+export const Route = createFileRoute("/teacher/questions/$setId/")({
   component: EditSet,
 });
 
