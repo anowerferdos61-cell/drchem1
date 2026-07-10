@@ -236,9 +236,7 @@ function ClassDetail() {
           </Card>
         </TabsContent>
         <TabsContent value="assignments">
-          <Card className="p-8 text-center text-sm text-muted-foreground">
-            Assignments for <span className="font-semibold">{label}</span> · শীঘ্রই আসছে
-          </Card>
+          <AssignmentsTab classId={classId} label={label} />
         </TabsContent>
         <TabsContent value="viva">
           <Card className="p-8 text-center text-sm text-muted-foreground">
