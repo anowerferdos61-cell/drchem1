@@ -8,6 +8,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { ArrowLeft, Copy, RefreshCw, Trash2, UserMinus, Users, BarChart3, FileCheck2, ClipboardList, Mic2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { regenerateClassCode } from "@/lib/teacher.functions";
+import { getClassAssignmentsOverview } from "@/lib/grading.functions";
 
 export const Route = createFileRoute("/teacher/classes/$classId")({
   component: ClassDetail,
