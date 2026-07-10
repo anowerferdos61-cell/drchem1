@@ -184,43 +184,45 @@ function ClassDetail() {
                 No students have joined yet. Share the code <span className="font-mono font-bold">{info.class_code}</span>.
               </div>
             ) : (
-              <table className="w-full text-sm">
-                <thead className="bg-muted/40 text-left text-xs uppercase text-muted-foreground">
-                  <tr>
-                    <th className="px-4 py-2">Name</th>
-                    <th className="px-4 py-2">Email</th>
-                    <th className="px-4 py-2">School / Class</th>
-                    <th className="px-4 py-2">Joined</th>
-                    <th className="px-4 py-2"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {members.map((m) => {
-                    const name = m.display_name || m.email?.split("@")[0] || "Student";
-                    return (
-                      <tr key={m.id} className="border-t">
-                        <td className="px-4 py-2 font-medium">{name}</td>
-                        <td className="px-4 py-2 text-muted-foreground">{m.email ?? "—"}</td>
-                        <td className="px-4 py-2 text-muted-foreground">
-                          {[m.school, m.class].filter(Boolean).join(" · ") || "—"}
-                        </td>
-                        <td className="px-4 py-2 text-muted-foreground">
-                          {new Date(m.joined_at).toLocaleDateString()}
-                        </td>
-                        <td className="px-4 py-2 text-right">
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => removeMember(m.id, name)}
-                          >
-                            <UserMinus className="h-4 w-4 text-rose-500" />
-                          </Button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[640px] text-sm">
+                  <thead className="bg-muted/40 text-left text-xs uppercase text-muted-foreground">
+                    <tr>
+                      <th className="whitespace-nowrap px-4 py-2">Name</th>
+                      <th className="whitespace-nowrap px-4 py-2">Email</th>
+                      <th className="whitespace-nowrap px-4 py-2">School / Class</th>
+                      <th className="whitespace-nowrap px-4 py-2">Joined</th>
+                      <th className="whitespace-nowrap px-4 py-2"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {members.map((m) => {
+                      const name = m.display_name || m.email?.split("@")[0] || "Student";
+                      return (
+                        <tr key={m.id} className="border-t">
+                          <td className="whitespace-nowrap px-4 py-2 font-medium">{name}</td>
+                          <td className="whitespace-nowrap px-4 py-2 text-muted-foreground">{m.email ?? "—"}</td>
+                          <td className="whitespace-nowrap px-4 py-2 text-muted-foreground">
+                            {[m.school, m.class].filter(Boolean).join(" · ") || "—"}
+                          </td>
+                          <td className="whitespace-nowrap px-4 py-2 text-muted-foreground">
+                            {new Date(m.joined_at).toLocaleDateString()}
+                          </td>
+                          <td className="whitespace-nowrap px-4 py-2 text-right">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => removeMember(m.id, name)}
+                            >
+                              <UserMinus className="h-4 w-4 text-rose-500" />
+                            </Button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             )}
           </Card>
         </TabsContent>
@@ -329,8 +331,8 @@ function AssignmentsTab({ classId, label }: { classId: string; label: string }) 
               </div>
             </button>
             {isOpen && (
-              <div className="border-t">
-                <table className="w-full text-sm">
+              <div className="overflow-x-auto border-t">
+                <table className="w-full min-w-[640px] text-sm">
                   <thead className="bg-muted/40 text-left text-xs uppercase text-muted-foreground">
                     <tr>
                       <th className="px-4 py-2">Student</th>
@@ -368,13 +370,15 @@ function AssignmentsTab({ classId, label }: { classId: string; label: string }) 
                     ))}
                   </tbody>
                 </table>
-                <div className="border-t bg-muted/20 p-2 text-right">
-                  <Button asChild size="sm" variant="outline">
-                    <Link to="/teacher/questions/$setId/results" params={{ setId: s.id }}>
-                      Full Results →
-                    </Link>
-                  </Button>
-                </div>
+              </div>
+            )}
+            {isOpen && (
+              <div className="border-t bg-muted/20 p-2 text-right">
+                <Button asChild size="sm" variant="outline">
+                  <Link to="/teacher/questions/$setId/results" params={{ setId: s.id }}>
+                    Full Results →
+                  </Link>
+                </Button>
               </div>
             )}
           </Card>

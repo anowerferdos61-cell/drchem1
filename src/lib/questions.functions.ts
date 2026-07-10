@@ -184,7 +184,22 @@ export const getMyQuestionSets = createServerFn({ method: "GET" })
       .select("id, title, chapter, question_type, difficulty, status, class_id, published_at, created_at")
       .eq("teacher_id", context.userId)
       .order("created_at", { ascending: false });
-    return { error: error?.message ?? null, sets: data ?? [] };
+    const classIds = Array.from(
+      new Set((data ?? []).map((s) => s.class_id).filter((v): v is string => !!v)),
+    );
+    const classMap = new Map<string, string>();
+    if (classIds.length > 0) {
+      const { data: cls } = await context.supabase
+        .from("classes")
+        .select("id, name")
+        .in("id", classIds);
+      for (const c of cls ?? []) classMap.set(c.id, c.name);
+    }
+    const sets = (data ?? []).map((s) => ({
+      ...s,
+      class_name: s.class_id ? classMap.get(s.class_id) ?? null : null,
+    }));
+    return { error: error?.message ?? null, sets };
   });
 
 export const getSetDetail = createServerFn({ method: "POST" })
