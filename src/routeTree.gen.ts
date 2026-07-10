@@ -37,6 +37,7 @@ import { Route as TeacherQuestionsSetIdRouteImport } from './routes/teacher.ques
 import { Route as TeacherClassesClassIdRouteImport } from './routes/teacher.classes.$classId'
 import { Route as AppTestsSetIdRouteImport } from './routes/app.tests.$setId'
 import { Route as ApiTutorStreamRouteImport } from './routes/api/tutor/stream'
+import { Route as TeacherQuestionsSetIdIndexRouteImport } from './routes/teacher.questions.$setId.index'
 import { Route as TeacherQuestionsSetIdResultsRouteImport } from './routes/teacher.questions.$setId.results'
 import { Route as TeacherQuestionsSetIdAttemptsAttemptIdRouteImport } from './routes/teacher.questions.$setId.attempts.$attemptId'
 
@@ -180,6 +181,12 @@ const ApiTutorStreamRoute = ApiTutorStreamRouteImport.update({
   path: '/api/tutor/stream',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TeacherQuestionsSetIdIndexRoute =
+  TeacherQuestionsSetIdIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => TeacherQuestionsSetIdRoute,
+  } as any)
 const TeacherQuestionsSetIdResultsRoute =
   TeacherQuestionsSetIdResultsRouteImport.update({
     id: '/results',
@@ -223,6 +230,7 @@ export interface FileRoutesByFullPath {
   '/teacher/classes/': typeof TeacherClassesIndexRoute
   '/teacher/questions/': typeof TeacherQuestionsIndexRoute
   '/teacher/questions/$setId/results': typeof TeacherQuestionsSetIdResultsRoute
+  '/teacher/questions/$setId/': typeof TeacherQuestionsSetIdIndexRoute
   '/teacher/questions/$setId/attempts/$attemptId': typeof TeacherQuestionsSetIdAttemptsAttemptIdRoute
 }
 export interface FileRoutesByTo {
@@ -244,12 +252,12 @@ export interface FileRoutesByTo {
   '/api/tutor/stream': typeof ApiTutorStreamRoute
   '/app/tests/$setId': typeof AppTestsSetIdRoute
   '/teacher/classes/$classId': typeof TeacherClassesClassIdRoute
-  '/teacher/questions/$setId': typeof TeacherQuestionsSetIdRouteWithChildren
   '/teacher/questions/new': typeof TeacherQuestionsNewRoute
   '/app/tests': typeof AppTestsIndexRoute
   '/teacher/classes': typeof TeacherClassesIndexRoute
   '/teacher/questions': typeof TeacherQuestionsIndexRoute
   '/teacher/questions/$setId/results': typeof TeacherQuestionsSetIdResultsRoute
+  '/teacher/questions/$setId': typeof TeacherQuestionsSetIdIndexRoute
   '/teacher/questions/$setId/attempts/$attemptId': typeof TeacherQuestionsSetIdAttemptsAttemptIdRoute
 }
 export interface FileRoutesById {
@@ -283,6 +291,7 @@ export interface FileRoutesById {
   '/teacher/classes/': typeof TeacherClassesIndexRoute
   '/teacher/questions/': typeof TeacherQuestionsIndexRoute
   '/teacher/questions/$setId/results': typeof TeacherQuestionsSetIdResultsRoute
+  '/teacher/questions/$setId/': typeof TeacherQuestionsSetIdIndexRoute
   '/teacher/questions/$setId/attempts/$attemptId': typeof TeacherQuestionsSetIdAttemptsAttemptIdRoute
 }
 export interface FileRouteTypes {
@@ -317,6 +326,7 @@ export interface FileRouteTypes {
     | '/teacher/classes/'
     | '/teacher/questions/'
     | '/teacher/questions/$setId/results'
+    | '/teacher/questions/$setId/'
     | '/teacher/questions/$setId/attempts/$attemptId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -338,12 +348,12 @@ export interface FileRouteTypes {
     | '/api/tutor/stream'
     | '/app/tests/$setId'
     | '/teacher/classes/$classId'
-    | '/teacher/questions/$setId'
     | '/teacher/questions/new'
     | '/app/tests'
     | '/teacher/classes'
     | '/teacher/questions'
     | '/teacher/questions/$setId/results'
+    | '/teacher/questions/$setId'
     | '/teacher/questions/$setId/attempts/$attemptId'
   id:
     | '__root__'
@@ -376,6 +386,7 @@ export interface FileRouteTypes {
     | '/teacher/classes/'
     | '/teacher/questions/'
     | '/teacher/questions/$setId/results'
+    | '/teacher/questions/$setId/'
     | '/teacher/questions/$setId/attempts/$attemptId'
   fileRoutesById: FileRoutesById
 }
@@ -594,6 +605,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiTutorStreamRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/teacher/questions/$setId/': {
+      id: '/teacher/questions/$setId/'
+      path: '/'
+      fullPath: '/teacher/questions/$setId/'
+      preLoaderRoute: typeof TeacherQuestionsSetIdIndexRouteImport
+      parentRoute: typeof TeacherQuestionsSetIdRoute
+    }
     '/teacher/questions/$setId/results': {
       id: '/teacher/questions/$setId/results'
       path: '/results'
@@ -657,11 +675,13 @@ const TeacherClassesRouteWithChildren = TeacherClassesRoute._addFileChildren(
 
 interface TeacherQuestionsSetIdRouteChildren {
   TeacherQuestionsSetIdResultsRoute: typeof TeacherQuestionsSetIdResultsRoute
+  TeacherQuestionsSetIdIndexRoute: typeof TeacherQuestionsSetIdIndexRoute
   TeacherQuestionsSetIdAttemptsAttemptIdRoute: typeof TeacherQuestionsSetIdAttemptsAttemptIdRoute
 }
 
 const TeacherQuestionsSetIdRouteChildren: TeacherQuestionsSetIdRouteChildren = {
   TeacherQuestionsSetIdResultsRoute: TeacherQuestionsSetIdResultsRoute,
+  TeacherQuestionsSetIdIndexRoute: TeacherQuestionsSetIdIndexRoute,
   TeacherQuestionsSetIdAttemptsAttemptIdRoute:
     TeacherQuestionsSetIdAttemptsAttemptIdRoute,
 }
