@@ -247,3 +247,139 @@ function ClassDetail() {
     </div>
   );
 }
+
+interface OverviewSet {
+  id: string;
+  title: string;
+  chapter: string;
+  question_type: string;
+  difficulty: string;
+  published_at: string | null;
+  due_at: string | null;
+  question_count: number;
+}
+interface OverviewMember { student_id: string; name: string; email: string | null }
+interface OverviewAttempt {
+  id: string;
+  set_id: string;
+  student_id: string;
+  submitted_at: string | null;
+  mcq_score: number;
+  mcq_total: number;
+  cq_score: number | null;
+}
+
+function AssignmentsTab({ classId, label }: { classId: string; label: string }) {
+  const load = useServerFn(getClassAssignmentsOverview);
+  const [sets, setSets] = useState<OverviewSet[]>([]);
+  const [members, setMembers] = useState<OverviewMember[]>([]);
+  const [attempts, setAttempts] = useState<OverviewAttempt[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [openSet, setOpenSet] = useState<string | null>(null);
+
+  useEffect(() => {
+    void (async () => {
+      const r = await load({ data: { class_id: classId } });
+      setSets(r.sets as OverviewSet[]);
+      setMembers(r.members as OverviewMember[]);
+      setAttempts(r.attempts as OverviewAttempt[]);
+      setLoading(false);
+    })();
+  }, [classId]);
+
+  if (loading) return <Card className="p-6 text-sm text-muted-foreground">Loading…</Card>;
+  if (sets.length === 0) {
+    return (
+      <Card className="p-8 text-center text-sm text-muted-foreground space-y-2">
+        <p>এই ক্লাসে এখনও কোনো পরীক্ষা publish করা হয়নি।</p>
+        <Button asChild size="sm"><Link to="/teacher/questions/new">+ Create Test</Link></Button>
+      </Card>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      <p className="text-xs text-muted-foreground">{label} · {sets.length} test{sets.length === 1 ? "" : "s"} · {members.length} student{members.length === 1 ? "" : "s"}</p>
+      {sets.map((s) => {
+        const setAttempts = attempts.filter((a) => a.set_id === s.id);
+        const submittedCount = setAttempts.filter((a) => a.submitted_at).length;
+        const isOpen = openSet === s.id;
+        const rows = members.map((m) => ({
+          member: m,
+          attempt: setAttempts.find((a) => a.student_id === m.student_id) ?? null,
+        }));
+        const avgMcq = submittedCount
+          ? (setAttempts.reduce((s, a) => s + (a.mcq_score ?? 0), 0) / submittedCount).toFixed(1)
+          : "—";
+        return (
+          <Card key={s.id} className="overflow-hidden">
+            <button
+              className="w-full flex items-center justify-between gap-3 p-4 text-left hover:bg-muted/40"
+              onClick={() => setOpenSet(isOpen ? null : s.id)}
+            >
+              <div className="min-w-0">
+                <h3 className="font-semibold truncate">{s.title}</h3>
+                <p className="text-xs text-muted-foreground">
+                  {s.chapter} · {s.question_type.toUpperCase()} · {s.difficulty} · {s.question_count} প্রশ্ন
+                </p>
+              </div>
+              <div className="text-right shrink-0">
+                <p className="text-sm font-medium">{submittedCount} / {members.length} submitted</p>
+                <p className="text-xs text-muted-foreground">Avg MCQ · {avgMcq}</p>
+              </div>
+            </button>
+            {isOpen && (
+              <div className="border-t">
+                <table className="w-full text-sm">
+                  <thead className="bg-muted/40 text-left text-xs uppercase text-muted-foreground">
+                    <tr>
+                      <th className="px-4 py-2">Student</th>
+                      <th className="px-4 py-2">MCQ</th>
+                      <th className="px-4 py-2">CQ</th>
+                      <th className="px-4 py-2">Submitted</th>
+                      <th className="px-4 py-2 text-right"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rows.map(({ member, attempt }) => (
+                      <tr key={member.student_id} className="border-t">
+                        <td className="px-4 py-2 font-medium">{member.name}</td>
+                        <td className="px-4 py-2">
+                          {attempt?.submitted_at ? `${attempt.mcq_score} / ${attempt.mcq_total}` : <span className="text-muted-foreground">—</span>}
+                        </td>
+                        <td className="px-4 py-2">
+                          {attempt?.submitted_at
+                            ? (attempt.cq_score == null ? <span className="text-amber-600">Pending</span> : attempt.cq_score)
+                            : <span className="text-muted-foreground">—</span>}
+                        </td>
+                        <td className="px-4 py-2 text-muted-foreground">
+                          {attempt?.submitted_at ? new Date(attempt.submitted_at).toLocaleString() : <span className="text-rose-500">Not attempted</span>}
+                        </td>
+                        <td className="px-4 py-2 text-right">
+                          {attempt?.submitted_at ? (
+                            <Button asChild size="sm" variant="ghost">
+                              <Link to="/teacher/questions/$setId/attempts/$attemptId" params={{ setId: s.id, attemptId: attempt.id }}>
+                                খাতা দেখো →
+                              </Link>
+                            </Button>
+                          ) : null}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <div className="border-t bg-muted/20 p-2 text-right">
+                  <Button asChild size="sm" variant="outline">
+                    <Link to="/teacher/questions/$setId/results" params={{ setId: s.id }}>
+                      Full Results →
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            )}
+          </Card>
+        );
+      })}
+    </div>
+  );
+}
