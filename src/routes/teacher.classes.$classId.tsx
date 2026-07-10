@@ -32,11 +32,20 @@ interface MemberRow {
   class: string | null;
 }
 
+interface StudentAgg {
+  submissions: number;
+  lastSubmitted: string | null;
+  totalMarks: number;
+  totalPossible: number;
+  pending: number;
+}
+
 function ClassDetail() {
   const { classId } = Route.useParams();
   const navigate = useNavigate();
   const [info, setInfo] = useState<ClassInfo | null>(null);
   const [members, setMembers] = useState<MemberRow[]>([]);
+  const [aggByStudent, setAggByStudent] = useState<Map<string, StudentAgg>>(new Map());
   const [loading, setLoading] = useState(true);
   const regen = useServerFn(regenerateClassCode);
 
@@ -86,12 +95,42 @@ function ClassDetail() {
         }),
       })),
     );
+
+    // Aggregate per-student submissions & marks across this class's published sets.
+    const { data: setsRows } = await supabase
+      .from("question_sets")
+      .select("id")
+      .eq("class_id", classId)
+      .eq("status", "published");
+    const setIds = (setsRows ?? []).map((s) => s.id);
+    const agg = new Map<string, StudentAgg>();
+    if (setIds.length && ids.length) {
+      const { data: attempts } = await supabase
+        .from("test_attempts")
+        .select("student_id, submitted_at, mcq_score, mcq_total, cq_score")
+        .in("set_id", setIds)
+        .in("student_id", ids)
+        .not("submitted_at", "is", null);
+      for (const a of attempts ?? []) {
+        const cur = agg.get(a.student_id) ?? { submissions: 0, lastSubmitted: null, totalMarks: 0, totalPossible: 0, pending: 0 };
+        cur.submissions += 1;
+        cur.totalMarks += Number(a.mcq_score ?? 0) + Number(a.cq_score ?? 0);
+        cur.totalPossible += Number(a.mcq_total ?? 0);
+        if (a.cq_score == null) cur.pending += 1;
+        if (a.submitted_at && (!cur.lastSubmitted || a.submitted_at > cur.lastSubmitted)) {
+          cur.lastSubmitted = a.submitted_at;
+        }
+        agg.set(a.student_id, cur);
+      }
+    }
+    setAggByStudent(agg);
     setLoading(false);
   }, [classId]);
 
   useEffect(() => {
     void load();
   }, [load]);
+
 
   const copyCode = () => {
     if (!info) return;
@@ -191,6 +230,9 @@ function ClassDetail() {
                       <th className="whitespace-nowrap px-4 py-2">Name</th>
                       <th className="whitespace-nowrap px-4 py-2">Email</th>
                       <th className="whitespace-nowrap px-4 py-2">School / Class</th>
+                      <th className="whitespace-nowrap px-4 py-2">Submissions</th>
+                      <th className="whitespace-nowrap px-4 py-2">Last Submitted</th>
+                      <th className="whitespace-nowrap px-4 py-2">Marks</th>
                       <th className="whitespace-nowrap px-4 py-2">Joined</th>
                       <th className="whitespace-nowrap px-4 py-2"></th>
                     </tr>
@@ -198,12 +240,33 @@ function ClassDetail() {
                   <tbody>
                     {members.map((m) => {
                       const name = m.display_name || m.email?.split("@")[0] || "Student";
+                      const a = aggByStudent.get(m.student_id);
                       return (
                         <tr key={m.id} className="border-t">
                           <td className="whitespace-nowrap px-4 py-2 font-medium">{name}</td>
                           <td className="whitespace-nowrap px-4 py-2 text-muted-foreground">{m.email ?? "—"}</td>
                           <td className="whitespace-nowrap px-4 py-2 text-muted-foreground">
                             {[m.school, m.class].filter(Boolean).join(" · ") || "—"}
+                          </td>
+                          <td className="whitespace-nowrap px-4 py-2">
+                            {a && a.submissions > 0 ? (
+                              <span>
+                                {a.submissions}
+                                {a.pending > 0 && (
+                                  <span className="ml-1 text-xs text-amber-600">({a.pending} pending)</span>
+                                )}
+                              </span>
+                            ) : (
+                              <span className="text-muted-foreground">—</span>
+                            )}
+                          </td>
+                          <td className="whitespace-nowrap px-4 py-2 text-muted-foreground">
+                            {a?.lastSubmitted ? new Date(a.lastSubmitted).toLocaleString() : "—"}
+                          </td>
+                          <td className="whitespace-nowrap px-4 py-2 font-medium">
+                            {a && a.submissions > 0
+                              ? `${a.totalMarks}${a.totalPossible ? ` / ${a.totalPossible}${a.pending > 0 ? "+" : ""}` : ""}`
+                              : <span className="font-normal text-muted-foreground">—</span>}
                           </td>
                           <td className="whitespace-nowrap px-4 py-2 text-muted-foreground">
                             {new Date(m.joined_at).toLocaleDateString()}
@@ -220,6 +283,7 @@ function ClassDetail() {
                         </tr>
                       );
                     })}
+
                   </tbody>
                 </table>
               </div>
