@@ -331,8 +331,8 @@ function AssignmentsTab({ classId, label }: { classId: string; label: string }) 
               </div>
             </button>
             {isOpen && (
-              <div className="border-t">
-                <table className="w-full text-sm">
+              <div className="overflow-x-auto border-t">
+                <table className="w-full min-w-[640px] text-sm">
                   <thead className="bg-muted/40 text-left text-xs uppercase text-muted-foreground">
                     <tr>
                       <th className="px-4 py-2">Student</th>
