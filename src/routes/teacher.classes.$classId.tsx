@@ -230,6 +230,9 @@ function ClassDetail() {
                       <th className="whitespace-nowrap px-4 py-2">Name</th>
                       <th className="whitespace-nowrap px-4 py-2">Email</th>
                       <th className="whitespace-nowrap px-4 py-2">School / Class</th>
+                      <th className="whitespace-nowrap px-4 py-2">Submissions</th>
+                      <th className="whitespace-nowrap px-4 py-2">Last Submitted</th>
+                      <th className="whitespace-nowrap px-4 py-2">Marks</th>
                       <th className="whitespace-nowrap px-4 py-2">Joined</th>
                       <th className="whitespace-nowrap px-4 py-2"></th>
                     </tr>
@@ -237,12 +240,33 @@ function ClassDetail() {
                   <tbody>
                     {members.map((m) => {
                       const name = m.display_name || m.email?.split("@")[0] || "Student";
+                      const a = aggByStudent.get(m.student_id);
                       return (
                         <tr key={m.id} className="border-t">
                           <td className="whitespace-nowrap px-4 py-2 font-medium">{name}</td>
                           <td className="whitespace-nowrap px-4 py-2 text-muted-foreground">{m.email ?? "—"}</td>
                           <td className="whitespace-nowrap px-4 py-2 text-muted-foreground">
                             {[m.school, m.class].filter(Boolean).join(" · ") || "—"}
+                          </td>
+                          <td className="whitespace-nowrap px-4 py-2">
+                            {a && a.submissions > 0 ? (
+                              <span>
+                                {a.submissions}
+                                {a.pending > 0 && (
+                                  <span className="ml-1 text-xs text-amber-600">({a.pending} pending)</span>
+                                )}
+                              </span>
+                            ) : (
+                              <span className="text-muted-foreground">—</span>
+                            )}
+                          </td>
+                          <td className="whitespace-nowrap px-4 py-2 text-muted-foreground">
+                            {a?.lastSubmitted ? new Date(a.lastSubmitted).toLocaleString() : "—"}
+                          </td>
+                          <td className="whitespace-nowrap px-4 py-2 font-medium">
+                            {a && a.submissions > 0
+                              ? `${a.totalMarks}${a.totalPossible ? ` / ${a.totalPossible}${a.pending > 0 ? "+" : ""}` : ""}`
+                              : <span className="font-normal text-muted-foreground">—</span>}
                           </td>
                           <td className="whitespace-nowrap px-4 py-2 text-muted-foreground">
                             {new Date(m.joined_at).toLocaleDateString()}
@@ -259,6 +283,7 @@ function ClassDetail() {
                         </tr>
                       );
                     })}
+
                   </tbody>
                 </table>
               </div>
