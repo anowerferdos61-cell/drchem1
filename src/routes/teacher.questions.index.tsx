@@ -4,7 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Plus, Sparkles, FileText, BarChart3, Trash2 } from "lucide-react";
+import { Plus, Sparkles, FileText, BarChart3, Trash2, Send, FileEdit } from "lucide-react";
 import { getMyQuestionSets, deleteQuestionSet } from "@/lib/questions.functions";
 
 export const Route = createFileRoute("/teacher/questions/")({
@@ -19,6 +19,7 @@ type SetRow = {
   difficulty: string;
   status: string;
   class_id: string | null;
+  class_name: string | null;
   published_at: string | null;
   created_at: string;
 };
