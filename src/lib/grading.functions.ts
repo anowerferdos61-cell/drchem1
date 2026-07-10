@@ -135,3 +135,59 @@ export const aiSuggestCqScore = createServerFn({ method: "POST" })
     const result = await scoreCqAnswer(key, data.sample, data.student, data.max_marks);
     return { error: null as string | null, result };
   });
+
+/** Class-level overview: all published sets + each student's attempt/score. */
+export const getClassAssignmentsOverview = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((i) => z.object({ class_id: z.string().uuid() }).parse(i))
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const { data: cls } = await supabase
+      .from("classes")
+      .select("id, name, teacher_id")
+      .eq("id", data.class_id)
+      .maybeSingle();
+    if (!cls || cls.teacher_id !== userId) {
+      return { error: "Forbidden", sets: [], members: [], attempts: [] };
+    }
+
+    const { data: sets } = await supabase
+      .from("question_sets")
+      .select("id, title, chapter, question_type, difficulty, published_at, due_at")
+      .eq("class_id", data.class_id)
+      .eq("status", "published")
+      .order("published_at", { ascending: false });
+
+    const setIds = (sets ?? []).map((s) => s.id);
+    const { data: qCounts } = setIds.length
+      ? await supabase.from("questions").select("set_id").in("set_id", setIds)
+      : { data: [] as { set_id: string }[] };
+    const countBySet = new Map<string, number>();
+    for (const r of qCounts ?? []) countBySet.set(r.set_id, (countBySet.get(r.set_id) ?? 0) + 1);
+    const setsWithCount = (sets ?? []).map((s) => ({ ...s, question_count: countBySet.get(s.id) ?? 0 }));
+
+    const { data: mm } = await supabase
+      .from("class_members")
+      .select("student_id, joined_at")
+      .eq("class_id", data.class_id);
+    const memberIds = (mm ?? []).map((m) => m.student_id);
+    const profiles = memberIds.length
+      ? (await supabase.from("profiles").select("user_id, display_name, email").in("user_id", memberIds)).data ?? []
+      : [];
+    const pMap = new Map(profiles.map((p) => [p.user_id, p]));
+    const members = (mm ?? []).map((m) => ({
+      student_id: m.student_id,
+      name: pMap.get(m.student_id)?.display_name ?? pMap.get(m.student_id)?.email?.split("@")[0] ?? "Student",
+      email: pMap.get(m.student_id)?.email ?? null,
+    }));
+
+    const { data: attempts } = setIds.length && memberIds.length
+      ? await supabase
+          .from("test_attempts")
+          .select("id, set_id, student_id, submitted_at, mcq_score, mcq_total, cq_score")
+          .in("set_id", setIds)
+          .in("student_id", memberIds)
+      : { data: [] };
+
+    return { error: null as string | null, sets: setsWithCount, members, attempts: attempts ?? [] };
+  });
