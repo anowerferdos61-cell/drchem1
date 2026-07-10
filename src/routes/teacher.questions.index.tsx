@@ -81,16 +81,33 @@ function QuestionsList() {
                   <p className="text-xs text-muted-foreground">
                     {r.chapter} · {r.question_type.toUpperCase()} · {r.difficulty}
                   </p>
-                  <p className="mt-1 text-xs">
+                  <p className="mt-1 flex flex-wrap items-center gap-2 text-xs">
                     <span
-                      className={`inline-block rounded px-2 py-0.5 ${
+                      className={`inline-flex items-center gap-1 rounded px-2 py-0.5 ${
                         r.status === "published"
                           ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300"
                           : "bg-muted text-muted-foreground"
                       }`}
                     >
+                      {r.status === "published" ? <Send className="h-3 w-3" /> : <FileEdit className="h-3 w-3" />}
                       {r.status}
                     </span>
+                    {r.status === "published" ? (
+                      r.class_name ? (
+                        <span className="text-muted-foreground">
+                          → <span className="font-medium text-foreground">{r.class_name}</span>
+                          {r.published_at && (
+                            <> · {new Date(r.published_at).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })}</>
+                          )}
+                        </span>
+                      ) : (
+                        <span className="text-muted-foreground">→ class removed</span>
+                      )
+                    ) : (
+                      <span className="text-muted-foreground">
+                        Created {new Date(r.created_at).toLocaleDateString()}
+                      </span>
+                    )}
                   </p>
                 </div>
                 <Button size="icon" variant="ghost" onClick={() => remove(r.id)}>
