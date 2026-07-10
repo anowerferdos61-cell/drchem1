@@ -370,13 +370,15 @@ function AssignmentsTab({ classId, label }: { classId: string; label: string }) 
                     ))}
                   </tbody>
                 </table>
-                <div className="border-t bg-muted/20 p-2 text-right">
-                  <Button asChild size="sm" variant="outline">
-                    <Link to="/teacher/questions/$setId/results" params={{ setId: s.id }}>
-                      Full Results →
-                    </Link>
-                  </Button>
-                </div>
+              </div>
+            )}
+            {isOpen && (
+              <div className="border-t bg-muted/20 p-2 text-right">
+                <Button asChild size="sm" variant="outline">
+                  <Link to="/teacher/questions/$setId/results" params={{ setId: s.id }}>
+                    Full Results →
+                  </Link>
+                </Button>
               </div>
             )}
           </Card>
