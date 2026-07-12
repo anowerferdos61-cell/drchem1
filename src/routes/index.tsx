@@ -577,7 +577,7 @@ function Footer() {
               <span className="h-10 w-10 rounded-lg bg-blue-500/10 text-blue-600 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-all group-hover:scale-110">
                 📘
               </span>
-              <span className="font-medium">Facebook Page</span>
+              <span className="font-medium">Facebook</span>
             </a>
           </div>
 
