@@ -204,12 +204,14 @@ export const getClassProgress = createServerFn({ method: "POST" })
     const streaks = new Map(
       (streaksRes.data ?? []).map((s) => [s.user_id, s]),
     );
-    const attemptsBy = new Map<string, typeof (attemptsRes.data extends null ? never : NonNullable<typeof attemptsRes.data>)>();
-    for (const a of attemptsRes.data ?? []) {
+    type AttemptRow = { student_id: string; experiment_id: string; accuracy: number; grade: string; created_at: string; duration_sec: number };
+    const attemptsBy = new Map<string, AttemptRow[]>();
+    for (const a of (attemptsRes.data ?? []) as AttemptRow[]) {
       const arr = attemptsBy.get(a.student_id) ?? [];
       arr.push(a);
       attemptsBy.set(a.student_id, arr);
     }
+
     const testsBy = new Map<string, Array<{ mcq_score: number | null; mcq_total: number | null; cq_score: number | null }>>();
     for (const t of testsRes.data ?? []) {
       const arr = testsBy.get(t.student_id) ?? [];
