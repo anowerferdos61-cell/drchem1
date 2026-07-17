@@ -604,7 +604,20 @@ function HomeGrid({
       onClick: onTests,
       available: true,
     },
+    {
+      key: "progress",
+      title: "My Progress",
+      titleBn: "আমার অগ্রগতি",
+      desc: "স্ট্রিক, সম্পন্ন ল্যাব, সেরা গ্রেড ও সাম্প্রতিক পরীক্ষার ফলাফল এক জায়গায়।",
+      icon: TrendingUp,
+      accent: "from-indigo-500 to-blue-600",
+      shadow: "shadow-indigo-500/20",
+      meta: "লাইভ",
+      onClick: onProgress,
+      available: true,
+    },
   ];
+
 
   return (
     <div className="grid grid-cols-2 gap-3 md:gap-4">
