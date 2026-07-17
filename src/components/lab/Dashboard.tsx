@@ -529,6 +529,7 @@ function HomeGrid({
   onVideos,
   onNotes,
   onTests,
+  onProgress,
   onComingSoon: _onComingSoon,
   practicalCount,
 }: {
@@ -537,9 +538,11 @@ function HomeGrid({
   onVideos: () => void;
   onNotes: () => void;
   onTests: () => void;
+  onProgress: () => void;
   onComingSoon: (what: string) => void;
   practicalCount: number;
 }) {
+
   const cards = [
     {
       key: "curriculum",
