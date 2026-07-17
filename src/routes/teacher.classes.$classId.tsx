@@ -9,6 +9,8 @@ import { ArrowLeft, Copy, RefreshCw, Trash2, UserMinus, Users, BarChart3, FileCh
 import { supabase } from "@/integrations/supabase/client";
 import { regenerateClassCode } from "@/lib/teacher.functions";
 import { getClassAssignmentsOverview } from "@/lib/grading.functions";
+import { getClassProgress } from "@/lib/progress.functions";
+
 
 export const Route = createFileRoute("/teacher/classes/$classId")({
   component: ClassDetail,
