@@ -292,10 +292,9 @@ function ClassDetail() {
         </TabsContent>
 
         <TabsContent value="analytics">
-          <Card className="p-8 text-center text-sm text-muted-foreground">
-            Lab Analytics for <span className="font-semibold">{label}</span> · শীঘ্রই আসছে
-          </Card>
+          <ClassProgressTab classId={classId} label={label} />
         </TabsContent>
+
         <TabsContent value="reports">
           <Card className="p-8 text-center text-sm text-muted-foreground">
             Lab Reports for <span className="font-semibold">{label}</span> · শীঘ্রই আসছে
