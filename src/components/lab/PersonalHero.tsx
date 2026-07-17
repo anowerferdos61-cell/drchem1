@@ -8,8 +8,12 @@
  */
 import { useEffect, useMemo, useState } from "react";
 import { Flame, PlayCircle, ArrowRight, Sparkles, Trophy, CalendarCheck } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { streakCheckin } from "@/lib/progress.functions";
+import { useAuth } from "@/lib/auth-store";
 import type { ExperimentId } from "./types";
 import welcomeHero from "@/assets/welcome-hero.png.asset.json";
+
 
 const LAST_LAB_KEY = "drchem:last_lab";
 const CHALLENGE_KEY = "drchem:challenge_v1"; // { days: number, lastDate: 'YYYY-MM-DD', startDate: 'YYYY-MM-DD' }
@@ -100,13 +104,30 @@ export function PersonalHero({
     }
   }, []);
 
+  const { isAuthenticated } = useAuth();
+  const doCheckin = useServerFn(streakCheckin);
+
   // Challenge + last lab load (once)
   useEffect(() => {
     const c = loadOrAdvanceChallenge();
     setChallenge(c);
     if (c.justChecked) {
-      // Trigger a subtle celebration when we've just marked today
       const t = window.setTimeout(() => setCheckPop(true), 300);
+      // Sync to server (non-blocking)
+      if (isAuthenticated) {
+        doCheckin({})
+          .then((row) => {
+            if (row && typeof row === "object" && "current_days" in row) {
+              const serverDays = Number((row as { current_days: number }).current_days);
+              if (Number.isFinite(serverDays) && serverDays > 0) {
+                setChallenge((prev) =>
+                  prev ? { ...prev, days: Math.min(CHALLENGE_TOTAL, serverDays) } : prev,
+                );
+              }
+            }
+          })
+          .catch(() => {});
+      }
       return () => window.clearTimeout(t);
     }
     try {
@@ -115,7 +136,8 @@ export function PersonalHero({
     } catch {
       /* ignore */
     }
-  }, []);
+  }, [isAuthenticated, doCheckin]);
+
 
   useEffect(() => {
     try {

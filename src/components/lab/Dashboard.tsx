@@ -44,7 +44,9 @@ import {
   Battery,
   Gem,
   ClipboardList,
+  TrendingUp,
 } from "lucide-react";
+
 import { useEntitlements } from "@/hooks/useEntitlements";
 import { PaywallModal } from "@/components/subscription/PaywallModal";
 import { PendingPaymentBanner } from "@/components/subscription/PendingPaymentBanner";
@@ -357,7 +359,9 @@ export default function Dashboard({ onPickExperiment }: DashboardProps) {
             onVideos={() => navigate({ to: "/app/videos" })}
             onNotes={() => navigate({ to: "/app/notes" })}
             onTests={() => navigate({ to: "/app/tests" })}
+            onProgress={() => navigate({ to: "/app/progress" })}
             onComingSoon={handleComingSoon}
+
             practicalCount={PRACTICAL_LABS.length}
           />
         )}
@@ -525,6 +529,7 @@ function HomeGrid({
   onVideos,
   onNotes,
   onTests,
+  onProgress,
   onComingSoon: _onComingSoon,
   practicalCount,
 }: {
@@ -533,9 +538,11 @@ function HomeGrid({
   onVideos: () => void;
   onNotes: () => void;
   onTests: () => void;
+  onProgress: () => void;
   onComingSoon: (what: string) => void;
   practicalCount: number;
 }) {
+
   const cards = [
     {
       key: "curriculum",
@@ -597,7 +604,20 @@ function HomeGrid({
       onClick: onTests,
       available: true,
     },
+    {
+      key: "progress",
+      title: "My Progress",
+      titleBn: "আমার অগ্রগতি",
+      desc: "স্ট্রিক, সম্পন্ন ল্যাব, সেরা গ্রেড ও সাম্প্রতিক পরীক্ষার ফলাফল এক জায়গায়।",
+      icon: TrendingUp,
+      accent: "from-indigo-500 to-blue-600",
+      shadow: "shadow-indigo-500/20",
+      meta: "লাইভ",
+      onClick: onProgress,
+      available: true,
+    },
   ];
+
 
   return (
     <div className="grid grid-cols-2 gap-3 md:gap-4">

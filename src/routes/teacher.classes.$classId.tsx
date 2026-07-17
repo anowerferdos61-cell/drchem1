@@ -9,6 +9,8 @@ import { ArrowLeft, Copy, RefreshCw, Trash2, UserMinus, Users, BarChart3, FileCh
 import { supabase } from "@/integrations/supabase/client";
 import { regenerateClassCode } from "@/lib/teacher.functions";
 import { getClassAssignmentsOverview } from "@/lib/grading.functions";
+import { getClassProgress } from "@/lib/progress.functions";
+
 
 export const Route = createFileRoute("/teacher/classes/$classId")({
   component: ClassDetail,
@@ -292,10 +294,9 @@ function ClassDetail() {
         </TabsContent>
 
         <TabsContent value="analytics">
-          <Card className="p-8 text-center text-sm text-muted-foreground">
-            Lab Analytics for <span className="font-semibold">{label}</span> · শীঘ্রই আসছে
-          </Card>
+          <ClassProgressTab classId={classId} label={label} />
         </TabsContent>
+
         <TabsContent value="reports">
           <Card className="p-8 text-center text-sm text-muted-foreground">
             Lab Reports for <span className="font-semibold">{label}</span> · শীঘ্রই আসছে
@@ -451,3 +452,81 @@ function AssignmentsTab({ classId, label }: { classId: string; label: string }) 
     </div>
   );
 }
+
+interface LeaderRow {
+  student_id: string;
+  display_name: string;
+  email: string | null;
+  uniqueLabs: number;
+  totalAttempts: number;
+  avgAccuracy: number;
+  testsDone: number;
+  currentStreak: number;
+  lastActive: string | null;
+}
+
+function ClassProgressTab({ classId, label }: { classId: string; label: string }) {
+  const load = useServerFn(getClassProgress);
+  const [rows, setRows] = useState<LeaderRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    setLoading(true);
+    load({ data: { class_id: classId } })
+      .then((r) => setRows((r?.leaderboard ?? []) as LeaderRow[]))
+      .catch((e) => toast.error(e?.message ?? "Failed to load progress"))
+      .finally(() => setLoading(false));
+  }, [classId, load]);
+
+  if (loading) {
+    return <Card className="p-8 text-center text-sm text-muted-foreground">Loading progress…</Card>;
+  }
+  if (rows.length === 0) {
+    return (
+      <Card className="p-8 text-center text-sm text-muted-foreground">
+        No lab activity yet in <span className="font-semibold">{label}</span>.
+      </Card>
+    );
+  }
+  return (
+    <Card className="overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[720px] text-sm">
+          <thead className="bg-muted/40 text-left text-xs uppercase text-muted-foreground">
+            <tr>
+              <th className="px-4 py-2">#</th>
+              <th className="px-4 py-2">Student</th>
+              <th className="px-4 py-2">Labs</th>
+              <th className="px-4 py-2">Attempts</th>
+              <th className="px-4 py-2">Avg Accuracy</th>
+              <th className="px-4 py-2">Tests</th>
+              <th className="px-4 py-2">Streak</th>
+              <th className="px-4 py-2">Last Active</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r, i) => (
+              <tr key={r.student_id} className="border-t">
+                <td className="px-4 py-2 text-muted-foreground">{i + 1}</td>
+                <td className="px-4 py-2 font-medium">
+                  {r.display_name}
+                  {r.email && (
+                    <div className="text-xs font-normal text-muted-foreground">{r.email}</div>
+                  )}
+                </td>
+                <td className="px-4 py-2">{r.uniqueLabs}</td>
+                <td className="px-4 py-2 text-muted-foreground">{r.totalAttempts}</td>
+                <td className="px-4 py-2 font-semibold">{r.avgAccuracy}%</td>
+                <td className="px-4 py-2">{r.testsDone}</td>
+                <td className="px-4 py-2">🔥 {r.currentStreak}</td>
+                <td className="px-4 py-2 text-muted-foreground">
+                  {r.lastActive ? new Date(r.lastActive).toLocaleDateString() : "—"}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Card>
+  );
+}
+

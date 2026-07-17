@@ -27,6 +27,7 @@ import { Route as TeacherQuestionsRouteImport } from './routes/teacher.questions
 import { Route as TeacherClassesRouteImport } from './routes/teacher.classes'
 import { Route as AppVideosRouteImport } from './routes/app.videos'
 import { Route as AppTestsRouteImport } from './routes/app.tests'
+import { Route as AppProgressRouteImport } from './routes/app.progress'
 import { Route as AppNotesRouteImport } from './routes/app.notes'
 import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
 import { Route as TeacherQuestionsIndexRouteImport } from './routes/teacher.questions.index'
@@ -131,6 +132,11 @@ const AppTestsRoute = AppTestsRouteImport.update({
   path: '/tests',
   getParentRoute: () => AppRoute,
 } as any)
+const AppProgressRoute = AppProgressRouteImport.update({
+  id: '/progress',
+  path: '/progress',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppNotesRoute = AppNotesRouteImport.update({
   id: '/notes',
   path: '/notes',
@@ -214,6 +220,7 @@ export interface FileRoutesByFullPath {
   '/tutor': typeof TutorRoute
   '/admin/payments': typeof AdminPaymentsRoute
   '/app/notes': typeof AppNotesRoute
+  '/app/progress': typeof AppProgressRoute
   '/app/tests': typeof AppTestsRouteWithChildren
   '/app/videos': typeof AppVideosRoute
   '/teacher/classes': typeof TeacherClassesRouteWithChildren
@@ -245,6 +252,7 @@ export interface FileRoutesByTo {
   '/tutor': typeof TutorRoute
   '/admin/payments': typeof AdminPaymentsRoute
   '/app/notes': typeof AppNotesRoute
+  '/app/progress': typeof AppProgressRoute
   '/app/videos': typeof AppVideosRoute
   '/admin': typeof AdminIndexRoute
   '/app': typeof AppIndexRoute
@@ -275,6 +283,7 @@ export interface FileRoutesById {
   '/tutor': typeof TutorRoute
   '/admin/payments': typeof AdminPaymentsRoute
   '/app/notes': typeof AppNotesRoute
+  '/app/progress': typeof AppProgressRoute
   '/app/tests': typeof AppTestsRouteWithChildren
   '/app/videos': typeof AppVideosRoute
   '/teacher/classes': typeof TeacherClassesRouteWithChildren
@@ -310,6 +319,7 @@ export interface FileRouteTypes {
     | '/tutor'
     | '/admin/payments'
     | '/app/notes'
+    | '/app/progress'
     | '/app/tests'
     | '/app/videos'
     | '/teacher/classes'
@@ -341,6 +351,7 @@ export interface FileRouteTypes {
     | '/tutor'
     | '/admin/payments'
     | '/app/notes'
+    | '/app/progress'
     | '/app/videos'
     | '/admin'
     | '/app'
@@ -370,6 +381,7 @@ export interface FileRouteTypes {
     | '/tutor'
     | '/admin/payments'
     | '/app/notes'
+    | '/app/progress'
     | '/app/tests'
     | '/app/videos'
     | '/teacher/classes'
@@ -535,6 +547,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppTestsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/progress': {
+      id: '/app/progress'
+      path: '/progress'
+      fullPath: '/app/progress'
+      preLoaderRoute: typeof AppProgressRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/notes': {
       id: '/app/notes'
       path: '/notes'
@@ -645,6 +664,7 @@ const AppTestsRouteWithChildren = AppTestsRoute._addFileChildren(
 
 interface AppRouteChildren {
   AppNotesRoute: typeof AppNotesRoute
+  AppProgressRoute: typeof AppProgressRoute
   AppTestsRoute: typeof AppTestsRouteWithChildren
   AppVideosRoute: typeof AppVideosRoute
   AppIndexRoute: typeof AppIndexRoute
@@ -652,6 +672,7 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppNotesRoute: AppNotesRoute,
+  AppProgressRoute: AppProgressRoute,
   AppTestsRoute: AppTestsRouteWithChildren,
   AppVideosRoute: AppVideosRoute,
   AppIndexRoute: AppIndexRoute,
@@ -740,13 +761,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

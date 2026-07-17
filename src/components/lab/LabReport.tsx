@@ -1,7 +1,11 @@
+import { useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Printer, RotateCcw } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
 import type { Report } from "./types";
+import { saveLabAttempt } from "@/lib/progress.functions";
+import { useAuth } from "@/lib/auth-store";
 
 interface Props {
   report: Report;
@@ -9,6 +13,29 @@ interface Props {
 }
 
 export default function LabReport({ report, onReset }: Props) {
+  const { isAuthenticated } = useAuth();
+  const save = useServerFn(saveLabAttempt);
+  const savedRef = useRef(false);
+  useEffect(() => {
+    if (savedRef.current || !isAuthenticated) return;
+    savedRef.current = true;
+    const stepsTotal = report.steps?.length ?? 0;
+    const stepsDone = (report.steps ?? []).filter((s) => s.done).length;
+    save({
+      data: {
+        experiment_id: String(report.experiment),
+        mode: "student",
+        accuracy: Math.round(Number(report.accuracy) || 0),
+        grade: String(report.grade ?? "F"),
+        duration_sec: Math.round(Number(report.durationSec) || 0),
+        mistakes_count: (report.mistakes ?? []).length,
+        steps_completed: stepsDone,
+        steps_total: stepsTotal,
+        report: report as unknown,
+      },
+    }).catch((err) => console.warn("saveLabAttempt failed", err));
+  }, [isAuthenticated, report, save]);
+
   const min = Math.floor(report.durationSec / 60);
   const sec = report.durationSec % 60;
   const isOxygen = report.experiment === "oxygen_prep";

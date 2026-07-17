@@ -208,6 +208,51 @@ export type Database = {
         }
         Relationships: []
       }
+      lab_attempts: {
+        Row: {
+          accuracy: number
+          created_at: string
+          duration_sec: number
+          experiment_id: string
+          grade: string
+          id: string
+          mistakes_count: number
+          mode: string
+          report: Json
+          steps_completed: number
+          steps_total: number
+          student_id: string
+        }
+        Insert: {
+          accuracy?: number
+          created_at?: string
+          duration_sec?: number
+          experiment_id: string
+          grade?: string
+          id?: string
+          mistakes_count?: number
+          mode?: string
+          report?: Json
+          steps_completed?: number
+          steps_total?: number
+          student_id: string
+        }
+        Update: {
+          accuracy?: number
+          created_at?: string
+          duration_sec?: number
+          experiment_id?: string
+          grade?: string
+          id?: string
+          mistakes_count?: number
+          mode?: string
+          report?: Json
+          steps_completed?: number
+          steps_total?: number
+          student_id?: string
+        }
+        Relationships: []
+      }
       notes: {
         Row: {
           chapter_number: number
@@ -456,6 +501,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      streaks: {
+        Row: {
+          current_days: number
+          last_check_date: string | null
+          longest_days: number
+          start_date: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          current_days?: number
+          last_check_date?: string | null
+          longest_days?: number
+          start_date?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          current_days?: number
+          last_check_date?: string | null
+          longest_days?: number
+          start_date?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       subscription_plans: {
         Row: {
@@ -720,6 +792,23 @@ export type Database = {
         }[]
       }
       regenerate_class_code: { Args: { _class_id: string }; Returns: string }
+      streak_checkin: {
+        Args: never
+        Returns: {
+          current_days: number
+          last_check_date: string | null
+          longest_days: number
+          start_date: string
+          updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "streaks"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
     }
     Enums: {
       app_role: "student" | "teacher" | "admin"
