@@ -359,7 +359,9 @@ export default function Dashboard({ onPickExperiment }: DashboardProps) {
             onVideos={() => navigate({ to: "/app/videos" })}
             onNotes={() => navigate({ to: "/app/notes" })}
             onTests={() => navigate({ to: "/app/tests" })}
+            onProgress={() => navigate({ to: "/app/progress" })}
             onComingSoon={handleComingSoon}
+
             practicalCount={PRACTICAL_LABS.length}
           />
         )}
