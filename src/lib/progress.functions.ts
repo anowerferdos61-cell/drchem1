@@ -36,7 +36,7 @@ export const saveLabAttempt = createServerFn({ method: "POST" })
         mistakes_count: data.mistakes_count,
         steps_completed: data.steps_completed,
         steps_total: data.steps_total,
-        report: (data.report ?? {}) as object,
+        report: JSON.parse(JSON.stringify(data.report ?? {})),
       })
       .select("id")
       .single();
