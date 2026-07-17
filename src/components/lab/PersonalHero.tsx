@@ -104,13 +104,30 @@ export function PersonalHero({
     }
   }, []);
 
+  const { isAuthenticated } = useAuth();
+  const doCheckin = useServerFn(streakCheckin);
+
   // Challenge + last lab load (once)
   useEffect(() => {
     const c = loadOrAdvanceChallenge();
     setChallenge(c);
     if (c.justChecked) {
-      // Trigger a subtle celebration when we've just marked today
       const t = window.setTimeout(() => setCheckPop(true), 300);
+      // Sync to server (non-blocking)
+      if (isAuthenticated) {
+        doCheckin({})
+          .then((row) => {
+            if (row && typeof row === "object" && "current_days" in row) {
+              const serverDays = Number((row as { current_days: number }).current_days);
+              if (Number.isFinite(serverDays) && serverDays > 0) {
+                setChallenge((prev) =>
+                  prev ? { ...prev, days: Math.min(CHALLENGE_TOTAL, serverDays) } : prev,
+                );
+              }
+            }
+          })
+          .catch(() => {});
+      }
       return () => window.clearTimeout(t);
     }
     try {
@@ -119,7 +136,8 @@ export function PersonalHero({
     } catch {
       /* ignore */
     }
-  }, []);
+  }, [isAuthenticated, doCheckin]);
+
 
   useEffect(() => {
     try {
