@@ -8,8 +8,12 @@
  */
 import { useEffect, useMemo, useState } from "react";
 import { Flame, PlayCircle, ArrowRight, Sparkles, Trophy, CalendarCheck } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { streakCheckin } from "@/lib/progress.functions";
+import { useAuth } from "@/lib/auth-store";
 import type { ExperimentId } from "./types";
 import welcomeHero from "@/assets/welcome-hero.png.asset.json";
+
 
 const LAST_LAB_KEY = "drchem:last_lab";
 const CHALLENGE_KEY = "drchem:challenge_v1"; // { days: number, lastDate: 'YYYY-MM-DD', startDate: 'YYYY-MM-DD' }
