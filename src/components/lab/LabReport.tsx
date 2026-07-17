@@ -13,7 +13,7 @@ interface Props {
 }
 
 export default function LabReport({ report, onReset }: Props) {
-  const { isAuthenticated } = useAuth() as unknown as { isAuthenticated: boolean };
+  const { isAuthenticated } = useAuth();
   const save = useServerFn(saveLabAttempt);
   const savedRef = useRef(false);
   useEffect(() => {
