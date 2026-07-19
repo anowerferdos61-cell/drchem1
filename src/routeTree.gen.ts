@@ -30,6 +30,7 @@ import { Route as AppTestsRouteImport } from './routes/app.tests'
 import { Route as AppProgressRouteImport } from './routes/app.progress'
 import { Route as AppNotesRouteImport } from './routes/app.notes'
 import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
+import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 import { Route as TeacherQuestionsIndexRouteImport } from './routes/teacher.questions.index'
 import { Route as TeacherClassesIndexRouteImport } from './routes/teacher.classes.index'
 import { Route as AppTestsIndexRouteImport } from './routes/app.tests.index'
@@ -147,6 +148,11 @@ const AdminPaymentsRoute = AdminPaymentsRouteImport.update({
   path: '/admin/payments',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
+  id: '/admin/analytics',
+  path: '/admin/analytics',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TeacherQuestionsIndexRoute = TeacherQuestionsIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -218,6 +224,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/teacher': typeof TeacherRouteWithChildren
   '/tutor': typeof TutorRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/payments': typeof AdminPaymentsRoute
   '/app/notes': typeof AppNotesRoute
   '/app/progress': typeof AppProgressRoute
@@ -250,6 +257,7 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tutor': typeof TutorRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/payments': typeof AdminPaymentsRoute
   '/app/notes': typeof AppNotesRoute
   '/app/progress': typeof AppProgressRoute
@@ -281,6 +289,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/teacher': typeof TeacherRouteWithChildren
   '/tutor': typeof TutorRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/payments': typeof AdminPaymentsRoute
   '/app/notes': typeof AppNotesRoute
   '/app/progress': typeof AppProgressRoute
@@ -317,6 +326,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/teacher'
     | '/tutor'
+    | '/admin/analytics'
     | '/admin/payments'
     | '/app/notes'
     | '/app/progress'
@@ -349,6 +359,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/sitemap.xml'
     | '/tutor'
+    | '/admin/analytics'
     | '/admin/payments'
     | '/app/notes'
     | '/app/progress'
@@ -379,6 +390,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/teacher'
     | '/tutor'
+    | '/admin/analytics'
     | '/admin/payments'
     | '/app/notes'
     | '/app/progress'
@@ -414,6 +426,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TeacherRoute: typeof TeacherRouteWithChildren
   TutorRoute: typeof TutorRoute
+  AdminAnalyticsRoute: typeof AdminAnalyticsRoute
   AdminPaymentsRoute: typeof AdminPaymentsRoute
   AdminIndexRoute: typeof AdminIndexRoute
   ApiTutorStreamRoute: typeof ApiTutorStreamRoute
@@ -566,6 +579,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/payments'
       fullPath: '/admin/payments'
       preLoaderRoute: typeof AdminPaymentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/analytics': {
+      id: '/admin/analytics'
+      path: '/admin/analytics'
+      fullPath: '/admin/analytics'
+      preLoaderRoute: typeof AdminAnalyticsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/teacher/questions/': {
@@ -754,6 +774,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TeacherRoute: TeacherRouteWithChildren,
   TutorRoute: TutorRoute,
+  AdminAnalyticsRoute: AdminAnalyticsRoute,
   AdminPaymentsRoute: AdminPaymentsRoute,
   AdminIndexRoute: AdminIndexRoute,
   ApiTutorStreamRoute: ApiTutorStreamRoute,

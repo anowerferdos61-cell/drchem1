@@ -352,6 +352,11 @@ function AdminDashboard() {
             </span>
           </div>
           <div className="flex items-center gap-2">
+            <Link to="/admin/analytics">
+              <Button variant="outline" size="sm">
+                <TrendingUp className="h-4 w-4" /> Analytics
+              </Button>
+            </Link>
             <Link to="/admin/payments">
               <Button variant="outline" size="sm">
                 <CreditCard className="h-4 w-4" /> Payments
