@@ -50,6 +50,95 @@ export type Database = {
         }
         Relationships: []
       }
+      analytics_events: {
+        Row: {
+          created_at: string
+          event_type: string
+          feature_key: string | null
+          id: string
+          metadata: Json
+          path: string | null
+          session_id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          feature_key?: string | null
+          id?: string
+          metadata?: Json
+          path?: string | null
+          session_id: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          feature_key?: string | null
+          id?: string
+          metadata?: Json
+          path?: string | null
+          session_id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "analytics_events_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "analytics_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      analytics_sessions: {
+        Row: {
+          anon_id: string
+          country: string | null
+          created_at: string
+          duration_seconds: number
+          entry_path: string | null
+          event_count: number
+          id: string
+          last_seen_at: string
+          page_views: number
+          referrer: string | null
+          started_at: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          anon_id: string
+          country?: string | null
+          created_at?: string
+          duration_seconds?: number
+          entry_path?: string | null
+          event_count?: number
+          id?: string
+          last_seen_at?: string
+          page_views?: number
+          referrer?: string | null
+          started_at?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          anon_id?: string
+          country?: string | null
+          created_at?: string
+          duration_seconds?: number
+          entry_path?: string | null
+          event_count?: number
+          id?: string
+          last_seen_at?: string
+          page_views?: number
+          referrer?: string | null
+          started_at?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       class_members: {
         Row: {
           class_id: string
