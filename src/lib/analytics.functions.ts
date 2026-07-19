@@ -28,7 +28,7 @@ export const trackEvent = createServerFn({ method: "POST" })
     featureKey?: string | null;
     referrer?: string | null;
     userAgent?: string | null;
-    metadata?: Record<string, unknown>;
+    metadata?: Record<string, string | number | boolean | null>;
   }) => data)
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -74,7 +74,7 @@ export const trackEvent = createServerFn({ method: "POST" })
       event_type: data.eventType,
       path: data.path ?? null,
       feature_key: data.featureKey ?? null,
-      metadata: data.metadata ?? {},
+      metadata: (data.metadata ?? {}) as never,
     });
 
     // Update session counters + last_seen + duration
@@ -320,7 +320,7 @@ export interface SessionTimelineEvent {
   event_type: string;
   path: string | null;
   feature_key: string | null;
-  metadata: Record<string, unknown>;
+  metadata: Record<string, string | number | boolean | null>;
   created_at: string;
 }
 
@@ -344,7 +344,7 @@ export const getSessionTimeline = createServerFn({ method: "GET" })
       event_type: r.event_type as string,
       path: (r.path as string) ?? null,
       feature_key: (r.feature_key as string) ?? null,
-      metadata: (r.metadata as Record<string, unknown>) ?? {},
+      metadata: (r.metadata as Record<string, string | number | boolean | null>) ?? {},
       created_at: r.created_at as string,
     }));
   });
