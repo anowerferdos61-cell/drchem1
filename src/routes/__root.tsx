@@ -177,6 +177,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <AnalyticsTracker />
       <Outlet />
     </QueryClientProvider>
   );
