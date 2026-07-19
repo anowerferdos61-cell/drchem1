@@ -10,6 +10,7 @@ import {
 import { useEffect } from "react";
 
 import { supabase } from "@/integrations/supabase/client";
+import { AnalyticsTracker } from "@/lib/analytics-tracker";
 import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
@@ -176,6 +177,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <AnalyticsTracker />
       <Outlet />
     </QueryClientProvider>
   );
