@@ -163,32 +163,72 @@ function AdminAnalytics() {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <BarChart3 className="h-6 w-6 text-primary" /> Analytics
-          </h1>
-          <p className="text-muted-foreground text-sm">
-            Visitors, sessions, and feature engagement across the app.
-          </p>
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold flex items-center gap-2">
+              <BarChart3 className="h-6 w-6 text-primary" /> Analytics
+            </h1>
+            <p className="text-muted-foreground text-sm">
+              {isToday ? "Today" : format(selectedDate, "PPPP")} · visitors, sessions & features
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="icon" onClick={() => shiftDay(-1)} aria-label="Previous day">
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className={cn("min-w-[180px] justify-start text-left font-normal")}>
+                  <CalendarIcon className="h-4 w-4 mr-2" />
+                  {format(selectedDate, "PPP")}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="end">
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={(d) => d && setSelectedDate(new Date(d.getFullYear(), d.getMonth(), d.getDate()))}
+                  disabled={(d) => d > new Date()}
+                  initialFocus
+                  className={cn("p-3 pointer-events-auto")}
+                />
+              </PopoverContent>
+            </Popover>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => shiftDay(1)}
+              disabled={isToday}
+              aria-label="Next day"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+            {!isToday && (
+              <Button variant="ghost" size="sm" onClick={() => setSelectedDate(new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()))}>
+                Today
+              </Button>
+            )}
+          </div>
         </div>
 
         {/* KPI row */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-          <KPI icon={UsersIcon} label="Visitors today" value={overview?.visitorsToday} />
-          <KPI icon={Activity} label="Sessions today" value={overview?.sessionsToday} />
-          <KPI icon={Eye} label="Page views today" value={overview?.pageViewsToday} />
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <KPI icon={UsersIcon} label="Visitors" value={overview?.visitors} />
+          <KPI icon={Activity} label="Sessions" value={overview?.sessions} />
+          <KPI icon={Eye} label="Page views" value={overview?.pageViews} />
           <KPI icon={Activity} label="Active now (5m)" value={overview?.activeNow} tint="emerald" />
-          <KPI icon={UsersIcon} label="Visitors · 28d" value={overview?.visitors28d} />
         </div>
 
-        {/* Daily chart */}
+        {/* Hourly chart */}
         <div className="rounded-xl border bg-card p-4">
           <div className="flex items-center justify-between mb-2">
-            <h2 className="font-semibold">Daily visitors — last 28 days</h2>
+            <h2 className="font-semibold">
+              Hourly activity — {isToday ? "today" : format(selectedDate, "PPP")}
+            </h2>
             {overviewLoading && <Loader2 className="h-4 w-4 animate-spin" />}
           </div>
           <ResponsiveContainer width="100%" height={240}>
-            <AreaChart data={overview?.daily ?? []}>
+            <AreaChart data={overview?.hourly ?? []}>
               <defs>
                 <linearGradient id="visitors" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.5} />
@@ -196,7 +236,7 @@ function AdminAnalytics() {
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-              <XAxis dataKey="date" tickFormatter={(v: string) => v.slice(5)} fontSize={11} />
+              <XAxis dataKey="hour" tickFormatter={(v: string) => `${v}:00`} fontSize={11} />
               <YAxis fontSize={11} allowDecimals={false} />
               <Tooltip
                 contentStyle={{
@@ -205,6 +245,7 @@ function AdminAnalytics() {
                   borderRadius: 8,
                   fontSize: 12,
                 }}
+                labelFormatter={(v: string) => `${v}:00`}
               />
               <Area
                 type="monotone"
