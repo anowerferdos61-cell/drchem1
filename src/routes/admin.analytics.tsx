@@ -116,10 +116,10 @@ function AdminAnalytics() {
   });
 
   const { data: recent = [] } = useQuery({
-    queryKey: ["admin", "analytics", "recent"],
-    queryFn: () => recentFn({ data: { limit: 100 } }),
+    queryKey: ["admin", "analytics", "recent", dateStr],
+    queryFn: () => recentFn({ data: { limit: 100, date: dateStr } }),
     enabled,
-    refetchInterval: 15_000,
+    refetchInterval: isToday ? 15_000 : false,
   });
 
   const [selected, setSelected] = useState<RecentSessionRow | null>(null);
