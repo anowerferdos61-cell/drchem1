@@ -259,19 +259,28 @@ export interface RecentSessionRow {
 
 export const getRecentSessions = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { limit?: number } | undefined) => data ?? {})
+  .inputValidator((data: { limit?: number; date?: string } | undefined) => data ?? {})
   .handler(async ({ context, data }): Promise<RecentSessionRow[]> => {
     await ensureAdmin(context.supabase, context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     const limit = Math.min(data.limit ?? 100, 500);
-    const { data: rows, error } = await supabaseAdmin
+    let q = supabaseAdmin
       .from("analytics_sessions")
       .select(
         "id, anon_id, user_id, started_at, last_seen_at, duration_seconds, page_views, event_count, entry_path, referrer, user_agent",
       )
       .order("last_seen_at", { ascending: false })
       .limit(limit);
+
+    if (data.date) {
+      const [y, m, d] = data.date.split("-").map((n) => parseInt(n, 10));
+      const dayStart = new Date(y, (m ?? 1) - 1, d ?? 1);
+      const dayEnd = new Date(dayStart.getTime() + 24 * 60 * 60 * 1000);
+      q = q.gte("started_at", dayStart.toISOString()).lt("started_at", dayEnd.toISOString());
+    }
+
+    const { data: rows, error } = await q;
     if (error) throw new Error(error.message);
 
     // Hydrate profile info
