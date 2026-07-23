@@ -269,7 +269,7 @@ function AdminAnalytics() {
         <div className="grid gap-4 md:grid-cols-2">
           <div className="rounded-xl border bg-card p-4">
             <h2 className="font-semibold mb-3 flex items-center gap-2">
-              <Eye className="h-4 w-4" /> Top pages · 28d
+              <Eye className="h-4 w-4" /> Top pages
             </h2>
             <div className="space-y-1.5">
               {(overview?.topPages ?? []).length === 0 && (
