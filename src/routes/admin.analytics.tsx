@@ -285,7 +285,7 @@ function AdminAnalytics() {
           </div>
           <div className="rounded-xl border bg-card p-4">
             <h2 className="font-semibold mb-3 flex items-center gap-2">
-              <MousePointerClick className="h-4 w-4" /> Top features · 28d
+              <MousePointerClick className="h-4 w-4" /> Top features
             </h2>
             <div className="space-y-1.5">
               {(overview?.topFeatures ?? []).length === 0 && (
