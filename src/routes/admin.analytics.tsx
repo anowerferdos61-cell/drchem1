@@ -95,11 +95,24 @@ function AdminAnalytics() {
 
   const enabled = isAuthenticated && rolesLoaded && isAdmin;
 
+  // Selected day (local date). Defaults to today.
+  const [selectedDate, setSelectedDate] = useState<Date>(() => {
+    const n = new Date();
+    return new Date(n.getFullYear(), n.getMonth(), n.getDate());
+  });
+  const dateStr = useMemo(() => format(selectedDate, "yyyy-MM-dd"), [selectedDate]);
+  const isToday = useMemo(() => dateStr === format(new Date(), "yyyy-MM-dd"), [dateStr]);
+
+  const shiftDay = (delta: number) => {
+    const next = new Date(selectedDate.getTime() + delta * 24 * 60 * 60 * 1000);
+    setSelectedDate(new Date(next.getFullYear(), next.getMonth(), next.getDate()));
+  };
+
   const { data: overview, isLoading: overviewLoading } = useQuery({
-    queryKey: ["admin", "analytics", "overview"],
-    queryFn: () => overviewFn(),
+    queryKey: ["admin", "analytics", "overview", dateStr],
+    queryFn: () => overviewFn({ data: { date: dateStr } }),
     enabled,
-    refetchInterval: 30_000,
+    refetchInterval: isToday ? 30_000 : false,
   });
 
   const { data: recent = [] } = useQuery({
