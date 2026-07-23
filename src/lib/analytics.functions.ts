@@ -110,103 +110,102 @@ export const trackEvent = createServerFn({ method: "POST" })
 // ─── Admin queries ──────────────────────────────────────────────────────
 
 export interface AnalyticsOverview {
-  visitorsToday: number;
-  sessionsToday: number;
-  pageViewsToday: number;
+  date: string;
+  visitors: number;
+  sessions: number;
+  pageViews: number;
   activeNow: number;
-  visitors28d: number;
-  daily: { date: string; visitors: number; sessions: number; page_views: number }[];
+  hourly: { hour: string; visitors: number; sessions: number; page_views: number }[];
   topPages: { path: string; views: number }[];
   topFeatures: { feature: string; count: number }[];
 }
 
 export const getAnalyticsOverview = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }): Promise<AnalyticsOverview> => {
+  .inputValidator((data: { date?: string } | undefined) => data ?? {})
+  .handler(async ({ context, data }): Promise<AnalyticsOverview> => {
     await ensureAdmin(context.supabase, context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     const now = new Date();
-    const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
-    const start28 = new Date(now.getTime() - 28 * 24 * 60 * 60 * 1000).toISOString();
+    const dateStr =
+      data.date ??
+      new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString().slice(0, 10);
+    const [y, m, d] = dateStr.split("-").map((n) => parseInt(n, 10));
+    const dayStart = new Date(y, (m ?? 1) - 1, d ?? 1);
+    const dayEnd = new Date(dayStart.getTime() + 24 * 60 * 60 * 1000);
+    const startISO = dayStart.toISOString();
+    const endISO = dayEnd.toISOString();
     const activeCutoff = new Date(now.getTime() - 5 * 60 * 1000).toISOString();
 
-    const [sessions28Res, todaySessionsRes, todayEventsRes, activeRes, topPagesRes, topFeatRes] =
-      await Promise.all([
-        supabaseAdmin
-          .from("analytics_sessions")
-          .select("id, anon_id, started_at")
-          .gte("started_at", start28)
-          .limit(50000),
-        supabaseAdmin
-          .from("analytics_sessions")
-          .select("id, anon_id")
-          .gte("started_at", startToday),
-        supabaseAdmin
-          .from("analytics_events")
-          .select("id", { count: "exact", head: true })
-          .eq("event_type", "page_view")
-          .gte("created_at", startToday),
-        supabaseAdmin
-          .from("analytics_sessions")
-          .select("id", { count: "exact", head: true })
-          .gte("last_seen_at", activeCutoff),
-        supabaseAdmin
-          .from("analytics_events")
-          .select("path")
-          .eq("event_type", "page_view")
-          .gte("created_at", start28)
-          .not("path", "is", null)
-          .limit(50000),
-        supabaseAdmin
-          .from("analytics_events")
-          .select("feature_key")
-          .eq("event_type", "feature")
-          .gte("created_at", start28)
-          .not("feature_key", "is", null)
-          .limit(50000),
-      ]);
+    const [sessionsRes, pvEventsRes, activeRes, topPagesRes, topFeatRes] = await Promise.all([
+      supabaseAdmin
+        .from("analytics_sessions")
+        .select("id, anon_id, started_at")
+        .gte("started_at", startISO)
+        .lt("started_at", endISO)
+        .limit(50000),
+      supabaseAdmin
+        .from("analytics_events")
+        .select("created_at")
+        .eq("event_type", "page_view")
+        .gte("created_at", startISO)
+        .lt("created_at", endISO)
+        .limit(100000),
+      supabaseAdmin
+        .from("analytics_sessions")
+        .select("id", { count: "exact", head: true })
+        .gte("last_seen_at", activeCutoff),
+      supabaseAdmin
+        .from("analytics_events")
+        .select("path")
+        .eq("event_type", "page_view")
+        .gte("created_at", startISO)
+        .lt("created_at", endISO)
+        .not("path", "is", null)
+        .limit(50000),
+      supabaseAdmin
+        .from("analytics_events")
+        .select("feature_key")
+        .eq("event_type", "feature")
+        .gte("created_at", startISO)
+        .lt("created_at", endISO)
+        .not("feature_key", "is", null)
+        .limit(50000),
+    ]);
 
-    const sessions28 = sessions28Res.data ?? [];
-    const todaySessions = todaySessionsRes.data ?? [];
+    const sessions = sessionsRes.data ?? [];
 
-    // Daily bucket by yyyy-mm-dd
-    const dailyMap = new Map<string, { visitors: Set<string>; sessions: number; page_views: number }>();
-    for (let i = 27; i >= 0; i--) {
-      const d = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
-      const key = d.toISOString().slice(0, 10);
-      dailyMap.set(key, { visitors: new Set(), sessions: 0, page_views: 0 });
+    const hourlyMap = new Map<
+      string,
+      { visitors: Set<string>; sessions: number; page_views: number }
+    >();
+    for (let h = 0; h < 24; h++) {
+      const key = String(h).padStart(2, "0");
+      hourlyMap.set(key, { visitors: new Set(), sessions: 0, page_views: 0 });
     }
-    for (const s of sessions28) {
-      const key = (s.started_at as string).slice(0, 10);
-      const b = dailyMap.get(key);
+    for (const s of sessions) {
+      const hh = new Date(s.started_at as string).getHours();
+      const key = String(hh).padStart(2, "0");
+      const b = hourlyMap.get(key);
       if (b) {
         b.visitors.add(s.anon_id as string);
         b.sessions += 1;
       }
     }
-
-    // Page views per day: run one aggregate query per bucket would be expensive; use events with created_at
-    const { data: pvEvents } = await supabaseAdmin
-      .from("analytics_events")
-      .select("created_at")
-      .eq("event_type", "page_view")
-      .gte("created_at", start28)
-      .limit(100000);
-    for (const e of pvEvents ?? []) {
-      const key = (e.created_at as string).slice(0, 10);
-      const b = dailyMap.get(key);
+    for (const e of pvEventsRes.data ?? []) {
+      const hh = new Date(e.created_at as string).getHours();
+      const key = String(hh).padStart(2, "0");
+      const b = hourlyMap.get(key);
       if (b) b.page_views += 1;
     }
-
-    const daily = Array.from(dailyMap.entries()).map(([date, v]) => ({
-      date,
+    const hourly = Array.from(hourlyMap.entries()).map(([hour, v]) => ({
+      hour,
       visitors: v.visitors.size,
       sessions: v.sessions,
       page_views: v.page_views,
     }));
 
-    // Top pages
     const pageCount = new Map<string, number>();
     for (const e of topPagesRes.data ?? []) {
       const p = e.path as string;
@@ -217,7 +216,6 @@ export const getAnalyticsOverview = createServerFn({ method: "GET" })
       .sort((a, b) => b.views - a.views)
       .slice(0, 10);
 
-    // Top features
     const featCount = new Map<string, number>();
     for (const e of topFeatRes.data ?? []) {
       const f = e.feature_key as string;
@@ -228,18 +226,16 @@ export const getAnalyticsOverview = createServerFn({ method: "GET" })
       .sort((a, b) => b.count - a.count)
       .slice(0, 10);
 
-    const visitorsTodaySet = new Set<string>();
-    for (const s of todaySessions) visitorsTodaySet.add(s.anon_id as string);
-    const visitors28Set = new Set<string>();
-    for (const s of sessions28) visitors28Set.add(s.anon_id as string);
+    const visitorsSet = new Set<string>();
+    for (const s of sessions) visitorsSet.add(s.anon_id as string);
 
     return {
-      visitorsToday: visitorsTodaySet.size,
-      sessionsToday: todaySessions.length,
-      pageViewsToday: todayEventsRes.count ?? 0,
+      date: dateStr,
+      visitors: visitorsSet.size,
+      sessions: sessions.length,
+      pageViews: pvEventsRes.data?.length ?? 0,
       activeNow: activeRes.count ?? 0,
-      visitors28d: visitors28Set.size,
-      daily,
+      hourly,
       topPages,
       topFeatures,
     };
