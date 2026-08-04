@@ -21,9 +21,15 @@ export default function UserMenu() {
   const { user, profile, roles, isAuthenticated, loading, signOut } = useAuth();
   const isTeacher = roles.includes("teacher") || roles.includes("admin");
 
-  if (loading) {
-    return <div className="h-9 w-24 rounded-md bg-muted animate-pulse" />;
+  // Keep the first client render identical to the SSR output, otherwise the
+  // already-restored session renders the avatar and hydration mismatches.
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => setHydrated(true), []);
+
+  if (!hydrated || loading) {
+    return <div className="h-9 w-32 rounded-md bg-muted animate-pulse" />;
   }
+
 
   if (!isAuthenticated) {
     return (
