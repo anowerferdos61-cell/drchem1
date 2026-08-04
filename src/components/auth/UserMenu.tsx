@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { CreditCard, GraduationCap, LogIn, LogOut, ShieldCheck, Sparkles, User as UserIcon } from "lucide-react";
 import { useAuth } from "@/lib/auth-store";
