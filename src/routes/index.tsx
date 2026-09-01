@@ -48,9 +48,9 @@ export const Route = createFileRoute("/")({
           "Safe, visual, AI-guided chemistry experiments for Class 9-10 — pH scale, titration, oxygen prep, bonding, and more.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "/" },
+      { property: "og:url", content: "https://drchemedu.com/" },
     ],
-    links: [{ rel: "canonical", href: "/" }],
+    links: [{ rel: "canonical", href: "https://drchemedu.com/" }],
   }),
 });
 

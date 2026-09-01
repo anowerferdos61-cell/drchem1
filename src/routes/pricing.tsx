@@ -25,9 +25,9 @@ export const Route = createFileRoute("/pricing")({
         content:
           "Start with a 7-day free trial. Pay with bKash from ৳99/month for full access to all labs, AI tutor and notes.",
       },
-      { property: "og:url", content: "https://drchem.lovable.app/pricing" },
+      { property: "og:url", content: "https://drchemedu.com/pricing" },
     ],
-    links: [{ rel: "canonical", href: "https://drchem.lovable.app/pricing" }],
+    links: [{ rel: "canonical", href: "https://drchemedu.com/pricing" }],
   }),
 });
 

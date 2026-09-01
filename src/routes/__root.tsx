@@ -75,6 +75,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "google-site-verification", content: "FY0QeeBgnQTSIl-Yo2liyQ8QKOZ6llJgXWJm4OGOMNw" },
       { title: "Dr. Chem — AI-Powered Virtual Chemistry Lab for Class 9-10" },
       {
         name: "description",
@@ -116,7 +117,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "@context": "https://schema.org",
           "@type": "Organization",
           name: "Dr. Chem",
-          url: "https://drchem.lovable.app",
+          url: "https://drchemedu.com",
           description:
             "AI-powered virtual chemistry lab for Class 9-10 students and teachers.",
         }),
@@ -127,7 +128,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "@context": "https://schema.org",
           "@type": "WebSite",
           name: "Dr. Chem",
-          url: "https://drchem.lovable.app",
+          url: "https://drchemedu.com",
         }),
       },
     ],

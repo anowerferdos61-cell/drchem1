@@ -3,4 +3,4 @@ Allow: /
 Disallow: /reset-password
 Disallow: /api/
 
-Sitemap: https://drchem.lovable.app/sitemap.xml
+Sitemap: https://drchemedu.com/sitemap.xml

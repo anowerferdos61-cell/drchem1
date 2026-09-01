@@ -168,9 +168,9 @@ export const Route = createFileRoute("/app/")({
           "Interactive chemistry experiments with an AI tutor and viva practice for Class 9-10.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://drchem.lovable.app/app" },
+      { property: "og:url", content: "https://drchemedu.com/app" },
     ],
-    links: [{ rel: "canonical", href: "https://drchem.lovable.app/app" }],
+    links: [{ rel: "canonical", href: "https://drchemedu.com/app" }],
   }),
 });
 

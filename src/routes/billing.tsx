@@ -56,7 +56,7 @@ async function copyText(text: string, label: string) {
 }
 
 export const Route = createFileRoute("/billing")({
-  validateSearch: (s: Record<string, unknown>) => ({
+  validateSearch: (s: Record<string, unknown>): { plan?: string } => ({
     plan: typeof s.plan === "string" ? s.plan : undefined,
   }),
   component: BillingPage,

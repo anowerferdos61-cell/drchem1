@@ -29,9 +29,9 @@ export const Route = createFileRoute("/signup")({
           "Sign up free for Dr. Chem — virtual chemistry lab, AI tutor and viva practice for Class 9-10 students and teachers.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://drchem.lovable.app/signup" },
+      { property: "og:url", content: "https://drchemedu.com/signup" },
     ],
-    links: [{ rel: "canonical", href: "https://drchem.lovable.app/signup" }],
+    links: [{ rel: "canonical", href: "https://drchemedu.com/signup" }],
   }),
 });
 

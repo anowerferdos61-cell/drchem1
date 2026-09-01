@@ -11,8 +11,8 @@ import { Label } from "@/components/ui/label";
 import { normalizeBdPhone, syntheticAuthEmailForPhone } from "@/lib/phone";
 
 export const Route = createFileRoute("/login")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    redirect: typeof search.redirect === "string" ? search.redirect : "/app",
+  validateSearch: (search: Record<string, unknown>): { redirect?: string } => ({
+    redirect: typeof search.redirect === "string" ? search.redirect : undefined,
   }),
   component: LoginPage,
 
@@ -31,9 +31,9 @@ export const Route = createFileRoute("/login")({
           "Log in to your Dr. Chem account with phone or email to continue learning chemistry with the virtual lab and AI tutor.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://drchem.lovable.app/login" },
+      { property: "og:url", content: "https://drchemedu.com/login" },
     ],
-    links: [{ rel: "canonical", href: "https://drchem.lovable.app/login" }],
+    links: [{ rel: "canonical", href: "https://drchemedu.com/login" }],
   }),
 });
 
@@ -68,7 +68,7 @@ async function resolveAuthEmail(identifier: string): Promise<string | null> {
 
 function LoginPage() {
   const navigate = useNavigate();
-  const { redirect } = useSearch({ from: "/login" });
+  const { redirect = "/app" } = useSearch({ from: "/login" });
   const { isAuthenticated, loading } = useAuth();
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
