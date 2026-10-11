@@ -9,83 +9,43 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TutorRouteImport } from './routes/tutor'
-import { Route as TeacherRouteImport } from './routes/teacher'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as SignupRouteImport } from './routes/signup'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as PricingRouteImport } from './routes/pricing'
-import { Route as OnboardingRouteImport } from './routes/onboarding'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as BillingRouteImport } from './routes/billing'
-import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as TeacherIndexRouteImport } from './routes/teacher.index'
-import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as AppRouteImport } from './routes/app'
+import { Route as BillingRouteImport } from './routes/billing'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as TeacherRouteImport } from './routes/teacher'
+import { Route as TutorRouteImport } from './routes/tutor'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as TeacherQuestionsRouteImport } from './routes/teacher.questions'
-import { Route as TeacherClassesRouteImport } from './routes/teacher.classes'
-import { Route as AppVideosRouteImport } from './routes/app.videos'
-import { Route as AppTestsRouteImport } from './routes/app.tests'
-import { Route as AppProgressRouteImport } from './routes/app.progress'
-import { Route as AppNotesRouteImport } from './routes/app.notes'
-import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
-import { Route as TeacherQuestionsIndexRouteImport } from './routes/teacher.questions.index'
-import { Route as TeacherClassesIndexRouteImport } from './routes/teacher.classes.index'
-import { Route as AppTestsIndexRouteImport } from './routes/app.tests.index'
-import { Route as TeacherQuestionsNewRouteImport } from './routes/teacher.questions.new'
-import { Route as TeacherQuestionsSetIdRouteImport } from './routes/teacher.questions.$setId'
-import { Route as TeacherClassesClassIdRouteImport } from './routes/teacher.classes.$classId'
-import { Route as AppTestsSetIdRouteImport } from './routes/app.tests.$setId'
+import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
+import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as AppNotesRouteImport } from './routes/app.notes'
+import { Route as AppProgressRouteImport } from './routes/app.progress'
+import { Route as AppTestsRouteImport } from './routes/app.tests'
+import { Route as AppVideosRouteImport } from './routes/app.videos'
+import { Route as TeacherIndexRouteImport } from './routes/teacher.index'
+import { Route as TeacherClassesRouteImport } from './routes/teacher.classes'
+import { Route as TeacherQuestionsRouteImport } from './routes/teacher.questions'
 import { Route as ApiTutorStreamRouteImport } from './routes/api/tutor/stream'
+import { Route as AppTestsIndexRouteImport } from './routes/app.tests.index'
+import { Route as AppTestsSetIdRouteImport } from './routes/app.tests.$setId'
+import { Route as TeacherClassesIndexRouteImport } from './routes/teacher.classes.index'
+import { Route as TeacherClassesClassIdRouteImport } from './routes/teacher.classes.$classId'
+import { Route as TeacherQuestionsIndexRouteImport } from './routes/teacher.questions.index'
+import { Route as TeacherQuestionsSetIdRouteImport } from './routes/teacher.questions.$setId'
+import { Route as TeacherQuestionsNewRouteImport } from './routes/teacher.questions.new'
 import { Route as TeacherQuestionsSetIdIndexRouteImport } from './routes/teacher.questions.$setId.index'
 import { Route as TeacherQuestionsSetIdResultsRouteImport } from './routes/teacher.questions.$setId.results'
 import { Route as TeacherQuestionsSetIdAttemptsAttemptIdRouteImport } from './routes/teacher.questions.$setId.attempts.$attemptId'
 
-const TutorRoute = TutorRouteImport.update({
-  id: '/tutor',
-  path: '/tutor',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TeacherRoute = TeacherRouteImport.update({
-  id: '/teacher',
-  path: '/teacher',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SignupRoute = SignupRouteImport.update({
-  id: '/signup',
-  path: '/signup',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PricingRoute = PricingRouteImport.update({
-  id: '/pricing',
-  path: '/pricing',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OnboardingRoute = OnboardingRouteImport.update({
-  id: '/onboarding',
-  path: '/onboarding',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BillingRoute = BillingRouteImport.update({
-  id: '/billing',
-  path: '/billing',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppRoute = AppRouteImport.update({
@@ -93,59 +53,54 @@ const AppRoute = AppRouteImport.update({
   path: '/app',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const BillingRoute = BillingRouteImport.update({
+  id: '/billing',
+  path: '/billing',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TeacherIndexRoute = TeacherIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => TeacherRoute,
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AppIndexRoute = AppIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AppRoute,
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TeacherRoute = TeacherRouteImport.update({
+  id: '/teacher',
+  path: '/teacher',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TutorRoute = TutorRouteImport.update({
+  id: '/tutor',
+  path: '/tutor',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/admin/',
   path: '/admin/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TeacherQuestionsRoute = TeacherQuestionsRouteImport.update({
-  id: '/questions',
-  path: '/questions',
-  getParentRoute: () => TeacherRoute,
-} as any)
-const TeacherClassesRoute = TeacherClassesRouteImport.update({
-  id: '/classes',
-  path: '/classes',
-  getParentRoute: () => TeacherRoute,
-} as any)
-const AppVideosRoute = AppVideosRouteImport.update({
-  id: '/videos',
-  path: '/videos',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppTestsRoute = AppTestsRouteImport.update({
-  id: '/tests',
-  path: '/tests',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppProgressRoute = AppProgressRouteImport.update({
-  id: '/progress',
-  path: '/progress',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppNotesRoute = AppNotesRouteImport.update({
-  id: '/notes',
-  path: '/notes',
-  getParentRoute: () => AppRoute,
-} as any)
-const AdminPaymentsRoute = AdminPaymentsRouteImport.update({
-  id: '/admin/payments',
-  path: '/admin/payments',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
@@ -153,24 +108,79 @@ const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
   path: '/admin/analytics',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TeacherQuestionsIndexRoute = TeacherQuestionsIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => TeacherQuestionsRoute,
+const AdminPaymentsRoute = AdminPaymentsRouteImport.update({
+  id: '/admin/payments',
+  path: '/admin/payments',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const TeacherClassesIndexRoute = TeacherClassesIndexRouteImport.update({
+const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => TeacherClassesRoute,
+  getParentRoute: () => AppRoute,
+} as any)
+const AppNotesRoute = AppNotesRouteImport.update({
+  id: '/notes',
+  path: '/notes',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProgressRoute = AppProgressRouteImport.update({
+  id: '/progress',
+  path: '/progress',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppTestsRoute = AppTestsRouteImport.update({
+  id: '/tests',
+  path: '/tests',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppVideosRoute = AppVideosRouteImport.update({
+  id: '/videos',
+  path: '/videos',
+  getParentRoute: () => AppRoute,
+} as any)
+const TeacherIndexRoute = TeacherIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => TeacherRoute,
+} as any)
+const TeacherClassesRoute = TeacherClassesRouteImport.update({
+  id: '/classes',
+  path: '/classes',
+  getParentRoute: () => TeacherRoute,
+} as any)
+const TeacherQuestionsRoute = TeacherQuestionsRouteImport.update({
+  id: '/questions',
+  path: '/questions',
+  getParentRoute: () => TeacherRoute,
+} as any)
+const ApiTutorStreamRoute = ApiTutorStreamRouteImport.update({
+  id: '/api/tutor/stream',
+  path: '/api/tutor/stream',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AppTestsIndexRoute = AppTestsIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppTestsRoute,
 } as any)
-const TeacherQuestionsNewRoute = TeacherQuestionsNewRouteImport.update({
-  id: '/new',
-  path: '/new',
+const AppTestsSetIdRoute = AppTestsSetIdRouteImport.update({
+  id: '/$setId',
+  path: '/$setId',
+  getParentRoute: () => AppTestsRoute,
+} as any)
+const TeacherClassesIndexRoute = TeacherClassesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => TeacherClassesRoute,
+} as any)
+const TeacherClassesClassIdRoute = TeacherClassesClassIdRouteImport.update({
+  id: '/$classId',
+  path: '/$classId',
+  getParentRoute: () => TeacherClassesRoute,
+} as any)
+const TeacherQuestionsIndexRoute = TeacherQuestionsIndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => TeacherQuestionsRoute,
 } as any)
 const TeacherQuestionsSetIdRoute = TeacherQuestionsSetIdRouteImport.update({
@@ -178,20 +188,10 @@ const TeacherQuestionsSetIdRoute = TeacherQuestionsSetIdRouteImport.update({
   path: '/$setId',
   getParentRoute: () => TeacherQuestionsRoute,
 } as any)
-const TeacherClassesClassIdRoute = TeacherClassesClassIdRouteImport.update({
-  id: '/$classId',
-  path: '/$classId',
-  getParentRoute: () => TeacherClassesRoute,
-} as any)
-const AppTestsSetIdRoute = AppTestsSetIdRouteImport.update({
-  id: '/$setId',
-  path: '/$setId',
-  getParentRoute: () => AppTestsRoute,
-} as any)
-const ApiTutorStreamRoute = ApiTutorStreamRouteImport.update({
-  id: '/api/tutor/stream',
-  path: '/api/tutor/stream',
-  getParentRoute: () => rootRouteImport,
+const TeacherQuestionsNewRoute = TeacherQuestionsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => TeacherQuestionsRoute,
 } as any)
 const TeacherQuestionsSetIdIndexRoute =
   TeacherQuestionsSetIdIndexRouteImport.update({
@@ -434,67 +434,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/tutor': {
-      id: '/tutor'
-      path: '/tutor'
-      fullPath: '/tutor'
-      preLoaderRoute: typeof TutorRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/teacher': {
-      id: '/teacher'
-      path: '/teacher'
-      fullPath: '/teacher'
-      preLoaderRoute: typeof TeacherRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/signup': {
-      id: '/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof SignupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pricing': {
-      id: '/pricing'
-      path: '/pricing'
-      fullPath: '/pricing'
-      preLoaderRoute: typeof PricingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/onboarding': {
-      id: '/onboarding'
-      path: '/onboarding'
-      fullPath: '/onboarding'
-      preLoaderRoute: typeof OnboardingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/billing': {
-      id: '/billing'
-      path: '/billing'
-      fullPath: '/billing'
-      preLoaderRoute: typeof BillingRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app': {
@@ -504,81 +448,74 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/billing': {
+      id: '/billing'
+      path: '/billing'
+      fullPath: '/billing'
+      preLoaderRoute: typeof BillingRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/teacher/': {
-      id: '/teacher/'
-      path: '/'
-      fullPath: '/teacher/'
-      preLoaderRoute: typeof TeacherIndexRouteImport
-      parentRoute: typeof TeacherRoute
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/app/': {
-      id: '/app/'
-      path: '/'
-      fullPath: '/app/'
-      preLoaderRoute: typeof AppIndexRouteImport
-      parentRoute: typeof AppRoute
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/teacher': {
+      id: '/teacher'
+      path: '/teacher'
+      fullPath: '/teacher'
+      preLoaderRoute: typeof TeacherRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tutor': {
+      id: '/tutor'
+      path: '/tutor'
+      fullPath: '/tutor'
+      preLoaderRoute: typeof TutorRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/admin/': {
       id: '/admin/'
       path: '/admin'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/teacher/questions': {
-      id: '/teacher/questions'
-      path: '/questions'
-      fullPath: '/teacher/questions'
-      preLoaderRoute: typeof TeacherQuestionsRouteImport
-      parentRoute: typeof TeacherRoute
-    }
-    '/teacher/classes': {
-      id: '/teacher/classes'
-      path: '/classes'
-      fullPath: '/teacher/classes'
-      preLoaderRoute: typeof TeacherClassesRouteImport
-      parentRoute: typeof TeacherRoute
-    }
-    '/app/videos': {
-      id: '/app/videos'
-      path: '/videos'
-      fullPath: '/app/videos'
-      preLoaderRoute: typeof AppVideosRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/tests': {
-      id: '/app/tests'
-      path: '/tests'
-      fullPath: '/app/tests'
-      preLoaderRoute: typeof AppTestsRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/progress': {
-      id: '/app/progress'
-      path: '/progress'
-      fullPath: '/app/progress'
-      preLoaderRoute: typeof AppProgressRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/notes': {
-      id: '/app/notes'
-      path: '/notes'
-      fullPath: '/app/notes'
-      preLoaderRoute: typeof AppNotesRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/admin/payments': {
-      id: '/admin/payments'
-      path: '/admin/payments'
-      fullPath: '/admin/payments'
-      preLoaderRoute: typeof AdminPaymentsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/analytics': {
@@ -588,19 +525,75 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAnalyticsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/teacher/questions/': {
-      id: '/teacher/questions/'
-      path: '/'
-      fullPath: '/teacher/questions/'
-      preLoaderRoute: typeof TeacherQuestionsIndexRouteImport
-      parentRoute: typeof TeacherQuestionsRoute
+    '/admin/payments': {
+      id: '/admin/payments'
+      path: '/admin/payments'
+      fullPath: '/admin/payments'
+      preLoaderRoute: typeof AdminPaymentsRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/teacher/classes/': {
-      id: '/teacher/classes/'
+    '/app/': {
+      id: '/app/'
       path: '/'
-      fullPath: '/teacher/classes/'
-      preLoaderRoute: typeof TeacherClassesIndexRouteImport
-      parentRoute: typeof TeacherClassesRoute
+      fullPath: '/app/'
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/notes': {
+      id: '/app/notes'
+      path: '/notes'
+      fullPath: '/app/notes'
+      preLoaderRoute: typeof AppNotesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/progress': {
+      id: '/app/progress'
+      path: '/progress'
+      fullPath: '/app/progress'
+      preLoaderRoute: typeof AppProgressRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/tests': {
+      id: '/app/tests'
+      path: '/tests'
+      fullPath: '/app/tests'
+      preLoaderRoute: typeof AppTestsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/videos': {
+      id: '/app/videos'
+      path: '/videos'
+      fullPath: '/app/videos'
+      preLoaderRoute: typeof AppVideosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/teacher/': {
+      id: '/teacher/'
+      path: '/'
+      fullPath: '/teacher/'
+      preLoaderRoute: typeof TeacherIndexRouteImport
+      parentRoute: typeof TeacherRoute
+    }
+    '/teacher/classes': {
+      id: '/teacher/classes'
+      path: '/classes'
+      fullPath: '/teacher/classes'
+      preLoaderRoute: typeof TeacherClassesRouteImport
+      parentRoute: typeof TeacherRoute
+    }
+    '/teacher/questions': {
+      id: '/teacher/questions'
+      path: '/questions'
+      fullPath: '/teacher/questions'
+      preLoaderRoute: typeof TeacherQuestionsRouteImport
+      parentRoute: typeof TeacherRoute
+    }
+    '/api/tutor/stream': {
+      id: '/api/tutor/stream'
+      path: '/api/tutor/stream'
+      fullPath: '/api/tutor/stream'
+      preLoaderRoute: typeof ApiTutorStreamRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/app/tests/': {
       id: '/app/tests/'
@@ -609,11 +602,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppTestsIndexRouteImport
       parentRoute: typeof AppTestsRoute
     }
-    '/teacher/questions/new': {
-      id: '/teacher/questions/new'
-      path: '/new'
-      fullPath: '/teacher/questions/new'
-      preLoaderRoute: typeof TeacherQuestionsNewRouteImport
+    '/app/tests/$setId': {
+      id: '/app/tests/$setId'
+      path: '/$setId'
+      fullPath: '/app/tests/$setId'
+      preLoaderRoute: typeof AppTestsSetIdRouteImport
+      parentRoute: typeof AppTestsRoute
+    }
+    '/teacher/classes/': {
+      id: '/teacher/classes/'
+      path: '/'
+      fullPath: '/teacher/classes/'
+      preLoaderRoute: typeof TeacherClassesIndexRouteImport
+      parentRoute: typeof TeacherClassesRoute
+    }
+    '/teacher/classes/$classId': {
+      id: '/teacher/classes/$classId'
+      path: '/$classId'
+      fullPath: '/teacher/classes/$classId'
+      preLoaderRoute: typeof TeacherClassesClassIdRouteImport
+      parentRoute: typeof TeacherClassesRoute
+    }
+    '/teacher/questions/': {
+      id: '/teacher/questions/'
+      path: '/'
+      fullPath: '/teacher/questions/'
+      preLoaderRoute: typeof TeacherQuestionsIndexRouteImport
       parentRoute: typeof TeacherQuestionsRoute
     }
     '/teacher/questions/$setId': {
@@ -623,26 +637,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TeacherQuestionsSetIdRouteImport
       parentRoute: typeof TeacherQuestionsRoute
     }
-    '/teacher/classes/$classId': {
-      id: '/teacher/classes/$classId'
-      path: '/$classId'
-      fullPath: '/teacher/classes/$classId'
-      preLoaderRoute: typeof TeacherClassesClassIdRouteImport
-      parentRoute: typeof TeacherClassesRoute
-    }
-    '/app/tests/$setId': {
-      id: '/app/tests/$setId'
-      path: '/$setId'
-      fullPath: '/app/tests/$setId'
-      preLoaderRoute: typeof AppTestsSetIdRouteImport
-      parentRoute: typeof AppTestsRoute
-    }
-    '/api/tutor/stream': {
-      id: '/api/tutor/stream'
-      path: '/api/tutor/stream'
-      fullPath: '/api/tutor/stream'
-      preLoaderRoute: typeof ApiTutorStreamRouteImport
-      parentRoute: typeof rootRouteImport
+    '/teacher/questions/new': {
+      id: '/teacher/questions/new'
+      path: '/new'
+      fullPath: '/teacher/questions/new'
+      preLoaderRoute: typeof TeacherQuestionsNewRouteImport
+      parentRoute: typeof TeacherQuestionsRoute
     }
     '/teacher/questions/$setId/': {
       id: '/teacher/questions/$setId/'
