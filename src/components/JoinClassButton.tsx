@@ -42,10 +42,7 @@ export default function JoinClassButton() {
       setMine([]);
       return;
     }
-    const { data: cs } = await supabase
-      .from("classes")
-      .select("id, name, section")
-      .in("id", ids);
+    const { data: cs } = await supabase.from("classes").select("id, name, section").in("id", ids);
     setMine(cs ?? []);
   };
 

@@ -44,7 +44,10 @@ export default function DiffusionLab({ onBack }: { onBack: () => void }) {
               <div className="text-[11px] text-muted-foreground">Diffusion Race · Graham's Law</div>
             </div>
           </div>
-          <Badge variant="secondary" className="hidden sm:inline-flex border border-cyan-500/20 bg-cyan-500/10 text-cyan-700 dark:text-cyan-300">
+          <Badge
+            variant="secondary"
+            className="hidden sm:inline-flex border border-cyan-500/20 bg-cyan-500/10 text-cyan-700 dark:text-cyan-300"
+          >
             অধ্যায় ২ · পদার্থের অবস্থা
           </Badge>
         </div>
@@ -152,7 +155,9 @@ function GasDiffusion() {
       <Card className="relative overflow-hidden bg-gradient-to-b from-white to-slate-50 p-6 dark:from-slate-900 dark:to-slate-950">
         {/* Cotton tray */}
         <div className="mb-6 flex flex-wrap items-center gap-3">
-          <div className="text-xs font-semibold uppercase text-muted-foreground">তুলো নির্বাচন:</div>
+          <div className="text-xs font-semibold uppercase text-muted-foreground">
+            তুলো নির্বাচন:
+          </div>
           <CottonChip
             id="nh3"
             label="অ্যামোনিয়া (NH₃)"
@@ -246,7 +251,11 @@ function GasDiffusion() {
 
         {/* Controls */}
         <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-          <Button onClick={start} disabled={!ready || running} className="gap-1.5 bg-gradient-to-r from-cyan-600 to-teal-600 hover:from-cyan-700 hover:to-teal-700">
+          <Button
+            onClick={start}
+            disabled={!ready || running}
+            className="gap-1.5 bg-gradient-to-r from-cyan-600 to-teal-600 hover:from-cyan-700 hover:to-teal-700"
+          >
             <Play className="h-4 w-4" /> পরীক্ষা শুরু
           </Button>
           <Button variant="outline" onClick={reset} className="gap-1.5">
@@ -261,8 +270,9 @@ function GasDiffusion() {
               <div>
                 <div className="font-bold">পরীক্ষা সফল!</div>
                 <p className="mt-1 leading-relaxed">
-                  অ্যামোনিয়ার ভর কম হওয়ায় এটি দ্রুত ব্যাপিত হয়েছে এবং HCl-এর কাছাকাছি সাদা ধোঁয়া (NH₄Cl) তৈরি করেছে।
-                  গ্রাহামের সূত্র অনুযায়ী <span className="font-mono">v(NH₃)/v(HCl) = √(36.5/17) ≈ 1.46</span>।
+                  অ্যামোনিয়ার ভর কম হওয়ায় এটি দ্রুত ব্যাপিত হয়েছে এবং HCl-এর কাছাকাছি সাদা
+                  ধোঁয়া (NH₄Cl) তৈরি করেছে। গ্রাহামের সূত্র অনুযায়ী{" "}
+                  <span className="font-mono">v(NH₃)/v(HCl) = √(36.5/17) ≈ 1.46</span>।
                 </p>
               </div>
             </div>
@@ -285,7 +295,9 @@ function GasDiffusion() {
                 <li
                   key={i}
                   className={`rounded-md border px-2 py-1.5 text-xs leading-relaxed ${
-                    done ? "border-emerald-400/40 bg-emerald-500/10 text-emerald-800 dark:text-emerald-200" : "border-border bg-muted/40 text-muted-foreground"
+                    done
+                      ? "border-emerald-400/40 bg-emerald-500/10 text-emerald-800 dark:text-emerald-200"
+                      : "border-border bg-muted/40 text-muted-foreground"
                   }`}
                 >
                   {s}
@@ -332,7 +344,9 @@ function CottonChip({
         placed ? "opacity-40" : "cursor-grab active:cursor-grabbing hover:scale-105"
       }`}
     >
-      <div className={`h-8 w-8 rounded-full bg-gradient-to-br ${color} shadow-md ring-2 ring-white dark:ring-slate-900`} />
+      <div
+        className={`h-8 w-8 rounded-full bg-gradient-to-br ${color} shadow-md ring-2 ring-white dark:ring-slate-900`}
+      />
       <div className="leading-tight">
         <div className="text-xs font-bold">{label}</div>
         <div className="text-[10px] text-muted-foreground">{sub}</div>
@@ -368,9 +382,7 @@ function DropZone({
       ? "border-emerald-400 bg-emerald-500/20"
       : "border-amber-400 bg-amber-500/20";
   const dot =
-    tone === "emerald"
-      ? "from-emerald-400 to-emerald-600"
-      : "from-amber-400 to-orange-500";
+    tone === "emerald" ? "from-emerald-400 to-emerald-600" : "from-amber-400 to-orange-500";
   return (
     <div
       onDragOver={(e) => {
@@ -390,7 +402,9 @@ function DropZone({
       }`}
     >
       {placed ? (
-        <div className={`h-10 w-10 rounded-full bg-gradient-to-br ${dot} shadow-md ring-2 ring-white dark:ring-slate-900`} />
+        <div
+          className={`h-10 w-10 rounded-full bg-gradient-to-br ${dot} shadow-md ring-2 ring-white dark:ring-slate-900`}
+        />
       ) : (
         <div className="text-center text-[10px] font-semibold text-muted-foreground">
           {label}
@@ -441,7 +455,11 @@ function LiquidDiffusion() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button onClick={() => setDropped(true)} disabled={dropped} className="gap-1.5 bg-purple-600 hover:bg-purple-700">
+          <Button
+            onClick={() => setDropped(true)}
+            disabled={dropped}
+            className="gap-1.5 bg-purple-600 hover:bg-purple-700"
+          >
             <Droplets className="h-4 w-4" /> KMnO₄ ফেলুন
           </Button>
           <Button variant="outline" onClick={reset} className="gap-1.5">
@@ -451,14 +469,20 @@ function LiquidDiffusion() {
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2">
-        <Beaker label="ঠান্ডা পানি (20°C)" temp="cold" fill={dropped ? coldFill : 0} dropped={dropped} />
+        <Beaker
+          label="ঠান্ডা পানি (20°C)"
+          temp="cold"
+          fill={dropped ? coldFill : 0}
+          dropped={dropped}
+        />
         <Beaker label="গরম পানি (80°C)" temp="hot" fill={dropped ? hotFill : 0} dropped={dropped} />
       </div>
 
       {dropped && hotFill >= 1 && (
         <div className="mt-6 rounded-xl border border-purple-500/30 bg-purple-50/70 p-4 text-sm leading-relaxed text-purple-900 dark:bg-purple-950/30 dark:text-purple-200">
-          <span className="font-bold">পর্যবেক্ষণ:</span> গরম পানিতে KMnO₄-এর বেগুনি রঙ অনেক দ্রুত পুরো বিকারে ছড়িয়ে পড়েছে।
-          এটি প্রমাণ করে — তাপমাত্রা বাড়লে অণুর গতিশক্তি বৃদ্ধি পায় এবং ব্যাপনের হার বেড়ে যায়।
+          <span className="font-bold">পর্যবেক্ষণ:</span> গরম পানিতে KMnO₄-এর বেগুনি রঙ অনেক দ্রুত
+          পুরো বিকারে ছড়িয়ে পড়েছে। এটি প্রমাণ করে — তাপমাত্রা বাড়লে অণুর গতিশক্তি বৃদ্ধি পায়
+          এবং ব্যাপনের হার বেড়ে যায়।
         </div>
       )}
     </Card>
@@ -476,11 +500,16 @@ function Beaker({
   fill: number;
   dropped: boolean;
 }) {
-  const tint = temp === "hot" ? "from-rose-100 to-orange-50 dark:from-rose-950/30 dark:to-orange-950/20" : "from-sky-100 to-cyan-50 dark:from-sky-950/30 dark:to-cyan-950/20";
+  const tint =
+    temp === "hot"
+      ? "from-rose-100 to-orange-50 dark:from-rose-950/30 dark:to-orange-950/20"
+      : "from-sky-100 to-cyan-50 dark:from-sky-950/30 dark:to-cyan-950/20";
   return (
     <div className="flex flex-col items-center">
       <div className="text-sm font-semibold">{label}</div>
-      <div className={`relative mt-3 h-64 w-44 rounded-b-3xl rounded-t-md border-2 border-slate-300 bg-gradient-to-b ${tint} shadow-inner dark:border-slate-700`}>
+      <div
+        className={`relative mt-3 h-64 w-44 rounded-b-3xl rounded-t-md border-2 border-slate-300 bg-gradient-to-b ${tint} shadow-inner dark:border-slate-700`}
+      >
         {/* water surface line */}
         <div className="absolute inset-x-2 top-4 h-px bg-slate-300/60" />
 

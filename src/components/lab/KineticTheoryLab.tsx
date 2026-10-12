@@ -36,19 +36,106 @@ interface Props {
 type Phase = "solid" | "liquid" | "gas";
 
 interface Substance {
-  id: string; bn: string; en: string; formula: string;
-  melt: number; boil: number; tempMin: number; tempMax: number; emoji: string;
+  id: string;
+  bn: string;
+  en: string;
+  formula: string;
+  melt: number;
+  boil: number;
+  tempMin: number;
+  tempMax: number;
+  emoji: string;
 }
 
 const SUBSTANCES: Substance[] = [
-  { id: "water",   bn: "পানি",      en: "Water",    formula: "H₂O", melt: 0,    boil: 100,  tempMin: -20,  tempMax: 200,  emoji: "💧" },
-  { id: "iron",    bn: "লোহা",      en: "Iron",     formula: "Fe",  melt: 1538, boil: 2862, tempMin: 25,   tempMax: 3200, emoji: "⚙️" },
-  { id: "copper",  bn: "তামা",      en: "Copper",   formula: "Cu",  melt: 1085, boil: 2562, tempMin: 25,   tempMax: 2800, emoji: "🟧" },
-  { id: "aluminum",bn: "অ্যালুমিনিয়াম", en: "Aluminum", formula: "Al",  melt: 660,  boil: 2470, tempMin: 25,   tempMax: 2700, emoji: "🪙" },
-  { id: "gold",    bn: "স্বর্ণ",     en: "Gold",     formula: "Au",  melt: 1064, boil: 2856, tempMin: 25,   tempMax: 3100, emoji: "🥇" },
-  { id: "mercury", bn: "পারদ",      en: "Mercury",  formula: "Hg",  melt: -39,  boil: 357,  tempMin: -80,  tempMax: 500,  emoji: "🌡️" },
-  { id: "ice_n2",  bn: "নাইট্রোজেন", en: "Nitrogen", formula: "N₂",  melt: -210, boil: -196, tempMin: -250, tempMax: -100, emoji: "❄️" },
-  { id: "salt",    bn: "লবণ",       en: "Salt",     formula: "NaCl",melt: 801,  boil: 1465, tempMin: 25,   tempMax: 1800, emoji: "🧂" },
+  {
+    id: "water",
+    bn: "পানি",
+    en: "Water",
+    formula: "H₂O",
+    melt: 0,
+    boil: 100,
+    tempMin: -20,
+    tempMax: 200,
+    emoji: "💧",
+  },
+  {
+    id: "iron",
+    bn: "লোহা",
+    en: "Iron",
+    formula: "Fe",
+    melt: 1538,
+    boil: 2862,
+    tempMin: 25,
+    tempMax: 3200,
+    emoji: "⚙️",
+  },
+  {
+    id: "copper",
+    bn: "তামা",
+    en: "Copper",
+    formula: "Cu",
+    melt: 1085,
+    boil: 2562,
+    tempMin: 25,
+    tempMax: 2800,
+    emoji: "🟧",
+  },
+  {
+    id: "aluminum",
+    bn: "অ্যালুমিনিয়াম",
+    en: "Aluminum",
+    formula: "Al",
+    melt: 660,
+    boil: 2470,
+    tempMin: 25,
+    tempMax: 2700,
+    emoji: "🪙",
+  },
+  {
+    id: "gold",
+    bn: "স্বর্ণ",
+    en: "Gold",
+    formula: "Au",
+    melt: 1064,
+    boil: 2856,
+    tempMin: 25,
+    tempMax: 3100,
+    emoji: "🥇",
+  },
+  {
+    id: "mercury",
+    bn: "পারদ",
+    en: "Mercury",
+    formula: "Hg",
+    melt: -39,
+    boil: 357,
+    tempMin: -80,
+    tempMax: 500,
+    emoji: "🌡️",
+  },
+  {
+    id: "ice_n2",
+    bn: "নাইট্রোজেন",
+    en: "Nitrogen",
+    formula: "N₂",
+    melt: -210,
+    boil: -196,
+    tempMin: -250,
+    tempMax: -100,
+    emoji: "❄️",
+  },
+  {
+    id: "salt",
+    bn: "লবণ",
+    en: "Salt",
+    formula: "NaCl",
+    melt: 801,
+    boil: 1465,
+    tempMin: 25,
+    tempMax: 1800,
+    emoji: "🧂",
+  },
 ];
 
 function phaseFromTemp(t: number, s: Substance): Phase {
@@ -61,15 +148,43 @@ const PHASE_META: Record<
   Phase,
   { bn: string; en: string; color: string; ring: string; icon: typeof Snowflake; tip: string }
 > = {
-  solid:  { bn: "কঠিন", en: "Solid",  color: "from-sky-500 to-blue-600",  ring: "ring-sky-400/40",  icon: Snowflake, tip: "কণাগুলো নির্দিষ্ট অবস্থানে কম্পিত হচ্ছে — আন্তঃআণবিক আকর্ষণ সবচেয়ে বেশি।" },
-  liquid: { bn: "তরল",  en: "Liquid", color: "from-cyan-500 to-teal-600", ring: "ring-cyan-400/40", icon: Droplets,  tip: "কণাগুলো গড়িয়ে চলছে কিন্তু একসাথে থাকছে — মাঝারি আকর্ষণ।" },
-  gas:    { bn: "গ্যাস", en: "Gas",    color: "from-amber-500 to-orange-600", ring: "ring-amber-400/40", icon: Wind, tip: "কণাগুলো মুক্তভাবে ছুটছে — আন্তঃআণবিক আকর্ষণ প্রায় শূন্য।" },
+  solid: {
+    bn: "কঠিন",
+    en: "Solid",
+    color: "from-sky-500 to-blue-600",
+    ring: "ring-sky-400/40",
+    icon: Snowflake,
+    tip: "কণাগুলো নির্দিষ্ট অবস্থানে কম্পিত হচ্ছে — আন্তঃআণবিক আকর্ষণ সবচেয়ে বেশি।",
+  },
+  liquid: {
+    bn: "তরল",
+    en: "Liquid",
+    color: "from-cyan-500 to-teal-600",
+    ring: "ring-cyan-400/40",
+    icon: Droplets,
+    tip: "কণাগুলো গড়িয়ে চলছে কিন্তু একসাথে থাকছে — মাঝারি আকর্ষণ।",
+  },
+  gas: {
+    bn: "গ্যাস",
+    en: "Gas",
+    color: "from-amber-500 to-orange-600",
+    ring: "ring-amber-400/40",
+    icon: Wind,
+    tip: "কণাগুলো মুক্তভাবে ছুটছে — আন্তঃআণবিক আকর্ষণ প্রায় শূন্য।",
+  },
 };
 
 const PARTICLE_COUNT = 90;
 const PARTICLE_R = 7;
 
-interface Particle { x: number; y: number; vx: number; vy: number; ax: number; ay: number; }
+interface Particle {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  ax: number;
+  ay: number;
+}
 
 export default function KineticTheoryLab({ onBack }: Props) {
   const [substanceId, setSubstanceId] = useState<string>("water");
@@ -83,7 +198,10 @@ export default function KineticTheoryLab({ onBack }: Props) {
   useEffect(() => {
     const def = Math.max(
       substance.tempMin,
-      Math.min(substance.tempMax, Math.round(substance.melt - (substance.boil - substance.melt) * 0.3)),
+      Math.min(
+        substance.tempMax,
+        Math.round(substance.melt - (substance.boil - substance.melt) * 0.3),
+      ),
     );
     setTemp(def);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -107,8 +225,12 @@ export default function KineticTheoryLab({ onBack }: Props) {
   const attraction = Math.round(Math.max(2, 100 - norm * 98));
 
   useEffect(() => {
-    const W = 360, H = 420;
-    const cols = 10, rows = 9, spacingX = 26, spacingY = 26;
+    const W = 360,
+      H = 420;
+    const cols = 10,
+      rows = 9,
+      spacingX = 26,
+      spacingY = 26;
     const startX = (W - (cols - 1) * spacingX) / 2;
     const startY = H - 30 - (rows - 1) * spacingY;
     const arr: Particle[] = [];
@@ -128,7 +250,8 @@ export default function KineticTheoryLab({ onBack }: Props) {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    const W = canvas.width, H = canvas.height;
+    const W = canvas.width,
+      H = canvas.height;
     const beaker = { left: 30, right: W - 30, top: 60, bottom: H - 30 };
     let last = performance.now();
 
@@ -153,7 +276,12 @@ export default function KineticTheoryLab({ onBack }: Props) {
       }
 
       const energy = intensity;
-      const maxSpeed = ph === "solid" ? 0.2 + intensity * 0.6 : ph === "liquid" ? 1.0 + intensity * 1.4 : 3.5 + intensity * 2.5;
+      const maxSpeed =
+        ph === "solid"
+          ? 0.2 + intensity * 0.6
+          : ph === "liquid"
+            ? 1.0 + intensity * 1.4
+            : 3.5 + intensity * 2.5;
 
       for (const p of particles) {
         const jitter = energy * (ph === "solid" ? 0.6 : ph === "liquid" ? 1.4 : 2.2);
@@ -164,33 +292,59 @@ export default function KineticTheoryLab({ onBack }: Props) {
           const k = 0.25;
           p.vx += (p.ax - p.x) * k;
           p.vy += (p.ay - p.y) * k;
-          p.vx *= 0.55; p.vy *= 0.55;
+          p.vx *= 0.55;
+          p.vy *= 0.55;
         } else if (ph === "liquid") {
           p.vy += 0.18;
           const targetY = beaker.bottom - 90;
           if (p.y < targetY - 40) p.vy += 0.05;
-          p.vx *= 0.94; p.vy *= 0.94;
+          p.vx *= 0.94;
+          p.vy *= 0.94;
         } else {
-          p.vx *= 0.995; p.vy *= 0.995;
+          p.vx *= 0.995;
+          p.vy *= 0.995;
         }
 
         const sp = Math.hypot(p.vx, p.vy);
-        if (sp > maxSpeed) { p.vx = (p.vx / sp) * maxSpeed; p.vy = (p.vy / sp) * maxSpeed; }
+        if (sp > maxSpeed) {
+          p.vx = (p.vx / sp) * maxSpeed;
+          p.vy = (p.vy / sp) * maxSpeed;
+        }
 
-        p.x += p.vx * dt; p.y += p.vy * dt;
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
 
-        if (p.x < beaker.left + PARTICLE_R)  { p.x = beaker.left + PARTICLE_R;  p.vx =  Math.abs(p.vx) * 0.8; }
-        if (p.x > beaker.right - PARTICLE_R) { p.x = beaker.right - PARTICLE_R; p.vx = -Math.abs(p.vx) * 0.8; }
-        if (p.y > beaker.bottom - PARTICLE_R){ p.y = beaker.bottom - PARTICLE_R;p.vy = -Math.abs(p.vy) * 0.8; }
-        if (p.y < beaker.top + PARTICLE_R)   { p.y = beaker.top + PARTICLE_R;   p.vy =  Math.abs(p.vy) * 0.8; }
+        if (p.x < beaker.left + PARTICLE_R) {
+          p.x = beaker.left + PARTICLE_R;
+          p.vx = Math.abs(p.vx) * 0.8;
+        }
+        if (p.x > beaker.right - PARTICLE_R) {
+          p.x = beaker.right - PARTICLE_R;
+          p.vx = -Math.abs(p.vx) * 0.8;
+        }
+        if (p.y > beaker.bottom - PARTICLE_R) {
+          p.y = beaker.bottom - PARTICLE_R;
+          p.vy = -Math.abs(p.vy) * 0.8;
+        }
+        if (p.y < beaker.top + PARTICLE_R) {
+          p.y = beaker.top + PARTICLE_R;
+          p.vy = Math.abs(p.vy) * 0.8;
+        }
       }
 
       ctx.clearRect(0, 0, W, H);
       const bg = ctx.createLinearGradient(0, 0, 0, H);
-      const warm = Math.min(1, Math.max(0, (t - sub.tempMin) / Math.max(1, sub.tempMax - sub.tempMin)));
+      const warm = Math.min(
+        1,
+        Math.max(0, (t - sub.tempMin) / Math.max(1, sub.tempMax - sub.tempMin)),
+      );
       bg.addColorStop(0, `rgba(${30 + warm * 80}, ${60 + warm * 30}, ${120 - warm * 80}, 0.05)`);
-      bg.addColorStop(1, `rgba(${100 + warm * 120}, ${120 + warm * 40}, ${180 - warm * 140}, 0.12)`);
-      ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+      bg.addColorStop(
+        1,
+        `rgba(${100 + warm * 120}, ${120 + warm * 40}, ${180 - warm * 140}, 0.12)`,
+      );
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
 
       ctx.lineWidth = 4;
       ctx.strokeStyle = "rgba(148,163,184,0.55)";
@@ -235,7 +389,9 @@ export default function KineticTheoryLab({ onBack }: Props) {
       rafRef.current = requestAnimationFrame(tick);
     };
     rafRef.current = requestAnimationFrame(tick);
-    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
   }, []);
 
   const reset = () => {
@@ -258,10 +414,11 @@ export default function KineticTheoryLab({ onBack }: Props) {
           className={`gap-1.5 border bg-gradient-to-r ${meta.color} text-white border-white/10`}
         >
           <PhaseIcon className="h-3.5 w-3.5" />
-          <span className="text-lab-xs font-semibold">{meta.bn} · {meta.en}</span>
+          <span className="text-lab-xs font-semibold">
+            {meta.bn} · {meta.en}
+          </span>
         </Badge>
       }
-
       /* ── LEFT ── */
       info={
         <>
@@ -271,16 +428,27 @@ export default function KineticTheoryLab({ onBack }: Props) {
                 <PhaseIcon className="h-3 w-3" /> বর্তমান অবস্থা
               </div>
               <div className="mt-0.5 font-extrabold leading-tight text-lab-lg">
-                {meta.bn}{" "}
-                <span className="text-lab-xs font-medium opacity-80">/ {meta.en}</span>
+                {meta.bn} <span className="text-lab-xs font-medium opacity-80">/ {meta.en}</span>
               </div>
             </div>
             <p className="px-3 py-2 text-lab-sm text-foreground/90">{meta.tip}</p>
           </Card>
 
           <Card className="space-y-3 p-3">
-            <Gauge icon={Activity} labelBn="গতিশক্তি" labelEn="KE" value={kineticEnergy} gradient="from-amber-400 to-orange-600" />
-            <Gauge icon={Magnet}   labelBn="আকর্ষণ"  labelEn="IMF" value={attraction}    gradient="from-sky-400 to-blue-600" />
+            <Gauge
+              icon={Activity}
+              labelBn="গতিশক্তি"
+              labelEn="KE"
+              value={kineticEnergy}
+              gradient="from-amber-400 to-orange-600"
+            />
+            <Gauge
+              icon={Magnet}
+              labelBn="আকর্ষণ"
+              labelEn="IMF"
+              value={attraction}
+              gradient="from-sky-400 to-blue-600"
+            />
           </Card>
 
           <Card className="p-3">
@@ -295,7 +463,6 @@ export default function KineticTheoryLab({ onBack }: Props) {
           </Card>
         </>
       }
-
       /* ── CENTER: beaker auto-fits ── */
       visual={
         <div
@@ -323,12 +490,13 @@ export default function KineticTheoryLab({ onBack }: Props) {
           </div>
         </div>
       }
-
       /* ── RIGHT: controls ── */
       controls={
         <>
           <Card className="p-3">
-            <div className="mb-1 text-lab-xs font-medium text-muted-foreground">পদার্থ · Substance</div>
+            <div className="mb-1 text-lab-xs font-medium text-muted-foreground">
+              পদার্থ · Substance
+            </div>
             <Select value={substanceId} onValueChange={setSubstanceId}>
               <SelectTrigger className="h-9 w-full text-lab-sm">
                 <SelectValue />
@@ -343,8 +511,12 @@ export default function KineticTheoryLab({ onBack }: Props) {
               </SelectContent>
             </Select>
             <div className="mt-2 flex items-center justify-between text-lab-xs text-muted-foreground">
-              <span>গলনাঙ্ক <b className="text-foreground">{substance.melt}°C</b></span>
-              <span>স্ফুটনাঙ্ক <b className="text-foreground">{substance.boil}°C</b></span>
+              <span>
+                গলনাঙ্ক <b className="text-foreground">{substance.melt}°C</b>
+              </span>
+              <span>
+                স্ফুটনাঙ্ক <b className="text-foreground">{substance.boil}°C</b>
+              </span>
             </div>
           </Card>
 
@@ -373,45 +545,101 @@ export default function KineticTheoryLab({ onBack }: Props) {
               className="my-2"
             />
             <div className="mt-1 flex items-center justify-between text-lab-xs text-muted-foreground">
-              <span>কঠিন</span><span>তরল</span><span>গ্যাস</span>
+              <span>কঠিন</span>
+              <span>তরল</span>
+              <span>গ্যাস</span>
             </div>
 
             <div className="mt-3 grid grid-cols-3 gap-1.5">
-              <QuickBtn label="কঠিন" onClick={() => setTemp(Math.max(substance.tempMin, substance.melt - Math.max(20, (substance.boil - substance.melt) * 0.4)))} tone="sky" />
-              <QuickBtn label="তরল"  onClick={() => setTemp(Math.round((substance.melt + substance.boil) / 2))} tone="cyan" />
-              <QuickBtn label="গ্যাস" onClick={() => setTemp(Math.min(substance.tempMax, substance.boil + Math.max(20, (substance.tempMax - substance.boil) * 0.3)))} tone="orange" />
+              <QuickBtn
+                label="কঠিন"
+                onClick={() =>
+                  setTemp(
+                    Math.max(
+                      substance.tempMin,
+                      substance.melt - Math.max(20, (substance.boil - substance.melt) * 0.4),
+                    ),
+                  )
+                }
+                tone="sky"
+              />
+              <QuickBtn
+                label="তরল"
+                onClick={() => setTemp(Math.round((substance.melt + substance.boil) / 2))}
+                tone="cyan"
+              />
+              <QuickBtn
+                label="গ্যাস"
+                onClick={() =>
+                  setTemp(
+                    Math.min(
+                      substance.tempMax,
+                      substance.boil + Math.max(20, (substance.tempMax - substance.boil) * 0.3),
+                    ),
+                  )
+                }
+                tone="orange"
+              />
             </div>
 
-            <Button variant="outline" size="sm" onClick={reset} className="mt-3 h-8 w-full gap-1.5 text-lab-sm">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={reset}
+              className="mt-3 h-8 w-full gap-1.5 text-lab-sm"
+            >
               <RotateCcw className="h-3.5 w-3.5" /> Reset
             </Button>
           </Card>
         </>
       }
-
       /* ── Optional deep theory ── */
       theory={
         <div className="space-y-3">
-          <p><b>পদার্থের গতিতত্ত্ব</b> অনুসারে সকল পদার্থ ক্ষুদ্র কণা দিয়ে গঠিত এবং এই কণাগুলো সর্বদা গতিশীল। কণার গতিশক্তি নির্ভর করে তাপমাত্রার উপর।</p>
-          <p><b>তিন অবস্থা:</b></p>
+          <p>
+            <b>পদার্থের গতিতত্ত্ব</b> অনুসারে সকল পদার্থ ক্ষুদ্র কণা দিয়ে গঠিত এবং এই কণাগুলো
+            সর্বদা গতিশীল। কণার গতিশক্তি নির্ভর করে তাপমাত্রার উপর।
+          </p>
+          <p>
+            <b>তিন অবস্থা:</b>
+          </p>
           <ul>
-            <li><b>কঠিন —</b> কণাগুলো নির্দিষ্ট স্থানে কম্পিত হয়, আন্তঃআণবিক আকর্ষণ সবচেয়ে বেশি।</li>
-            <li><b>তরল —</b> কণাগুলো গড়াতে পারে কিন্তু কাছাকাছি থাকে; আকর্ষণ মাঝারি।</li>
-            <li><b>গ্যাস —</b> কণাগুলো মুক্তভাবে ছুটে চলে; আকর্ষণ প্রায় শূন্য।</li>
+            <li>
+              <b>কঠিন —</b> কণাগুলো নির্দিষ্ট স্থানে কম্পিত হয়, আন্তঃআণবিক আকর্ষণ সবচেয়ে বেশি।
+            </li>
+            <li>
+              <b>তরল —</b> কণাগুলো গড়াতে পারে কিন্তু কাছাকাছি থাকে; আকর্ষণ মাঝারি।
+            </li>
+            <li>
+              <b>গ্যাস —</b> কণাগুলো মুক্তভাবে ছুটে চলে; আকর্ষণ প্রায় শূন্য।
+            </li>
           </ul>
-          <p><b>গলনাঙ্ক (Melting Point):</b> যে তাপমাত্রায় কঠিন পদার্থ তরলে পরিণত হয়।</p>
-          <p><b>স্ফুটনাঙ্ক (Boiling Point):</b> যে তাপমাত্রায় তরল পদার্থ গ্যাসে পরিণত হয়।</p>
+          <p>
+            <b>গলনাঙ্ক (Melting Point):</b> যে তাপমাত্রায় কঠিন পদার্থ তরলে পরিণত হয়।
+          </p>
+          <p>
+            <b>স্ফুটনাঙ্ক (Boiling Point):</b> যে তাপমাত্রায় তরল পদার্থ গ্যাসে পরিণত হয়।
+          </p>
         </div>
       }
     />
   );
 }
 
-function QuickBtn({ label, onClick, tone }: { label: string; onClick: () => void; tone: "sky" | "cyan" | "orange" }) {
+function QuickBtn({
+  label,
+  onClick,
+  tone,
+}: {
+  label: string;
+  onClick: () => void;
+  tone: "sky" | "cyan" | "orange";
+}) {
   const map = {
-    sky:    "border-sky-300 text-sky-700 hover:bg-sky-50 dark:border-sky-800 dark:text-sky-300 dark:hover:bg-sky-950",
-    cyan:   "border-cyan-300 text-cyan-700 hover:bg-cyan-50 dark:border-cyan-800 dark:text-cyan-300 dark:hover:bg-cyan-950",
-    orange: "border-orange-300 text-orange-700 hover:bg-orange-50 dark:border-orange-800 dark:text-orange-300 dark:hover:bg-orange-950",
+    sky: "border-sky-300 text-sky-700 hover:bg-sky-50 dark:border-sky-800 dark:text-sky-300 dark:hover:bg-sky-950",
+    cyan: "border-cyan-300 text-cyan-700 hover:bg-cyan-50 dark:border-cyan-800 dark:text-cyan-300 dark:hover:bg-cyan-950",
+    orange:
+      "border-orange-300 text-orange-700 hover:bg-orange-50 dark:border-orange-800 dark:text-orange-300 dark:hover:bg-orange-950",
   } as const;
   return (
     <button
@@ -424,9 +652,17 @@ function QuickBtn({ label, onClick, tone }: { label: string; onClick: () => void
 }
 
 function Gauge({
-  icon: Icon, labelBn, labelEn, value, gradient,
+  icon: Icon,
+  labelBn,
+  labelEn,
+  value,
+  gradient,
 }: {
-  icon: typeof Activity; labelBn: string; labelEn: string; value: number; gradient: string;
+  icon: typeof Activity;
+  labelBn: string;
+  labelEn: string;
+  value: number;
+  gradient: string;
 }) {
   return (
     <div>

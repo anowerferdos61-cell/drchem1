@@ -33,8 +33,8 @@ interface Substance {
   molarMass: number;
   unit: string;
   unitBn: string;
-  chip: string;      // gradient bg for chip/scale label
-  primary: string;   // hex accent
+  chip: string; // gradient bg for chip/scale label
+  primary: string; // hex accent
   secondary: string; // hex accent 2
   shape: MolShape;
   swatch: React.ReactNode;
@@ -55,7 +55,9 @@ const SUBS: Record<SubKey, Substance> = {
     shape: "sphere",
     swatch: (
       <div className="relative h-11 w-11 overflow-hidden rounded-xl bg-gradient-to-br from-slate-800 to-neutral-950 ring-1 ring-white/10 shadow-inner">
-        <span className="absolute inset-0 grid place-items-center text-[11px] font-black text-white/90">C</span>
+        <span className="absolute inset-0 grid place-items-center text-[11px] font-black text-white/90">
+          C
+        </span>
         <span className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-slate-400/40 blur-[2px]" />
       </div>
     ),
@@ -75,7 +77,9 @@ const SUBS: Record<SubKey, Substance> = {
     swatch: (
       <div className="relative h-11 w-11 overflow-hidden rounded-xl bg-gradient-to-b from-sky-100 to-sky-400 ring-1 ring-sky-200/50 shadow-inner">
         <span className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-sky-600/80 to-sky-300/40" />
-        <span className="absolute inset-0 grid place-items-center text-[10px] font-black text-white drop-shadow">H₂O</span>
+        <span className="absolute inset-0 grid place-items-center text-[10px] font-black text-white drop-shadow">
+          H₂O
+        </span>
       </div>
     ),
   },
@@ -95,7 +99,10 @@ const SUBS: Record<SubKey, Substance> = {
       <div className="relative h-11 w-11 overflow-hidden rounded-xl bg-gradient-to-br from-amber-50 to-amber-200 ring-1 ring-amber-300/60 shadow-inner">
         <span className="absolute inset-0 grid grid-cols-3 grid-rows-3 gap-[1px] p-[3px]">
           {Array.from({ length: 9 }).map((_, i) => (
-            <span key={i} className={cn("rounded-[1px]", i % 2 ? "bg-amber-500/80" : "bg-amber-300/80")} />
+            <span
+              key={i}
+              className={cn("rounded-[1px]", i % 2 ? "bg-amber-500/80" : "bg-amber-300/80")}
+            />
           ))}
         </span>
       </div>
@@ -115,7 +122,9 @@ const SUBS: Record<SubKey, Substance> = {
     shape: "chain",
     swatch: (
       <div className="relative h-11 w-11 overflow-hidden rounded-xl bg-gradient-to-br from-white to-neutral-200 ring-1 ring-neutral-300/70 shadow-inner">
-        <span className="absolute inset-0 grid place-items-center text-[9px] font-black text-neutral-700">C₁₂</span>
+        <span className="absolute inset-0 grid place-items-center text-[9px] font-black text-neutral-700">
+          C₁₂
+        </span>
         <span className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_30%_30%,white,transparent_60%)]" />
       </div>
     ),
@@ -134,7 +143,9 @@ const SUBS: Record<SubKey, Substance> = {
     shape: "hydrate",
     swatch: (
       <div className="relative h-11 w-11 overflow-hidden rounded-xl bg-gradient-to-br from-cyan-300 to-blue-600 ring-1 ring-cyan-200/60 shadow-inner">
-        <span className="absolute inset-0 grid place-items-center text-[9px] font-black text-white drop-shadow">Cu</span>
+        <span className="absolute inset-0 grid place-items-center text-[9px] font-black text-white drop-shadow">
+          Cu
+        </span>
         <span className="absolute -right-1 -bottom-1 h-4 w-4 rotate-45 bg-cyan-200/60 blur-[3px]" />
       </div>
     ),
@@ -192,7 +203,10 @@ function useBalanceFlicker(target: number, key: string, ms = 420) {
     const start = performance.now();
     const tick = (t: number) => {
       const p = (t - start) / ms;
-      if (p >= 1) { setDisplay(target); return; }
+      if (p >= 1) {
+        setDisplay(target);
+        return;
+      }
       // random flicker around the target
       const jitter = (Math.random() - 0.5) * target * 1.4 + Math.random() * 20;
       setDisplay(Math.max(0, target * 0.3 + jitter));
@@ -219,7 +233,15 @@ function mulberry32(seed: number) {
 }
 
 // ── Canvas particle engine ──────────────────────────────────
-interface P { x: number; y: number; vx: number; vy: number; r: number; a: number; va: number; }
+interface P {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  r: number;
+  a: number;
+  va: number;
+}
 
 function ParticleCanvas({
   substance,
@@ -244,7 +266,8 @@ function ParticleCanvas({
     const speed = 0.35 + moles * 0.4;
     const rBase = substance.shape === "chain" ? 14 : substance.shape === "hydrate" ? 12 : 8;
     stateRef.current.ps = Array.from({ length: count }).map(() => ({
-      x: rng(), y: rng(),
+      x: rng(),
+      y: rng(),
       vx: (rng() - 0.5) * speed,
       vy: (rng() - 0.5) * speed,
       r: rBase + rng() * 3,
@@ -279,7 +302,14 @@ function ParticleCanvas({
     const draw = () => {
       const { W, H, ps } = stateRef.current;
       // background wash
-      const g = ctx.createRadialGradient(W * 0.5, H * 0.55, 20, W * 0.5, H * 0.55, Math.max(W, H) * 0.8);
+      const g = ctx.createRadialGradient(
+        W * 0.5,
+        H * 0.55,
+        20,
+        W * 0.5,
+        H * 0.55,
+        Math.max(W, H) * 0.8,
+      );
       g.addColorStop(0, "rgba(30,41,59,0.9)");
       g.addColorStop(1, "rgba(2,6,23,1)");
       ctx.fillStyle = g;
@@ -289,8 +319,18 @@ function ParticleCanvas({
       ctx.strokeStyle = "rgba(148,163,184,0.05)";
       ctx.lineWidth = 1;
       const step = 28;
-      for (let x = 0; x < W; x += step) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
-      for (let y = 0; y < H; y += step) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+      for (let x = 0; x < W; x += step) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, H);
+        ctx.stroke();
+      }
+      for (let y = 0; y < H; y += step) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(W, y);
+        ctx.stroke();
+      }
 
       // zoom transition (macro grid → micro particles)
       const elapsed = (performance.now() - zoomStartRef.current) / 700;
@@ -309,10 +349,22 @@ function ParticleCanvas({
         p.x += p.vx / W;
         p.y += p.vy / H;
         p.a += p.va;
-        if (p.x < 0.03) { p.x = 0.03; p.vx = Math.abs(p.vx); }
-        if (p.x > 0.97) { p.x = 0.97; p.vx = -Math.abs(p.vx); }
-        if (p.y < 0.06) { p.y = 0.06; p.vy = Math.abs(p.vy); }
-        if (p.y > 0.94) { p.y = 0.94; p.vy = -Math.abs(p.vy); }
+        if (p.x < 0.03) {
+          p.x = 0.03;
+          p.vx = Math.abs(p.vx);
+        }
+        if (p.x > 0.97) {
+          p.x = 0.97;
+          p.vx = -Math.abs(p.vx);
+        }
+        if (p.y < 0.06) {
+          p.y = 0.06;
+          p.vy = Math.abs(p.vy);
+        }
+        if (p.y > 0.94) {
+          p.y = 0.94;
+          p.vy = -Math.abs(p.vy);
+        }
 
         const cx = p.x * W;
         const cy = p.y * H;
@@ -340,7 +392,10 @@ function ParticleCanvas({
 function drawMolecule(
   ctx: CanvasRenderingContext2D,
   s: Substance,
-  x: number, y: number, r: number, a: number,
+  x: number,
+  y: number,
+  r: number,
+  a: number,
 ) {
   const drawAtom = (cx: number, cy: number, rad: number, c1: string, c2: string) => {
     const g = ctx.createRadialGradient(cx - rad * 0.3, cy - rad * 0.3, rad * 0.1, cx, cy, rad);
@@ -395,7 +450,8 @@ function drawMolecule(
     drawAtom(x + d, y, r * 1.05, "#065f46", "#34d399");
     ctx.fillStyle = "rgba(255,255,255,0.85)";
     ctx.font = `bold ${r * 0.75}px ui-sans-serif`;
-    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
     ctx.fillText("+", x - d, y - r * 0.05);
     ctx.fillText("−", x + d, y - r * 0.05);
     return;
@@ -417,7 +473,13 @@ function drawMolecule(
       const th = a + (i * Math.PI) / 3;
       const px = x + Math.cos(th) * r * 0.75;
       const py = y + Math.sin(th) * r * 0.75;
-      drawAtom(px, py, rr * 0.9, i % 3 === 0 ? "#7c2d12" : "#1e293b", i % 3 === 0 ? "#f97316" : "#94a3b8");
+      drawAtom(
+        px,
+        py,
+        rr * 0.9,
+        i % 3 === 0 ? "#7c2d12" : "#1e293b",
+        i % 3 === 0 ? "#f97316" : "#94a3b8",
+      );
     }
     // bridge O
     drawAtom(x + r * 0.9, y, rr, "#0369a1", "#38bdf8");
@@ -463,7 +525,6 @@ export default function MoleConceptLab({
 }
 
 function AvogadroMode({ onBack }: { onBack: () => void }) {
-
   const [sub, setSub] = useState<SubKey | null>("water");
   const [moleIdx, setMoleIdx] = useState(1);
   const [tab, setTab] = useState<"equipment" | "lab" | "data">("lab");
@@ -484,7 +545,10 @@ function AvogadroMode({ onBack }: { onBack: () => void }) {
   };
 
   const generateReport = () => {
-    if (!substance) { toast.error("প্রথমে একটি পদার্থ নির্বাচন করো"); return; }
+    if (!substance) {
+      toast.error("প্রথমে একটি পদার্থ নির্বাচন করো");
+      return;
+    }
     toast.success("Lab Report তৈরি হয়েছে ✓", {
       description: `${moles} mol ${substance.formula} = ${mass.toFixed(2)} g`,
     });
@@ -492,11 +556,15 @@ function AvogadroMode({ onBack }: { onBack: () => void }) {
 
   return (
     <div className="relative flex flex-1 min-h-0 w-full flex-col lg:overflow-hidden">
-
       <header className="sticky top-0 z-20 shrink-0 border-b bg-background/85 backdrop-blur-xl lg:static">
         <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-3 py-2">
           <div className="flex min-w-0 items-center gap-2">
-            <Button variant="ghost" size="sm" onClick={onBack} className="-ml-2 h-8 shrink-0 gap-1 px-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onBack}
+              className="-ml-2 h-8 shrink-0 gap-1 px-2"
+            >
               <ArrowLeft className="h-4 w-4" />
               <span className="hidden text-xs sm:inline">Back</span>
             </Button>
@@ -520,12 +588,25 @@ function AvogadroMode({ onBack }: { onBack: () => void }) {
 
       <main className="flex-1 p-2 pb-24 sm:p-3 lg:min-h-0 lg:overflow-hidden lg:pb-3">
         <div className="flex h-full flex-col gap-3 lg:grid lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.5fr)_minmax(0,0.95fr)] lg:grid-rows-1 lg:gap-3">
-          <aside className={cn("flex-col gap-3 lg:order-1 lg:flex lg:min-h-0 lg:overflow-y-auto lg:pr-1", tab === "equipment" ? "flex" : "hidden lg:flex")}>
+          <aside
+            className={cn(
+              "flex-col gap-3 lg:order-1 lg:flex lg:min-h-0 lg:overflow-y-auto lg:pr-1",
+              tab === "equipment" ? "flex" : "hidden lg:flex",
+            )}
+          >
             <SubstanceShelf active={sub} onPlace={place} />
           </aside>
 
-          <section className={cn("relative min-h-0 min-w-0 lg:order-2 lg:flex lg:flex-col", tab === "lab" ? "flex flex-col" : "hidden lg:flex")}>
-            <div className="flex w-full flex-col items-center justify-center gap-3" style={{ height: "min(70vh, 460px)" }}>
+          <section
+            className={cn(
+              "relative min-h-0 min-w-0 lg:order-2 lg:flex lg:flex-col",
+              tab === "lab" ? "flex flex-col" : "hidden lg:flex",
+            )}
+          >
+            <div
+              className="flex w-full flex-col items-center justify-center gap-3"
+              style={{ height: "min(70vh, 460px)" }}
+            >
               <VisualStage
                 substance={substance}
                 mass={mass}
@@ -538,7 +619,12 @@ function AvogadroMode({ onBack }: { onBack: () => void }) {
             <AiHint substance={substance} moles={moles} mass={mass} />
           </section>
 
-          <aside className={cn("flex-col gap-3 lg:order-3 lg:flex lg:min-h-0 lg:overflow-y-auto lg:pl-1", tab === "data" ? "flex" : "hidden lg:flex")}>
+          <aside
+            className={cn(
+              "flex-col gap-3 lg:order-3 lg:flex lg:min-h-0 lg:overflow-y-auto lg:pl-1",
+              tab === "data" ? "flex" : "hidden lg:flex",
+            )}
+          >
             <ControlsPanel moleIdx={moleIdx} setMoleIdx={setMoleIdx} substance={substance} />
             <DataTable substance={substance} moles={moles} mass={mass} particles={particleTarget} />
             <Button
@@ -553,11 +639,13 @@ function AvogadroMode({ onBack }: { onBack: () => void }) {
 
       <nav className="fixed inset-x-0 bottom-0 z-30 border-t bg-background/95 backdrop-blur-xl lg:hidden">
         <div className="mx-auto grid max-w-md grid-cols-3">
-          {([
-            { k: "equipment", label: "Equipment", icon: Beaker },
-            { k: "lab", label: "Lab", icon: FlaskConical },
-            { k: "data", label: "Data", icon: TrendingUp },
-          ] as const).map(({ k, label, icon: Icon }) => (
+          {(
+            [
+              { k: "equipment", label: "Equipment", icon: Beaker },
+              { k: "lab", label: "Lab", icon: FlaskConical },
+              { k: "data", label: "Data", icon: TrendingUp },
+            ] as const
+          ).map(({ k, label, icon: Icon }) => (
             <button
               key={k}
               onClick={() => setTab(k)}
@@ -577,7 +665,13 @@ function AvogadroMode({ onBack }: { onBack: () => void }) {
 }
 
 // ── Substance Shelf ─────────────────────────────────────────
-function SubstanceShelf({ active, onPlace }: { active: SubKey | null; onPlace: (k: SubKey) => void }) {
+function SubstanceShelf({
+  active,
+  onPlace,
+}: {
+  active: SubKey | null;
+  onPlace: (k: SubKey) => void;
+}) {
   return (
     <Card className="p-3">
       <div className="mb-2 flex items-center gap-2">
@@ -646,7 +740,12 @@ function VisualStage({
             <span className="flex items-center gap-1">
               <Scale className="h-3 w-3" /> Digital Balance
             </span>
-            <span className={cn("flex items-center gap-1 text-emerald-500", substance ? "opacity-100" : "opacity-40")}>
+            <span
+              className={cn(
+                "flex items-center gap-1 text-emerald-500",
+                substance ? "opacity-100" : "opacity-40",
+              )}
+            >
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.9)]" />
               READY
             </span>
@@ -662,7 +761,10 @@ function VisualStage({
                   "absolute bottom-9 flex h-10 w-24 items-center justify-center rounded-lg bg-gradient-to-br text-[10px] font-black text-white shadow-lg animate-in fade-in zoom-in-95 duration-500",
                   substance.chip,
                 )}
-                style={{ transform: `scaleY(${0.55 + Math.min(moles, 2) * 0.22})`, transformOrigin: "bottom" }}
+                style={{
+                  transform: `scaleY(${0.55 + Math.min(moles, 2) * 0.22})`,
+                  transformOrigin: "bottom",
+                }}
               >
                 {substance.formula}
               </div>
@@ -692,7 +794,9 @@ function VisualStage({
               <div className="font-mono text-lg font-black text-emerald-300 drop-shadow-[0_0_8px_rgba(16,185,129,0.6)] sm:text-2xl">
                 {m} × 10<sup className="text-[0.55em]">{e}</sup>
               </div>
-              <span className="text-[10px] text-white/70">{substance.unit} · {substance.unitBn}</span>
+              <span className="text-[10px] text-white/70">
+                {substance.unit} · {substance.unitBn}
+              </span>
             </div>
             <div className="pointer-events-none absolute bottom-1.5 left-2 rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-medium text-white/80 backdrop-blur">
               🔬 Microscopic view
@@ -752,7 +856,14 @@ function ControlsPanel({
         ))}
       </div>
 
-      <Slider min={0} max={2} step={1} value={[moleIdx]} onValueChange={(v) => setMoleIdx(v[0])} className="mt-1" />
+      <Slider
+        min={0}
+        max={2}
+        step={1}
+        value={[moleIdx]}
+        onValueChange={(v) => setMoleIdx(v[0])}
+        className="mt-1"
+      />
 
       {substance && (
         <div className="mt-3 space-y-1.5 rounded-lg border bg-muted/40 p-2 text-[11.5px] leading-relaxed">
@@ -761,7 +872,10 @@ function ControlsPanel({
           </div>
           <div className="font-mono">
             W = n × M<br />
-            <span className="text-muted-foreground">= {moles} × {substance.molarMass}</span><br />
+            <span className="text-muted-foreground">
+              = {moles} × {substance.molarMass}
+            </span>
+            <br />
             <span className="font-bold text-emerald-600 dark:text-emerald-300">
               = {(moles * substance.molarMass).toFixed(2)} g
             </span>
@@ -798,7 +912,12 @@ function DataTable({
           <Row label="Moles (n)" value={`${moles.toFixed(2)} mol`} accent />
           <Row
             label={`Particles (N)`}
-            value={<SciNumber value={particles} className="font-bold text-emerald-600 dark:text-emerald-300" />}
+            value={
+              <SciNumber
+                value={particles}
+                className="font-bold text-emerald-600 dark:text-emerald-300"
+              />
+            }
           />
           <div className="mt-2 rounded-lg border border-dashed p-2 text-[10.5px] text-muted-foreground">
             Nₐ = 6.023 × 10²³ /mol · {substance.unit}
@@ -811,11 +930,21 @@ function DataTable({
   );
 }
 
-function Row({ label, value, accent }: { label: string; value: React.ReactNode; accent?: boolean }) {
+function Row({
+  label,
+  value,
+  accent,
+}: {
+  label: string;
+  value: React.ReactNode;
+  accent?: boolean;
+}) {
   return (
     <div className="flex items-center justify-between gap-2 border-b border-dashed border-border/60 pb-1 last:border-0">
       <span className="text-muted-foreground">{label}</span>
-      <span className={cn("tabular-nums", accent && "font-bold text-emerald-600 dark:text-emerald-300")}>
+      <span
+        className={cn("tabular-nums", accent && "font-bold text-emerald-600 dark:text-emerald-300")}
+      >
         {value}
       </span>
     </div>
@@ -823,7 +952,15 @@ function Row({ label, value, accent }: { label: string; value: React.ReactNode; 
 }
 
 // ── AI Hint ─────────────────────────────────────────────────
-function AiHint({ substance, moles, mass }: { substance: Substance | null; moles: number; mass: number }) {
+function AiHint({
+  substance,
+  moles,
+  mass,
+}: {
+  substance: Substance | null;
+  moles: number;
+  mass: number;
+}) {
   if (!substance) return null;
   const hint = buildHint(substance, moles, mass);
   return (
@@ -910,7 +1047,12 @@ function MolarityMode({ onBack: _onBack }: { onBack: () => void }) {
       <main className="flex-1 p-2 pb-24 sm:p-3 lg:min-h-0 lg:overflow-hidden lg:pb-3">
         <div className="flex h-full flex-col gap-3 lg:grid lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.4fr)_minmax(0,0.95fr)] lg:grid-rows-1 lg:gap-3">
           {/* EQUIPMENT / SOLUTE */}
-          <aside className={cn("flex-col gap-3 lg:order-1 lg:flex lg:min-h-0 lg:overflow-y-auto lg:pr-1", tab === "equipment" ? "flex" : "hidden lg:flex")}>
+          <aside
+            className={cn(
+              "flex-col gap-3 lg:order-1 lg:flex lg:min-h-0 lg:overflow-y-auto lg:pr-1",
+              tab === "equipment" ? "flex" : "hidden lg:flex",
+            )}
+          >
             <Card className="p-3">
               <div className="mb-2 flex items-center gap-2">
                 <Beaker className="h-4 w-4 text-sky-500" />
@@ -918,7 +1060,9 @@ function MolarityMode({ onBack: _onBack }: { onBack: () => void }) {
               </div>
               <div className="flex items-center gap-3 rounded-xl border border-sky-500/40 bg-sky-500/5 p-3">
                 <div className="relative h-12 w-12 overflow-hidden rounded-xl bg-gradient-to-br from-cyan-400 to-blue-700 ring-1 ring-cyan-200/60 shadow-inner">
-                  <span className="absolute inset-0 grid place-items-center text-[10px] font-black text-white drop-shadow">CuSO₄</span>
+                  <span className="absolute inset-0 grid place-items-center text-[10px] font-black text-white drop-shadow">
+                    CuSO₄
+                  </span>
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="text-sm font-bold">তুঁতে (CuSO₄)</div>
@@ -929,16 +1073,32 @@ function MolarityMode({ onBack: _onBack }: { onBack: () => void }) {
                 <div>
                   <div className="mb-1 flex items-center justify-between text-[11px]">
                     <span className="font-semibold">Solute Mass (W)</span>
-                    <span className="rounded bg-sky-500/10 px-1.5 py-0.5 font-bold text-sky-700 dark:text-sky-300 tabular-nums">{massW.toFixed(1)} g</span>
+                    <span className="rounded bg-sky-500/10 px-1.5 py-0.5 font-bold text-sky-700 dark:text-sky-300 tabular-nums">
+                      {massW.toFixed(1)} g
+                    </span>
                   </div>
-                  <Slider min={1} max={40} step={0.5} value={[massW]} onValueChange={(v) => setMassW(v[0])} />
+                  <Slider
+                    min={1}
+                    max={40}
+                    step={0.5}
+                    value={[massW]}
+                    onValueChange={(v) => setMassW(v[0])}
+                  />
                 </div>
                 <div>
                   <div className="mb-1 flex items-center justify-between text-[11px]">
                     <span className="font-semibold">Initial Volume (V₁)</span>
-                    <span className="rounded bg-sky-500/10 px-1.5 py-0.5 font-bold text-sky-700 dark:text-sky-300 tabular-nums">{v1} mL</span>
+                    <span className="rounded bg-sky-500/10 px-1.5 py-0.5 font-bold text-sky-700 dark:text-sky-300 tabular-nums">
+                      {v1} mL
+                    </span>
                   </div>
-                  <Slider min={50} max={250} step={10} value={[v1]} onValueChange={(v) => setV1Safe(v[0])} />
+                  <Slider
+                    min={50}
+                    max={250}
+                    step={10}
+                    value={[v1]}
+                    onValueChange={(v) => setV1Safe(v[0])}
+                  />
                 </div>
               </div>
             </Card>
@@ -950,9 +1110,17 @@ function MolarityMode({ onBack: _onBack }: { onBack: () => void }) {
               </div>
               <div className="mb-2 flex items-center justify-between text-[11px]">
                 <span className="font-semibold">Final Volume (V₂)</span>
-                <span className="rounded bg-sky-500/10 px-1.5 py-0.5 font-bold text-sky-700 dark:text-sky-300 tabular-nums">{v2} mL</span>
+                <span className="rounded bg-sky-500/10 px-1.5 py-0.5 font-bold text-sky-700 dark:text-sky-300 tabular-nums">
+                  {v2} mL
+                </span>
               </div>
-              <Slider min={v1} max={500} step={10} value={[v2]} onValueChange={(v) => setV2(v[0])} />
+              <Slider
+                min={v1}
+                max={500}
+                step={10}
+                value={[v2]}
+                onValueChange={(v) => setV2(v[0])}
+              />
               <div className="mt-3 grid grid-cols-3 gap-1.5">
                 {[25, 50, 100].map((n) => (
                   <button
@@ -971,15 +1139,28 @@ function MolarityMode({ onBack: _onBack }: { onBack: () => void }) {
           </aside>
 
           {/* CENTER — VISUAL */}
-          <section className={cn("relative min-h-0 min-w-0 lg:order-2 lg:flex lg:flex-col", tab === "lab" ? "flex flex-col" : "hidden lg:flex")}>
-            <div className="flex w-full flex-col items-center justify-center gap-3" style={{ height: "min(70vh, 460px)" }}>
+          <section
+            className={cn(
+              "relative min-h-0 min-w-0 lg:order-2 lg:flex lg:flex-col",
+              tab === "lab" ? "flex flex-col" : "hidden lg:flex",
+            )}
+          >
+            <div
+              className="flex w-full flex-col items-center justify-center gap-3"
+              style={{ height: "min(70vh, 460px)" }}
+            >
               <MolarityVisual s1={s1} s2={s2} v1={v1} v2={v2} sat={sat} massW={massW} />
             </div>
             <MolarityHint s1={s1} s2={s2} v1={v1} v2={v2} />
           </section>
 
           {/* RIGHT — MATH / DATA */}
-          <aside className={cn("flex-col gap-3 lg:order-3 lg:flex lg:min-h-0 lg:overflow-y-auto lg:pl-1", tab === "data" ? "flex" : "hidden lg:flex")}>
+          <aside
+            className={cn(
+              "flex-col gap-3 lg:order-3 lg:flex lg:min-h-0 lg:overflow-y-auto lg:pl-1",
+              tab === "data" ? "flex" : "hidden lg:flex",
+            )}
+          >
             <Card className="p-3">
               <div className="mb-2 flex items-center gap-2">
                 <TrendingUp className="h-4 w-4 text-sky-500" />
@@ -987,16 +1168,32 @@ function MolarityMode({ onBack: _onBack }: { onBack: () => void }) {
               </div>
               <div className="space-y-2 text-[11.5px]">
                 <div className="rounded-lg border bg-muted/40 p-2 font-mono leading-relaxed">
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Initial Molarity</div>
-                  S₁ = (W × 1000) / (M × V₁)<br />
-                  <span className="text-muted-foreground">= ({massW} × 1000) / (160 × {v1})</span><br />
-                  <span className="font-bold text-sky-600 dark:text-sky-300">= {s1.toFixed(4)} mol/L</span>
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                    Initial Molarity
+                  </div>
+                  S₁ = (W × 1000) / (M × V₁)
+                  <br />
+                  <span className="text-muted-foreground">
+                    = ({massW} × 1000) / (160 × {v1})
+                  </span>
+                  <br />
+                  <span className="font-bold text-sky-600 dark:text-sky-300">
+                    = {s1.toFixed(4)} mol/L
+                  </span>
                 </div>
                 <div className="rounded-lg border bg-muted/40 p-2 font-mono leading-relaxed">
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">After Dilution</div>
-                  S₁V₁ = S₂V₂ → S₂ = S₁V₁ / V₂<br />
-                  <span className="text-muted-foreground">= ({s1.toFixed(3)} × {v1}) / {v2}</span><br />
-                  <span className="font-bold text-sky-600 dark:text-sky-300">= {s2.toFixed(4)} mol/L</span>
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                    After Dilution
+                  </div>
+                  S₁V₁ = S₂V₂ → S₂ = S₁V₁ / V₂
+                  <br />
+                  <span className="text-muted-foreground">
+                    = ({s1.toFixed(3)} × {v1}) / {v2}
+                  </span>
+                  <br />
+                  <span className="font-bold text-sky-600 dark:text-sky-300">
+                    = {s2.toFixed(4)} mol/L
+                  </span>
                 </div>
               </div>
             </Card>
@@ -1020,7 +1217,9 @@ function MolarityMode({ onBack: _onBack }: { onBack: () => void }) {
               <div className="mt-3">
                 <div className="mb-1 flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
                   <span>Molarity Gauge</span>
-                  <span className="text-sky-600 dark:text-sky-300 tabular-nums">{s2.toFixed(3)} M</span>
+                  <span className="text-sky-600 dark:text-sky-300 tabular-nums">
+                    {s2.toFixed(3)} M
+                  </span>
                 </div>
                 <div className="relative h-2 overflow-hidden rounded-full bg-muted">
                   <div
@@ -1032,7 +1231,11 @@ function MolarityMode({ onBack: _onBack }: { onBack: () => void }) {
             </Card>
 
             <Button
-              onClick={() => toast.success("Lab Report তৈরি ✓", { description: `S₂ = ${s2.toFixed(4)} mol/L in V₂ = ${v2} mL` })}
+              onClick={() =>
+                toast.success("Lab Report তৈরি ✓", {
+                  description: `S₂ = ${s2.toFixed(4)} mol/L in V₂ = ${v2} mL`,
+                })
+              }
               className="w-full gap-2 bg-gradient-to-r from-sky-500 to-blue-600 text-white shadow-md hover:opacity-90"
             >
               <FileText className="h-4 w-4" /> Generate Lab Report
@@ -1043,11 +1246,13 @@ function MolarityMode({ onBack: _onBack }: { onBack: () => void }) {
 
       <nav className="fixed inset-x-0 bottom-0 z-30 border-t bg-background/95 backdrop-blur-xl lg:hidden">
         <div className="mx-auto grid max-w-md grid-cols-3">
-          {([
-            { k: "equipment", label: "Equipment", icon: Beaker },
-            { k: "lab", label: "Lab", icon: FlaskConical },
-            { k: "data", label: "Data", icon: TrendingUp },
-          ] as const).map(({ k, label, icon: Icon }) => (
+          {(
+            [
+              { k: "equipment", label: "Equipment", icon: Beaker },
+              { k: "lab", label: "Lab", icon: FlaskConical },
+              { k: "data", label: "Data", icon: TrendingUp },
+            ] as const
+          ).map(({ k, label, icon: Icon }) => (
             <button
               key={k}
               onClick={() => setTab(k)}
@@ -1070,8 +1275,20 @@ function MolarityMode({ onBack: _onBack }: { onBack: () => void }) {
 const ION_PAIRS = 22;
 
 function MolarityVisual({
-  s1: _s1, s2, v1: _v1, v2, sat, massW,
-}: { s1: number; s2: number; v1: number; v2: number; sat: number; massW: number }) {
+  s1: _s1,
+  s2,
+  v1: _v1,
+  v2,
+  sat,
+  massW,
+}: {
+  s1: number;
+  s2: number;
+  v1: number;
+  v2: number;
+  sat: number;
+  massW: number;
+}) {
   // Flask visual: fill height maps to v2 (max 500 mL).
   const fillPct = Math.min(1, Math.max(0.08, v2 / 500));
   // Liquid color: 0.1M → faint sky · 1.0M → rich cobalt.
@@ -1130,7 +1347,15 @@ function flaskBoundsAt(y: number): { xMin: number; xMax: number } {
   return { xMin: 42 + t * 18, xMax: 158 - t * 18 };
 }
 
-interface Ion { x: number; y: number; vx: number; vy: number; kind: "cu" | "so4"; r: number; seed: number }
+interface Ion {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  kind: "cu" | "so4";
+  r: number;
+  seed: number;
+}
 
 function FlaskWithIons({
   fillPct,
@@ -1138,7 +1363,13 @@ function FlaskWithIons({
   liquidDeep,
   fillOpacity,
   sat,
-}: { fillPct: number; liquid: string; liquidDeep: string; fillOpacity: number; sat: number }) {
+}: {
+  fillPct: number;
+  liquid: string;
+  liquidDeep: string;
+  fillOpacity: number;
+  sat: number;
+}) {
   const ionsRef = useRef<Ion[]>([]);
   const [, force] = useState(0);
 
@@ -1185,8 +1416,14 @@ function FlaskWithIons({
         // Vertical: between liquidTopY (+ ion r) and 238 (- ion r)
         const yMin = liquidTopY + p.r + 2;
         const yMax = 238 - p.r;
-        if (p.y < yMin) { p.y = yMin; p.vy = Math.abs(p.vy) * 0.6; }
-        if (p.y > yMax) { p.y = yMax; p.vy = -Math.abs(p.vy) * 0.6; }
+        if (p.y < yMin) {
+          p.y = yMin;
+          p.vy = Math.abs(p.vy) * 0.6;
+        }
+        if (p.y > yMax) {
+          p.y = yMax;
+          p.vy = -Math.abs(p.vy) * 0.6;
+        }
 
         // Horizontal: bounded by flask walls at current y
         const b = flaskBoundsAt(p.y);
@@ -1196,8 +1433,14 @@ function FlaskWithIons({
           p.x = (b.xMin + b.xMax) / 2;
           p.vx = 0;
         } else {
-          if (p.x < xMin) { p.x = xMin; p.vx = Math.abs(p.vx) * 0.6; }
-          if (p.x > xMax) { p.x = xMax; p.vx = -Math.abs(p.vx) * 0.6; }
+          if (p.x < xMin) {
+            p.x = xMin;
+            p.vx = Math.abs(p.vx) * 0.6;
+          }
+          if (p.x > xMax) {
+            p.x = xMax;
+            p.vx = -Math.abs(p.vx) * 0.6;
+          }
         }
       }
       force((n) => (n + 1) % 1000000);
@@ -1208,7 +1451,11 @@ function FlaskWithIons({
   }, [liquidTopY, sat]);
 
   return (
-    <svg viewBox="0 0 200 260" className="absolute inset-0 mx-auto h-full" preserveAspectRatio="xMidYMid meet">
+    <svg
+      viewBox="0 0 200 260"
+      className="absolute inset-0 mx-auto h-full"
+      preserveAspectRatio="xMidYMid meet"
+    >
       <defs>
         <linearGradient id="glass" x1="0" x2="1">
           <stop offset="0" stopColor="rgba(255,255,255,0.28)" />
@@ -1217,7 +1464,11 @@ function FlaskWithIons({
         </linearGradient>
         <linearGradient id="liq" x1="0" x2="0" y1="0" y2="1">
           <stop offset="0" stopColor={liquid} stopOpacity={fillOpacity} />
-          <stop offset="1" stopColor={liquidDeep} stopOpacity={Math.min(0.98, fillOpacity + 0.08)} />
+          <stop
+            offset="1"
+            stopColor={liquidDeep}
+            stopOpacity={Math.min(0.98, fillOpacity + 0.08)}
+          />
         </linearGradient>
         <clipPath id="flaskClip">
           <path d="M85 30 L85 100 L40 220 Q40 240 60 240 L140 240 Q160 240 160 220 L115 100 L115 30 Z" />
@@ -1259,11 +1510,26 @@ function FlaskWithIons({
         strokeWidth="1.5"
       />
       {/* neck rim */}
-      <rect x="80" y="24" width="40" height="8" rx="2" fill="rgba(255,255,255,0.4)" stroke="rgba(255,255,255,0.7)" />
+      <rect
+        x="80"
+        y="24"
+        width="40"
+        height="8"
+        rx="2"
+        fill="rgba(255,255,255,0.4)"
+        stroke="rgba(255,255,255,0.7)"
+      />
       {/* graduation ticks */}
       {[0.25, 0.5, 0.75].map((p) => (
         <g key={p}>
-          <line x1="45" x2="55" y1={240 - p * 210} y2={240 - p * 210} stroke="rgba(255,255,255,0.55)" strokeWidth="1" />
+          <line
+            x1="45"
+            x2="55"
+            y1={240 - p * 210}
+            y2={240 - p * 210}
+            stroke="rgba(255,255,255,0.55)"
+            strokeWidth="1"
+          />
           <text x="58" y={240 - p * 210 + 3} fill="rgba(255,255,255,0.6)" fontSize="7">
             {Math.round(p * 500)}
           </text>
@@ -1306,22 +1572,36 @@ interface ElemInfo {
   sym: ElemSym;
   name: string;
   mass: number;
-  color: string;   // atom fill
-  ring: string;    // atom ring / stroke
-  chart: string;   // pie hex
+  color: string; // atom fill
+  ring: string; // atom ring / stroke
+  chart: string; // pie hex
 }
 const ELEMS: Record<ElemSym, ElemInfo> = {
-  C:  { sym: "C",  name: "Carbon",   mass: 12,   color: "#1f2937", ring: "#4b5563", chart: "#374151" },
-  H:  { sym: "H",  name: "Hydrogen", mass: 1,    color: "#67e8f9", ring: "#22d3ee", chart: "#67e8f9" },
-  O:  { sym: "O",  name: "Oxygen",   mass: 16,   color: "#ef4444", ring: "#b91c1c", chart: "#ef4444" },
-  N:  { sym: "N",  name: "Nitrogen", mass: 14,   color: "#3b82f6", ring: "#1d4ed8", chart: "#3b82f6" },
-  S:  { sym: "S",  name: "Sulfur",   mass: 32,   color: "#eab308", ring: "#a16207", chart: "#eab308" },
-  Na: { sym: "Na", name: "Sodium",   mass: 23,   color: "#a855f7", ring: "#7e22ce", chart: "#a855f7" },
-  Cl: { sym: "Cl", name: "Chlorine", mass: 35.5, color: "#22c55e", ring: "#15803d", chart: "#22c55e" },
-  K:  { sym: "K",  name: "Potassium",mass: 39,   color: "#f472b6", ring: "#db2777", chart: "#f472b6" },
-  Ca: { sym: "Ca", name: "Calcium",  mass: 40,   color: "#94a3b8", ring: "#475569", chart: "#94a3b8" },
-  Fe: { sym: "Fe", name: "Iron",     mass: 56,   color: "#d97706", ring: "#92400e", chart: "#d97706" },
-  P:  { sym: "P",  name: "Phosphorus",mass: 31,  color: "#fb923c", ring: "#c2410c", chart: "#fb923c" },
+  C: { sym: "C", name: "Carbon", mass: 12, color: "#1f2937", ring: "#4b5563", chart: "#374151" },
+  H: { sym: "H", name: "Hydrogen", mass: 1, color: "#67e8f9", ring: "#22d3ee", chart: "#67e8f9" },
+  O: { sym: "O", name: "Oxygen", mass: 16, color: "#ef4444", ring: "#b91c1c", chart: "#ef4444" },
+  N: { sym: "N", name: "Nitrogen", mass: 14, color: "#3b82f6", ring: "#1d4ed8", chart: "#3b82f6" },
+  S: { sym: "S", name: "Sulfur", mass: 32, color: "#eab308", ring: "#a16207", chart: "#eab308" },
+  Na: { sym: "Na", name: "Sodium", mass: 23, color: "#a855f7", ring: "#7e22ce", chart: "#a855f7" },
+  Cl: {
+    sym: "Cl",
+    name: "Chlorine",
+    mass: 35.5,
+    color: "#22c55e",
+    ring: "#15803d",
+    chart: "#22c55e",
+  },
+  K: { sym: "K", name: "Potassium", mass: 39, color: "#f472b6", ring: "#db2777", chart: "#f472b6" },
+  Ca: { sym: "Ca", name: "Calcium", mass: 40, color: "#94a3b8", ring: "#475569", chart: "#94a3b8" },
+  Fe: { sym: "Fe", name: "Iron", mass: 56, color: "#d97706", ring: "#92400e", chart: "#d97706" },
+  P: {
+    sym: "P",
+    name: "Phosphorus",
+    mass: 31,
+    color: "#fb923c",
+    ring: "#c2410c",
+    chart: "#fb923c",
+  },
 };
 
 interface Compound {
@@ -1351,7 +1631,10 @@ const PRESETS: Compound[] = [
       { sym: "H", x: 0.28, y: 0.72, r: 20 },
       { sym: "H", x: 0.72, y: 0.72, r: 20 },
     ],
-    bonds: [[0, 1], [0, 2]],
+    bonds: [
+      [0, 1],
+      [0, 2],
+    ],
   },
   {
     key: "co2",
@@ -1365,10 +1648,13 @@ const PRESETS: Compound[] = [
     ],
     layout: [
       { sym: "O", x: 0.18, y: 0.5, r: 30 },
-      { sym: "C", x: 0.5,  y: 0.5, r: 28 },
+      { sym: "C", x: 0.5, y: 0.5, r: 28 },
       { sym: "O", x: 0.82, y: 0.5, r: 30 },
     ],
-    bonds: [[0, 1], [1, 2]],
+    bonds: [
+      [0, 1],
+      [1, 2],
+    ],
   },
   {
     key: "glucose",
@@ -1384,19 +1670,39 @@ const PRESETS: Compound[] = [
     // hexagonal-ish ring: 6 C's with O's / H's around
     layout: (() => {
       const items: { sym: ElemSym; x: number; y: number; r: number }[] = [];
-      const cx = 0.5, cy = 0.5, R = 0.24;
+      const cx = 0.5,
+        cy = 0.5,
+        R = 0.24;
       for (let i = 0; i < 6; i++) {
-        const a = (-Math.PI / 2) + (i * Math.PI) / 3;
+        const a = -Math.PI / 2 + (i * Math.PI) / 3;
         items.push({ sym: "C", x: cx + Math.cos(a) * R, y: cy + Math.sin(a) * R, r: 20 });
       }
       // outer O's
       for (let i = 0; i < 6; i++) {
-        const a = (-Math.PI / 2) + (i * Math.PI) / 3;
-        items.push({ sym: "O", x: cx + Math.cos(a) * (R + 0.16), y: cy + Math.sin(a) * (R + 0.16), r: 14 });
+        const a = -Math.PI / 2 + (i * Math.PI) / 3;
+        items.push({
+          sym: "O",
+          x: cx + Math.cos(a) * (R + 0.16),
+          y: cy + Math.sin(a) * (R + 0.16),
+          r: 14,
+        });
       }
       return items;
     })(),
-    bonds: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,0],[0,6],[1,7],[2,8],[3,9],[4,10],[5,11]],
+    bonds: [
+      [0, 1],
+      [1, 2],
+      [2, 3],
+      [3, 4],
+      [4, 5],
+      [5, 0],
+      [0, 6],
+      [1, 7],
+      [2, 8],
+      [3, 9],
+      [4, 10],
+      [5, 11],
+    ],
   },
 ];
 
@@ -1435,14 +1741,19 @@ function EmpiricalMode(_props: { onBack: () => void }) {
     let mult = 1;
     for (let m = 1; m <= 6; m++) {
       const ok = ratios.every((r) => Math.abs(r.ratio * m - Math.round(r.ratio * m)) < 0.08);
-      if (ok) { mult = m; break; }
+      if (ok) {
+        mult = m;
+        break;
+      }
     }
     const ints = ratios.map((r) => ({ ...r, n: Math.max(1, Math.round(r.ratio * mult)) }));
-    const empFormula = ints.map((r) => r.n === 1 ? r.sym : `${r.sym}${sub(r.n)}`).join("");
+    const empFormula = ints.map((r) => (r.n === 1 ? r.sym : `${r.sym}${sub(r.n)}`)).join("");
     const empMass = ints.reduce((a, r) => a + ELEMS[r.sym].mass * r.n, 0);
     const mm = parseFloat(molarMass) || 0;
     const n = mm > 0 ? Math.max(1, Math.round(mm / empMass)) : 1;
-    const molFormula = ints.map((r) => (r.n * n) === 1 ? r.sym : `${r.sym}${sub(r.n * n)}`).join("");
+    const molFormula = ints
+      .map((r) => (r.n * n === 1 ? r.sym : `${r.sym}${sub(r.n * n)}`))
+      .join("");
     return { moles, ratios, ints, empFormula, empMass, n, molFormula, mm };
   }, [rows, molarMass]);
 
@@ -1452,17 +1763,21 @@ function EmpiricalMode(_props: { onBack: () => void }) {
     <main className="flex-1 p-2 pb-24 sm:p-3 lg:min-h-0 lg:overflow-hidden lg:pb-3">
       {/* Mobile tabs */}
       <div className="mb-2 grid grid-cols-3 gap-1 rounded-xl border bg-muted/60 p-1 lg:hidden">
-        {([
-          { k: "compounds",  label: "Compounds", icon: FlaskConical },
-          { k: "visualizer", label: "Visualizer", icon: Atom },
-          { k: "formula",    label: "Formula",   icon: FileText },
-        ] as const).map(({ k, label, icon: Icon }) => (
+        {(
+          [
+            { k: "compounds", label: "Compounds", icon: FlaskConical },
+            { k: "visualizer", label: "Visualizer", icon: Atom },
+            { k: "formula", label: "Formula", icon: FileText },
+          ] as const
+        ).map(({ k, label, icon: Icon }) => (
           <button
             key={k}
             onClick={() => setTab(k)}
             className={cn(
               "flex items-center justify-center gap-1 rounded-lg px-2 py-1.5 text-[11px] font-semibold transition",
-              tab === k ? "bg-gradient-to-br from-fuchsia-500 to-violet-600 text-white shadow" : "text-muted-foreground",
+              tab === k
+                ? "bg-gradient-to-br from-fuchsia-500 to-violet-600 text-white shadow"
+                : "text-muted-foreground",
             )}
           >
             <Icon className="h-3.5 w-3.5" />
@@ -1473,7 +1788,12 @@ function EmpiricalMode(_props: { onBack: () => void }) {
 
       <div className="flex flex-col gap-2 lg:grid lg:h-[calc(100dvh-140px)] lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.35fr)_minmax(0,1fr)] lg:gap-3">
         {/* LEFT — Compounds & percent inputs */}
-        <aside className={cn("flex flex-col gap-2 lg:min-h-0 lg:overflow-y-auto lg:pr-1", tab !== "compounds" && "hidden lg:flex")}>
+        <aside
+          className={cn(
+            "flex flex-col gap-2 lg:min-h-0 lg:overflow-y-auto lg:pr-1",
+            tab !== "compounds" && "hidden lg:flex",
+          )}
+        >
           <Card className="p-3 shadow-sm">
             <div className="mb-2 flex items-center gap-2">
               <div className="grid h-7 w-7 place-items-center rounded-lg bg-gradient-to-br from-fuchsia-500 to-violet-600 text-white shadow">
@@ -1525,7 +1845,9 @@ function EmpiricalMode(_props: { onBack: () => void }) {
                 variant="outline"
                 className={cn(
                   "h-5 px-1.5 text-[10px]",
-                  totalOk ? "border-emerald-400 text-emerald-600" : "border-amber-400 text-amber-600",
+                  totalOk
+                    ? "border-emerald-400 text-emerald-600"
+                    : "border-amber-400 text-amber-600",
                 )}
               >
                 Σ = {total.toFixed(2)}%
@@ -1544,7 +1866,9 @@ function EmpiricalMode(_props: { onBack: () => void }) {
                     className="h-8 rounded-md border bg-background px-1.5 text-xs font-bold"
                   >
                     {(Object.keys(ELEMS) as ElemSym[]).map((s) => (
-                      <option key={s} value={s}>{s}</option>
+                      <option key={s} value={s}>
+                        {s}
+                      </option>
                     ))}
                   </select>
                   <input
@@ -1595,7 +1919,9 @@ function EmpiricalMode(_props: { onBack: () => void }) {
         </aside>
 
         {/* CENTER — visualizer */}
-        <section className={cn("flex min-h-0 flex-col gap-2", tab !== "visualizer" && "hidden lg:flex")}>
+        <section
+          className={cn("flex min-h-0 flex-col gap-2", tab !== "visualizer" && "hidden lg:flex")}
+        >
           <Card className="relative flex flex-1 flex-col overflow-hidden border-fuchsia-200/60 bg-gradient-to-br from-white via-fuchsia-50/40 to-violet-50/60 shadow-sm dark:from-slate-950 dark:via-fuchsia-950/20 dark:to-violet-950/30">
             <div className="flex items-center justify-between border-b border-fuchsia-200/50 bg-white/50 px-3 py-1.5 backdrop-blur dark:bg-slate-900/40">
               <div className="text-[11px] font-black">{compound.nameBn}</div>
@@ -1622,7 +1948,12 @@ function EmpiricalMode(_props: { onBack: () => void }) {
         </section>
 
         {/* RIGHT — Formula lab */}
-        <aside className={cn("flex flex-col gap-2 lg:min-h-0 lg:overflow-y-auto lg:pl-1", tab !== "formula" && "hidden lg:flex")}>
+        <aside
+          className={cn(
+            "flex flex-col gap-2 lg:min-h-0 lg:overflow-y-auto lg:pl-1",
+            tab !== "formula" && "hidden lg:flex",
+          )}
+        >
           <Card className="p-3 shadow-sm">
             <div className="mb-2 flex items-center gap-2">
               <div className="grid h-7 w-7 place-items-center rounded-lg bg-gradient-to-br from-fuchsia-500 to-violet-600 text-white shadow">
@@ -1640,9 +1971,13 @@ function EmpiricalMode(_props: { onBack: () => void }) {
                 <StepBlock n={1} title="Percentage ÷ Atomic Mass">
                   <div className="space-y-1 font-mono">
                     {steps.moles.map((m) => (
-                      <div key={m.sym} className="flex items-center justify-between rounded bg-muted/50 px-2 py-1">
+                      <div
+                        key={m.sym}
+                        className="flex items-center justify-between rounded bg-muted/50 px-2 py-1"
+                      >
                         <span>
-                          <b style={{ color: ELEMS[m.sym].color }}>{m.sym}</b>: {m.pct.toFixed(2)} ÷ {ELEMS[m.sym].mass}
+                          <b style={{ color: ELEMS[m.sym].color }}>{m.sym}</b>: {m.pct.toFixed(2)} ÷{" "}
+                          {ELEMS[m.sym].mass}
                         </span>
                         <span className="font-bold tabular-nums">= {m.mol.toFixed(4)}</span>
                       </div>
@@ -1653,9 +1988,13 @@ function EmpiricalMode(_props: { onBack: () => void }) {
                 <StepBlock n={2} title="Divide by smallest → integer ratio">
                   <div className="space-y-1 font-mono">
                     {steps.ints.map((r) => (
-                      <div key={r.sym} className="flex items-center justify-between rounded bg-muted/50 px-2 py-1">
+                      <div
+                        key={r.sym}
+                        className="flex items-center justify-between rounded bg-muted/50 px-2 py-1"
+                      >
                         <span>
-                          <b style={{ color: ELEMS[r.sym].color }}>{r.sym}</b>: {r.mol.toFixed(4)} ÷ {Math.min(...steps.moles.map((x) => x.mol)).toFixed(4)}
+                          <b style={{ color: ELEMS[r.sym].color }}>{r.sym}</b>: {r.mol.toFixed(4)} ÷{" "}
+                          {Math.min(...steps.moles.map((x) => x.mol)).toFixed(4)}
                         </span>
                         <span className="font-bold tabular-nums">≈ {r.n}</span>
                       </div>
@@ -1698,15 +2037,37 @@ function EmpiricalMode(_props: { onBack: () => void }) {
 
 // Subscript helper
 function sub(n: number): string {
-  const map: Record<string, string> = { "0":"₀","1":"₁","2":"₂","3":"₃","4":"₄","5":"₅","6":"₆","7":"₇","8":"₈","9":"₉" };
-  return String(n).split("").map((c) => map[c] ?? c).join("");
+  const map: Record<string, string> = {
+    "0": "₀",
+    "1": "₁",
+    "2": "₂",
+    "3": "₃",
+    "4": "₄",
+    "5": "₅",
+    "6": "₆",
+    "7": "₇",
+    "8": "₈",
+    "9": "₉",
+  };
+  return String(n)
+    .split("")
+    .map((c) => map[c] ?? c)
+    .join("");
 }
 
 function FormulaText({ text, className }: { text: string; className?: string }) {
   return <span className={cn("tracking-wide", className)}>{text}</span>;
 }
 
-function StepBlock({ n, title, children }: { n: number; title: string; children: React.ReactNode }) {
+function StepBlock({
+  n,
+  title,
+  children,
+}: {
+  n: number;
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="rounded-lg border border-fuchsia-200/50 bg-white/60 p-2 dark:bg-slate-900/40">
       <div className="mb-1.5 flex items-center gap-1.5">
@@ -1779,7 +2140,8 @@ function MoleculeAssembly({ compound }: { compound: Compound }) {
   }, [compound.key]);
 
   // Container size measured via viewBox → use a fixed 400x300 coord space
-  const W = 400, H = 300;
+  const W = 400,
+    H = 300;
   return (
     <div className="absolute inset-0">
       <svg viewBox={`0 0 ${W} ${H}`} className="h-full w-full">
@@ -1801,8 +2163,10 @@ function MoleculeAssembly({ compound }: { compound: Compound }) {
             return (
               <line
                 key={i}
-                x1={A.x * W} y1={A.y * H}
-                x2={B.x * W} y2={B.y * H}
+                x1={A.x * W}
+                y1={A.y * H}
+                x2={B.x * W}
+                y2={B.y * H}
                 stroke="hsl(var(--foreground) / 0.35)"
                 strokeWidth={3}
                 strokeLinecap="round"
@@ -1829,13 +2193,24 @@ function MoleculeAssembly({ compound }: { compound: Compound }) {
                 opacity: assembled ? 1 : 0,
               }}
             >
-              <circle r={a.r} fill={`url(#atom-${a.sym})`} stroke={ELEMS[a.sym].ring} strokeWidth={1.5} />
+              <circle
+                r={a.r}
+                fill={`url(#atom-${a.sym})`}
+                stroke={ELEMS[a.sym].ring}
+                strokeWidth={1.5}
+              />
               <text
                 textAnchor="middle"
                 dominantBaseline="central"
                 fontSize={a.r * 0.9}
                 fontWeight={900}
-                fill={a.sym === "H" || a.sym === "C" && ELEMS.C.color === "#1f2937" ? (a.sym === "H" ? "#0e7490" : "#ffffff") : "#ffffff"}
+                fill={
+                  a.sym === "H" || (a.sym === "C" && ELEMS.C.color === "#1f2937")
+                    ? a.sym === "H"
+                      ? "#0e7490"
+                      : "#ffffff"
+                    : "#ffffff"
+                }
                 style={{ pointerEvents: "none" }}
               >
                 {a.sym}
@@ -1846,7 +2221,10 @@ function MoleculeAssembly({ compound }: { compound: Compound }) {
       </svg>
       {/* Reassemble button */}
       <button
-        onClick={() => { setAssembled(false); setTimeout(() => setAssembled(true), 60); }}
+        onClick={() => {
+          setAssembled(false);
+          setTimeout(() => setAssembled(true), 60);
+        }}
         className="absolute bottom-2 right-2 flex items-center gap-1 rounded-full border border-fuchsia-400/40 bg-white/80 px-2.5 py-1 text-[10px] font-bold text-fuchsia-700 shadow-sm backdrop-blur transition hover:bg-fuchsia-500 hover:text-white dark:bg-slate-900/70 dark:text-fuchsia-300"
       >
         <Sparkles className="h-3 w-3" /> Re-assemble
@@ -1888,5 +2266,3 @@ function EmpiricalAssistant({
     </div>
   );
 }
-
-

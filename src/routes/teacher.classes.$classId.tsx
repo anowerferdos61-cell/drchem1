@@ -5,12 +5,22 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowLeft, Copy, RefreshCw, Trash2, UserMinus, Users, BarChart3, FileCheck2, ClipboardList, Mic2 } from "lucide-react";
+import {
+  ArrowLeft,
+  Copy,
+  RefreshCw,
+  Trash2,
+  UserMinus,
+  Users,
+  BarChart3,
+  FileCheck2,
+  ClipboardList,
+  Mic2,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { regenerateClassCode } from "@/lib/teacher.functions";
 import { getClassAssignmentsOverview } from "@/lib/grading.functions";
 import { getClassProgress } from "@/lib/progress.functions";
-
 
 export const Route = createFileRoute("/teacher/classes/$classId")({
   component: ClassDetail,
@@ -71,7 +81,15 @@ function ClassDetail() {
       .eq("class_id", classId)
       .order("joined_at", { ascending: false });
     const ids = (mm ?? []).map((m) => m.student_id);
-    let profilesById = new Map<string, { display_name: string | null; email: string | null; school: string | null; class: string | null }>();
+    let profilesById = new Map<
+      string,
+      {
+        display_name: string | null;
+        email: string | null;
+        school: string | null;
+        class: string | null;
+      }
+    >();
     if (ids.length > 0) {
       const { data: profiles } = await supabase
         .from("profiles")
@@ -114,7 +132,13 @@ function ClassDetail() {
         .in("student_id", ids)
         .not("submitted_at", "is", null);
       for (const a of attempts ?? []) {
-        const cur = agg.get(a.student_id) ?? { submissions: 0, lastSubmitted: null, totalMarks: 0, totalPossible: 0, pending: 0 };
+        const cur = agg.get(a.student_id) ?? {
+          submissions: 0,
+          lastSubmitted: null,
+          totalMarks: 0,
+          totalPossible: 0,
+          pending: 0,
+        };
         cur.submissions += 1;
         cur.totalMarks += Number(a.mcq_score ?? 0) + Number(a.cq_score ?? 0);
         cur.totalPossible += Number(a.mcq_total ?? 0);
@@ -132,7 +156,6 @@ function ClassDetail() {
   useEffect(() => {
     void load();
   }, [load]);
-
 
   const copyCode = () => {
     if (!info) return;
@@ -211,18 +234,34 @@ function ClassDetail() {
 
       <Tabs defaultValue="students" className="w-full">
         <TabsList className="w-full justify-start overflow-x-auto">
-          <TabsTrigger value="students"><Users className="h-4 w-4 mr-1" />Students · ছাত্র</TabsTrigger>
-          <TabsTrigger value="analytics"><BarChart3 className="h-4 w-4 mr-1" />Lab Analytics</TabsTrigger>
-          <TabsTrigger value="reports"><FileCheck2 className="h-4 w-4 mr-1" />Lab Reports</TabsTrigger>
-          <TabsTrigger value="assignments"><ClipboardList className="h-4 w-4 mr-1" />Assignments</TabsTrigger>
-          <TabsTrigger value="viva"><Mic2 className="h-4 w-4 mr-1" />Viva</TabsTrigger>
+          <TabsTrigger value="students">
+            <Users className="h-4 w-4 mr-1" />
+            Students · ছাত্র
+          </TabsTrigger>
+          <TabsTrigger value="analytics">
+            <BarChart3 className="h-4 w-4 mr-1" />
+            Lab Analytics
+          </TabsTrigger>
+          <TabsTrigger value="reports">
+            <FileCheck2 className="h-4 w-4 mr-1" />
+            Lab Reports
+          </TabsTrigger>
+          <TabsTrigger value="assignments">
+            <ClipboardList className="h-4 w-4 mr-1" />
+            Assignments
+          </TabsTrigger>
+          <TabsTrigger value="viva">
+            <Mic2 className="h-4 w-4 mr-1" />
+            Viva
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="students">
           <Card className="overflow-hidden">
             {members.length === 0 ? (
               <div className="p-8 text-center text-sm text-muted-foreground">
-                No students have joined yet. Share the code <span className="font-mono font-bold">{info.class_code}</span>.
+                No students have joined yet. Share the code{" "}
+                <span className="font-mono font-bold">{info.class_code}</span>.
               </div>
             ) : (
               <div className="overflow-x-auto">
@@ -246,7 +285,9 @@ function ClassDetail() {
                       return (
                         <tr key={m.id} className="border-t">
                           <td className="whitespace-nowrap px-4 py-2 font-medium">{name}</td>
-                          <td className="whitespace-nowrap px-4 py-2 text-muted-foreground">{m.email ?? "—"}</td>
+                          <td className="whitespace-nowrap px-4 py-2 text-muted-foreground">
+                            {m.email ?? "—"}
+                          </td>
                           <td className="whitespace-nowrap px-4 py-2 text-muted-foreground">
                             {[m.school, m.class].filter(Boolean).join(" · ") || "—"}
                           </td>
@@ -255,7 +296,9 @@ function ClassDetail() {
                               <span>
                                 {a.submissions}
                                 {a.pending > 0 && (
-                                  <span className="ml-1 text-xs text-amber-600">({a.pending} pending)</span>
+                                  <span className="ml-1 text-xs text-amber-600">
+                                    ({a.pending} pending)
+                                  </span>
                                 )}
                               </span>
                             ) : (
@@ -266,9 +309,11 @@ function ClassDetail() {
                             {a?.lastSubmitted ? new Date(a.lastSubmitted).toLocaleString() : "—"}
                           </td>
                           <td className="whitespace-nowrap px-4 py-2 font-medium">
-                            {a && a.submissions > 0
-                              ? `${a.totalMarks}${a.totalPossible ? ` / ${a.totalPossible}${a.pending > 0 ? "+" : ""}` : ""}`
-                              : <span className="font-normal text-muted-foreground">—</span>}
+                            {a && a.submissions > 0 ? (
+                              `${a.totalMarks}${a.totalPossible ? ` / ${a.totalPossible}${a.pending > 0 ? "+" : ""}` : ""}`
+                            ) : (
+                              <span className="font-normal text-muted-foreground">—</span>
+                            )}
                           </td>
                           <td className="whitespace-nowrap px-4 py-2 text-muted-foreground">
                             {new Date(m.joined_at).toLocaleDateString()}
@@ -285,7 +330,6 @@ function ClassDetail() {
                         </tr>
                       );
                     })}
-
                   </tbody>
                 </table>
               </div>
@@ -325,7 +369,11 @@ interface OverviewSet {
   due_at: string | null;
   question_count: number;
 }
-interface OverviewMember { student_id: string; name: string; email: string | null }
+interface OverviewMember {
+  student_id: string;
+  name: string;
+  email: string | null;
+}
 interface OverviewAttempt {
   id: string;
   set_id: string;
@@ -359,14 +407,19 @@ function AssignmentsTab({ classId, label }: { classId: string; label: string }) 
     return (
       <Card className="p-8 text-center text-sm text-muted-foreground space-y-2">
         <p>এই ক্লাসে এখনও কোনো পরীক্ষা publish করা হয়নি।</p>
-        <Button asChild size="sm"><Link to="/teacher/questions/new">+ Create Test</Link></Button>
+        <Button asChild size="sm">
+          <Link to="/teacher/questions/new">+ Create Test</Link>
+        </Button>
       </Card>
     );
   }
 
   return (
     <div className="space-y-3">
-      <p className="text-xs text-muted-foreground">{label} · {sets.length} test{sets.length === 1 ? "" : "s"} · {members.length} student{members.length === 1 ? "" : "s"}</p>
+      <p className="text-xs text-muted-foreground">
+        {label} · {sets.length} test{sets.length === 1 ? "" : "s"} · {members.length} student
+        {members.length === 1 ? "" : "s"}
+      </p>
       {sets.map((s) => {
         const setAttempts = attempts.filter((a) => a.set_id === s.id);
         const submittedCount = setAttempts.filter((a) => a.submitted_at).length;
@@ -387,11 +440,14 @@ function AssignmentsTab({ classId, label }: { classId: string; label: string }) 
               <div className="min-w-0">
                 <h3 className="font-semibold truncate">{s.title}</h3>
                 <p className="text-xs text-muted-foreground">
-                  {s.chapter} · {s.question_type.toUpperCase()} · {s.difficulty} · {s.question_count} প্রশ্ন
+                  {s.chapter} · {s.question_type.toUpperCase()} · {s.difficulty} ·{" "}
+                  {s.question_count} প্রশ্ন
                 </p>
               </div>
               <div className="text-right shrink-0">
-                <p className="text-sm font-medium">{submittedCount} / {members.length} submitted</p>
+                <p className="text-sm font-medium">
+                  {submittedCount} / {members.length} submitted
+                </p>
                 <p className="text-xs text-muted-foreground">Avg MCQ · {avgMcq}</p>
               </div>
             </button>
@@ -412,20 +468,37 @@ function AssignmentsTab({ classId, label }: { classId: string; label: string }) 
                       <tr key={member.student_id} className="border-t">
                         <td className="px-4 py-2 font-medium">{member.name}</td>
                         <td className="px-4 py-2">
-                          {attempt?.submitted_at ? `${attempt.mcq_score} / ${attempt.mcq_total}` : <span className="text-muted-foreground">—</span>}
+                          {attempt?.submitted_at ? (
+                            `${attempt.mcq_score} / ${attempt.mcq_total}`
+                          ) : (
+                            <span className="text-muted-foreground">—</span>
+                          )}
                         </td>
                         <td className="px-4 py-2">
-                          {attempt?.submitted_at
-                            ? (attempt.cq_score == null ? <span className="text-amber-600">Pending</span> : attempt.cq_score)
-                            : <span className="text-muted-foreground">—</span>}
+                          {attempt?.submitted_at ? (
+                            attempt.cq_score == null ? (
+                              <span className="text-amber-600">Pending</span>
+                            ) : (
+                              attempt.cq_score
+                            )
+                          ) : (
+                            <span className="text-muted-foreground">—</span>
+                          )}
                         </td>
                         <td className="px-4 py-2 text-muted-foreground">
-                          {attempt?.submitted_at ? new Date(attempt.submitted_at).toLocaleString() : <span className="text-rose-500">Not attempted</span>}
+                          {attempt?.submitted_at ? (
+                            new Date(attempt.submitted_at).toLocaleString()
+                          ) : (
+                            <span className="text-rose-500">Not attempted</span>
+                          )}
                         </td>
                         <td className="px-4 py-2 text-right">
                           {attempt?.submitted_at ? (
                             <Button asChild size="sm" variant="ghost">
-                              <Link to="/teacher/questions/$setId/attempts/$attemptId" params={{ setId: s.id, attemptId: attempt.id }}>
+                              <Link
+                                to="/teacher/questions/$setId/attempts/$attemptId"
+                                params={{ setId: s.id, attemptId: attempt.id }}
+                              >
                                 খাতা দেখো →
                               </Link>
                             </Button>
@@ -529,4 +602,3 @@ function ClassProgressTab({ classId, label }: { classId: string; label: string }
     </Card>
   );
 }
-

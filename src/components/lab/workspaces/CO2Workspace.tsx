@@ -63,11 +63,7 @@ export default function CO2Workspace({
 
   return (
     <div className="relative h-full w-full">
-      <svg
-        viewBox="0 0 640 500"
-        className="h-full w-full"
-        preserveAspectRatio="xMidYMid meet"
-      >
+      <svg viewBox="0 0 640 500" className="h-full w-full" preserveAspectRatio="xMidYMid meet">
         <defs>
           <linearGradient id="co2-bg" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#f0f9ff" />
@@ -113,9 +109,24 @@ export default function CO2Workspace({
         {placed.round_bottom_flask && (
           <g>
             {/* Neck */}
-            <rect x="240" y="240" width="24" height="50" fill="url(#co2-glass)" stroke="#475569" strokeWidth="1.5" />
+            <rect
+              x="240"
+              y="240"
+              width="24"
+              height="50"
+              fill="url(#co2-glass)"
+              stroke="#475569"
+              strokeWidth="1.5"
+            />
             {/* Round body */}
-            <circle cx="252" cy="340" r="55" fill="url(#co2-glass)" stroke="#475569" strokeWidth="1.5" />
+            <circle
+              cx="252"
+              cy="340"
+              r="55"
+              fill="url(#co2-glass)"
+              stroke="#475569"
+              strokeWidth="1.5"
+            />
 
             {/* Liquid (if acid present) */}
             {placed.acid_poured && (
@@ -193,7 +204,16 @@ export default function CO2Workspace({
         {/* ─── Cork (two holes) ─── */}
         {placed.cork && placed.round_bottom_flask && (
           <g>
-            <rect x="234" y="232" width="36" height="14" rx="3" fill="#a16207" stroke="#713f12" strokeWidth="1" />
+            <rect
+              x="234"
+              y="232"
+              width="36"
+              height="14"
+              rx="3"
+              fill="#a16207"
+              stroke="#713f12"
+              strokeWidth="1"
+            />
             {/* Hole markers */}
             <circle cx="244" cy="239" r="2" fill="#451a03" />
             <circle cx="260" cy="239" r="2" fill="#451a03" />
@@ -205,7 +225,14 @@ export default function CO2Workspace({
           <g>
             {/* Stem going down through cork into liquid */}
             <line x1="244" y1="100" x2="244" y2="340" stroke="#475569" strokeWidth="2.5" />
-            <line x1="244" y1="100" x2="244" y2="340" stroke="rgba(255,255,255,0.6)" strokeWidth="1" />
+            <line
+              x1="244"
+              y1="100"
+              x2="244"
+              y2="340"
+              stroke="rgba(255,255,255,0.6)"
+              strokeWidth="1"
+            />
             {/* Bulb (thistle shape) */}
             <path
               d="M 224,100 Q 244,60 264,100 Q 254,118 244,118 Q 234,118 224,100 Z"
@@ -218,9 +245,21 @@ export default function CO2Workspace({
               <g>
                 <circle cx="244" cy="340" r="6" fill="none" stroke="#dc2626" strokeWidth="2">
                   <animate attributeName="r" values="6;10;6" dur="1s" repeatCount="indefinite" />
-                  <animate attributeName="opacity" values="1;0.3;1" dur="1s" repeatCount="indefinite" />
+                  <animate
+                    attributeName="opacity"
+                    values="1;0.3;1"
+                    dur="1s"
+                    repeatCount="indefinite"
+                  />
                 </circle>
-                <text x="244" y="90" textAnchor="middle" fontSize="10" fill="#dc2626" fontWeight="600">
+                <text
+                  x="244"
+                  y="90"
+                  textAnchor="middle"
+                  fontSize="10"
+                  fill="#dc2626"
+                  fontWeight="600"
+                >
                   Funnel tip not submerged!
                 </text>
               </g>
@@ -351,7 +390,13 @@ export default function CO2Workspace({
                     ))}
                   </g>
                 )}
-                <text x={JAR_X} y={JAR_BOTTOM_Y + 22} textAnchor="middle" fontSize="10" fill="#475569">
+                <text
+                  x={JAR_X}
+                  y={JAR_BOTTOM_Y + 22}
+                  textAnchor="middle"
+                  fontSize="10"
+                  fill="#475569"
+                >
                   Gas Jar · গ্যাস জার
                 </text>
               </g>
@@ -368,7 +413,13 @@ export default function CO2Workspace({
                   strokeWidth="2"
                   strokeDasharray="5 3"
                 />
-                <text x={JAR_X} y={JAR_BOTTOM_Y + 22} textAnchor="middle" fontSize="10" fill="#dc2626">
+                <text
+                  x={JAR_X}
+                  y={JAR_BOTTOM_Y + 22}
+                  textAnchor="middle"
+                  fontSize="10"
+                  fill="#dc2626"
+                >
                   Wrong orientation — CO₂ spills out
                 </text>
               </g>
@@ -379,7 +430,16 @@ export default function CO2Workspace({
         {/* ─── Limewater identification tube (optional, sits to right) ─── */}
         {limewaterActive && (
           <g transform="translate(575, 250)">
-            <rect x="-14" y="0" width="28" height="120" rx="4" fill="url(#co2-glass)" stroke="#475569" strokeWidth="1.5" />
+            <rect
+              x="-14"
+              y="0"
+              width="28"
+              height="120"
+              rx="4"
+              fill="url(#co2-glass)"
+              stroke="#475569"
+              strokeWidth="1.5"
+            />
             <rect
               x="-12"
               y="40"
@@ -424,8 +484,20 @@ export default function CO2Workspace({
             <rect x={JAR_X + 22} y={JAR_TOP_Y - 9} width="10" height="5" fill="#111827" rx="1" />
             {[0, 1, 2].map((i) => (
               <circle key={i} cx={JAR_X - 8 + i * 8} r={4 + i} fill="rgba(148,163,184,0.55)">
-                <animate attributeName="cy" values={`${JAR_TOP_Y - 10};${JAR_TOP_Y - 60}`} dur={`${2 + i * 0.4}s`} repeatCount="indefinite" begin={`${i * 0.3}s`} />
-                <animate attributeName="opacity" values="0.7;0" dur={`${2 + i * 0.4}s`} repeatCount="indefinite" begin={`${i * 0.3}s`} />
+                <animate
+                  attributeName="cy"
+                  values={`${JAR_TOP_Y - 10};${JAR_TOP_Y - 60}`}
+                  dur={`${2 + i * 0.4}s`}
+                  repeatCount="indefinite"
+                  begin={`${i * 0.3}s`}
+                />
+                <animate
+                  attributeName="opacity"
+                  values="0.7;0"
+                  dur={`${2 + i * 0.4}s`}
+                  repeatCount="indefinite"
+                  begin={`${i * 0.3}s`}
+                />
               </circle>
             ))}
             <text x={JAR_X} y={JAR_TOP_Y - 70} textAnchor="middle" fontSize="9" fill="#475569">
@@ -436,15 +508,34 @@ export default function CO2Workspace({
 
         {placed.gas_jar && jarUpright && mgReacted && (
           <g>
-            <rect x={JAR_X - 4} y={JAR_TOP_Y + 20} width="8" height="50" fill="#e5e7eb" stroke="#475569" strokeWidth="0.5" />
+            <rect
+              x={JAR_X - 4}
+              y={JAR_TOP_Y + 20}
+              width="8"
+              height="50"
+              fill="#e5e7eb"
+              stroke="#475569"
+              strokeWidth="0.5"
+            />
             <circle cx={JAR_X} cy={JAR_TOP_Y + 15} r="10" fill="#fef9c3" opacity="0.95">
               <animate attributeName="r" values="8;12;8" dur="0.6s" repeatCount="indefinite" />
             </circle>
             <circle cx={JAR_X} cy={JAR_TOP_Y + 15} r="5" fill="#ffffff">
-              <animate attributeName="opacity" values="0.9;1;0.9" dur="0.4s" repeatCount="indefinite" />
+              <animate
+                attributeName="opacity"
+                values="0.9;1;0.9"
+                dur="0.4s"
+                repeatCount="indefinite"
+              />
             </circle>
             {[0, 1, 2, 3].map((i) => (
-              <circle key={i} cx={JAR_X + (i % 2 ? 2 : -2)} cy={JAR_TOP_Y + 30 + i * 10} r="1.6" fill="#0a0a0a" />
+              <circle
+                key={i}
+                cx={JAR_X + (i % 2 ? 2 : -2)}
+                cy={JAR_TOP_Y + 30 + i * 10}
+                r="1.6"
+                fill="#0a0a0a"
+              />
             ))}
             <ellipse cx={JAR_X} cy={JAR_BOTTOM_Y - 4} rx="30" ry="4" fill="#f8fafc" />
             <text x={JAR_X} y={JAR_TOP_Y - 8} textAnchor="middle" fontSize="9" fill="#475569">
@@ -455,7 +546,16 @@ export default function CO2Workspace({
 
         {placed.gas_jar && jarUpright && litmusReacted && (
           <g>
-            <rect x={JAR_X - 12} y={JAR_TOP_Y - 22} width="24" height="18" fill="#fca5a5" stroke="#7f1d1d" strokeWidth="0.8" rx="1" />
+            <rect
+              x={JAR_X - 12}
+              y={JAR_TOP_Y - 22}
+              width="24"
+              height="18"
+              fill="#fca5a5"
+              stroke="#7f1d1d"
+              strokeWidth="0.8"
+              rx="1"
+            />
             <text x={JAR_X} y={JAR_TOP_Y - 30} textAnchor="middle" fontSize="9" fill="#7f1d1d">
               Blue → faint red · নীল → হালকা লাল
             </text>
@@ -498,7 +598,15 @@ export default function CO2Workspace({
           )}
           {activeIdTool === "mg" && (
             <svg width="44" height="64" viewBox="0 0 44 64">
-              <rect x="19" y="22" width="6" height="40" fill="#e5e7eb" stroke="#475569" strokeWidth="0.5" />
+              <rect
+                x="19"
+                y="22"
+                width="6"
+                height="40"
+                fill="#e5e7eb"
+                stroke="#475569"
+                strokeWidth="0.5"
+              />
               <circle cx="22" cy="16" r="11" fill="#ffffff" opacity="0.95">
                 <animate attributeName="r" values="9;13;9" dur="0.35s" repeatCount="indefinite" />
               </circle>
@@ -507,7 +615,16 @@ export default function CO2Workspace({
           )}
           {activeIdTool === "litmus" && (
             <svg width="44" height="44" viewBox="0 0 44 44">
-              <rect x="10" y="14" width="24" height="18" fill="#60a5fa" stroke="#1e3a8a" strokeWidth="0.8" rx="1" />
+              <rect
+                x="10"
+                y="14"
+                width="24"
+                height="18"
+                fill="#60a5fa"
+                stroke="#1e3a8a"
+                strokeWidth="0.8"
+                rx="1"
+              />
               <rect x="20" y="32" width="4" height="10" fill="#475569" />
             </svg>
           )}

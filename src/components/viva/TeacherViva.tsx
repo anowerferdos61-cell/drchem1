@@ -121,7 +121,8 @@ export default function TeacherViva({
             <li key={i} className="space-y-0.5">
               <p className="font-medium">{q.q}</p>
               <p className="text-muted-foreground">
-                <span className="font-semibold text-foreground/70">Answer · উত্তর:</span> {q.expected}
+                <span className="font-semibold text-foreground/70">Answer · উত্তর:</span>{" "}
+                {q.expected}
               </p>
             </li>
           ))}

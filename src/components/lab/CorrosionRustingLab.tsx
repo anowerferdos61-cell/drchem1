@@ -193,8 +193,12 @@ export default function CorrosionRustingLab({ onBack }: Props) {
               exit={{ opacity: 0, y: -6 }}
               transition={{ duration: 0.22 }}
             >
-              <Card className={`relative overflow-hidden border-white/10 bg-slate-900/70 p-5 backdrop-blur-xl ${accentGlow(active.accent)}`}>
-                <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${accentGradient(active.accent)}`} />
+              <Card
+                className={`relative overflow-hidden border-white/10 bg-slate-900/70 p-5 backdrop-blur-xl ${accentGlow(active.accent)}`}
+              >
+                <div
+                  className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${accentGradient(active.accent)}`}
+                />
                 <div className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
                   Teacher's Slide · ধাপ {step + 1}
                 </div>
@@ -203,7 +207,9 @@ export default function CorrosionRustingLab({ onBack }: Props) {
                 </h2>
                 <p className="text-sm text-slate-400">{active.titleEn}</p>
 
-                <div className={`mt-4 rounded-lg border px-3 py-3 font-mono text-sm ${accentEqBox(active.accent)}`}>
+                <div
+                  className={`mt-4 rounded-lg border px-3 py-3 font-mono text-sm ${accentEqBox(active.accent)}`}
+                >
                   {active.equation}
                 </div>
 
@@ -220,7 +226,9 @@ export default function CorrosionRustingLab({ onBack }: Props) {
               <Info className="h-3.5 w-3.5" /> Teacher's Note · শ্রেণিকক্ষের প্রশ্ন
             </div>
             <p>
-              <strong>লবণ পানি কেন দ্রুত মরিচা ধরায়?</strong> — লবণ পানিতে Na⁺, Cl⁻ আয়নের উপস্থিতি দ্রবণের তড়িৎ পরিবাহিতা বাড়ায়, ফলে অ্যানোড ↔ ক্যাথোড অঞ্চলের মাঝে ইলেকট্রন-আয়ন প্রবাহ দ্রুত হয়। এজন্য উপকূলীয় এলাকায় ও সমুদ্রগামী জাহাজে মরিচা দ্রুত পড়ে।
+              <strong>লবণ পানি কেন দ্রুত মরিচা ধরায়?</strong> — লবণ পানিতে Na⁺, Cl⁻ আয়নের উপস্থিতি
+              দ্রবণের তড়িৎ পরিবাহিতা বাড়ায়, ফলে অ্যানোড ↔ ক্যাথোড অঞ্চলের মাঝে ইলেকট্রন-আয়ন
+              প্রবাহ দ্রুত হয়। এজন্য উপকূলীয় এলাকায় ও সমুদ্রগামী জাহাজে মরিচা দ্রুত পড়ে।
             </p>
           </Card>
 
@@ -231,19 +239,30 @@ export default function CorrosionRustingLab({ onBack }: Props) {
             <ul className="space-y-1.5">
               <li className="flex gap-2">
                 <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-400" />
-                <span><strong>গ্যালভানাইজিং:</strong> Zn আবরণ Fe-এর তুলনায় বেশি সক্রিয়, তাই নিজে ক্ষয় হয়ে Fe রক্ষা করে (sacrificial protection)।</span>
+                <span>
+                  <strong>গ্যালভানাইজিং:</strong> Zn আবরণ Fe-এর তুলনায় বেশি সক্রিয়, তাই নিজে ক্ষয়
+                  হয়ে Fe রক্ষা করে (sacrificial protection)।
+                </span>
               </li>
               <li className="flex gap-2">
                 <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-400" />
-                <span><strong>ইলেকট্রোপ্লেটিং:</strong> Cr / Ni-এর পাতলা প্রলেপ ধাতু ও বাতাস-পানির মধ্যে বাধা তৈরি করে।</span>
+                <span>
+                  <strong>ইলেকট্রোপ্লেটিং:</strong> Cr / Ni-এর পাতলা প্রলেপ ধাতু ও বাতাস-পানির মধ্যে
+                  বাধা তৈরি করে।
+                </span>
               </li>
               <li className="flex gap-2">
                 <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-400" />
-                <span><strong>পেইন্ট/তেল প্রলেপ:</strong> O₂ ও H₂O-এর সাথে সরাসরি সংস্পর্শ বন্ধ করে।</span>
+                <span>
+                  <strong>পেইন্ট/তেল প্রলেপ:</strong> O₂ ও H₂O-এর সাথে সরাসরি সংস্পর্শ বন্ধ করে।
+                </span>
               </li>
               <li className="flex gap-2">
                 <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-400" />
-                <span><strong>সংকর ধাতু:</strong> স্টেইনলেস স্টিলে Cr, Ni মিশিয়ে মরিচারোধী পৃষ্ঠ তৈরি হয়।</span>
+                <span>
+                  <strong>সংকর ধাতু:</strong> স্টেইনলেস স্টিলে Cr, Ni মিশিয়ে মরিচারোধী পৃষ্ঠ তৈরি
+                  হয়।
+                </span>
               </li>
             </ul>
           </Card>
@@ -252,12 +271,21 @@ export default function CorrosionRustingLab({ onBack }: Props) {
 
       <DraggableTheoryFab storageKey="corrosion-rusting">
         <h3>ধাতুর ক্ষয় (Corrosion) ও মরিচা ধরা (Rusting)</h3>
-        <p>বায়ুমণ্ডলের অক্সিজেন, জলীয়বাষ্প ও অন্যান্য গ্যাসের সঙ্গে ধাতুর ধীর রাসায়নিক বিক্রিয়ায় ধাতু ধীরে ধীরে ক্ষয়প্রাপ্ত হওয়াকে <strong>ধাতুর ক্ষয়</strong> বলে। লোহার ক্ষেত্রে এই ক্ষয়কে <strong>মরিচা ধরা (Rusting)</strong> বলা হয়। মরিচার সংকেত: <strong>Fe₂O₃·nH₂O</strong> (জলযুক্ত ফেরিক অক্সাইড)।</p>
+        <p>
+          বায়ুমণ্ডলের অক্সিজেন, জলীয়বাষ্প ও অন্যান্য গ্যাসের সঙ্গে ধাতুর ধীর রাসায়নিক বিক্রিয়ায়
+          ধাতু ধীরে ধীরে ক্ষয়প্রাপ্ত হওয়াকে <strong>ধাতুর ক্ষয়</strong> বলে। লোহার ক্ষেত্রে এই
+          ক্ষয়কে <strong>মরিচা ধরা (Rusting)</strong> বলা হয়। মরিচার সংকেত:{" "}
+          <strong>Fe₂O₃·nH₂O</strong> (জলযুক্ত ফেরিক অক্সাইড)।
+        </p>
         <h4>বৈদ্যুতিক-রাসায়নিক ব্যাখ্যা</h4>
         <p>লোহার পৃষ্ঠে জলের ফোঁটা প্রাকৃতিক বিদ্যুৎ কোষ তৈরি করে —</p>
         <ul>
-          <li><strong>অ্যানোড (কেন্দ্রে):</strong> Fe → Fe²⁺ + 2e⁻</li>
-          <li><strong>ক্যাথোড (কিনারায়):</strong> O₂ + 2H₂O + 4e⁻ → 4OH⁻</li>
+          <li>
+            <strong>অ্যানোড (কেন্দ্রে):</strong> Fe → Fe²⁺ + 2e⁻
+          </li>
+          <li>
+            <strong>ক্যাথোড (কিনারায়):</strong> O₂ + 2H₂O + 4e⁻ → 4OH⁻
+          </li>
           <li>Fe²⁺ + 2OH⁻ → Fe(OH)₂ (সবুজাভ)</li>
           <li>4Fe(OH)₂ + O₂ → 2Fe₂O₃·H₂O (বাদামি মরিচা)</li>
         </ul>
@@ -269,12 +297,27 @@ export default function CorrosionRustingLab({ onBack }: Props) {
         </ul>
         <h4>প্রতিরোধ পদ্ধতি (Prevention)</h4>
         <ul>
-          <li><strong>রং/গ্রীজ প্রলেপ:</strong> বাতাস ও জল ঠেকায়।</li>
-          <li><strong>গ্যালভানাইজেশন:</strong> লোহার উপর দস্তার প্রলেপ। Zn বেশি সক্রিয়, তাই আগে ক্ষয়প্রাপ্ত হয়ে লোহাকে রক্ষা করে (sacrificial protection)।</li>
-          <li><strong>ইলেকট্রোপ্লেটিং:</strong> Cr/Ni-এর পাতলা স্তর চড়ানো হয় — দেখতে সুন্দর ও ক্ষয়রোধী।</li>
-          <li><strong>Alloying:</strong> Cr, Ni মিশিয়ে Stainless Steel তৈরি — জং ধরে না।</li>
+          <li>
+            <strong>রং/গ্রীজ প্রলেপ:</strong> বাতাস ও জল ঠেকায়।
+          </li>
+          <li>
+            <strong>গ্যালভানাইজেশন:</strong> লোহার উপর দস্তার প্রলেপ। Zn বেশি সক্রিয়, তাই আগে
+            ক্ষয়প্রাপ্ত হয়ে লোহাকে রক্ষা করে (sacrificial protection)।
+          </li>
+          <li>
+            <strong>ইলেকট্রোপ্লেটিং:</strong> Cr/Ni-এর পাতলা স্তর চড়ানো হয় — দেখতে সুন্দর ও
+            ক্ষয়রোধী।
+          </li>
+          <li>
+            <strong>Alloying:</strong> Cr, Ni মিশিয়ে Stainless Steel তৈরি — জং ধরে না।
+          </li>
         </ul>
-        <p><em>মূল ধারণা: মরিচা আসলে একটি অক্সিডেশন-রিডাকশন প্রক্রিয়া — লোহাকে বাতাস, পানি ও আয়ন থেকে বিচ্ছিন্ন রাখলেই ক্ষয় রোধ সম্ভব।</em></p>
+        <p>
+          <em>
+            মূল ধারণা: মরিচা আসলে একটি অক্সিডেশন-রিডাকশন প্রক্রিয়া — লোহাকে বাতাস, পানি ও আয়ন থেকে
+            বিচ্ছিন্ন রাখলেই ক্ষয় রোধ সম্ভব।
+          </em>
+        </p>
       </DraggableTheoryFab>
     </div>
   );
@@ -396,7 +439,14 @@ function RustSceneSVG({ step }: { step: StepId }) {
             >
               <circle cx={cx} cy={cy} r="5" fill="#f43f5e" opacity={0.85} />
               <circle cx={cx + 8} cy={cy} r="5" fill="#f43f5e" opacity={0.85} />
-              <text x={cx + 4} y={cy + 20} fontSize="8" fill="#fecaca" textAnchor="middle" fontWeight="700">
+              <text
+                x={cx + 4}
+                y={cy + 20}
+                fontSize="8"
+                fill="#fecaca"
+                textAnchor="middle"
+                fontWeight="700"
+              >
                 O₂
               </text>
             </motion.g>
@@ -458,7 +508,14 @@ function RustSceneSVG({ step }: { step: StepId }) {
                   opacity={0.85}
                 />
               ))}
-              <text x="300" y="175" textAnchor="middle" fontSize="11" fill="#fdba74" fontWeight="800">
+              <text
+                x="300"
+                y="175"
+                textAnchor="middle"
+                fontSize="11"
+                fill="#fdba74"
+                fontWeight="800"
+              >
                 Rust · মরিচা (Fe₂O₃·nH₂O)
               </text>
             </motion.g>
@@ -466,9 +523,21 @@ function RustSceneSVG({ step }: { step: StepId }) {
         </AnimatePresence>
 
         {/* Water droplet */}
-        <path d={dropletPath} fill="url(#waterGrad)" stroke="#7dd3fc" strokeWidth="1.5" opacity="0.9" />
+        <path
+          d={dropletPath}
+          fill="url(#waterGrad)"
+          stroke="#7dd3fc"
+          strokeWidth="1.5"
+          opacity="0.9"
+        />
         {/* highlight */}
-        <path d="M 200 130 Q 260 105 320 108" stroke="#f0f9ff" strokeWidth="2" opacity="0.7" fill="none" />
+        <path
+          d="M 200 130 Q 260 105 320 108"
+          stroke="#f0f9ff"
+          strokeWidth="2"
+          opacity="0.7"
+          fill="none"
+        />
 
         {/* Droplet label */}
         <text x="300" y="80" textAnchor="middle" fontSize="10" fill="#bae6fd" fontWeight="700">
@@ -547,7 +616,14 @@ function RustSceneSVG({ step }: { step: StepId }) {
               >
                 <ellipse cx="270" cy="155" rx="55" ry="30" fill="url(#feohGrad)" />
                 <ellipse cx="330" cy="160" rx="45" ry="25" fill="url(#feohGrad)" opacity="0.8" />
-                <text x="300" y="160" textAnchor="middle" fontSize="10" fill="#166534" fontWeight="800">
+                <text
+                  x="300"
+                  y="160"
+                  textAnchor="middle"
+                  fontSize="10"
+                  fill="#166534"
+                  fontWeight="800"
+                >
                   Fe(OH)₂
                 </text>
               </motion.g>

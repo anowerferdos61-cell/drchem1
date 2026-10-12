@@ -10,11 +10,7 @@ import { ArrowLeft, ArrowRight, ArrowDown, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   TREND_ELEMENTS,
   TREND_META,
@@ -108,9 +104,7 @@ export default function PeriodicTrendsLab({ onBack }: Props) {
               </TabsList>
             </Tabs>
             <div className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-              <h1 className="text-xl font-extrabold tracking-tight md:text-2xl">
-                {meta.labelBn}
-              </h1>
+              <h1 className="text-xl font-extrabold tracking-tight md:text-2xl">{meta.labelBn}</h1>
               <span className="text-sm text-slate-400">
                 {meta.labelEn} ({meta.unit})
               </span>
@@ -126,12 +120,8 @@ export default function PeriodicTrendsLab({ onBack }: Props) {
           <Card className="border-white/10 bg-white/[0.03] p-4 md:p-5">
             <div className="mb-3 flex items-center justify-between">
               <div>
-                <div className="text-sm font-semibold text-slate-100">
-                  ট্রেন্ড হিটম্যাপ
-                </div>
-                <div className="text-xs text-slate-400">
-                  Elements 1–20 · Click to compare
-                </div>
+                <div className="text-sm font-semibold text-slate-100">ট্রেন্ড হিটম্যাপ</div>
+                <div className="text-xs text-slate-400">Elements 1–20 · Click to compare</div>
               </div>
               <div className="flex items-center gap-1 text-[10px] text-slate-400">
                 <span>Low</span>
@@ -140,12 +130,7 @@ export default function PeriodicTrendsLab({ onBack }: Props) {
               </div>
             </div>
 
-            <TrendGrid
-              trend={trend}
-              aZ={aZ}
-              bZ={bZ}
-              onPick={handlePick}
-            />
+            <TrendGrid trend={trend} aZ={aZ} bZ={bZ} onPick={handlePick} />
 
             {/* Slot picker */}
             <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
@@ -177,7 +162,9 @@ export default function PeriodicTrendsLab({ onBack }: Props) {
               </button>
             </div>
             <div className="mt-2 text-[11px] text-slate-400">
-              পরের ক্লিকটি <span className="font-semibold text-slate-200">Slot {pickSlot.toUpperCase()}</span>-এ যাবে।
+              পরের ক্লিকটি{" "}
+              <span className="font-semibold text-slate-200">Slot {pickSlot.toUpperCase()}</span>-এ
+              যাবে।
             </div>
 
             {/* Quick presets */}
@@ -186,11 +173,14 @@ export default function PeriodicTrendsLab({ onBack }: Props) {
                 { a: 11, b: 17, label: "Na ↔ Cl (Row)" },
                 { a: 3, b: 11, label: "Li ↔ Na (Col)" },
                 { a: 9, b: 17, label: "F ↔ Cl (Col)" },
-                { a: 3, b: 9,  label: "Li ↔ F (Row)" },
+                { a: 3, b: 9, label: "Li ↔ F (Row)" },
               ].map((p) => (
                 <button
                   key={p.label}
-                  onClick={() => { setAZ(p.a); setBZ(p.b); }}
+                  onClick={() => {
+                    setAZ(p.a);
+                    setBZ(p.b);
+                  }}
                   className="rounded-md border border-white/10 bg-white/[0.04] px-2 py-1 text-[11px] text-slate-300 hover:bg-white/[0.08]"
                 >
                   {p.label}
@@ -202,12 +192,18 @@ export default function PeriodicTrendsLab({ onBack }: Props) {
           {/* RIGHT: zoom-in lab view */}
           <Card className="border-white/10 bg-gradient-to-br from-slate-900 via-slate-950 to-black p-4 md:p-5">
             <div className="mb-3 flex items-center justify-between">
-              <div className="text-sm font-semibold text-slate-100">
-                Zoom-In Lab · পরমাণু গঠন
-              </div>
+              <div className="text-sm font-semibold text-slate-100">Zoom-In Lab · পরমাণু গঠন</div>
               <Badge className="border border-white/10 bg-white/5 text-[10px] text-slate-300">
-                {direction === "row" && (<>বাম → ডান <ArrowRight className="ml-1 h-3 w-3" /></>)}
-                {direction === "col" && (<>উপর → নিচ <ArrowDown className="ml-1 h-3 w-3" /></>)}
+                {direction === "row" && (
+                  <>
+                    বাম → ডান <ArrowRight className="ml-1 h-3 w-3" />
+                  </>
+                )}
+                {direction === "col" && (
+                  <>
+                    উপর → নিচ <ArrowDown className="ml-1 h-3 w-3" />
+                  </>
+                )}
                 {direction === "diag" && "তির্যক তুলনা"}
               </Badge>
             </div>
@@ -221,7 +217,12 @@ export default function PeriodicTrendsLab({ onBack }: Props) {
             <div className="mt-4 rounded-xl border border-white/10 bg-white/[0.03] p-3">
               <div className="flex items-center gap-1.5 text-xs font-semibold text-fuchsia-300">
                 <Sparkles className="h-3.5 w-3.5" />
-                {direction === "row" ? "একই পর্যায়, ভিন্ন গ্রুপ" : direction === "col" ? "একই গ্রুপ, ভিন্ন পর্যায়" : "তির্যক"} ট্রেন্ড
+                {direction === "row"
+                  ? "একই পর্যায়, ভিন্ন গ্রুপ"
+                  : direction === "col"
+                    ? "একই গ্রুপ, ভিন্ন পর্যায়"
+                    : "তির্যক"}{" "}
+                ট্রেন্ড
               </div>
               <div className="mt-1.5 text-xs text-slate-200 md:text-sm">
                 {direction === "col" ? meta.colBn : meta.rowBn}
@@ -241,23 +242,34 @@ export default function PeriodicTrendsLab({ onBack }: Props) {
           <div className="grid gap-3 text-xs leading-relaxed text-slate-300 md:grid-cols-2 md:text-sm">
             <div className="space-y-2">
               <p>
-                <span className="font-semibold text-slate-100">আকার ছোট</span> ⟹ বাইরের ইলেকট্রন নিউক্লিয়াসের কাছাকাছি ⟹
-                <span className="font-semibold text-slate-100"> আয়নীকরণ শক্তি বেশি</span> ⟹ নতুন ইলেকট্রনকে টানার ক্ষমতাও বেশি
-                ⟹ <span className="font-semibold text-slate-100">তড়িৎ ঋণাত্মকতা ও ইলেকট্রন আসক্তি বৃদ্ধি</span>।
+                <span className="font-semibold text-slate-100">আকার ছোট</span> ⟹ বাইরের ইলেকট্রন
+                নিউক্লিয়াসের কাছাকাছি ⟹
+                <span className="font-semibold text-slate-100"> আয়নীকরণ শক্তি বেশি</span> ⟹ নতুন
+                ইলেকট্রনকে টানার ক্ষমতাও বেশি ⟹{" "}
+                <span className="font-semibold text-slate-100">
+                  তড়িৎ ঋণাত্মকতা ও ইলেকট্রন আসক্তি বৃদ্ধি
+                </span>
+                ।
               </p>
               <p className="text-slate-400">
-                একই পর্যায়ে বাম থেকে ডানে প্রোটন বাড়ে কিন্তু শেল একই থাকে — ফলে নিউক্লিয়াসের টান বাড়ে এবং আকার কমে।
+                একই পর্যায়ে বাম থেকে ডানে প্রোটন বাড়ে কিন্তু শেল একই থাকে — ফলে নিউক্লিয়াসের টান
+                বাড়ে এবং আকার কমে।
               </p>
             </div>
             <div className="space-y-2">
               <p>
-                <span className="font-semibold text-slate-100">Smaller Size</span> ⟹ outer electrons closer to nucleus ⟹
-                <span className="font-semibold text-slate-100"> Higher Ionization Energy</span> ⟹ stronger pull on new electrons
-                ⟹ <span className="font-semibold text-slate-100">Higher Electronegativity &amp; Electron Affinity</span>.
+                <span className="font-semibold text-slate-100">Smaller Size</span> ⟹ outer electrons
+                closer to nucleus ⟹
+                <span className="font-semibold text-slate-100"> Higher Ionization Energy</span> ⟹
+                stronger pull on new electrons ⟹{" "}
+                <span className="font-semibold text-slate-100">
+                  Higher Electronegativity &amp; Electron Affinity
+                </span>
+                .
               </p>
               <p className="text-slate-400">
-                Down a group a new shell is added each period — outer electron is farther from the nucleus, so size grows
-                and pull weakens.
+                Down a group a new shell is added each period — outer electron is farther from the
+                nucleus, so size grows and pull weakens.
               </p>
             </div>
           </div>
@@ -323,9 +335,7 @@ function TrendGrid({
               <div className="relative z-10 flex h-full w-full flex-col items-center justify-center leading-tight">
                 <div className="text-[9px] opacity-80">{el.Z}</div>
                 <div className="text-xs font-extrabold md:text-sm">{el.symbol}</div>
-                <div className="text-[8px] opacity-80 md:text-[9px]">
-                  {Math.round(el[trend])}
-                </div>
+                <div className="text-[8px] opacity-80 md:text-[9px]">{Math.round(el[trend])}</div>
               </div>
               {slot && (
                 <div
@@ -404,15 +414,12 @@ function AtomCard({
             Z = {el.Z} · Period {el.period} · Group {el.group}
           </div>
           <div className="text-lg font-extrabold text-slate-100">
-            {el.symbol}{" "}
-            <span className="text-xs font-medium text-slate-400">{el.nameBn}</span>
+            {el.symbol} <span className="text-xs font-medium text-slate-400">{el.nameBn}</span>
           </div>
         </div>
         <Badge
           className={`border-0 text-[10px] ${
-            accent === "sky"
-              ? "bg-sky-500/20 text-sky-200"
-              : "bg-fuchsia-500/20 text-fuchsia-200"
+            accent === "sky" ? "bg-sky-500/20 text-sky-200" : "bg-fuchsia-500/20 text-fuchsia-200"
           }`}
         >
           {meta.labelEn}: {el[trend]} {meta.unit}
@@ -513,12 +520,7 @@ function AtomCard({
 
           {/* Nucleus */}
           <circle cx="120" cy="120" r="28" fill={`url(#nuc-${el.Z})`}>
-            <animate
-              attributeName="r"
-              values="26;30;26"
-              dur="2.4s"
-              repeatCount="indefinite"
-            />
+            <animate attributeName="r" values="26;30;26" dur="2.4s" repeatCount="indefinite" />
           </circle>
           <circle cx="120" cy="120" r="18" fill={glowColor} opacity="0.9" />
           <text

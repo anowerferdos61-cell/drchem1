@@ -31,10 +31,11 @@ export function maxOxygenVolumeMl(cfg: OxygenConfig): number {
  * Uses a simple pseudo-first-order kinetic model where the catalyst mass
  * scales the rate constant (saturating at ~2 g).
  */
-export function computeOxygenGeneration(args: {
-  cfg: OxygenConfig;
-  timeElapsedSec: number;
-}): { totalMaxMl: number; collectedMl: number; rateMlPerSec: number } {
+export function computeOxygenGeneration(args: { cfg: OxygenConfig; timeElapsedSec: number }): {
+  totalMaxMl: number;
+  collectedMl: number;
+  rateMlPerSec: number;
+} {
   const totalMax = maxOxygenVolumeMl(args.cfg);
   const catalystFactor = Math.min(args.cfg.mno2MassG, 2) / 2; // 0..1
   // Pseudo first-order rate constant (1/s). Tuned for ~30–60 s to fill a 100 mL tube.
@@ -64,7 +65,6 @@ export function oxygenGrade(args: {
   else if (args.splint === "early") acc -= 5;
   else acc -= 10;
   acc = Math.max(0, Math.min(100, acc));
-  const grade =
-    acc >= 90 ? "A" : acc >= 80 ? "B" : acc >= 70 ? "C" : acc >= 60 ? "D" : "F";
+  const grade = acc >= 90 ? "A" : acc >= 80 ? "B" : acc >= 70 ? "C" : acc >= 60 ? "D" : "F";
   return { accuracy: acc, grade };
 }

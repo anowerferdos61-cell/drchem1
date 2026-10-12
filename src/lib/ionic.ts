@@ -100,8 +100,7 @@ export function gradeIonic(input: IonicGradeInput): IonicGradeOutput {
   acc -= 1 * input.lowMistakes;
   acc = Math.max(0, Math.min(100, acc));
 
-  const grade =
-    acc >= 90 ? "A" : acc >= 75 ? "B" : acc >= 60 ? "C" : acc >= 45 ? "D" : "F";
+  const grade = acc >= 90 ? "A" : acc >= 75 ? "B" : acc >= 60 ? "C" : acc >= 45 ? "D" : "F";
 
   return {
     accuracy: acc,

@@ -30,6 +30,8 @@ import {
   Trash2,
   ShieldPlus,
   ShieldMinus,
+  Eye,
+  Phone,
 } from "lucide-react";
 import {
   Area,
@@ -63,6 +65,7 @@ import {
 import { useAuth } from "@/lib/auth-store";
 import { useActiveUserCount } from "@/hooks/usePresence";
 import UserMenu from "@/components/auth/UserMenu";
+import { UserProfileModal } from "@/components/admin/UserProfileModal";
 import {
   adminAiUsageDaily,
   adminRevenueDaily,
@@ -97,7 +100,9 @@ const PLAN_OPTIONS = [
 
 function StatusBadge({ status }: { status: string | undefined }) {
   if (!status || status === "none")
-    return <span className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground">Free</span>;
+    return (
+      <span className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground">Free</span>
+    );
   const map: Record<string, string> = {
     active: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400",
     trialing: "bg-amber-500/15 text-amber-700 dark:text-amber-400",
@@ -117,19 +122,15 @@ function AdminDashboard() {
   const isAdmin = roles.includes("admin");
 
   useEffect(() => {
-    if (loading) return;
+    if (loading || !rolesLoaded) return;
     if (!isAuthenticated) {
       void navigate({ to: "/login", search: { redirect: "/admin" }, replace: true });
       return;
     }
-    // Wait for roles to finish loading before deciding admin-vs-not.
-    // Otherwise we redirect to /app before roles arrive, and /app bounces
-    // back to /admin once they do → infinite redirect loop / spinner.
-    if (!rolesLoaded) return;
     if (!isAdmin) {
       void navigate({ to: "/app", replace: true });
     }
-  }, [loading, isAuthenticated, rolesLoaded, isAdmin, navigate]);
+  }, [loading, rolesLoaded, isAuthenticated, isAdmin, navigate]);
 
   const qc = useQueryClient();
   const usersFn = useServerFn(listAllUsers);
@@ -146,7 +147,11 @@ function AdminDashboard() {
 
   const active = useActiveUserCount(isAuthenticated && rolesLoaded && isAdmin);
 
-  const { data: users = [], isLoading: usersLoading, error: usersError } = useQuery({
+  const {
+    data: users = [],
+    isLoading: usersLoading,
+    error: usersError,
+  } = useQuery({
     queryKey: ["admin", "users"],
     queryFn: () => usersFn(),
     enabled: isAuthenticated && rolesLoaded && isAdmin,
@@ -178,7 +183,6 @@ function AdminDashboard() {
     retry: 1,
   });
 
-
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState<"all" | "student" | "teacher" | "admin">("all");
   const [statusFilter, setStatusFilter] = useState<
@@ -198,17 +202,19 @@ function AdminDashboard() {
         return (
           (u.email ?? "").toLowerCase().includes(q) ||
           (u.display_name ?? "").toLowerCase().includes(q) ||
-          (u.phone ?? "").includes(q)
+          (u.phone ?? "").includes(q) ||
+          (u.school ?? "").toLowerCase().includes(q) ||
+          (u.class ?? "").toLowerCase().includes(q)
         );
       }
       return true;
     });
   }, [users, search, roleFilter, statusFilter]);
 
+  const [viewProfileUserId, setViewProfileUserId] = useState<string | null>(null);
   const [grantTarget, setGrantTarget] = useState<AdminUserRow | null>(null);
-  const [grantPlan, setGrantPlan] = useState<(typeof PLAN_OPTIONS)[number]["code"]>(
-    "student_monthly",
-  );
+  const [grantPlan, setGrantPlan] =
+    useState<(typeof PLAN_OPTIONS)[number]["code"]>("student_monthly");
   const [busy, setBusy] = useState(false);
 
   const doGrant = async () => {
@@ -303,7 +309,6 @@ function AdminDashboard() {
     }
   };
 
-
   if (loading || !rolesLoaded || (isAuthenticated && !isAdmin)) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -335,7 +340,6 @@ function AdminDashboard() {
       </div>
     );
   }
-
 
   return (
     <div className="min-h-screen bg-background">
@@ -443,11 +447,7 @@ function AdminDashboard() {
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={revenueDaily}>
                 <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-                <XAxis
-                  dataKey="date"
-                  tickFormatter={(v: string) => v.slice(5)}
-                  fontSize={11}
-                />
+                <XAxis dataKey="date" tickFormatter={(v: string) => v.slice(5)} fontSize={11} />
                 <YAxis fontSize={11} />
                 <Tooltip
                   formatter={(v: number) => [`৳${Number(v).toLocaleString("bn-BD")}`, "Revenue"]}
@@ -478,15 +478,8 @@ function AdminDashboard() {
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-                <XAxis
-                  dataKey="date"
-                  tickFormatter={(v: string) => v.slice(5)}
-                  fontSize={11}
-                />
-                <YAxis
-                  fontSize={11}
-                  tickFormatter={(v: number) => `$${v.toFixed(3)}`}
-                />
+                <XAxis dataKey="date" tickFormatter={(v: string) => v.slice(5)} fontSize={11} />
+                <YAxis fontSize={11} tickFormatter={(v: number) => `$${v.toFixed(3)}`} />
                 <Tooltip
                   formatter={(v: number, name) => {
                     if (name === "cost_usd") return [`$${Number(v).toFixed(4)}`, "Cost"];
@@ -536,7 +529,6 @@ function AdminDashboard() {
           />
         </div>
 
-
         {/* Filters */}
         <div className="flex flex-col md:flex-row gap-2">
           <div className="relative flex-1">
@@ -583,6 +575,7 @@ function AdminDashboard() {
               <thead className="bg-muted/50 text-xs uppercase">
                 <tr>
                   <th className="text-left px-4 py-3">User</th>
+                  <th className="text-left px-4 py-3">Phone / মোবাইল</th>
                   <th className="text-left px-4 py-3">Role</th>
                   <th className="text-left px-4 py-3">Subscription</th>
                   <th className="text-left px-4 py-3">Joined</th>
@@ -593,14 +586,14 @@ function AdminDashboard() {
               <tbody>
                 {usersLoading && (
                   <tr>
-                    <td colSpan={6} className="text-center py-12">
+                    <td colSpan={7} className="text-center py-12">
                       <Loader2 className="h-6 w-6 animate-spin text-primary inline" />
                     </td>
                   </tr>
                 )}
                 {!usersLoading && filtered.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="text-center py-12 text-muted-foreground">
+                    <td colSpan={7} className="text-center py-12 text-muted-foreground">
                       কোন user পাওয়া যায়নি।
                     </td>
                   </tr>
@@ -608,18 +601,37 @@ function AdminDashboard() {
                 {filtered.map((u) => (
                   <tr key={u.user_id} className="border-t hover:bg-muted/30">
                     <td className="px-4 py-3">
-                      <div className="font-medium flex items-center gap-1.5">
-                        {u.display_name ?? "—"}
-                        {u.banned_until &&
-                          new Date(u.banned_until).getTime() > Date.now() && (
+                      <button
+                        type="button"
+                        onClick={() => setViewProfileUserId(u.user_id)}
+                        className="text-left group cursor-pointer focus:outline-none"
+                      >
+                        <div className="font-medium flex items-center gap-1.5 group-hover:text-primary transition-colors">
+                          {u.display_name ?? "—"}
+                          {u.banned_until && new Date(u.banned_until).getTime() > Date.now() && (
                             <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-rose-500/15 text-rose-700 dark:text-rose-400 font-semibold">
                               BANNED
                             </span>
                           )}
-                      </div>
-                      <div className="text-xs text-muted-foreground">{u.email}</div>
-                      {u.phone && (
-                        <div className="text-xs text-muted-foreground font-mono">{u.phone}</div>
+                        </div>
+                        <div className="text-xs text-muted-foreground">{u.email}</div>
+                        {(u.school || u.class) && (
+                          <div className="text-[11px] text-muted-foreground/90 flex items-center gap-1 mt-0.5">
+                            {u.school && <span>🏫 {u.school}</span>}
+                            {u.school && u.class && <span>·</span>}
+                            {u.class && <span>Class {u.class}</span>}
+                          </div>
+                        )}
+                      </button>
+                    </td>
+                    <td className="px-4 py-3">
+                      {u.phone ? (
+                        <div className="flex items-center gap-1.5 font-mono text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                          <Phone className="h-3.5 w-3.5 shrink-0" />
+                          <span>{u.phone}</span>
+                        </div>
+                      ) : (
+                        <span className="text-xs text-muted-foreground italic font-sans">—</span>
                       )}
                     </td>
                     <td className="px-4 py-3">
@@ -649,7 +661,13 @@ function AdminDashboard() {
                         <div className="text-xs text-muted-foreground mt-1">
                           {u.subscription.plan_code}
                           {u.subscription.current_period_end && (
-                            <> · till {new Date(u.subscription.current_period_end).toLocaleDateString("bn-BD")}</>
+                            <>
+                              {" "}
+                              · till{" "}
+                              {new Date(u.subscription.current_period_end).toLocaleDateString(
+                                "bn-BD",
+                              )}
+                            </>
                           )}
                         </div>
                       )}
@@ -665,12 +683,19 @@ function AdminDashboard() {
                     <td className="px-4 py-3 text-right">
                       {(() => {
                         const isBanned =
-                          !!u.banned_until &&
-                          new Date(u.banned_until).getTime() > Date.now();
+                          !!u.banned_until && new Date(u.banned_until).getTime() > Date.now();
                         const isAdminRow = u.roles.includes("admin");
                         const isSelf = u.user_id === user?.id;
                         return (
                           <div className="flex gap-1 justify-end flex-wrap">
+                            <Button
+                              variant="secondary"
+                              size="sm"
+                              title="সম্পূর্ণ প্রোফাইল দেখুন"
+                              onClick={() => setViewProfileUserId(u.user_id)}
+                            >
+                              <Eye className="h-3.5 w-3.5 mr-1" /> Profile
+                            </Button>
                             <Button
                               variant="outline"
                               size="sm"
@@ -713,27 +738,27 @@ function AdminDashboard() {
                                   <Ban className="h-3.5 w-3.5 text-amber-600" />
                                 </Button>
                               ))}
-                            {isAdminRow
-                              ? !isSelf && (
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    title="Revoke admin role"
-                                    onClick={() => doRevoke(u)}
-                                  >
-                                    <ShieldMinus className="h-3.5 w-3.5 text-rose-600" />
-                                  </Button>
-                                )
-                              : (
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    title="Make admin"
-                                    onClick={() => doPromote(u)}
-                                  >
-                                    <ShieldPlus className="h-3.5 w-3.5 text-indigo-600" />
-                                  </Button>
-                                )}
+                            {isAdminRow ? (
+                              !isSelf && (
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  title="Revoke admin role"
+                                  onClick={() => doRevoke(u)}
+                                >
+                                  <ShieldMinus className="h-3.5 w-3.5 text-rose-600" />
+                                </Button>
+                              )
+                            ) : (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                title="Make admin"
+                                onClick={() => doPromote(u)}
+                              >
+                                <ShieldPlus className="h-3.5 w-3.5 text-indigo-600" />
+                              </Button>
+                            )}
                             {!isAdminRow && (
                               <Button
                                 variant="ghost"
@@ -762,17 +787,13 @@ function AdminDashboard() {
           <DialogHeader>
             <DialogTitle>Grant Pro Subscription</DialogTitle>
             <DialogDescription>
-              {grantTarget?.email} এর জন্য paid plan activate করুন। বর্তমান plan থাকলে replace
-              হবে।
+              {grantTarget?.email} এর জন্য paid plan activate করুন। বর্তমান plan থাকলে replace হবে।
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3 py-2">
             <div>
               <label className="text-sm font-medium mb-1 block">Plan</label>
-              <Select
-                value={grantPlan}
-                onValueChange={(v) => setGrantPlan(v as typeof grantPlan)}
-              >
+              <Select value={grantPlan} onValueChange={(v) => setGrantPlan(v as typeof grantPlan)}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -796,6 +817,41 @@ function AdminDashboard() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* View User Profile Modal */}
+      <UserProfileModal
+        userId={viewProfileUserId}
+        open={Boolean(viewProfileUserId)}
+        onOpenChange={(open) => !open && setViewProfileUserId(null)}
+        currentAdminId={user?.id}
+        onGrantPro={(target) => {
+          const fullUser = users.find((usr) => usr.user_id === target.user_id);
+          if (fullUser) {
+            setGrantTarget(fullUser);
+            setGrantPlan("student_monthly");
+          }
+        }}
+        onBan={(target) => {
+          const fullUser = users.find((usr) => usr.user_id === target.user_id);
+          if (fullUser) void doBan(fullUser);
+        }}
+        onUnban={(target) => {
+          const fullUser = users.find((usr) => usr.user_id === target.user_id);
+          if (fullUser) void doUnban(fullUser);
+        }}
+        onPromote={(target) => {
+          const fullUser = users.find((usr) => usr.user_id === target.user_id);
+          if (fullUser) void doPromote(fullUser);
+        }}
+        onRevoke={(target) => {
+          const fullUser = users.find((usr) => usr.user_id === target.user_id);
+          if (fullUser) void doRevoke(fullUser);
+        }}
+        onDelete={(target) => {
+          const fullUser = users.find((usr) => usr.user_id === target.user_id);
+          if (fullUser) void doDelete(fullUser);
+        }}
+      />
     </div>
   );
 }
@@ -866,9 +922,7 @@ function ChartCard({
           <Icon className="h-4 w-4 text-muted-foreground" />
           <h3 className="text-sm font-semibold">{title}</h3>
         </div>
-        {subtitle && (
-          <span className="text-xs text-muted-foreground">{subtitle}</span>
-        )}
+        {subtitle && <span className="text-xs text-muted-foreground">{subtitle}</span>}
       </div>
       {children}
     </div>
@@ -891,11 +945,8 @@ function LiveActivePill({
         <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
       </span>
       <Radio className="h-3.5 w-3.5 text-emerald-600" />
-      <span className="text-sm font-semibold">
-        {active.total} live
-      </span>
+      <span className="text-sm font-semibold">{active.total} live</span>
       <span className="text-xs text-muted-foreground">{detail}</span>
     </div>
   );
 }
-

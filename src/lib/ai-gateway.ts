@@ -5,8 +5,7 @@
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import { generateText, streamText, type ModelMessage } from "ai";
 
-export const GEMINI_BASE_URL =
-  "https://generativelanguage.googleapis.com/v1beta/openai";
+export const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai";
 export const DEFAULT_CHAT_MODEL = "gemini-2.5-flash";
 export const DEFAULT_EMBED_MODEL = "gemini-embedding-001";
 

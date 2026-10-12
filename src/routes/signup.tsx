@@ -1,7 +1,16 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
 import { toast, Toaster } from "sonner";
-import { Eye, EyeOff, FlaskConical, GraduationCap, Loader2, UserCog, Phone, Mail } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  FlaskConical,
+  GraduationCap,
+  Loader2,
+  UserCog,
+  Phone,
+  Mail,
+} from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-store";
@@ -215,7 +224,8 @@ function SignupPage() {
           </div>
           <div>
             <Label htmlFor="email" className="flex items-center gap-1">
-              <Mail className="h-3.5 w-3.5" /> ইমেইল <span className="text-muted-foreground text-xs">(না দিলেও চলবে)</span>
+              <Mail className="h-3.5 w-3.5" /> ইমেইল{" "}
+              <span className="text-muted-foreground text-xs">(না দিলেও চলবে)</span>
             </Label>
             <Input
               id="email"

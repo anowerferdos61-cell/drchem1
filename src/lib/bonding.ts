@@ -7,11 +7,7 @@
 
 export type Lang = "en" | "bn";
 
-export type BondingStepId =
-  | "intro"
-  | "ionic_transfer"
-  | "covalent_share"
-  | "concept_check";
+export type BondingStepId = "intro" | "ionic_transfer" | "covalent_share" | "concept_check";
 
 export interface BondingStep {
   id: BondingStepId;
@@ -198,8 +194,7 @@ export function gradeBonding(i: BondingGradeInput): BondingGradeOutput {
   if (i.quizTotal > 0) acc += Math.round((i.quizCorrect / i.quizTotal) * 30);
   acc -= i.mistakes * 4;
   acc = Math.max(0, Math.min(100, acc));
-  const grade =
-    acc >= 90 ? "A" : acc >= 75 ? "B" : acc >= 60 ? "C" : acc >= 45 ? "D" : "F";
+  const grade = acc >= 90 ? "A" : acc >= 75 ? "B" : acc >= 60 ? "C" : acc >= 45 ? "D" : "F";
   return { accuracy: acc, grade };
 }
 

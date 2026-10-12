@@ -28,10 +28,7 @@ function MessageBubbleImpl({ message }: Props) {
 
   return (
     <div
-      className={cn(
-        "group flex w-full gap-3 px-4 py-5",
-        isUser ? "bg-transparent" : "bg-muted/30",
-      )}
+      className={cn("group flex w-full gap-3 px-4 py-5", isUser ? "bg-transparent" : "bg-muted/30")}
     >
       <div
         className={cn(
@@ -59,15 +56,10 @@ function MessageBubbleImpl({ message }: Props) {
           )}
         </div>
         {isUser ? (
-          <p className="whitespace-pre-wrap text-sm leading-relaxed">
-            {message.content}
-          </p>
+          <p className="whitespace-pre-wrap text-sm leading-relaxed">{message.content}</p>
         ) : (
           <div className="prose prose-sm max-w-none break-words dark:prose-invert prose-p:my-2 prose-ul:my-2 prose-ol:my-2 prose-li:my-0.5 prose-pre:my-2">
-            <ReactMarkdown
-              remarkPlugins={[remarkMath]}
-              rehypePlugins={[rehypeKatex]}
-            >
+            <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
               {message.content || (message.streaming ? "…" : "")}
             </ReactMarkdown>
             {message.streaming && (

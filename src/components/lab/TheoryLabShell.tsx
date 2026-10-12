@@ -80,13 +80,9 @@ export default function TheoryLabShell({
             </Button>
             {headerIcon}
             <div className="min-w-0 leading-tight">
-              <div className="truncate font-extrabold tracking-tight text-lab-base">
-                {titleBn}
-              </div>
+              <div className="truncate font-extrabold tracking-tight text-lab-base">{titleBn}</div>
               {subtitleEn && (
-                <div className="truncate text-lab-xs text-muted-foreground">
-                  {subtitleEn}
-                </div>
+                <div className="truncate text-lab-xs text-muted-foreground">{subtitleEn}</div>
               )}
             </div>
           </div>
@@ -128,9 +124,7 @@ export default function TheoryLabShell({
       </main>
 
       {/* ── Pull-up theory sheet ── */}
-      {theory && (
-        <TheoryDrawer label={theoryLabel}>{theory}</TheoryDrawer>
-      )}
+      {theory && <TheoryDrawer label={theoryLabel}>{theory}</TheoryDrawer>}
     </div>
   );
 }
@@ -154,9 +148,7 @@ function TheoryDrawer({ label, children }: { label: string; children: ReactNode 
           <DrawerTitle className="text-lab-lg">{label}</DrawerTitle>
         </DrawerHeader>
         <ScrollArea className="px-4 pb-6">
-          <div className="prose prose-sm max-w-none text-lab-sm dark:prose-invert">
-            {children}
-          </div>
+          <div className="prose prose-sm max-w-none text-lab-sm dark:prose-invert">{children}</div>
         </ScrollArea>
         <DrawerClose asChild>
           <Button variant="ghost" size="sm" className="mx-4 mb-3">

@@ -145,7 +145,9 @@ export default function ElectrolyticRefiningLab({ onBack }: Props) {
           <Card className="relative overflow-hidden border-white/10 bg-slate-900/70 p-4 backdrop-blur-xl">
             <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-orange-400 via-amber-400 to-emerald-400" />
             <div className="mb-3 flex items-center gap-2">
-              <Activity className={running ? "h-4 w-4 text-emerald-400" : "h-4 w-4 text-slate-500"} />
+              <Activity
+                className={running ? "h-4 w-4 text-emerald-400" : "h-4 w-4 text-slate-500"}
+              />
               <h2 className="text-sm font-bold uppercase tracking-widest text-slate-300">
                 Live Half-Reactions
               </h2>
@@ -187,26 +189,44 @@ export default function ElectrolyticRefiningLab({ onBack }: Props) {
               </TabsList>
 
               <TabsContent value="cu" className="mt-3 space-y-2 text-sm text-slate-200">
-                <p><strong className="text-orange-300">কপার বিশোধন:</strong> অশুদ্ধ Cu অ্যানোড, বিশুদ্ধ Cu ক্যাথোড, তড়িৎ-বিশ্লেষ্য হিসাবে অম্লীয় CuSO₄ দ্রবণ ব্যবহৃত হয়। ফলে <strong>৯৯.৯%</strong> বিশুদ্ধ Cu ক্যাথোডে জমা হয়।</p>
+                <p>
+                  <strong className="text-orange-300">কপার বিশোধন:</strong> অশুদ্ধ Cu অ্যানোড,
+                  বিশুদ্ধ Cu ক্যাথোড, তড়িৎ-বিশ্লেষ্য হিসাবে অম্লীয় CuSO₄ দ্রবণ ব্যবহৃত হয়। ফলে{" "}
+                  <strong>৯৯.৯%</strong> বিশুদ্ধ Cu ক্যাথোডে জমা হয়।
+                </p>
                 <p className="rounded-md border border-amber-400/30 bg-amber-400/10 p-2 text-amber-100">
                   <strong>Anode Mud:</strong> Ag, Au, Pt অ্যানোডের নিচে জমা হয় → মূল্যবান উপজাত।
                 </p>
               </TabsContent>
 
               <TabsContent value="na" className="mt-3 space-y-2 text-sm text-slate-200">
-                <p><strong className="text-sky-300">Down's Process:</strong> সোডিয়াম অত্যন্ত সক্রিয় ধাতু, তাই জলীয় দ্রবণে নয় — <strong>গলিত NaCl</strong>-এর তড়িৎ বিশ্লেষণে Na পাওয়া যায়।</p>
+                <p>
+                  <strong className="text-sky-300">Down's Process:</strong> সোডিয়াম অত্যন্ত সক্রিয়
+                  ধাতু, তাই জলীয় দ্রবণে নয় — <strong>গলিত NaCl</strong>-এর তড়িৎ বিশ্লেষণে Na
+                  পাওয়া যায়।
+                </p>
                 <div className="rounded-md border border-white/10 bg-white/5 p-2 font-mono text-xs text-sky-200">
-                  Cathode: Na⁺ + e⁻ → Na<br />Anode: 2Cl⁻ → Cl₂ + 2e⁻
+                  Cathode: Na⁺ + e⁻ → Na
+                  <br />
+                  Anode: 2Cl⁻ → Cl₂ + 2e⁻
                 </div>
                 <p className="text-xs text-slate-400">CaCl₂ যোগ করা হয় গলনাঙ্ক কমাতে (~600°C)।</p>
               </TabsContent>
 
               <TabsContent value="al" className="mt-3 space-y-2 text-sm text-slate-200">
-                <p><strong className="text-fuchsia-300">Hall-Héroult Process:</strong> <strong>বক্সাইট (Al₂O₃)</strong>-কে গলিত <strong>ক্রায়োলাইট (Na₃AlF₆)</strong>-এ দ্রবীভূত করে তড়িৎ বিশ্লেষণ করা হয়।</p>
+                <p>
+                  <strong className="text-fuchsia-300">Hall-Héroult Process:</strong>{" "}
+                  <strong>বক্সাইট (Al₂O₃)</strong>-কে গলিত <strong>ক্রায়োলাইট (Na₃AlF₆)</strong>-এ
+                  দ্রবীভূত করে তড়িৎ বিশ্লেষণ করা হয়।
+                </p>
                 <div className="rounded-md border border-white/10 bg-white/5 p-2 font-mono text-xs text-fuchsia-200">
-                  Cathode: Al³⁺ + 3e⁻ → Al<br />Anode: 2O²⁻ → O₂ + 4e⁻
+                  Cathode: Al³⁺ + 3e⁻ → Al
+                  <br />
+                  Anode: 2O²⁻ → O₂ + 4e⁻
                 </div>
-                <p className="text-xs text-slate-400">তাপমাত্রা ~950°C; কার্বন অ্যানোড ধীরে ধীরে ক্ষয় হয়।</p>
+                <p className="text-xs text-slate-400">
+                  তাপমাত্রা ~950°C; কার্বন অ্যানোড ধীরে ধীরে ক্ষয় হয়।
+                </p>
               </TabsContent>
             </Tabs>
           </Card>
@@ -215,25 +235,50 @@ export default function ElectrolyticRefiningLab({ onBack }: Props) {
 
       <DraggableTheoryFab storageKey="electrolytic-refining">
         <h3>তড়িৎ বিশোধন (Electrolytic Refining)</h3>
-        <p>অপরিশুদ্ধ ধাতুকে বিশুদ্ধ করতে তড়িৎ বিশ্লেষণ পদ্ধতি ব্যবহার করাকেই তড়িৎ বিশোধন বলে। বিশোধিত ধাতুর একটি লবণের দ্রবণকে তড়িৎ-বিশ্লেষ্য হিসেবে নেওয়া হয়।</p>
+        <p>
+          অপরিশুদ্ধ ধাতুকে বিশুদ্ধ করতে তড়িৎ বিশ্লেষণ পদ্ধতি ব্যবহার করাকেই তড়িৎ বিশোধন বলে।
+          বিশোধিত ধাতুর একটি লবণের দ্রবণকে তড়িৎ-বিশ্লেষ্য হিসেবে নেওয়া হয়।
+        </p>
         <h4>কপার বিশোধনের সেটআপ</h4>
         <ul>
-          <li><strong>অ্যানোড (+):</strong> অপরিশুদ্ধ কপার প্লেট।</li>
-          <li><strong>ক্যাথোড (−):</strong> পাতলা বিশুদ্ধ কপার প্লেট।</li>
-          <li><strong>ইলেক্ট্রোলাইট:</strong> অম্লীয় CuSO₄ দ্রবণ (নীল)।</li>
+          <li>
+            <strong>অ্যানোড (+):</strong> অপরিশুদ্ধ কপার প্লেট।
+          </li>
+          <li>
+            <strong>ক্যাথোড (−):</strong> পাতলা বিশুদ্ধ কপার প্লেট।
+          </li>
+          <li>
+            <strong>ইলেক্ট্রোলাইট:</strong> অম্লীয় CuSO₄ দ্রবণ (নীল)।
+          </li>
         </ul>
         <h4>ইলেক্ট্রোড বিক্রিয়া</h4>
         <ul>
           <li>অ্যানোডে (জারণ): Cu → Cu²⁺ + 2e⁻</li>
           <li>ক্যাথোডে (বিজারণ): Cu²⁺ + 2e⁻ → Cu</li>
         </ul>
-        <p>অ্যানোড থেকে বিশুদ্ধ কপার আয়ন হিসেবে দ্রবণে যায় ও ক্যাথোডে বিশুদ্ধ কপার হিসেবে জমা হয়। Au, Ag, Pt-এর মতো মূল্যবান অপদ্রব্য অ্যানোডের নিচে <strong>অ্যানোড কাদা (anode mud)</strong> হিসেবে জমা হয় — এখান থেকে আলাদা করে সোনা-রুপা পুনরুদ্ধার করা হয়।</p>
+        <p>
+          অ্যানোড থেকে বিশুদ্ধ কপার আয়ন হিসেবে দ্রবণে যায় ও ক্যাথোডে বিশুদ্ধ কপার হিসেবে জমা হয়।
+          Au, Ag, Pt-এর মতো মূল্যবান অপদ্রব্য অ্যানোডের নিচে{" "}
+          <strong>অ্যানোড কাদা (anode mud)</strong> হিসেবে জমা হয় — এখান থেকে আলাদা করে সোনা-রুপা
+          পুনরুদ্ধার করা হয়।
+        </p>
         <h4>সংশ্লিষ্ট প্রক্রিয়া</h4>
         <ul>
-          <li><strong>Down's Process (Na নিষ্কাশন):</strong> গলিত NaCl-এর তড়িৎ বিশ্লেষণে ক্যাথোডে Na, অ্যানোডে Cl₂ পাওয়া যায়।</li>
-          <li><strong>Hall–Héroult Process (Al নিষ্কাশন):</strong> ক্রায়োলাইটে (Na₃AlF₆) গলিত Al₂O₃-এর তড়িৎ বিশ্লেষণে ক্যাথোডে অ্যালুমিনিয়াম পাওয়া যায়।</li>
+          <li>
+            <strong>Down's Process (Na নিষ্কাশন):</strong> গলিত NaCl-এর তড়িৎ বিশ্লেষণে ক্যাথোডে Na,
+            অ্যানোডে Cl₂ পাওয়া যায়।
+          </li>
+          <li>
+            <strong>Hall–Héroult Process (Al নিষ্কাশন):</strong> ক্রায়োলাইটে (Na₃AlF₆) গলিত
+            Al₂O₃-এর তড়িৎ বিশ্লেষণে ক্যাথোডে অ্যালুমিনিয়াম পাওয়া যায়।
+          </li>
         </ul>
-        <p><em>সারকথা: তড়িৎ বিশোধনে জারণ-বিজারণের মাধ্যমে অপরিশুদ্ধ ধাতু ভেঙে বিশুদ্ধ ধাতুতে রূপান্তরিত হয়।</em></p>
+        <p>
+          <em>
+            সারকথা: তড়িৎ বিশোধনে জারণ-বিজারণের মাধ্যমে অপরিশুদ্ধ ধাতু ভেঙে বিশুদ্ধ ধাতুতে
+            রূপান্তরিত হয়।
+          </em>
+        </p>
       </DraggableTheoryFab>
     </div>
   );
@@ -292,7 +337,9 @@ function ReactionRow({
   return (
     <div className={`rounded-lg border ${border} ${bg} p-3`}>
       <div className="mb-1 flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-slate-300">
-        <span className={`inline-block h-2 w-2 rounded-full ${dot} ${active ? "animate-pulse" : ""}`} />
+        <span
+          className={`inline-block h-2 w-2 rounded-full ${dot} ${active ? "animate-pulse" : ""}`}
+        />
         {side}
       </div>
       <div className={`font-mono text-sm ${text}`}>{equation}</div>
@@ -364,11 +411,24 @@ function CellSVG({
 
         {/* Battery */}
         <g transform="translate(190,10)">
-          <rect x="0" y="0" width="120" height="46" rx="8" fill="#0f172a" stroke="#475569" strokeWidth="2" />
+          <rect
+            x="0"
+            y="0"
+            width="120"
+            height="46"
+            rx="8"
+            fill="#0f172a"
+            stroke="#475569"
+            strokeWidth="2"
+          />
           <rect x="-6" y="14" width="6" height="18" fill="#475569" />
           <rect x="120" y="14" width="6" height="18" fill="#475569" />
-          <text x="15" y="30" fontSize="18" fontWeight="800" fill="#f87171">−</text>
-          <text x="98" y="30" fontSize="18" fontWeight="800" fill="#4ade80">+</text>
+          <text x="15" y="30" fontSize="18" fontWeight="800" fill="#f87171">
+            −
+          </text>
+          <text x="98" y="30" fontSize="18" fontWeight="800" fill="#4ade80">
+            +
+          </text>
           <foreignObject x="45" y="12" width="34" height="24">
             <div className="flex h-full w-full items-center justify-center">
               <BatteryCharging
@@ -589,7 +649,14 @@ function CellSVG({
           <text x={cathodeX} y={anodeBottom + 26} textAnchor="middle" fill="#bbf7d0" fontSize="10">
             বিশুদ্ধ Cu
           </text>
-          <text x={250} y={solutionY + 20} textAnchor="middle" fill="#e0f2fe" fontSize="11" opacity={0.9}>
+          <text
+            x={250}
+            y={solutionY + 20}
+            textAnchor="middle"
+            fill="#e0f2fe"
+            fontSize="11"
+            opacity={0.9}
+          >
             CuSO₄ (aq) · কপার সালফেট দ্রবণ
           </text>
         </g>

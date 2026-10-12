@@ -7,7 +7,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function ensureAdmin(supabase: any, userId: string) {
   const { data: isAdmin } = await supabase.rpc("has_role", {
     _user_id: userId,
@@ -19,17 +18,19 @@ async function ensureAdmin(supabase: any, userId: string) {
 // ─── Tracking (public) ──────────────────────────────────────────────────
 
 export const trackEvent = createServerFn({ method: "POST" })
-  .inputValidator((data: {
-    anonId: string;
-    sessionId?: string | null;
-    userId?: string | null;
-    eventType: "page_view" | "feature";
-    path?: string | null;
-    featureKey?: string | null;
-    referrer?: string | null;
-    userAgent?: string | null;
-    metadata?: Record<string, string | number | boolean | null>;
-  }) => data)
+  .inputValidator(
+    (data: {
+      anonId: string;
+      sessionId?: string | null;
+      userId?: string | null;
+      eventType: "page_view" | "feature";
+      path?: string | null;
+      featureKey?: string | null;
+      referrer?: string | null;
+      userAgent?: string | null;
+      metadata?: Record<string, string | number | boolean | null>;
+    }) => data,
+  )
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -305,10 +306,8 @@ export const getRecentSessions = createServerFn({ method: "GET" })
       id: r.id as string,
       anon_id: r.anon_id as string,
       user_id: (r.user_id as string) ?? null,
-      email: r.user_id ? profileMap.get(r.user_id as string)?.email ?? null : null,
-      display_name: r.user_id
-        ? profileMap.get(r.user_id as string)?.display_name ?? null
-        : null,
+      email: r.user_id ? (profileMap.get(r.user_id as string)?.email ?? null) : null,
+      display_name: r.user_id ? (profileMap.get(r.user_id as string)?.display_name ?? null) : null,
       started_at: r.started_at as string,
       last_seen_at: r.last_seen_at as string,
       duration_seconds: r.duration_seconds as number,

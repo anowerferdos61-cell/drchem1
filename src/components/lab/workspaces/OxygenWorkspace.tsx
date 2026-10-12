@@ -108,11 +108,7 @@ export default function OxygenWorkspace({
             <stop offset="60%" stopColor="#fb923c" />
             <stop offset="100%" stopColor="#dc2626" stopOpacity="0.2" />
           </radialGradient>
-          <path
-            id="ox-delivery-path"
-            d="M 170 160 C 200 110, 330 100, 470 145"
-            fill="none"
-          />
+          <path id="ox-delivery-path" d="M 170 160 C 200 110, 330 100, 470 145" fill="none" />
         </defs>
 
         {/* === Retort stand === */}
@@ -203,7 +199,13 @@ export default function OxygenWorkspace({
         {placed.delivery_tube && placed.reaction_tube && (
           <g>
             <use href="#ox-delivery-path" stroke="#94a3b8" strokeWidth="6" fill="none" />
-            <use href="#ox-delivery-path" stroke="#ffffff" strokeWidth="3" fill="none" opacity="0.6" />
+            <use
+              href="#ox-delivery-path"
+              stroke="#ffffff"
+              strokeWidth="3"
+              fill="none"
+              opacity="0.6"
+            />
             {/* Bubbles travelling along the path when reacting */}
             {reacting &&
               [0, 1, 2].map((i) => (
@@ -231,11 +233,7 @@ export default function OxygenWorkspace({
               strokeWidth="1.5"
             />
             {/* water */}
-            <path
-              d="M348 372 L592 372 L585 432 L355 432 Z"
-              fill="url(#ox-water)"
-              opacity="0.85"
-            />
+            <path d="M348 372 L592 372 L585 432 L355 432 Z" fill="url(#ox-water)" opacity="0.85" />
           </g>
         )}
 

@@ -43,7 +43,6 @@ export const getAssignedTests = createServerFn({ method: "GET" })
           .in("set_id", setIds)
       : { data: [] };
     return { sets: setsWithCount, attempts: attempts ?? [] };
-
   });
 
 /** Fetch a published test for the student to take. Strips correct_index/explanation. */

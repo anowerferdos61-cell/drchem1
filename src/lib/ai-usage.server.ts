@@ -13,11 +13,7 @@ const PRICING: Record<string, { input: number; output: number }> = {
   "gemini-embedding-001": { input: 0.15, output: 0 },
 };
 
-export function estimateCostUsd(
-  model: string,
-  inputTokens: number,
-  outputTokens: number,
-): number {
+export function estimateCostUsd(model: string, inputTokens: number, outputTokens: number): number {
   const p = PRICING[model] ?? PRICING["gemini-2.5-flash"];
   return (inputTokens * p.input + outputTokens * p.output) / 1_000_000;
 }

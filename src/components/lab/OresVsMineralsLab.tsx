@@ -112,7 +112,9 @@ export default function OresVsMineralsLab({ onBack }: { onBack: () => void }) {
               <div className="mb-3 flex items-center gap-2">
                 <Layers className="h-4 w-4 text-sky-500" />
                 <h3 className="text-sm font-bold">{t("minerals")} · Minerals</h3>
-                <Badge variant="secondary" className="ml-auto text-[10px]">Outer set</Badge>
+                <Badge variant="secondary" className="ml-auto text-[10px]">
+                  Outer set
+                </Badge>
               </div>
               <p className="text-sm text-muted-foreground">{t("mineralsDesc")}</p>
               <div className="mt-3 rounded-lg border border-sky-500/30 bg-sky-500/5 p-3">
@@ -144,9 +146,7 @@ export default function OresVsMineralsLab({ onBack }: { onBack: () => void }) {
 
             <Alert className="border-amber-500/40 bg-gradient-to-br from-amber-500/10 to-yellow-500/5">
               <Sparkles className="h-4 w-4 text-amber-600" />
-              <AlertTitle className="text-sm font-bold">
-                💡 {t("keyLogic")}
-              </AlertTitle>
+              <AlertTitle className="text-sm font-bold">💡 {t("keyLogic")}</AlertTitle>
               <AlertDescription className="text-xs leading-relaxed">
                 {t("keyLogicText")}
               </AlertDescription>
@@ -157,14 +157,24 @@ export default function OresVsMineralsLab({ onBack }: { onBack: () => void }) {
 
       <DraggableTheoryFab storageKey="ores-vs-minerals">
         <h3>খনিজ (Mineral) কী?</h3>
-        <p>প্রকৃতিতে প্রাপ্ত যে সকল অজৈব পদার্থের নির্দিষ্ট রাসায়নিক সংকেত ও স্ফটিক গঠন থাকে, তাদের খনিজ বলে। যেমন — কোয়ার্টজ (SiO₂), হ্যালাইট (NaCl), হেমাটাইট (Fe₂O₃), বক্সাইট (Al₂O₃·2H₂O)।</p>
+        <p>
+          প্রকৃতিতে প্রাপ্ত যে সকল অজৈব পদার্থের নির্দিষ্ট রাসায়নিক সংকেত ও স্ফটিক গঠন থাকে, তাদের
+          খনিজ বলে। যেমন — কোয়ার্টজ (SiO₂), হ্যালাইট (NaCl), হেমাটাইট (Fe₂O₃), বক্সাইট
+          (Al₂O₃·2H₂O)।
+        </p>
         <h3>আকরিক (Ore) কী?</h3>
-        <p>যে সকল খনিজ থেকে সহজে ও লাভজনকভাবে (economically & profitably) ধাতু নিষ্কাশন করা যায়, তাকে আকরিক বলে। অর্থাৎ প্রতিটি আকরিকই একটি খনিজ, কিন্তু প্রতিটি খনিজ আকরিক নয়।</p>
+        <p>
+          যে সকল খনিজ থেকে সহজে ও লাভজনকভাবে (economically & profitably) ধাতু নিষ্কাশন করা যায়,
+          তাকে আকরিক বলে। অর্থাৎ প্রতিটি আকরিকই একটি খনিজ, কিন্তু প্রতিটি খনিজ আকরিক নয়।
+        </p>
         <h3>প্রধান শর্ত (Conditions for an Ore)</h3>
         <ul>
           <li>ধাতুর পরিমাণ (Metal content) যথেষ্ট বেশি হতে হবে।</li>
           <li>নিষ্কাশন-প্রক্রিয়া অর্থনৈতিকভাবে লাভজনক হতে হবে।</li>
-          <li>ধাতুটি সহজে আলাদা করা যায় এমন যৌগ (সাধারণত অক্সাইড / সালফাইড / কার্বনেট) হিসেবে থাকতে হবে।</li>
+          <li>
+            ধাতুটি সহজে আলাদা করা যায় এমন যৌগ (সাধারণত অক্সাইড / সালফাইড / কার্বনেট) হিসেবে থাকতে
+            হবে।
+          </li>
         </ul>
         <h3>উদাহরণ</h3>
         <ul>
@@ -172,7 +182,9 @@ export default function OresVsMineralsLab({ onBack }: { onBack: () => void }) {
           <li>হেমাটাইট (Fe₂O₃) — লোহার আকরিক ✅</li>
           <li>ক্লে/কেওলিন — অ্যালুমিনিয়াম থাকলেও নিষ্কাশন লাভজনক নয়, তাই শুধু খনিজ ❌</li>
         </ul>
-        <p><em>Key takeaway — "All ores are minerals, but all minerals are not ores."</em></p>
+        <p>
+          <em>Key takeaway — "All ores are minerals, but all minerals are not ores."</em>
+        </p>
       </DraggableTheoryFab>
     </div>
   );
@@ -200,7 +212,15 @@ function VennDiagram({ lang }: { lang: Lang }) {
             <stop offset="0%" stopColor="hsl(152 80% 55%)" stopOpacity="0.42" />
             <stop offset="100%" stopColor="hsl(152 75% 40%)" stopOpacity="0.18" />
           </radialGradient>
-          <marker id="arrowHead" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <marker
+            id="arrowHead"
+            viewBox="0 0 10 10"
+            refX="9"
+            refY="5"
+            markerWidth="6"
+            markerHeight="6"
+            orient="auto-start-reverse"
+          >
             <path d="M 0 0 L 10 5 L 0 10 z" fill="hsl(220 15% 45%)" />
           </marker>
           <style>{`
@@ -218,18 +238,27 @@ function VennDiagram({ lang }: { lang: Lang }) {
         {/* Outer circle — Minerals */}
         <g className="drc-outer">
           <ellipse
-            cx="300" cy="220" rx="260" ry="190"
+            cx="300"
+            cy="220"
+            rx="260"
+            ry="190"
             fill="url(#mineralGrad)"
-            stroke="hsl(210 80% 55%)" strokeWidth="2.5" strokeDasharray="0"
+            stroke="hsl(210 80% 55%)"
+            strokeWidth="2.5"
+            strokeDasharray="0"
           />
         </g>
 
         {/* Inner circle — Ores */}
         <g className="drc-inner">
           <ellipse
-            cx="380" cy="220" rx="120" ry="105"
+            cx="380"
+            cy="220"
+            rx="120"
+            ry="105"
             fill="url(#oreGrad)"
-            stroke="hsl(152 70% 40%)" strokeWidth="2.5"
+            stroke="hsl(152 70% 40%)"
+            strokeWidth="2.5"
           />
         </g>
 
@@ -244,10 +273,24 @@ function VennDiagram({ lang }: { lang: Lang }) {
         </g>
 
         <g className="drc-fade-2">
-          <text x="380" y="150" fontSize="18" fontWeight="800" textAnchor="middle" fill="hsl(152 70% 30%)">
+          <text
+            x="380"
+            y="150"
+            fontSize="18"
+            fontWeight="800"
+            textAnchor="middle"
+            fill="hsl(152 70% 30%)"
+          >
             {t("ores")}
           </text>
-          <text x="380" y="168" fontSize="12" fontWeight="600" textAnchor="middle" fill="hsl(152 40% 35%)">
+          <text
+            x="380"
+            y="168"
+            fontSize="12"
+            fontWeight="600"
+            textAnchor="middle"
+            fill="hsl(152 40% 35%)"
+          >
             Ores · আকরিক
           </text>
         </g>
@@ -255,7 +298,14 @@ function VennDiagram({ lang }: { lang: Lang }) {
         {/* Bauxite point (inside inner) */}
         <g className="drc-fade-2">
           <circle cx="380" cy="230" r="7" fill="hsl(152 75% 40%)" stroke="white" strokeWidth="2" />
-          <text x="380" y="256" fontSize="13" fontWeight="700" textAnchor="middle" fill="hsl(152 70% 25%)">
+          <text
+            x="380"
+            y="256"
+            fontSize="13"
+            fontWeight="700"
+            textAnchor="middle"
+            fill="hsl(152 70% 25%)"
+          >
             {t("bauxite")} · Bauxite
           </text>
           <text x="380" y="272" fontSize="10.5" textAnchor="middle" fill="hsl(152 40% 35%)">
@@ -266,7 +316,14 @@ function VennDiagram({ lang }: { lang: Lang }) {
         {/* Clay point (outside inner, inside outer) */}
         <g className="drc-fade-3">
           <circle cx="130" cy="260" r="7" fill="hsl(210 80% 50%)" stroke="white" strokeWidth="2" />
-          <text x="130" y="286" fontSize="13" fontWeight="700" textAnchor="middle" fill="hsl(210 70% 30%)">
+          <text
+            x="130"
+            y="286"
+            fontSize="13"
+            fontWeight="700"
+            textAnchor="middle"
+            fill="hsl(210 70% 30%)"
+          >
             {t("clay")} · Clay
           </text>
           <text x="130" y="302" fontSize="10.5" textAnchor="middle" fill="hsl(210 40% 40%)">
@@ -279,17 +336,30 @@ function VennDiagram({ lang }: { lang: Lang }) {
           {/* Arrow from Bauxite label out to profitable note */}
           <path
             d="M 445 225 Q 520 210 545 175"
-            fill="none" stroke="hsl(152 60% 40%)" strokeWidth="1.5" strokeDasharray="4 3"
+            fill="none"
+            stroke="hsl(152 60% 40%)"
+            strokeWidth="1.5"
+            strokeDasharray="4 3"
             markerEnd="url(#arrowHead)"
           />
-          <text x="548" y="168" fontSize="11" fontWeight="700" textAnchor="end" fill="hsl(152 55% 30%)">
+          <text
+            x="548"
+            y="168"
+            fontSize="11"
+            fontWeight="700"
+            textAnchor="end"
+            fill="hsl(152 55% 30%)"
+          >
             ✓ {t("profitable")}
           </text>
 
           {/* Arrow from Clay to "not profitable" */}
           <path
             d="M 95 250 Q 55 235 45 205"
-            fill="none" stroke="hsl(0 60% 55%)" strokeWidth="1.5" strokeDasharray="4 3"
+            fill="none"
+            stroke="hsl(0 60% 55%)"
+            strokeWidth="1.5"
+            strokeDasharray="4 3"
             markerEnd="url(#arrowHead)"
           />
           <text x="40" y="196" fontSize="11" fontWeight="700" fill="hsl(0 60% 45%)">
@@ -298,7 +368,14 @@ function VennDiagram({ lang }: { lang: Lang }) {
         </g>
 
         {/* Bottom subset caption */}
-        <text x="300" y="418" fontSize="13" fontWeight="700" textAnchor="middle" fill="hsl(220 20% 40%)">
+        <text
+          x="300"
+          y="418"
+          fontSize="13"
+          fontWeight="700"
+          textAnchor="middle"
+          fill="hsl(220 20% 40%)"
+        >
           Ores ⊂ Minerals
         </text>
       </svg>

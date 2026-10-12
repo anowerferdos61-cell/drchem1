@@ -43,14 +43,18 @@ const ELECTRON_R = 2.6;
 const ELECTRONS_PER_CORE = 3;
 
 interface Core {
-  ox: number; oy: number; // original lattice position
-  x: number; y: number;   // rendered position (shift + vibration)
-  shiftX: number;         // permanent horizontal shift from hammer
+  ox: number;
+  oy: number; // original lattice position
+  x: number;
+  y: number; // rendered position (shift + vibration)
+  shiftX: number; // permanent horizontal shift from hammer
 }
 
 interface Electron {
-  x: number; y: number;
-  vx: number; vy: number;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
   phase: number;
 }
 
@@ -121,7 +125,7 @@ export default function MetallicBondingLab({ onBack }: Props) {
       const electrons = electronsRef.current;
 
       // ── update cores: thermal vibration + optional hammer settling ──
-      let hammer = hammerRef.current;
+      const hammer = hammerRef.current;
       const hammerActive = hammer > 0;
       if (hammerActive) {
         hammerRef.current = Math.max(0, hammer - dt * 0.02);
@@ -154,8 +158,12 @@ export default function MetallicBondingLab({ onBack }: Props) {
         // damping — keep speed sensible
         const maxSp = bat ? 1.6 + V * 0.15 : 1.4;
         const sp = Math.hypot(e.vx, e.vy);
-        if (sp > maxSp) { e.vx = (e.vx / sp) * maxSp; e.vy = (e.vy / sp) * maxSp; }
-        e.vx *= 0.94; e.vy *= 0.94;
+        if (sp > maxSp) {
+          e.vx = (e.vx / sp) * maxSp;
+          e.vy = (e.vy / sp) * maxSp;
+        }
+        e.vx *= 0.94;
+        e.vy *= 0.94;
         if (bat) e.vx += drift * 0.06;
 
         e.x += e.vx * dt;
@@ -164,8 +172,14 @@ export default function MetallicBondingLab({ onBack }: Props) {
         // wrap horizontally (electrons appear to circulate the circuit)
         if (e.x < MARGIN_X - 10) e.x = W - MARGIN_X + 10;
         if (e.x > W - MARGIN_X + 10) e.x = MARGIN_X - 10;
-        if (e.y < MARGIN_Y - 8) { e.y = MARGIN_Y - 8; e.vy = Math.abs(e.vy); }
-        if (e.y > H - MARGIN_Y + 8) { e.y = H - MARGIN_Y + 8; e.vy = -Math.abs(e.vy); }
+        if (e.y < MARGIN_Y - 8) {
+          e.y = MARGIN_Y - 8;
+          e.vy = Math.abs(e.vy);
+        }
+        if (e.y > H - MARGIN_Y + 8) {
+          e.y = H - MARGIN_Y + 8;
+          e.vy = -Math.abs(e.vy);
+        }
       }
 
       // ── render ──
@@ -174,7 +188,12 @@ export default function MetallicBondingLab({ onBack }: Props) {
       // subtle lattice frame
       ctx.strokeStyle = "rgba(148,163,184,0.18)";
       ctx.lineWidth = 1;
-      ctx.strokeRect(MARGIN_X - 20, MARGIN_Y - 20, W - (MARGIN_X - 20) * 2, H - (MARGIN_Y - 20) * 2);
+      ctx.strokeRect(
+        MARGIN_X - 20,
+        MARGIN_Y - 20,
+        W - (MARGIN_X - 20) * 2,
+        H - (MARGIN_Y - 20) * 2,
+      );
 
       // battery leads (if on)
       if (bat) {
@@ -183,17 +202,20 @@ export default function MetallicBondingLab({ onBack }: Props) {
         // left wire
         ctx.strokeStyle = "#60a5fa";
         ctx.beginPath();
-        ctx.moveTo(0, H / 2); ctx.lineTo(MARGIN_X - 22, H / 2);
+        ctx.moveTo(0, H / 2);
+        ctx.lineTo(MARGIN_X - 22, H / 2);
         ctx.stroke();
         // right wire
         ctx.strokeStyle = "#f87171";
         ctx.beginPath();
-        ctx.moveTo(W - MARGIN_X + 22, H / 2); ctx.lineTo(W, H / 2);
+        ctx.moveTo(W - MARGIN_X + 22, H / 2);
+        ctx.lineTo(W, H / 2);
         ctx.stroke();
         // terminal glyphs
         ctx.fillStyle = "#3b82f6";
         ctx.font = "bold 14px system-ui";
-        ctx.textAlign = "center"; ctx.textBaseline = "middle";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
         ctx.fillText("−", 12, H / 2 - 12);
         ctx.fillStyle = "#ef4444";
         ctx.fillText("+", W - 12, H / 2 - 12);
@@ -223,7 +245,8 @@ export default function MetallicBondingLab({ onBack }: Props) {
         // label
         ctx.fillStyle = "#fff";
         ctx.font = "bold 9px system-ui";
-        ctx.textAlign = "center"; ctx.textBaseline = "middle";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
         ctx.fillText("Cu²⁺", core.x, core.y);
       }
 
@@ -265,7 +288,9 @@ export default function MetallicBondingLab({ onBack }: Props) {
       rafRef.current = requestAnimationFrame(tickFn);
     };
     rafRef.current = requestAnimationFrame(tickFn);
-    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
   }, []);
 
   // ── hammer action: shift top row rightward permanently ──
@@ -325,13 +350,22 @@ export default function MetallicBondingLab({ onBack }: Props) {
                 : "from-slate-500 to-slate-700"
           }`}
         >
-          {deformed ? <Hammer className="h-3.5 w-3.5" /> : battery ? <Zap className="h-3.5 w-3.5" /> : <Waves className="h-3.5 w-3.5" />}
+          {deformed ? (
+            <Hammer className="h-3.5 w-3.5" />
+          ) : battery ? (
+            <Zap className="h-3.5 w-3.5" />
+          ) : (
+            <Waves className="h-3.5 w-3.5" />
+          )}
           <span className="text-lab-xs font-semibold">
-            {deformed ? "Deformed · আকৃতি বদলেছে" : battery ? "Current Flowing · তড়িৎ প্রবাহ" : "Electron Sea · ইলেকট্রন সাগর"}
+            {deformed
+              ? "Deformed · আকৃতি বদলেছে"
+              : battery
+                ? "Current Flowing · তড়িৎ প্রবাহ"
+                : "Electron Sea · ইলেকট্রন সাগর"}
           </span>
         </Badge>
       }
-
       /* ── LEFT — info & metrics ── */
       info={
         <>
@@ -345,8 +379,8 @@ export default function MetallicBondingLab({ onBack }: Props) {
               </div>
             </div>
             <p className="px-3 py-2 text-lab-sm text-foreground/90">
-              ধাতুর ধনাত্মক আয়নগুলো নির্দিষ্ট জায়গায় থাকে, আর যোজ্যতা ইলেকট্রনগুলো
-              সমগ্র ল্যাটিসে অবাধে চলাচল করে — এটাই "ইলেকট্রন সাগর"।
+              ধাতুর ধনাত্মক আয়নগুলো নির্দিষ্ট জায়গায় থাকে, আর যোজ্যতা ইলেকট্রনগুলো সমগ্র ল্যাটিসে
+              অবাধে চলাচল করে — এটাই "ইলেকট্রন সাগর"।
             </p>
           </Card>
 
@@ -384,17 +418,20 @@ export default function MetallicBondingLab({ onBack }: Props) {
             <div className="space-y-1.5 text-lab-sm">
               <div className="flex items-center gap-2">
                 <span className="inline-block h-3 w-3 rounded-full bg-gradient-to-br from-orange-400 to-orange-700 shadow" />
-                <span><b>Cu²⁺</b> — Atomic Cores (Kernel)</span>
+                <span>
+                  <b>Cu²⁺</b> — Atomic Cores (Kernel)
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="inline-block h-3 w-3 rounded-full bg-blue-300 shadow-[0_0_6px_2px_rgba(59,130,246,0.6)]" />
-                <span><b>e⁻</b> — Delocalized Electrons</span>
+                <span>
+                  <b>e⁻</b> — Delocalized Electrons
+                </span>
               </div>
             </div>
           </Card>
         </>
       }
-
       /* ── CENTER — canvas + circuit UI ── */
       visual={
         <div
@@ -416,19 +453,25 @@ export default function MetallicBondingLab({ onBack }: Props) {
           {/* Circuit strip under the canvas */}
           <div className="absolute inset-x-2 bottom-2 flex h-[62px] items-center justify-between rounded-lg border bg-background/80 px-2 shadow-sm backdrop-blur">
             {/* Battery */}
-            <div className={`flex items-center gap-1.5 rounded-md border px-2 py-1 text-lab-xs font-semibold transition ${battery ? "border-emerald-400 bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300" : "text-muted-foreground"}`}>
+            <div
+              className={`flex items-center gap-1.5 rounded-md border px-2 py-1 text-lab-xs font-semibold transition ${battery ? "border-emerald-400 bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300" : "text-muted-foreground"}`}
+            >
               <BatteryCharging className="h-3.5 w-3.5" />
               {battery ? `${voltage}V ON` : "Battery OFF"}
             </div>
 
             {/* Wire indicator */}
             <div className="mx-2 flex flex-1 items-center gap-1">
-              <div className={`h-[3px] flex-1 rounded ${battery ? "bg-gradient-to-r from-blue-400 via-blue-500 to-red-500 animate-pulse" : "bg-slate-300 dark:bg-slate-700"}`} />
+              <div
+                className={`h-[3px] flex-1 rounded ${battery ? "bg-gradient-to-r from-blue-400 via-blue-500 to-red-500 animate-pulse" : "bg-slate-300 dark:bg-slate-700"}`}
+              />
             </div>
 
             {/* LED bulb */}
             <div className="flex flex-col items-center gap-0.5">
-              <div className={`grid h-8 w-8 place-items-center rounded-full border-2 transition ${battery ? "border-amber-400 bg-amber-300 text-amber-900 shadow-[0_0_18px_4px_rgba(251,191,36,0.65)]" : "border-slate-300 bg-slate-100 text-slate-400 dark:border-slate-700 dark:bg-slate-800"}`}>
+              <div
+                className={`grid h-8 w-8 place-items-center rounded-full border-2 transition ${battery ? "border-amber-400 bg-amber-300 text-amber-900 shadow-[0_0_18px_4px_rgba(251,191,36,0.65)]" : "border-slate-300 bg-slate-100 text-slate-400 dark:border-slate-700 dark:bg-slate-800"}`}
+              >
                 <Lightbulb className="h-4 w-4" />
               </div>
               <span className="text-[9px] text-muted-foreground">{battery ? "ON" : "OFF"}</span>
@@ -436,7 +479,6 @@ export default function MetallicBondingLab({ onBack }: Props) {
           </div>
         </div>
       }
-
       /* ── RIGHT — controls ── */
       controls={
         <>
@@ -477,7 +519,8 @@ export default function MetallicBondingLab({ onBack }: Props) {
               </div>
             </div>
             <p className="text-lab-xs text-muted-foreground">
-              হাতুড়ি দিয়ে আঘাত করলে উপরের সারি সরে যাবে — কিন্তু ইলেকট্রন সাগর ল্যাটিসকে ভাঙতে দেবে না।
+              হাতুড়ি দিয়ে আঘাত করলে উপরের সারি সরে যাবে — কিন্তু ইলেকট্রন সাগর ল্যাটিসকে ভাঙতে
+              দেবে না।
             </p>
             <Button
               onClick={applyHammer}
@@ -488,32 +531,50 @@ export default function MetallicBondingLab({ onBack }: Props) {
             </Button>
           </Card>
 
-          <Button variant="outline" size="sm" onClick={reset} className="h-8 w-full gap-1.5 text-lab-sm">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={reset}
+            className="h-8 w-full gap-1.5 text-lab-sm"
+          >
             <RotateCcw className="h-3.5 w-3.5" /> Reset Lattice
           </Button>
         </>
       }
-
       /* ── Deep theory drawer ── */
       theory={
         <div className="space-y-3">
           <p>
-            <b>ধাতব বন্ধন (Metallic Bond):</b> ধাতুর পরমাণুগুলো তাদের যোজ্যতা ইলেকট্রন
-            মুক্ত করে ধনাত্মক আয়নে (kernel) পরিণত হয়। এই মুক্ত ইলেকট্রনগুলো একটি
-            "সাগর" তৈরি করে যেখানে সব ধনাত্মক আয়ন ডুবে থাকে। ধনাত্মক আয়ন ও
-            ইলেকট্রন সাগরের মধ্যে স্থির-বৈদ্যুতিক আকর্ষণই ধাতব বন্ধন।
+            <b>ধাতব বন্ধন (Metallic Bond):</b> ধাতুর পরমাণুগুলো তাদের যোজ্যতা ইলেকট্রন মুক্ত করে
+            ধনাত্মক আয়নে (kernel) পরিণত হয়। এই মুক্ত ইলেকট্রনগুলো একটি "সাগর" তৈরি করে যেখানে সব
+            ধনাত্মক আয়ন ডুবে থাকে। ধনাত্মক আয়ন ও ইলেকট্রন সাগরের মধ্যে স্থির-বৈদ্যুতিক আকর্ষণই
+            ধাতব বন্ধন।
           </p>
-          <p><b>Electron Sea Model ব্যাখ্যা করে —</b></p>
+          <p>
+            <b>Electron Sea Model ব্যাখ্যা করে —</b>
+          </p>
           <ul>
-            <li>• <b>তড়িৎ পরিবাহিতা:</b> ব্যাটারি সংযোগ দিলে delocalized e⁻ একদিকে drift করে → বিদ্যুৎ প্রবাহ।</li>
-            <li>• <b>নমনীয়তা (Malleability):</b> স্তর সরে গেলেও ইলেকট্রন সাগর "আঠা" হিসেবে কাজ করে — ধাতু ভাঙে না, পিটিয়ে পাত করা যায়।</li>
-            <li>• <b>Ductility:</b> একই কারণে ধাতু টেনে তার তৈরি করা যায়।</li>
-            <li>• <b>ধাতব দ্যুতি:</b> মুক্ত ইলেকট্রন আলো শোষণ করে পুনরায় বিকিরণ করে।</li>
-            <li>• <b>তাপ পরিবাহিতা:</b> শক্তি দ্রুত ইলেকট্রনের মাধ্যমে সঞ্চারিত হয়।</li>
+            <li>
+              • <b>তড়িৎ পরিবাহিতা:</b> ব্যাটারি সংযোগ দিলে delocalized e⁻ একদিকে drift করে →
+              বিদ্যুৎ প্রবাহ।
+            </li>
+            <li>
+              • <b>নমনীয়তা (Malleability):</b> স্তর সরে গেলেও ইলেকট্রন সাগর "আঠা" হিসেবে কাজ করে —
+              ধাতু ভাঙে না, পিটিয়ে পাত করা যায়।
+            </li>
+            <li>
+              • <b>Ductility:</b> একই কারণে ধাতু টেনে তার তৈরি করা যায়।
+            </li>
+            <li>
+              • <b>ধাতব দ্যুতি:</b> মুক্ত ইলেকট্রন আলো শোষণ করে পুনরায় বিকিরণ করে।
+            </li>
+            <li>
+              • <b>তাপ পরিবাহিতা:</b> শক্তি দ্রুত ইলেকট্রনের মাধ্যমে সঞ্চারিত হয়।
+            </li>
           </ul>
           <p>
-            <b>উদাহরণ:</b> Cu, Fe, Al, Au — সবাই এই মডেল মেনে চলে। যত বেশি মুক্ত
-            ইলেকট্রন, তত শক্তিশালী ধাতব বন্ধন।
+            <b>উদাহরণ:</b> Cu, Fe, Al, Au — সবাই এই মডেল মেনে চলে। যত বেশি মুক্ত ইলেকট্রন, তত
+            শক্তিশালী ধাতব বন্ধন।
           </p>
         </div>
       }
@@ -522,15 +583,24 @@ export default function MetallicBondingLab({ onBack }: Props) {
 }
 
 function Metric({
-  label, value, unit, gradient, icon: Icon,
+  label,
+  value,
+  unit,
+  gradient,
+  icon: Icon,
 }: {
-  label: string; value: string; unit: string; gradient: string;
+  label: string;
+  value: string;
+  unit: string;
+  gradient: string;
   icon: typeof Zap;
 }) {
   return (
     <div className="flex items-center justify-between rounded-md border bg-card p-2">
       <div className="flex items-center gap-2">
-        <div className={`grid h-6 w-6 place-items-center rounded bg-gradient-to-br ${gradient} text-white shadow-sm`}>
+        <div
+          className={`grid h-6 w-6 place-items-center rounded bg-gradient-to-br ${gradient} text-white shadow-sm`}
+        >
           <Icon className="h-3 w-3" />
         </div>
         <div>

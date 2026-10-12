@@ -21,7 +21,6 @@ export const Route = createFileRoute("/reset-password")({
       { name: "robots", content: "noindex,nofollow" },
     ],
   }),
-
 });
 
 function ResetPasswordPage() {

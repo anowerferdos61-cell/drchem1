@@ -150,7 +150,9 @@ function PricingPage() {
               onClick={() => setCycle("monthly")}
               className={cn(
                 "px-5 py-2 rounded-full text-sm font-medium transition-colors",
-                cycle === "monthly" ? "bg-background shadow text-foreground" : "text-muted-foreground",
+                cycle === "monthly"
+                  ? "bg-background shadow text-foreground"
+                  : "text-muted-foreground",
               )}
             >
               মাসিক
@@ -159,7 +161,9 @@ function PricingPage() {
               onClick={() => setCycle("yearly")}
               className={cn(
                 "px-5 py-2 rounded-full text-sm font-medium transition-colors flex items-center gap-2",
-                cycle === "yearly" ? "bg-background shadow text-foreground" : "text-muted-foreground",
+                cycle === "yearly"
+                  ? "bg-background shadow text-foreground"
+                  : "text-muted-foreground",
               )}
             >
               বার্ষিক
@@ -175,7 +179,8 @@ function PricingPage() {
           {[FREE, STUDENT, TEACHER].map((plan) => {
             const Icon = plan.icon;
             const price = cycle === "yearly" ? plan.yearlyPrice : plan.monthlyPrice;
-            const perMonth = cycle === "yearly" ? Math.round(plan.yearlyPrice / 12) : plan.monthlyPrice;
+            const perMonth =
+              cycle === "yearly" ? Math.round(plan.yearlyPrice / 12) : plan.monthlyPrice;
             return (
               <div
                 key={plan.code}
@@ -220,9 +225,7 @@ function PricingPage() {
                         </span>
                       </div>
                       {cycle === "yearly" && (
-                        <p className="text-xs text-muted-foreground mt-1">
-                          মাসে মাত্র ৳{perMonth}
-                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">মাসে মাত্র ৳{perMonth}</p>
                       )}
                     </>
                   )}

@@ -4,7 +4,15 @@
  * Watch each beaker change color according to the chosen indicator + medium.
  */
 import { useState } from "react";
-import { ArrowLeft, FlaskConical, Droplet, RotateCcw, Info, AlertTriangle, Sparkles } from "lucide-react";
+import {
+  ArrowLeft,
+  FlaskConical,
+  Droplet,
+  RotateCcw,
+  Info,
+  AlertTriangle,
+  Sparkles,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -91,9 +99,30 @@ const MEDIA: Array<{
   badge: string;
   badgeColor: string;
 }> = [
-  { id: "acid", formula: "HCl", name_bn: "অ্যাসিড", name_en: "Acid", badge: "pH < 7", badgeColor: "#EF4444" },
-  { id: "neutral", formula: "H₂O", name_bn: "নিরপেক্ষ", name_en: "Neutral", badge: "pH = 7", badgeColor: "#10B981" },
-  { id: "base", formula: "NaOH", name_bn: "ক্ষার", name_en: "Base", badge: "pH > 7", badgeColor: "#3B82F6" },
+  {
+    id: "acid",
+    formula: "HCl",
+    name_bn: "অ্যাসিড",
+    name_en: "Acid",
+    badge: "pH < 7",
+    badgeColor: "#EF4444",
+  },
+  {
+    id: "neutral",
+    formula: "H₂O",
+    name_bn: "নিরপেক্ষ",
+    name_en: "Neutral",
+    badge: "pH = 7",
+    badgeColor: "#10B981",
+  },
+  {
+    id: "base",
+    formula: "NaOH",
+    name_bn: "ক্ষার",
+    name_en: "Base",
+    badge: "pH > 7",
+    badgeColor: "#3B82F6",
+  },
 ];
 
 function colorFor(ind: Indicator, m: Medium): string {
@@ -228,7 +257,6 @@ export default function IndicatorLab({ onBack }: Props) {
                   : `✅ ${currentIndicator?.name_bn} সিলেক্ট হয়েছে — এখন যেকোনো বিকারে ক্লিক করুন।`
                 : "👆 একটি ড্রপার বা পেপার সিলেক্ট করুন, তারপর বিকারে ক্লিক করুন।"}
             </p>
-
           </Card>
 
           {/* Beakers */}
@@ -244,11 +272,7 @@ export default function IndicatorLab({ onBack }: Props) {
 
                 // Native solution tint (when litmus is dipped OR nothing dropped)
                 const nativeTint =
-                  m.id === "acid"
-                    ? "#EAF6FF"
-                    : m.id === "base"
-                      ? "#FFFBEA"
-                      : "#E0F2FE";
+                  m.id === "acid" ? "#EAF6FF" : m.id === "base" ? "#FFFBEA" : "#E0F2FE";
 
                 // Liquid colour: native if litmus (paper doesn't recolor solution)
                 const fill =
@@ -302,13 +326,7 @@ export default function IndicatorLab({ onBack }: Props) {
                           <stop offset="0.5" stopColor="#ffffff" stopOpacity="0.2" />
                           <stop offset="1" stopColor="#ffffff" stopOpacity="0.55" />
                         </linearGradient>
-                        <linearGradient
-                          id={`litmus-${m.id}`}
-                          x1="0"
-                          x2="0"
-                          y1="0"
-                          y2="1"
-                        >
+                        <linearGradient id={`litmus-${m.id}`} x1="0" x2="0" y1="0" y2="1">
                           {/* upper half: native neutral, lower half: pH-reactive colour */}
                           <stop offset="0%" stopColor="#C7B8E8" />
                           <stop offset="49%" stopColor="#A855F7" />
@@ -332,7 +350,12 @@ export default function IndicatorLab({ onBack }: Props) {
                         strokeWidth="2"
                       />
                       {/* Spout */}
-                      <path d="M18 30 L8 24 L8 28 L17 34" fill="none" stroke="#475569" strokeWidth="2" />
+                      <path
+                        d="M18 30 L8 24 L8 28 L17 34"
+                        fill="none"
+                        stroke="#475569"
+                        strokeWidth="2"
+                      />
                       {/* Tick marks */}
                       <g stroke="#64748b" strokeWidth="1">
                         <line x1="22" y1="70" x2="32" y2="70" />
@@ -352,10 +375,7 @@ export default function IndicatorLab({ onBack }: Props) {
                       </text>
                       {/* Litmus strip dipped in (angled) — only when litmus is dropped */}
                       {isLitmusDropped && (
-                        <g
-                          className="origin-center animate-fade-in"
-                          transform="rotate(-12 65 90)"
-                        >
+                        <g className="origin-center animate-fade-in" transform="rotate(-12 65 90)">
                           <rect
                             x="58"
                             y="20"
@@ -384,7 +404,6 @@ export default function IndicatorLab({ onBack }: Props) {
                 );
               })}
             </div>
-
           </Card>
 
           {/* Comparison Table */}

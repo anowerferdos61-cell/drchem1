@@ -14,10 +14,7 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/onboarding")({
   component: OnboardingPage,
   head: () => ({
-    meta: [
-      { title: "Welcome · Dr. Chem" },
-      { name: "robots", content: "noindex,nofollow" },
-    ],
+    meta: [{ title: "Welcome · Dr. Chem" }, { name: "robots", content: "noindex,nofollow" }],
   }),
 });
 
@@ -73,9 +70,7 @@ function OnboardingPage() {
           <span className="text-xl font-bold">Dr. Chem</span>
         </div>
         <h1 className="text-2xl font-bold text-center mb-1">স্বাগতম! 👋</h1>
-        <p className="text-sm text-muted-foreground text-center mb-6">
-          চালিয়ে যেতে কিছু তথ্য দিন
-        </p>
+        <p className="text-sm text-muted-foreground text-center mb-6">চালিয়ে যেতে কিছু তথ্য দিন</p>
 
         <div className="grid grid-cols-2 gap-2 mb-5">
           <button

@@ -190,7 +190,14 @@ function ReactionCanvas({
       for (let i = 0; i < 24; i++) {
         const a = Math.random() * Math.PI * 2;
         const s = 1.5 + Math.random() * 2.5;
-        sparks.push({ x: center.x, y: center.y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, life: 0, max: 350 });
+        sparks.push({
+          x: center.x,
+          y: center.y,
+          vx: Math.cos(a) * s,
+          vy: Math.sin(a) * s,
+          life: 0,
+          max: 350,
+        });
       }
       sparksRef.current = sparks;
       h2Rem.current = Math.max(0, h2Rem.current - 2);
@@ -244,8 +251,20 @@ function ReactionCanvas({
       ctx.fillStyle = bg;
       ctx.fillRect(0, 0, W, H);
 
-      drawArrow(ctx, vesselA.x + vesselA.w + 6, vesselA.y + vesselA.h / 2, center.x - 40, center.y - 8);
-      drawArrow(ctx, vesselB.x + vesselB.w + 6, vesselB.y + vesselB.h / 2, center.x - 40, center.y + 12);
+      drawArrow(
+        ctx,
+        vesselA.x + vesselA.w + 6,
+        vesselA.y + vesselA.h / 2,
+        center.x - 40,
+        center.y - 8,
+      );
+      drawArrow(
+        ctx,
+        vesselB.x + vesselB.w + 6,
+        vesselB.y + vesselB.h / 2,
+        center.x - 40,
+        center.y + 12,
+      );
       drawArrow(ctx, center.x + 40, center.y, vesselC.x - 6, vesselC.y + vesselC.h / 2);
 
       const zonePulse =
@@ -266,8 +285,24 @@ function ReactionCanvas({
 
       blinkRef.current += 0.08;
       const limiting = limitingRef.current;
-      drawVessel(ctx, vesselA, "Vessel A · H₂", "H₂ ট্যাংক", "#0891b2", endedRef.current && limiting === "H2", blinkRef.current);
-      drawVessel(ctx, vesselB, "Vessel B · O₂", "O₂ ট্যাংক", "#c2410c", endedRef.current && limiting === "O2", blinkRef.current);
+      drawVessel(
+        ctx,
+        vesselA,
+        "Vessel A · H₂",
+        "H₂ ট্যাংক",
+        "#0891b2",
+        endedRef.current && limiting === "H2",
+        blinkRef.current,
+      );
+      drawVessel(
+        ctx,
+        vesselB,
+        "Vessel B · O₂",
+        "O₂ ট্যাংক",
+        "#c2410c",
+        endedRef.current && limiting === "O2",
+        blinkRef.current,
+      );
       drawVessel(ctx, vesselC, "Vessel C · H₂O", "উৎপাদ পাত্র", "#0ea5e9", false, blinkRef.current);
 
       if (h2oMade.current > 0) {
@@ -427,13 +462,7 @@ function roundRect(
   ctx.closePath();
 }
 
-function drawArrow(
-  ctx: CanvasRenderingContext2D,
-  x1: number,
-  y1: number,
-  x2: number,
-  y2: number,
-) {
+function drawArrow(ctx: CanvasRenderingContext2D, x1: number, y1: number, x2: number, y2: number) {
   ctx.save();
   ctx.strokeStyle = "rgba(148,163,184,0.35)";
   ctx.setLineDash([5, 5]);
@@ -558,7 +587,10 @@ function strokeBond(
 }
 
 // ── Math Helpers ────────────────────────────────────────────
-function computeLimiting(h2: number, o2: number): {
+function computeLimiting(
+  h2: number,
+  o2: number,
+): {
   limiting: "H2" | "O2";
   maxH2O: number;
   h2Used: number;
@@ -703,7 +735,12 @@ export default function LimitingReactantLab({ onBack }: { onBack: () => void }) 
       <header className="sticky top-0 z-20 shrink-0 border-b bg-background/85 backdrop-blur-xl lg:static">
         <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-3 py-2">
           <div className="flex min-w-0 items-center gap-2">
-            <Button variant="ghost" size="sm" onClick={onBack} className="-ml-2 h-8 shrink-0 gap-1 px-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onBack}
+              className="-ml-2 h-8 shrink-0 gap-1 px-2"
+            >
               <ArrowLeft className="h-4 w-4" />
               <span className="hidden sm:inline text-sm">Back</span>
             </Button>
@@ -857,10 +894,7 @@ export default function LimitingReactantLab({ onBack }: { onBack: () => void }) 
 
           {/* CENTER — simulation */}
           <section
-            className={cn(
-              "flex flex-col gap-2 lg:min-h-0",
-              tab !== "sim" && "hidden lg:flex",
-            )}
+            className={cn("flex flex-col gap-2 lg:min-h-0", tab !== "sim" && "hidden lg:flex")}
           >
             <div className="relative flex-1" style={{ minHeight: "min(70vh, 460px)" }}>
               <ReactionCanvas
@@ -891,16 +925,10 @@ export default function LimitingReactantLab({ onBack }: { onBack: () => void }) 
                   Given: H₂ = {h2}, O₂ = {o2}
                 </div>
                 <div>
-                  Ratio needed:{" "}
-                  <span className="font-bold">
-                    H₂/O₂ = 2/1 = 2.00
-                  </span>
+                  Ratio needed: <span className="font-bold">H₂/O₂ = 2/1 = 2.00</span>
                 </div>
                 <div>
-                  You have:{" "}
-                  <span className="font-bold">
-                    {(h2 / o2).toFixed(2)}
-                  </span>{" "}
+                  You have: <span className="font-bold">{(h2 / o2).toFixed(2)}</span>{" "}
                   {h2 / o2 < 2 ? "→ H₂ কম → H₂ Limiting" : "→ O₂ কম → O₂ Limiting"}
                 </div>
               </div>
@@ -929,8 +957,7 @@ export default function LimitingReactantLab({ onBack }: { onBack: () => void }) 
                   Used: {stoich.h2Used} H₂ + {stoich.o2Used} O₂
                 </div>
                 <div>
-                  Excess:{" "}
-                  {stoich.h2Excess > 0 ? `${stoich.h2Excess} H₂ leftover` : ""}
+                  Excess: {stoich.h2Excess > 0 ? `${stoich.h2Excess} H₂ leftover` : ""}
                   {stoich.o2Excess > 0 ? `${stoich.o2Excess} O₂ leftover` : ""}
                   {stoich.h2Excess === 0 && stoich.o2Excess === 0 ? "0 (perfect ratio)" : ""}
                 </div>
@@ -950,17 +977,14 @@ export default function LimitingReactantLab({ onBack }: { onBack: () => void }) 
               <div className="rounded-lg bg-muted/50 p-2 font-mono text-[11px] leading-relaxed">
                 <div>% Yield = (Actual / Theoretical) × 100</div>
                 <div className="mt-1">
-                  Efficiency slider ={" "}
-                  <span className="font-bold">{efficiency}%</span>
+                  Efficiency slider = <span className="font-bold">{efficiency}%</span>
                 </div>
                 <div>
                   Actual mass = {theoreticalMassG} × {efficiency}/100 ={" "}
                   <span className="font-bold">{actualMassG.toFixed(2)} g</span>
                 </div>
                 <div>
-                  Actual molecules ≈{" "}
-                  <span className="font-bold">{actualMoles.toFixed(2)}</span>{" "}
-                  H₂O
+                  Actual molecules ≈ <span className="font-bold">{actualMoles.toFixed(2)}</span> H₂O
                 </div>
               </div>
 
@@ -991,8 +1015,8 @@ export default function LimitingReactantLab({ onBack }: { onBack: () => void }) 
                 <div className="mb-1 flex items-center gap-1 font-bold text-emerald-700 dark:text-emerald-300">
                   <Sparkles className="h-3.5 w-3.5" /> Reaction complete
                 </div>
-                Produced <b>{producedMolecules}</b> H₂O molecules in the canvas.
-                Predicted maximum: <b>{stoich.maxH2O}</b>.
+                Produced <b>{producedMolecules}</b> H₂O molecules in the canvas. Predicted maximum:{" "}
+                <b>{stoich.maxH2O}</b>.
               </Card>
             )}
           </aside>
@@ -1007,13 +1031,11 @@ export default function LimitingReactantLab({ onBack }: { onBack: () => void }) 
           </div>
           <p className="text-[11px] leading-snug text-foreground/90">
             <b>Lab AI:</b> খেয়াল করো! পাত্রে{" "}
-            {stoich.limiting === "H2" ? "অক্সিজেন (O₂)" : "হাইড্রোজেন (H₂)"} বেশি
-            থাকলেও বিক্রিয়া থেমে যাবে কারণ{" "}
-            {stoich.limiting === "H2" ? "হাইড্রোজেন (H₂)" : "অক্সিজেন (O₂)"}{" "}
-            ফুরিয়ে গেছে — তাই{" "}
-            <b>{stoich.limiting === "H2" ? "H₂" : "O₂"}</b> এখানে{" "}
-            <b>লিমিটিং বিক্রিয়ক</b>। পরীক্ষায় সবসময় আগে লিমিটিং বিক্রিয়ক বের
-            করে তারপর উৎপাদের হিসাব করবে!
+            {stoich.limiting === "H2" ? "অক্সিজেন (O₂)" : "হাইড্রোজেন (H₂)"} বেশি থাকলেও বিক্রিয়া
+            থেমে যাবে কারণ {stoich.limiting === "H2" ? "হাইড্রোজেন (H₂)" : "অক্সিজেন (O₂)"} ফুরিয়ে
+            গেছে — তাই <b>{stoich.limiting === "H2" ? "H₂" : "O₂"}</b> এখানে{" "}
+            <b>লিমিটিং বিক্রিয়ক</b>। পরীক্ষায় সবসময় আগে লিমিটিং বিক্রিয়ক বের করে তারপর উৎপাদের
+            হিসাব করবে!
           </p>
         </div>
       </div>

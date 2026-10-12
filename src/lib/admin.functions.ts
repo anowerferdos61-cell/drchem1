@@ -6,7 +6,6 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function ensureAdmin(supabase: any, userId: string) {
   const { data: isAdmin } = await supabase.rpc("has_role", {
     _user_id: userId,
@@ -76,9 +75,10 @@ export const listAllUsers = createServerFn({ method: "GET" })
       }
     }
 
-    // Hydrate last_sign_in_at + banned_until from auth.users via admin API
+    // Hydrate last_sign_in_at + banned_until + phone from auth.users via admin API
     const lastSignInMap = new Map<string, string | null>();
     const bannedUntilMap = new Map<string, string | null>();
+    const authPhoneMap = new Map<string, string | null>();
     try {
       const { data: authData } = await supabaseAdmin.auth.admin.listUsers({
         page: 1,
@@ -86,26 +86,50 @@ export const listAllUsers = createServerFn({ method: "GET" })
       });
       for (const u of authData?.users ?? []) {
         lastSignInMap.set(u.id, u.last_sign_in_at ?? null);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        bannedUntilMap.set(u.id, ((u as any).banned_until as string | null) ?? null);
+        bannedUntilMap.set(
+          u.id,
+          ((u as unknown as Record<string, unknown>).banned_until as string | null) ?? null,
+        );
+        const meta = u.user_metadata as Record<string, unknown> | undefined;
+        let ph =
+          u.phone ||
+          (meta?.phone as string | null) ||
+          ((
+            (u as unknown as Record<string, unknown>).raw_user_meta_data as
+              | Record<string, unknown>
+              | undefined
+          )?.phone as string | null) ||
+          null;
+        if (!ph && u.email && u.email.endsWith("@phone.drchem.local")) {
+          const local = u.email.split("@")[0];
+          ph = local.startsWith("88") ? `+${local}` : local;
+        }
+        if (ph) authPhoneMap.set(u.id, ph);
       }
     } catch {
       /* ignore */
     }
 
-    return (profiles ?? []).map((p) => ({
-      user_id: p.user_id as string,
-      email: (p.email as string) ?? null,
-      display_name: (p.display_name as string) ?? null,
-      school: (p.school as string) ?? null,
-      class: (p.class as string) ?? null,
-      phone: (p.phone as string) ?? null,
-      created_at: p.created_at as string,
-      roles: rolesByUser.get(p.user_id as string) ?? [],
-      subscription: subByUser.get(p.user_id as string) ?? null,
-      last_sign_in_at: lastSignInMap.get(p.user_id as string) ?? null,
-      banned_until: bannedUntilMap.get(p.user_id as string) ?? null,
-    }));
+    return (profiles ?? []).map((p) => {
+      let phone = (p.phone as string) || authPhoneMap.get(p.user_id as string) || null;
+      if (!phone && p.email && (p.email as string).endsWith("@phone.drchem.local")) {
+        const local = (p.email as string).split("@")[0];
+        phone = local.startsWith("88") ? `+${local}` : local;
+      }
+      return {
+        user_id: p.user_id as string,
+        email: (p.email as string) ?? null,
+        display_name: (p.display_name as string) ?? null,
+        school: (p.school as string) ?? null,
+        class: (p.class as string) ?? null,
+        phone,
+        created_at: p.created_at as string,
+        roles: rolesByUser.get(p.user_id as string) ?? [],
+        subscription: subByUser.get(p.user_id as string) ?? null,
+        last_sign_in_at: lastSignInMap.get(p.user_id as string) ?? null,
+        banned_until: bannedUntilMap.get(p.user_id as string) ?? null,
+      };
+    });
   });
 
 // ─── banUser ───────────────────────────────────────────────────────────
@@ -136,9 +160,8 @@ export const banUser = createServerFn({ method: "POST" })
     }
 
     const { error } = await supabaseAdmin.auth.admin.updateUserById(data.userId, {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ban_duration: `${data.durationHours}h`,
-    } as any);
+    } as Record<string, unknown>);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
@@ -151,9 +174,8 @@ export const unbanUser = createServerFn({ method: "POST" })
     await ensureAdmin(context.supabase, context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.auth.admin.updateUserById(data.userId, {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ban_duration: "none",
-    } as any);
+    } as Record<string, unknown>);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
@@ -214,8 +236,6 @@ export const revokeAdmin = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true };
   });
-
-
 
 // ─── grantSubscription ─────────────────────────────────────────────────
 export const grantSubscription = createServerFn({ method: "POST" })
@@ -341,10 +361,7 @@ export const adminStats = createServerFn({ method: "GET" })
         .select("*", { count: "exact", head: true })
         .eq("status", "rejected")
         .gte("reviewed_at", todayStartUtc),
-      supabaseAdmin
-        .from("payment_requests")
-        .select("amount_bdt")
-        .eq("status", "approved"),
+      supabaseAdmin.from("payment_requests").select("amount_bdt").eq("status", "approved"),
       supabaseAdmin
         .from("payment_requests")
         .select("amount_bdt")
@@ -372,10 +389,7 @@ export const adminStats = createServerFn({ method: "GET" })
       .from("ai_usage_logs")
       .select("cost_usd, total_tokens")
       .gte("created_at", monthStartUtc);
-    const aiMonthlyCostUsd = (aiMonthRows ?? []).reduce(
-      (a, r) => a + (Number(r.cost_usd) || 0),
-      0,
-    );
+    const aiMonthlyCostUsd = (aiMonthRows ?? []).reduce((a, r) => a + (Number(r.cost_usd) || 0), 0);
     const aiMonthlyTokens = (aiMonthRows ?? []).reduce(
       (a, r) => a + (Number(r.total_tokens) || 0),
       0,
@@ -406,9 +420,7 @@ export const adminAiUsageDaily = createServerFn({ method: "GET" })
   .handler(
     async ({
       context,
-    }): Promise<
-      Array<{ date: string; tokens: number; cost_usd: number; requests: number }>
-    > => {
+    }): Promise<Array<{ date: string; tokens: number; cost_usd: number; requests: number }>> => {
       await ensureAdmin(context.supabase, context.userId);
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -452,9 +464,7 @@ export const adminAiUsageDaily = createServerFn({ method: "GET" })
 export const adminRevenueDaily = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(
-    async ({
-      context,
-    }): Promise<Array<{ date: string; amount_bdt: number; count: number }>> => {
+    async ({ context }): Promise<Array<{ date: string; amount_bdt: number; count: number }>> => {
       await ensureAdmin(context.supabase, context.userId);
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -492,3 +502,192 @@ export const adminRevenueDaily = createServerFn({ method: "GET" })
       return Array.from(buckets.entries()).map(([date, v]) => ({ date, ...v }));
     },
   );
+
+// ─── getUserProfileDetail ─────────────────────────────────────────────
+export interface UserProfileDetail {
+  user_id: string;
+  email: string | null;
+  display_name: string | null;
+  school: string | null;
+  class: string | null;
+  phone: string | null;
+  avatar_url: string | null;
+  role_selected: boolean;
+  created_at: string;
+  updated_at: string | null;
+  roles: string[];
+  last_sign_in_at: string | null;
+  banned_until: string | null;
+  subscription: {
+    plan_code: string;
+    status: string;
+    started_at: string | null;
+    current_period_end: string | null;
+    trial_ends_at: string | null;
+  } | null;
+  payments: Array<{
+    id: string;
+    amount_bdt: number;
+    method: string;
+    trx_id: string | null;
+    status: string;
+    created_at: string;
+  }>;
+  stats: {
+    labsCompleted: number;
+    currentStreak: number;
+    longestStreak: number;
+    testsTaken: number;
+    classesCount: number;
+    aiMessagesToday: number;
+  };
+}
+
+export const getUserProfileDetail = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) => z.object({ userId: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }): Promise<UserProfileDetail | null> => {
+    await ensureAdmin(context.supabase, context.userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const userId = data.userId;
+
+    const now = new Date();
+    const dhaka = new Date(now.getTime() + (6 * 60 - now.getTimezoneOffset()) * 60_000);
+    const today = dhaka.toISOString().slice(0, 10);
+
+    const [
+      { data: profile },
+      { data: rolesData },
+      { data: subData },
+      { data: paymentsData },
+      { count: labsCount },
+      { data: streakData },
+      { count: testsCount },
+      { count: teacherClassesCount },
+      { count: studentMembershipsCount },
+      { data: usageData },
+    ] = await Promise.all([
+      supabaseAdmin.from("profiles").select("*").eq("user_id", userId).maybeSingle(),
+      supabaseAdmin.from("user_roles").select("role").eq("user_id", userId),
+      supabaseAdmin
+        .from("subscriptions")
+        .select("plan_code, status, started_at, current_period_end, trial_ends_at")
+        .eq("user_id", userId)
+        .order("started_at", { ascending: false })
+        .limit(1)
+        .maybeSingle(),
+      supabaseAdmin
+        .from("payment_requests")
+        .select("id, amount_bdt, method, trx_id, status, created_at")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false })
+        .limit(5),
+      supabaseAdmin
+        .from("lab_attempts")
+        .select("*", { count: "exact", head: true })
+        .eq("student_id", userId),
+      supabaseAdmin
+        .from("streaks")
+        .select("current_days, longest_days")
+        .eq("user_id", userId)
+        .maybeSingle(),
+      supabaseAdmin
+        .from("test_attempts")
+        .select("*", { count: "exact", head: true })
+        .eq("student_id", userId),
+      supabaseAdmin
+        .from("classes")
+        .select("*", { count: "exact", head: true })
+        .eq("teacher_id", userId),
+      supabaseAdmin
+        .from("class_members")
+        .select("*", { count: "exact", head: true })
+        .eq("student_id", userId),
+      supabaseAdmin
+        .from("usage_counters")
+        .select("ai_messages_used")
+        .eq("user_id", userId)
+        .eq("usage_date", today)
+        .maybeSingle(),
+    ]);
+
+    if (!profile) return null;
+
+    let last_sign_in_at: string | null = null;
+    let banned_until: string | null = null;
+    let authPhone: string | null = null;
+    try {
+      const { data: authUser } = await supabaseAdmin.auth.admin.getUserById(userId);
+      if (authUser?.user) {
+        last_sign_in_at = authUser.user.last_sign_in_at ?? null;
+        banned_until =
+          ((authUser.user as unknown as Record<string, unknown>).banned_until as string | null) ??
+          null;
+        const meta = authUser.user.user_metadata as Record<string, unknown> | undefined;
+        authPhone =
+          authUser.user.phone ||
+          (meta?.phone as string | null) ||
+          ((
+            (authUser.user as unknown as Record<string, unknown>).raw_user_meta_data as
+              | Record<string, unknown>
+              | undefined
+          )?.phone as string | null) ||
+          null;
+      }
+    } catch {
+      /* ignore */
+    }
+
+    let finalPhone = (profile.phone as string | null) || authPhone;
+    if (!finalPhone && profile.email && profile.email.endsWith("@phone.drchem.local")) {
+      const local = profile.email.split("@")[0];
+      finalPhone = local.startsWith("88") ? `+${local}` : local;
+    }
+
+    const roles = (rolesData ?? []).map((r) => r.role as string);
+    const classesCount = roles.includes("teacher")
+      ? (teacherClassesCount ?? 0)
+      : (studentMembershipsCount ?? 0);
+
+    return {
+      user_id: profile.user_id,
+      email: profile.email,
+      display_name: profile.display_name,
+      school: profile.school,
+      class: profile.class,
+      phone: finalPhone,
+      avatar_url: profile.avatar_url,
+      role_selected: profile.role_selected,
+      created_at: profile.created_at,
+      updated_at: profile.updated_at,
+      roles,
+      last_sign_in_at,
+      banned_until,
+      subscription: subData
+        ? {
+            plan_code: subData.plan_code,
+            status: subData.status,
+            started_at: subData.started_at,
+            current_period_end: subData.current_period_end,
+            trial_ends_at: subData.trial_ends_at,
+          }
+        : null,
+      payments: (paymentsData ?? []).map((p) => ({
+        id: p.id,
+        amount_bdt: Number(p.amount_bdt) || 0,
+        method: p.method,
+        trx_id: p.trx_id,
+        status: p.status,
+        created_at: p.created_at,
+      })),
+      stats: {
+        labsCompleted: labsCount ?? 0,
+        currentStreak: streakData?.current_days ?? 0,
+        longestStreak: streakData?.longest_days ?? 0,
+        testsTaken: testsCount ?? 0,
+        classesCount,
+        aiMessagesToday: usageData?.ai_messages_used ?? 0,
+      },
+    };
+  });

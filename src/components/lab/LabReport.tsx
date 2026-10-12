@@ -108,9 +108,7 @@ export default function LabReport({ report, onReset }: Props) {
             <Metric
               label="Tests passed"
               value={`${
-                report.tests
-                  ? Object.values(report.tests).filter((r) => r === "pass").length
-                  : 0
+                report.tests ? Object.values(report.tests).filter((r) => r === "pass").length : 0
               } / 4`}
             />
             <Metric label="Accuracy" value={`${report.accuracy.toFixed(1)}%`} />
@@ -168,10 +166,12 @@ export default function LabReport({ report, onReset }: Props) {
               </span>
             </div>
             <p className="text-sm text-muted-foreground">
-              Theoretical: <span className="font-mono">{(report.cuTheoreticalPct ?? 36.07).toFixed(2)}%</span>{" "}
-              · Δ ={" "}
+              Theoretical:{" "}
+              <span className="font-mono">{(report.cuTheoreticalPct ?? 36.07).toFixed(2)}%</span> ·
+              Δ ={" "}
               <span className="font-mono">
-                {Math.abs((report.cuWaterPct ?? 0) - (report.cuTheoreticalPct ?? 36.07)).toFixed(2)}%
+                {Math.abs((report.cuWaterPct ?? 0) - (report.cuTheoreticalPct ?? 36.07)).toFixed(2)}
+                %
               </span>
             </p>
           </div>
@@ -244,9 +244,7 @@ export default function LabReport({ report, onReset }: Props) {
             <tbody>
               {report.mistakes.map((m, i) => (
                 <tr key={i} className="border-t">
-                  <td className="py-1 font-mono text-xs">
-                    {new Date(m.ts).toLocaleTimeString()}
-                  </td>
+                  <td className="py-1 font-mono text-xs">{new Date(m.ts).toLocaleTimeString()}</td>
                   <td>{m.message}</td>
                   <td>
                     <span

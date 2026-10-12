@@ -187,7 +187,7 @@ export default function TransformationMatrixLab({ onBack }: Props) {
   const currentNode = NODES[currentIdx];
   const nextNode = NODES[currentIdx + 1] ?? null;
   const completed = currentIdx >= NODES.length - 1;
-  const progressPct = ((currentIdx) / (NODES.length - 1)) * 100;
+  const progressPct = (currentIdx / (NODES.length - 1)) * 100;
 
   const pushLog = useCallback((text: string, ok: boolean) => {
     setLogs((prev) => [{ id: prev.length + 1, ts: Date.now(), text, ok }, ...prev].slice(0, 40));
@@ -203,20 +203,14 @@ export default function TransformationMatrixLab({ onBack }: Props) {
         setSuccessFlash(true);
         setTimeout(() => setSuccessFlash(false), 700);
         setCurrentIdx((i) => i + 1);
-        pushLog(
-          `সঠিক বিকারক! ${currentNode.nameBn} → ${target.nameBn} (${target.formula})`,
-          true,
-        );
+        pushLog(`সঠিক বিকারক! ${currentNode.nameBn} → ${target.nameBn} (${target.formula})`, true);
       } else {
         setFailFlash(true);
         setTimeout(() => setFailFlash(false), 500);
         setMistakes((m) => m + 1);
         setStars((s) => Math.max(0, s - 1));
         const rname = REAGENTS.find((r) => r.id === rid)?.nameBn ?? rid;
-        pushLog(
-          `ভুল বিকারক! "${rname}" ${currentNode.nameBn}-এ কাজ করবে না।`,
-          false,
-        );
+        pushLog(`ভুল বিকারক! "${rname}" ${currentNode.nameBn}-এ কাজ করবে না।`, false);
       }
     },
     [completed, nextNode, currentNode, pushLog],
@@ -226,7 +220,9 @@ export default function TransformationMatrixLab({ onBack }: Props) {
     setCurrentIdx(0);
     setStars(3);
     setMistakes(0);
-    setLogs([{ id: 0, ts: Date.now(), text: "মিশন রিসেট · মিথেন (CH₄) দিয়ে আবার শুরু।", ok: true }]);
+    setLogs([
+      { id: 0, ts: Date.now(), text: "মিশন রিসেট · মিথেন (CH₄) দিয়ে আবার শুরু।", ok: true },
+    ]);
   }, []);
 
   const handleDrop = useCallback(
@@ -261,9 +257,7 @@ export default function TransformationMatrixLab({ onBack }: Props) {
             <div className="truncate text-sm font-extrabold text-emerald-300">
               Functional Group Transformation Matrix
             </div>
-            <div className="truncate text-[11px] text-slate-400">
-              জৈব যৌগ রূপান্তর মিশন · Ch 11
-            </div>
+            <div className="truncate text-[11px] text-slate-400">জৈব যৌগ রূপান্তর মিশন · Ch 11</div>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -289,8 +283,8 @@ export default function TransformationMatrixLab({ onBack }: Props) {
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="text-xs text-slate-300">
             <span className="text-emerald-300">মিশন:</span> মিথেন (CH₄) থেকে{" "}
-            <span className="text-rose-300">মিথানয়িক অ্যাসিড (HCOOH)</span> পর্যন্ত পৌঁছাও —
-            সঠিক বিকারক প্রয়োগ করে।
+            <span className="text-rose-300">মিথানয়িক অ্যাসিড (HCOOH)</span> পর্যন্ত পৌঁছাও — সঠিক
+            বিকারক প্রয়োগ করে।
           </div>
           <Button
             variant="outline"
@@ -465,7 +459,9 @@ export default function TransformationMatrixLab({ onBack }: Props) {
               <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
                 Reagent Inventory · বিকারক
               </div>
-              <span className="text-[10px] text-slate-500">টেনে রিয়েক্টরে ছাড়ুন / ক্লিক করুন</span>
+              <span className="text-[10px] text-slate-500">
+                টেনে রিয়েক্টরে ছাড়ুন / ক্লিক করুন
+              </span>
             </div>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
               {REAGENTS.map((r) => (
@@ -505,7 +501,11 @@ export default function TransformationMatrixLab({ onBack }: Props) {
             <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
               <MolCard node={currentNode} label="বর্তমান" />
               <ArrowRight className="h-5 w-5 text-emerald-400" />
-              <MolCard node={nextNode ?? currentNode} label={nextNode ? "লক্ষ্য" : "সম্পন্ন"} dim={!nextNode} />
+              <MolCard
+                node={nextNode ?? currentNode}
+                label={nextNode ? "লক্ষ্য" : "সম্পন্ন"}
+                dim={!nextNode}
+              />
             </div>
             <div className="mt-3 rounded-lg border border-slate-700/60 bg-slate-950/40 p-2">
               <div className="text-[10px] uppercase tracking-wider text-slate-500">
@@ -561,8 +561,8 @@ export default function TransformationMatrixLab({ onBack }: Props) {
             <div className="mb-1 flex items-center gap-1 font-semibold text-emerald-300">
               <Beaker className="h-3 w-3" /> Tip
             </div>
-            জলীয় NaOH দেয় অ্যালকোহল, কিন্তু অ্যালকোহলিক NaOH দেয় অ্যালকিন (এলিমিনেশন)।
-            মাধ্যম পাল্টালেই বিক্রিয়া পাল্টায়।
+            জলীয় NaOH দেয় অ্যালকোহল, কিন্তু অ্যালকোহলিক NaOH দেয় অ্যালকিন (এলিমিনেশন)। মাধ্যম
+            পাল্টালেই বিক্রিয়া পাল্টায়।
           </Card>
         </section>
       </main>
@@ -571,8 +571,8 @@ export default function TransformationMatrixLab({ onBack }: Props) {
       <DraggableTheoryFab storageKey="transformation_matrix" label="থিওরি ও বিস্তারিত">
         <h3>জৈব রূপান্তরের মাস্টার রোডম্যাপ</h3>
         <p>
-          অ্যালকেন → অ্যালকাইল হ্যালাইড → অ্যালকোহল → অ্যালডিহাইড → কার্বক্সিলিক অ্যাসিড।
-          প্রতিটি ধাপ ফাংশনাল গ্রুপ পরিবর্তনের মাধ্যমে ঘটে।
+          অ্যালকেন → অ্যালকাইল হ্যালাইড → অ্যালকোহল → অ্যালডিহাইড → কার্বক্সিলিক অ্যাসিড। প্রতিটি
+          ধাপ ফাংশনাল গ্রুপ পরিবর্তনের মাধ্যমে ঘটে।
         </p>
 
         <h4>মূল বিক্রিয়াসমূহ</h4>

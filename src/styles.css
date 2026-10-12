@@ -158,7 +158,13 @@
   body {
     background: radial-gradient(ellipse at top, oklch(0.97 0.01 230), oklch(0.9 0.02 235));
     color: var(--color-foreground);
-    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-family:
+      ui-sans-serif,
+      system-ui,
+      -apple-system,
+      "Segoe UI",
+      Roboto,
+      sans-serif;
   }
 }
 
@@ -177,40 +183,93 @@
 }
 
 @keyframes drip {
-  0% { transform: translate(-50%, 0) scaleY(0.6); opacity: 0; }
-  20% { opacity: 1; }
-  100% { transform: translate(-50%, var(--drip-distance, 220px)) scaleY(1.4); opacity: 0; }
+  0% {
+    transform: translate(-50%, 0) scaleY(0.6);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, var(--drip-distance, 220px)) scaleY(1.4);
+    opacity: 0;
+  }
 }
 @keyframes swirl {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 @keyframes pour {
-  0% { transform: translateY(-6px) scaleY(0.4); opacity: 0; }
-  40% { opacity: 1; }
-  100% { transform: translateY(80px) scaleY(1.6); opacity: 0; }
+  0% {
+    transform: translateY(-6px) scaleY(0.4);
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(80px) scaleY(1.6);
+    opacity: 0;
+  }
 }
 @keyframes pulse-soft {
-  0%, 100% { opacity: 0.7; }
-  50% { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 @keyframes confetti-fall {
-  0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
-  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+  0% {
+    transform: translateY(-20px) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
 }
 
 /* ─── Theory Lab typography tokens ───
  * Fluid font sizes that scale with viewport height so text stays
  * readable on tight mobile-landscape without overflowing on desktop.
  */
-.text-lab-xs   { font-size: clamp(0.72rem, 1.9vh, 0.85rem); line-height: 1.35; }
-.text-lab-sm   { font-size: clamp(0.82rem, 2.2vh, 0.95rem); line-height: 1.4;  }
-.text-lab-base { font-size: clamp(0.92rem, 2.6vh, 1.05rem); line-height: 1.45; }
-.text-lab-lg   { font-size: clamp(1.05rem, 3.2vh, 1.30rem); line-height: 1.3;  }
-.text-lab-xl   { font-size: clamp(1.25rem, 4vh, 1.75rem);   line-height: 1.2;  }
+.text-lab-xs {
+  font-size: clamp(0.72rem, 1.9vh, 0.85rem);
+  line-height: 1.35;
+}
+.text-lab-sm {
+  font-size: clamp(0.82rem, 2.2vh, 0.95rem);
+  line-height: 1.4;
+}
+.text-lab-base {
+  font-size: clamp(0.92rem, 2.6vh, 1.05rem);
+  line-height: 1.45;
+}
+.text-lab-lg {
+  font-size: clamp(1.05rem, 3.2vh, 1.3rem);
+  line-height: 1.3;
+}
+.text-lab-xl {
+  font-size: clamp(1.25rem, 4vh, 1.75rem);
+  line-height: 1.2;
+}
 
-.lab-scroll { scrollbar-width: thin; scrollbar-color: rgb(148 163 184 / 0.4) transparent; }
-.lab-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
-.lab-scroll::-webkit-scrollbar-thumb { background: rgb(148 163 184 / 0.4); border-radius: 4px; }
-
-
+.lab-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(148 163 184 / 0.4) transparent;
+}
+.lab-scroll::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+.lab-scroll::-webkit-scrollbar-thumb {
+  background: rgb(148 163 184 / 0.4);
+  border-radius: 4px;
+}

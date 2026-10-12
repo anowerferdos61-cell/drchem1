@@ -18,13 +18,7 @@ interface Props {
 const rgba = (c: { r: number; g: number; b: number; a: number }) =>
   `rgba(${c.r},${c.g},${c.b},${c.a})`;
 
-export default function LabWorkspace({
-  placed,
-  Vb,
-  pH,
-  stopcockOpen,
-  stirring,
-}: Props) {
+export default function LabWorkspace({ placed, Vb, pH, stopcockOpen, stirring }: Props) {
   const buretteCapacity = 50;
   const fillFrac = placed.naoh ? Math.max(0, 1 - Vb / buretteCapacity) : 0;
 
@@ -115,14 +109,27 @@ export default function LabWorkspace({
               return (
                 <g key={i}>
                   <line x1="305" y1={y} x2="315" y2={y} stroke="#475569" strokeWidth="1" />
-                  <text x="318" y={y + 3} fontSize="9" fill="#475569" fontFamily="ui-monospace,monospace">
+                  <text
+                    x="318"
+                    y={y + 3}
+                    fontSize="9"
+                    fill="#475569"
+                    fontFamily="ui-monospace,monospace"
+                  >
                     {i * 5}
                   </text>
                 </g>
               );
             })}
             {/* Stopcock */}
-            <circle cx={buretteX} cy="372" r="10" fill="#0ea5e9" stroke="#0c4a6e" strokeWidth="1.5" />
+            <circle
+              cx={buretteX}
+              cy="372"
+              r="10"
+              fill="#0ea5e9"
+              stroke="#0c4a6e"
+              strokeWidth="1.5"
+            />
             <rect
               x="285"
               y="368"
@@ -134,13 +141,30 @@ export default function LabWorkspace({
               style={{ transition: "transform 0.3s" }}
             />
             {/* Tip */}
-            <path d="M295 382 L305 382 L302 405 L298 405 Z" fill="url(#glass)" stroke="#94a3b8" strokeWidth="1" />
+            <path
+              d="M295 382 L305 382 L302 405 L298 405 Z"
+              fill="url(#glass)"
+              stroke="#94a3b8"
+              strokeWidth="1"
+            />
 
             {/* Drip animation */}
             {stopcockOpen && (
               <circle cx={buretteX} cy="405" r="3" fill="#7fb6f0">
-                <animate attributeName="cy" from="405" to="445" dur="0.6s" repeatCount="indefinite" />
-                <animate attributeName="opacity" from="1" to="0" dur="0.6s" repeatCount="indefinite" />
+                <animate
+                  attributeName="cy"
+                  from="405"
+                  to="445"
+                  dur="0.6s"
+                  repeatCount="indefinite"
+                />
+                <animate
+                  attributeName="opacity"
+                  from="1"
+                  to="0"
+                  dur="0.6s"
+                  repeatCount="indefinite"
+                />
               </circle>
             )}
           </g>
@@ -186,12 +210,27 @@ export default function LabWorkspace({
               </path>
             )}
             {/* Volume label */}
-            <text x="80" y="135" textAnchor="middle" fontSize="10" fill="#475569" fontFamily="ui-monospace,monospace">
+            <text
+              x="80"
+              y="135"
+              textAnchor="middle"
+              fontSize="10"
+              fill="#475569"
+              fontFamily="ui-monospace,monospace"
+            >
               250 mL
             </text>
             {/* Stir bar */}
             {hasFlaskLiquid && stirring && (
-              <ellipse cx="80" cy="148" rx="14" ry="3" fill="#e2e8f0" stroke="#94a3b8" strokeWidth="0.5">
+              <ellipse
+                cx="80"
+                cy="148"
+                rx="14"
+                ry="3"
+                fill="#e2e8f0"
+                stroke="#94a3b8"
+                strokeWidth="0.5"
+              >
                 <animateTransform
                   attributeName="transform"
                   type="rotate"

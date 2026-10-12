@@ -231,20 +231,24 @@ function HydrogenDebate() {
         <Card className="p-5 border-2 border-fuchsia-500/40 bg-gradient-to-br from-fuchsia-500/5 via-pink-500/5 to-purple-500/5 animate-in fade-in slide-in-from-bottom-4">
           <div className="flex items-center gap-2 mb-2">
             <Gavel className="h-5 w-5 text-fuchsia-600" />
-            <h3 className="font-bold text-base md:text-lg">চূড়ান্ত সিদ্ধান্ত — Mendeleev ও আধুনিক রসায়ন</h3>
+            <h3 className="font-bold text-base md:text-lg">
+              চূড়ান্ত সিদ্ধান্ত — Mendeleev ও আধুনিক রসায়ন
+            </h3>
           </div>
           <p className="text-sm leading-relaxed">
-            যদিও হাইড্রোজেনের ধর্ম <span className="font-semibold text-emerald-700 dark:text-emerald-400">হ্যালোজেন</span>{" "}
-            ও <span className="font-semibold text-blue-700 dark:text-blue-400">ক্ষার ধাতু</span> — দুই গ্রুপের
-            সাথেই কিছু মিল রাখে, তবুও Mendeleev এবং আধুনিক পর্যায় সারণিতে একে{" "}
-            <Badge className="mx-1 bg-blue-600">Group 1</Badge>-এ রাখা হয়েছে, কারণ এর ইলেকট্রন বিন্যাস{" "}
-            <code className="px-1.5 py-0.5 rounded bg-muted text-xs">1s¹</code> — ঠিক যেমন Li (2,1) বা Na (2,8,1)-এর
-            সর্বশেষ শেলে ১টি ইলেকট্রন থাকে। তাই <span className="font-bold">ইলেকট্রন বিন্যাসের ভিত্তিতে</span> এটি
-            Group 1-এ স্থান পেয়েছে, যদিও ভৌত ধর্মে অসামঞ্জস্য রয়েছে।
+            যদিও হাইড্রোজেনের ধর্ম{" "}
+            <span className="font-semibold text-emerald-700 dark:text-emerald-400">হ্যালোজেন</span>{" "}
+            ও <span className="font-semibold text-blue-700 dark:text-blue-400">ক্ষার ধাতু</span> —
+            দুই গ্রুপের সাথেই কিছু মিল রাখে, তবুও Mendeleev এবং আধুনিক পর্যায় সারণিতে একে{" "}
+            <Badge className="mx-1 bg-blue-600">Group 1</Badge>-এ রাখা হয়েছে, কারণ এর ইলেকট্রন
+            বিন্যাস <code className="px-1.5 py-0.5 rounded bg-muted text-xs">1s¹</code> — ঠিক যেমন
+            Li (2,1) বা Na (2,8,1)-এর সর্বশেষ শেলে ১টি ইলেকট্রন থাকে। তাই{" "}
+            <span className="font-bold">ইলেকট্রন বিন্যাসের ভিত্তিতে</span> এটি Group 1-এ স্থান
+            পেয়েছে, যদিও ভৌত ধর্মে অসামঞ্জস্য রয়েছে।
           </p>
           <p className="mt-2 text-xs text-muted-foreground italic">
-            Despite the anomalies, modern chemistry places H in Group 1 primarily based on its electron configuration
-            (1s¹), matching the valence pattern of the alkali metals.
+            Despite the anomalies, modern chemistry places H in Group 1 primarily based on its
+            electron configuration (1s¹), matching the valence pattern of the alkali metals.
           </p>
         </Card>
       )}
@@ -318,15 +322,39 @@ function DropZone({
 // Tab 2: Lanthanide & Actinide Separation
 // ──────────────────────────────────────────────────────────────
 const LANTHANIDES = [
-  ["57", "La"], ["58", "Ce"], ["59", "Pr"], ["60", "Nd"], ["61", "Pm"],
-  ["62", "Sm"], ["63", "Eu"], ["64", "Gd"], ["65", "Tb"], ["66", "Dy"],
-  ["67", "Ho"], ["68", "Er"], ["69", "Tm"], ["70", "Yb"], ["71", "Lu"],
+  ["57", "La"],
+  ["58", "Ce"],
+  ["59", "Pr"],
+  ["60", "Nd"],
+  ["61", "Pm"],
+  ["62", "Sm"],
+  ["63", "Eu"],
+  ["64", "Gd"],
+  ["65", "Tb"],
+  ["66", "Dy"],
+  ["67", "Ho"],
+  ["68", "Er"],
+  ["69", "Tm"],
+  ["70", "Yb"],
+  ["71", "Lu"],
 ];
 
 const ACTINIDES = [
-  ["89", "Ac"], ["90", "Th"], ["91", "Pa"], ["92", "U"], ["93", "Np"],
-  ["94", "Pu"], ["95", "Am"], ["96", "Cm"], ["97", "Bk"], ["98", "Cf"],
-  ["99", "Es"], ["100", "Fm"], ["101", "Md"], ["102", "No"], ["103", "Lr"],
+  ["89", "Ac"],
+  ["90", "Th"],
+  ["91", "Pa"],
+  ["92", "U"],
+  ["93", "Np"],
+  ["94", "Pu"],
+  ["95", "Am"],
+  ["96", "Cm"],
+  ["97", "Bk"],
+  ["98", "Cf"],
+  ["99", "Es"],
+  ["100", "Fm"],
+  ["101", "Md"],
+  ["102", "No"],
+  ["103", "Lr"],
 ];
 
 function LanthanideActinide() {
@@ -349,7 +377,12 @@ function LanthanideActinide() {
           >
             <Zap className="h-4 w-4" /> Extract · সারণি থেকে বের করুন
           </Button>
-          <Button variant="outline" onClick={() => setExtracted(false)} disabled={!extracted} className="gap-1">
+          <Button
+            variant="outline"
+            onClick={() => setExtracted(false)}
+            disabled={!extracted}
+            className="gap-1"
+          >
             <RotateCcw className="h-3.5 w-3.5" /> Reset
           </Button>
         </div>
@@ -389,16 +422,19 @@ function LanthanideActinide() {
             <h3 className="font-bold text-base md:text-lg">কেন আলাদা রাখা হয়?</h3>
           </div>
           <p className="text-sm leading-relaxed">
-            এই <span className="font-bold">৩০টি মৌল</span> (১৫টি ল্যান্থানাইড + ১৫টি অ্যাক্টিনাইড)-এর সর্বশেষ
-            ইলেকট্রন <code className="px-1.5 py-0.5 rounded bg-muted text-xs">4f</code> বা{" "}
-            <code className="px-1.5 py-0.5 rounded bg-muted text-xs">5f</code> উপশক্তিস্তরে প্রবেশ করে, তাই
-            এদের ধর্ম প্রায় একই রকম। যদি এই ৩০টি মৌল মূল সারণির ভেতরেই রাখা হতো, তবে সারণিটি অস্বাভাবিকভাবে চওড়া
-            হয়ে যেত এবং এর <span className="font-semibold">সিমেট্রি ও সৌন্দর্য নষ্ট হয়ে যেত</span>। তাই এদেরকে
+            এই <span className="font-bold">৩০টি মৌল</span> (১৫টি ল্যান্থানাইড + ১৫টি
+            অ্যাক্টিনাইড)-এর সর্বশেষ ইলেকট্রন{" "}
+            <code className="px-1.5 py-0.5 rounded bg-muted text-xs">4f</code> বা{" "}
+            <code className="px-1.5 py-0.5 rounded bg-muted text-xs">5f</code> উপশক্তিস্তরে প্রবেশ
+            করে, তাই এদের ধর্ম প্রায় একই রকম। যদি এই ৩০টি মৌল মূল সারণির ভেতরেই রাখা হতো, তবে
+            সারণিটি অস্বাভাবিকভাবে চওড়া হয়ে যেত এবং এর{" "}
+            <span className="font-semibold">সিমেট্রি ও সৌন্দর্য নষ্ট হয়ে যেত</span>। তাই এদেরকে
             সুন্দরভাবে সারণির নিচে আলাদা দুটি সারিতে স্থান দেওয়া হয়েছে।
           </p>
           <p className="mt-2 text-xs text-muted-foreground italic">
-            If these 30 elements were kept inside the main table, the symmetry and aesthetic structure of the
-            Periodic Table would be ruined. Hence, they are placed beautifully at the bottom.
+            If these 30 elements were kept inside the main table, the symmetry and aesthetic
+            structure of the Periodic Table would be ruined. Hence, they are placed beautifully at
+            the bottom.
           </p>
         </Card>
       )}
@@ -410,15 +446,17 @@ function MiniPeriodicTable({ extracted }: { extracted: boolean }) {
   // 7 rows x 18 cols schematic. We mark a couple of cells for La/Ac.
   // Simplified: render a 7×18 grid using CSS, highlight P6G3 & P7G3.
   return (
-    <div className="grid grid-cols-18 gap-0.5" style={{ gridTemplateColumns: "repeat(18, minmax(0,1fr))" }}>
+    <div
+      className="grid grid-cols-18 gap-0.5"
+      style={{ gridTemplateColumns: "repeat(18, minmax(0,1fr))" }}
+    >
       {Array.from({ length: 7 * 18 }).map((_, idx) => {
         const row = Math.floor(idx / 18) + 1;
         const col = (idx % 18) + 1;
         const isLa = row === 6 && col === 3;
         const isAc = row === 7 && col === 3;
         const isEmpty =
-          (row === 1 && col > 1 && col < 18) ||
-          ((row === 2 || row === 3) && col > 2 && col < 13);
+          (row === 1 && col > 1 && col < 18) || ((row === 2 || row === 3) && col > 2 && col < 13);
         if (isEmpty) return <div key={idx} className="aspect-square" />;
         const base =
           "aspect-square rounded-[2px] text-[7px] md:text-[9px] grid place-items-center font-mono transition-all";
@@ -432,7 +470,9 @@ function MiniPeriodicTable({ extracted }: { extracted: boolean }) {
               title="Lanthanum (La) — extracts elements 57–71"
             >
               La
-              {extracted && <ChevronDown className="absolute -bottom-3 h-3 w-3 text-pink-500 animate-bounce" />}
+              {extracted && (
+                <ChevronDown className="absolute -bottom-3 h-3 w-3 text-pink-500 animate-bounce" />
+              )}
             </div>
           );
         }
@@ -446,7 +486,9 @@ function MiniPeriodicTable({ extracted }: { extracted: boolean }) {
               title="Actinium (Ac) — extracts elements 89–103"
             >
               Ac
-              {extracted && <ChevronDown className="absolute -bottom-3 h-3 w-3 text-amber-500 animate-bounce" />}
+              {extracted && (
+                <ChevronDown className="absolute -bottom-3 h-3 w-3 text-amber-500 animate-bounce" />
+              )}
             </div>
           );
         }

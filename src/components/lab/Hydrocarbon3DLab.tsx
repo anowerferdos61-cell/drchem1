@@ -12,7 +12,13 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
-  ArrowLeft, Atom, Sparkles, TriangleAlert, RotateCw, Beaker, CheckCircle2,
+  ArrowLeft,
+  Atom,
+  Sparkles,
+  TriangleAlert,
+  RotateCw,
+  Beaker,
+  CheckCircle2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import DraggableTheoryFab from "./DraggableTheoryFab";
@@ -43,12 +49,15 @@ type Molecule = {
 const T = 1.09; // C-H length units
 const t = 1 / Math.sqrt(3);
 const TET: [number, number, number][] = [
-  [t, t, t], [-t, -t, t], [-t, t, -t], [t, -t, -t],
+  [t, t, t],
+  [-t, -t, t],
+  [-t, t, -t],
+  [t, -t, -t],
 ].map(([x, y, z]) => [x * T, y * T, z * T] as [number, number, number]);
 
-const CC = 1.54;   // single
-const CC2 = 1.34;  // double
-const CC3 = 1.20;  // triple
+const CC = 1.54; // single
+const CC2 = 1.34; // double
+const CC3 = 1.2; // triple
 
 // Ethane sp3 (staggered)
 function ethaneAtoms(): AtomSpec[] {
@@ -63,28 +72,17 @@ function ethaneAtoms(): AtomSpec[] {
     const theta = (k * 2 * Math.PI) / 3;
     return {
       el: "H" as const,
-      pos: [
-        c1[0] - along * rH,
-        Math.cos(theta) * off * rH,
-        Math.sin(theta) * off * rH,
-      ],
+      pos: [c1[0] - along * rH, Math.cos(theta) * off * rH, Math.sin(theta) * off * rH],
     };
   });
   const hs2: AtomSpec[] = [0, 1, 2].map((k) => {
     const theta = (k * 2 * Math.PI) / 3 + Math.PI / 3; // staggered
     return {
       el: "H" as const,
-      pos: [
-        c2[0] + along * rH,
-        Math.cos(theta) * off * rH,
-        Math.sin(theta) * off * rH,
-      ],
+      pos: [c2[0] + along * rH, Math.cos(theta) * off * rH, Math.sin(theta) * off * rH],
     };
   });
-  return [
-    { el: "C", pos: c1 }, { el: "C", pos: c2 },
-    ...hs1, ...hs2,
-  ];
+  return [{ el: "C", pos: c1 }, { el: "C", pos: c2 }, ...hs1, ...hs2];
 }
 
 const MOLECULES: Record<string, Molecule> = {
@@ -123,8 +121,12 @@ const MOLECULES: Record<string, Molecule> = {
     atoms: ethaneAtoms(),
     bonds: [
       { a: 0, b: 1, order: 1 },
-      { a: 0, b: 2, order: 1 }, { a: 0, b: 3, order: 1 }, { a: 0, b: 4, order: 1 },
-      { a: 1, b: 5, order: 1 }, { a: 1, b: 6, order: 1 }, { a: 1, b: 7, order: 1 },
+      { a: 0, b: 2, order: 1 },
+      { a: 0, b: 3, order: 1 },
+      { a: 0, b: 4, order: 1 },
+      { a: 1, b: 5, order: 1 },
+      { a: 1, b: 6, order: 1 },
+      { a: 1, b: 7, order: 1 },
     ],
     angles: [{ a: 2, center: 0, b: 3, label: "109.5°" }],
     geometryBn: "চতুস্তলকীয় (Tetrahedral)",
@@ -158,8 +160,10 @@ const MOLECULES: Record<string, Molecule> = {
     })(),
     bonds: [
       { a: 0, b: 1, order: 2 },
-      { a: 0, b: 2, order: 1 }, { a: 0, b: 3, order: 1 },
-      { a: 1, b: 4, order: 1 }, { a: 1, b: 5, order: 1 },
+      { a: 0, b: 2, order: 1 },
+      { a: 0, b: 3, order: 1 },
+      { a: 1, b: 4, order: 1 },
+      { a: 1, b: 5, order: 1 },
     ],
     angles: [{ a: 2, center: 0, b: 1, label: "120°" }],
     geometryBn: "সমতলীয় ত্রিভুজাকার (Trigonal Planar)",
@@ -199,9 +203,13 @@ const MOLECULES: Record<string, Molecule> = {
 
 /* ─────────────────────────── 3D Primitives ─────────────────────────── */
 function AtomSphere({
-  pos, el, onHover,
+  pos,
+  el,
+  onHover,
 }: {
-  pos: [number, number, number]; el: "C" | "H"; onHover: (v: boolean) => void;
+  pos: [number, number, number];
+  el: "C" | "H";
+  onHover: (v: boolean) => void;
 }) {
   const isC = el === "C";
   const radius = isC ? 0.42 : 0.26;
@@ -211,8 +219,15 @@ function AtomSphere({
   return (
     <mesh
       position={pos}
-      onPointerOver={(e) => { e.stopPropagation(); setHover(true); onHover(true); }}
-      onPointerOut={() => { setHover(false); onHover(false); }}
+      onPointerOver={(e) => {
+        e.stopPropagation();
+        setHover(true);
+        onHover(true);
+      }}
+      onPointerOut={() => {
+        setHover(false);
+        onHover(false);
+      }}
     >
       <sphereGeometry args={[radius, 48, 48]} />
       <meshPhysicalMaterial
@@ -236,9 +251,13 @@ function AtomSphere({
 }
 
 function Bond({
-  from, to, order,
+  from,
+  to,
+  order,
 }: {
-  from: [number, number, number]; to: [number, number, number]; order: 1 | 2 | 3;
+  from: [number, number, number];
+  to: [number, number, number];
+  order: 1 | 2 | 3;
 }) {
   const vFrom = new THREE.Vector3(...from);
   const vTo = new THREE.Vector3(...to);
@@ -254,22 +273,19 @@ function Bond({
   if (Math.abs(dir.clone().normalize().dot(perp)) > 0.95) {
     perp.set(0, 1, 0);
   }
-  const offset = new THREE.Vector3()
-    .crossVectors(dir, perp).normalize().multiplyScalar(0.12);
+  const offset = new THREE.Vector3().crossVectors(dir, perp).normalize().multiplyScalar(0.12);
 
   const cylinders =
-    order === 1 ? [[0, 0, 0]] :
-    order === 2 ? [offset.toArray(), offset.clone().negate().toArray()] :
-    [[0, 0, 0], offset.toArray(), offset.clone().negate().toArray()];
+    order === 1
+      ? [[0, 0, 0]]
+      : order === 2
+        ? [offset.toArray(), offset.clone().negate().toArray()]
+        : [[0, 0, 0], offset.toArray(), offset.clone().negate().toArray()];
 
   return (
     <>
       {cylinders.map((off, i) => (
-        <mesh
-          key={i}
-          position={[mid.x + off[0], mid.y + off[1], mid.z + off[2]]}
-          quaternion={quat}
-        >
+        <mesh key={i} position={[mid.x + off[0], mid.y + off[1], mid.z + off[2]]} quaternion={quat}>
           <cylinderGeometry args={[0.07, 0.07, length, 20]} />
           <meshStandardMaterial color="#cbd5e1" roughness={0.55} metalness={0.2} />
         </mesh>
@@ -279,10 +295,15 @@ function Bond({
 }
 
 function BondAngleArc({
-  a, center, b, label,
+  a,
+  center,
+  b,
+  label,
 }: {
-  a: [number, number, number]; center: [number, number, number];
-  b: [number, number, number]; label: string;
+  a: [number, number, number];
+  center: [number, number, number];
+  b: [number, number, number];
+  label: string;
 }) {
   const vC = new THREE.Vector3(...center);
   const vA = new THREE.Vector3(...a).sub(vC).normalize();
@@ -296,7 +317,11 @@ function BondAngleArc({
     points.push([p.x, p.y, p.z]);
   }
   const labelPos = new THREE.Vector3()
-    .copy(vA).lerp(vB, 0.5).normalize().multiplyScalar(R * 1.35).add(vC);
+    .copy(vA)
+    .lerp(vB, 0.5)
+    .normalize()
+    .multiplyScalar(R * 1.35)
+    .add(vC);
   return (
     <>
       <Line points={points} color="#f59e0b" lineWidth={2} dashed={false} />
@@ -309,9 +334,7 @@ function BondAngleArc({
   );
 }
 
-function AutoRotateGroup({
-  children, enabled,
-}: { children: React.ReactNode; enabled: boolean }) {
+function AutoRotateGroup({ children, enabled }: { children: React.ReactNode; enabled: boolean }) {
   const g = useRef<THREE.Group>(null);
   useFrame((_, dt) => {
     if (enabled && g.current) g.current.rotation.y += dt * 0.35;
@@ -320,9 +343,14 @@ function AutoRotateGroup({
 }
 
 function MoleculeScene({
-  mol, showAngles, autoRotate, onAtomHover,
+  mol,
+  showAngles,
+  autoRotate,
+  onAtomHover,
 }: {
-  mol: Molecule; showAngles: boolean; autoRotate: boolean;
+  mol: Molecule;
+  showAngles: boolean;
+  autoRotate: boolean;
   onAtomHover: (v: boolean) => void;
 }) {
   return (
@@ -331,22 +359,18 @@ function MoleculeScene({
         <AtomSphere key={i} pos={a.pos} el={a.el} onHover={onAtomHover} />
       ))}
       {mol.bonds.map((b, i) => (
-        <Bond
-          key={i}
-          from={mol.atoms[b.a].pos}
-          to={mol.atoms[b.b].pos}
-          order={b.order}
-        />
+        <Bond key={i} from={mol.atoms[b.a].pos} to={mol.atoms[b.b].pos} order={b.order} />
       ))}
-      {showAngles && mol.angles.map((ang, i) => (
-        <BondAngleArc
-          key={i}
-          a={mol.atoms[ang.a].pos}
-          center={mol.atoms[ang.center].pos}
-          b={mol.atoms[ang.b].pos}
-          label={ang.label}
-        />
-      ))}
+      {showAngles &&
+        mol.angles.map((ang, i) => (
+          <BondAngleArc
+            key={i}
+            a={mol.atoms[ang.a].pos}
+            center={mol.atoms[ang.center].pos}
+            b={mol.atoms[ang.b].pos}
+            label={ang.label}
+          />
+        ))}
     </AutoRotateGroup>
   );
 }
@@ -380,7 +404,12 @@ export default function Hydrocarbon3DLab({ onBack }: { onBack: () => void }) {
       <header className="sticky top-0 z-20 border-b bg-background/85 backdrop-blur-xl">
         <div className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-2.5">
           <div className="flex min-w-0 items-center gap-2">
-            <Button variant="ghost" size="sm" onClick={onBack} className="-ml-2 h-8 shrink-0 gap-1 px-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onBack}
+              className="-ml-2 h-8 shrink-0 gap-1 px-2"
+            >
               <ArrowLeft className="h-4 w-4" />
               <span className="hidden sm:inline">ফিরে যান</span>
             </Button>
@@ -411,10 +440,20 @@ export default function Hydrocarbon3DLab({ onBack }: { onBack: () => void }) {
                 3D Viewport · ৩ডি দৃশ্যপট (drag to rotate)
               </div>
               <div className="flex flex-wrap items-center gap-1">
-                <Button size="sm" variant={showAngles ? "default" : "outline"} onClick={() => setShowAngles((v) => !v)} className="h-7 gap-1 px-2 text-[10px]">
+                <Button
+                  size="sm"
+                  variant={showAngles ? "default" : "outline"}
+                  onClick={() => setShowAngles((v) => !v)}
+                  className="h-7 gap-1 px-2 text-[10px]"
+                >
                   <Sparkles className="h-3 w-3" /> কোণ ({mol.bondAngle})
                 </Button>
-                <Button size="sm" variant={autoRotate ? "default" : "outline"} onClick={() => setAutoRotate((v) => !v)} className="h-7 gap-1 px-2 text-[10px]">
+                <Button
+                  size="sm"
+                  variant={autoRotate ? "default" : "outline"}
+                  onClick={() => setAutoRotate((v) => !v)}
+                  className="h-7 gap-1 px-2 text-[10px]"
+                >
                   <RotateCw className="h-3 w-3" /> Spin
                 </Button>
               </div>
@@ -431,7 +470,9 @@ export default function Hydrocarbon3DLab({ onBack }: { onBack: () => void }) {
                     mol={mol}
                     showAngles={showAngles}
                     autoRotate={autoRotate}
-                    onAtomHover={() => { /* no-op */ }}
+                    onAtomHover={() => {
+                      /* no-op */
+                    }}
                   />
                 </Suspense>
                 <OrbitControls enablePan={false} enableZoom minDistance={3} maxDistance={12} />
@@ -454,8 +495,13 @@ export default function Hydrocarbon3DLab({ onBack }: { onBack: () => void }) {
 
               {/* Legend */}
               <div className="absolute bottom-2 left-2 flex items-center gap-2 rounded-md bg-black/60 px-2 py-1 text-[10px] text-white">
-                <span className="flex items-center gap-1"><span className="h-2.5 w-2.5 rounded-full bg-neutral-900 ring-1 ring-white/40" /> C</span>
-                <span className="flex items-center gap-1"><span className="h-2.5 w-2.5 rounded-full bg-slate-200 ring-1 ring-white/40" /> H</span>
+                <span className="flex items-center gap-1">
+                  <span className="h-2.5 w-2.5 rounded-full bg-neutral-900 ring-1 ring-white/40" />{" "}
+                  C
+                </span>
+                <span className="flex items-center gap-1">
+                  <span className="h-2.5 w-2.5 rounded-full bg-slate-200 ring-1 ring-white/40" /> H
+                </span>
               </div>
             </div>
 
@@ -475,8 +521,15 @@ export default function Hydrocarbon3DLab({ onBack }: { onBack: () => void }) {
                         : "hover:border-primary/60 bg-card",
                     )}
                   >
-                    <div className={cn("text-[11px] font-bold", active ? "text-white" : "")}>{m.nameBn}</div>
-                    <div className={cn("text-[9px]", active ? "text-white/85" : "text-muted-foreground")}>
+                    <div className={cn("text-[11px] font-bold", active ? "text-white" : "")}>
+                      {m.nameBn}
+                    </div>
+                    <div
+                      className={cn(
+                        "text-[9px]",
+                        active ? "text-white/85" : "text-muted-foreground",
+                      )}
+                    >
                       {m.nameEn} · {m.formula}
                     </div>
                   </button>
@@ -497,17 +550,16 @@ export default function Hydrocarbon3DLab({ onBack }: { onBack: () => void }) {
       <DraggableTheoryFab storageKey="hydrocarbon-3d">
         <h3>হাইড্রোকার্বন ও ৩ডি জ্যামিতি</h3>
         <p>
-          কার্বন (C) এবং হাইড্রোজেন (H) মিলে গঠিত যৌগকে <strong>হাইড্রোকার্বন</strong> বলে।
-          কার্বনের যোজনী ৪ ও হাইড্রোজেনের যোজনী ১। কার্বন এই ৪টি হাত ব্যবহার করে সমযোজী
-          বন্ধন তৈরি করে — কখনও একক (single), কখনও দ্বি (double), কখনও ত্রি (triple)।
+          কার্বন (C) এবং হাইড্রোজেন (H) মিলে গঠিত যৌগকে <strong>হাইড্রোকার্বন</strong> বলে। কার্বনের
+          যোজনী ৪ ও হাইড্রোজেনের যোজনী ১। কার্বন এই ৪টি হাত ব্যবহার করে সমযোজী বন্ধন তৈরি করে — কখনও
+          একক (single), কখনও দ্বি (double), কখনও ত্রি (triple)।
         </p>
 
         <h4>মিথেন কেন চতুস্তলকীয়?</h4>
         <p>
-          মিথেনে (CH₄) কেন্দ্রীয় কার্বনের চারপাশে ৪ জোড়া বন্ধন-ইলেকট্রন থাকে। VSEPR
-          তত্ত্ব অনুসারে ইলেকট্রন জোড়াগুলো একে অপরকে যতটা সম্ভব দূরে রাখতে চায় —
-          তাই ৪টি হাইড্রোজেন গঠন করে একটি নিখুঁত <strong>tetrahedron</strong>,
-          এবং সব H–C–H কোণ হয় প্রায় <strong>109.5°</strong>।
+          মিথেনে (CH₄) কেন্দ্রীয় কার্বনের চারপাশে ৪ জোড়া বন্ধন-ইলেকট্রন থাকে। VSEPR তত্ত্ব অনুসারে
+          ইলেকট্রন জোড়াগুলো একে অপরকে যতটা সম্ভব দূরে রাখতে চায় — তাই ৪টি হাইড্রোজেন গঠন করে একটি
+          নিখুঁত <strong>tetrahedron</strong>, এবং সব H–C–H কোণ হয় প্রায় <strong>109.5°</strong>।
         </p>
 
         <h4>একক · দ্বি · ত্রিবন্ধনের তুলনা</h4>
@@ -523,9 +575,30 @@ export default function Hydrocarbon3DLab({ onBack }: { onBack: () => void }) {
             </tr>
           </thead>
           <tbody>
-            <tr><td>Single (C–C)</td><td>Ethane C₂H₆</td><td>154</td><td>~348</td><td>109.5°</td><td>sp³</td></tr>
-            <tr><td>Double (C=C)</td><td>Ethene C₂H₄</td><td>134</td><td>~614</td><td>120°</td><td>sp²</td></tr>
-            <tr><td>Triple (C≡C)</td><td>Ethyne C₂H₂</td><td>120</td><td>~839</td><td>180°</td><td>sp</td></tr>
+            <tr>
+              <td>Single (C–C)</td>
+              <td>Ethane C₂H₆</td>
+              <td>154</td>
+              <td>~348</td>
+              <td>109.5°</td>
+              <td>sp³</td>
+            </tr>
+            <tr>
+              <td>Double (C=C)</td>
+              <td>Ethene C₂H₄</td>
+              <td>134</td>
+              <td>~614</td>
+              <td>120°</td>
+              <td>sp²</td>
+            </tr>
+            <tr>
+              <td>Triple (C≡C)</td>
+              <td>Ethyne C₂H₂</td>
+              <td>120</td>
+              <td>~839</td>
+              <td>180°</td>
+              <td>sp</td>
+            </tr>
           </tbody>
         </table>
         <p>
@@ -534,8 +607,13 @@ export default function Hydrocarbon3DLab({ onBack }: { onBack: () => void }) {
 
         <h4>সম্পৃক্ত বনাম অসম্পৃক্ত</h4>
         <ul>
-          <li><strong>সম্পৃক্ত (Saturated):</strong> সব বন্ধন একক — যেমন Methane, Ethane, Propane।</li>
-          <li><strong>অসম্পৃক্ত (Unsaturated):</strong> কোথাও দ্বি বা ত্রি-বন্ধন — যেমন Ethene, Ethyne।</li>
+          <li>
+            <strong>সম্পৃক্ত (Saturated):</strong> সব বন্ধন একক — যেমন Methane, Ethane, Propane।
+          </li>
+          <li>
+            <strong>অসম্পৃক্ত (Unsaturated):</strong> কোথাও দ্বি বা ত্রি-বন্ধন — যেমন Ethene,
+            Ethyne।
+          </li>
         </ul>
       </DraggableTheoryFab>
     </div>
@@ -614,8 +692,8 @@ function BuilderPanel({ onWarn }: { onWarn: (msg: string) => void }) {
       </div>
 
       <p className="mt-3 rounded-md bg-muted/50 px-2 py-1.5 text-[10px] leading-snug text-muted-foreground">
-        💡 উপরের প্রিসেট (মিথেন/ইথেন/ইথিন/ইথাইন) নির্বাচন করে ৩ডি ভিউতে ঘুরিয়ে দেখো।
-        হাত বেশি লাগানোর চেষ্টা করলে AI টিউটর সতর্ক করবে।
+        💡 উপরের প্রিসেট (মিথেন/ইথেন/ইথিন/ইথাইন) নির্বাচন করে ৩ডি ভিউতে ঘুরিয়ে দেখো। হাত বেশি
+        লাগানোর চেষ্টা করলে AI টিউটর সতর্ক করবে।
       </p>
     </Card>
   );
@@ -683,7 +761,8 @@ function StepsPanel({ stepIdx, mol }: { stepIdx: number; mol: Molecule }) {
       </div>
 
       <div className="mb-2 rounded-md bg-emerald-50 dark:bg-emerald-950/30 px-2 py-1.5 text-[11px] font-medium text-emerald-800 dark:text-emerald-200">
-        Status: {mol.saturationEn === "Unsaturated"
+        Status:{" "}
+        {mol.saturationEn === "Unsaturated"
           ? `${mol.bondAngle} বন্ধন কোণ পরীক্ষা করা হচ্ছে…`
           : `${mol.nameBn} অণু প্রদর্শিত হচ্ছে`}
       </div>
@@ -698,13 +777,16 @@ function StepsPanel({ stepIdx, mol }: { stepIdx: number; mol: Molecule }) {
               className={cn(
                 "flex items-start gap-2 rounded-md border px-2 py-1.5",
                 done && "border-emerald-400/40 bg-emerald-50/50 dark:bg-emerald-950/20",
-                current && "border-amber-400/60 bg-amber-50/50 dark:bg-amber-950/20 ring-1 ring-amber-400/40",
+                current &&
+                  "border-amber-400/60 bg-amber-50/50 dark:bg-amber-950/20 ring-1 ring-amber-400/40",
               )}
             >
-              <span className={cn(
-                "mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full text-[9px] font-bold text-white",
-                done ? "bg-emerald-500" : current ? "bg-amber-500" : "bg-muted-foreground/40",
-              )}>
+              <span
+                className={cn(
+                  "mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full text-[9px] font-bold text-white",
+                  done ? "bg-emerald-500" : current ? "bg-amber-500" : "bg-muted-foreground/40",
+                )}
+              >
                 {done ? <CheckCircle2 className="h-3 w-3" /> : i + 1}
               </span>
               <span className={cn(done && "text-muted-foreground line-through")}>{s}</span>

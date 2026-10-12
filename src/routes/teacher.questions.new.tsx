@@ -5,7 +5,13 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "sonner";
 import { Sparkles, ArrowLeft, Loader2 } from "lucide-react";
 import { generateQuestions, saveQuestionSet } from "@/lib/questions.functions";
@@ -121,17 +127,27 @@ function NewQuestionWizard() {
         <Card className="p-4 space-y-3">
           <div>
             <Label>Test Title (optional)</Label>
-            <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Chapter 5 Weekly Test" />
+            <Input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Chapter 5 Weekly Test"
+            />
           </div>
           <div>
             <Label>Chapter / Topic *</Label>
-            <Input value={chapter} onChange={(e) => setChapter(e.target.value)} placeholder="অধ্যায় ৫ — রাসায়নিক বন্ধন" />
+            <Input
+              value={chapter}
+              onChange={(e) => setChapter(e.target.value)}
+              placeholder="অধ্যায় ৫ — রাসায়নিক বন্ধন"
+            />
           </div>
           <div className="grid grid-cols-3 gap-3">
             <div>
               <Label>Type</Label>
               <Select value={type} onValueChange={(v) => setType(v as QType)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="mcq">MCQ</SelectItem>
                   <SelectItem value="cq">CQ (সৃজনশীল)</SelectItem>
@@ -141,7 +157,9 @@ function NewQuestionWizard() {
             <div>
               <Label>Difficulty</Label>
               <Select value={difficulty} onValueChange={(v) => setDifficulty(v as Diff)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="easy">সহজ</SelectItem>
                   <SelectItem value="medium">মাঝারি</SelectItem>
@@ -157,13 +175,21 @@ function NewQuestionWizard() {
                 min={1}
                 max={type === "cq" ? 3 : 10}
                 value={count}
-                onChange={(e) => setCount(Math.max(1, Math.min(type === "cq" ? 3 : 10, Number(e.target.value) || 1)))}
+                onChange={(e) =>
+                  setCount(
+                    Math.max(1, Math.min(type === "cq" ? 3 : 10, Number(e.target.value) || 1)),
+                  )
+                }
               />
             </div>
           </div>
           <div>
             <Label>Related Experiment (optional)</Label>
-            <Input value={experiment} onChange={(e) => setExperiment(e.target.value)} placeholder="আয়নিক ও সমযোজী যৌগের বিদ্যুৎ পরিবাহিতা" />
+            <Input
+              value={experiment}
+              onChange={(e) => setExperiment(e.target.value)}
+              placeholder="আয়নিক ও সমযোজী যৌগের বিদ্যুৎ পরিবাহিতা"
+            />
           </div>
           <Button onClick={doGenerate} disabled={!chapter.trim()}>
             <Sparkles className="h-4 w-4" /> AI দিয়ে Generate কর
@@ -181,9 +207,16 @@ function NewQuestionWizard() {
       {step === 3 && (
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <Input value={title} onChange={(e) => setTitle(e.target.value)} className="max-w-md" placeholder="Test title" />
+            <Input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="max-w-md"
+              placeholder="Test title"
+            />
             <div className="flex gap-2">
-              <Button variant="outline" onClick={() => setStep(1)}>Regenerate</Button>
+              <Button variant="outline" onClick={() => setStep(1)}>
+                Regenerate
+              </Button>
               <Button onClick={doSave} disabled={saving}>
                 {saving ? "Saving…" : "Save Draft"}
               </Button>
@@ -206,7 +239,11 @@ function McqEditor({ items, onChange }: { items: McqItem[]; onChange: (v: McqIte
     onChange(items.map((it, idx) => (idx === i ? { ...it, ...patch } : it)));
   };
   const updOpt = (i: number, oi: number, val: string) => {
-    onChange(items.map((it, idx) => (idx === i ? { ...it, options: it.options.map((o, k) => (k === oi ? val : o)) } : it)));
+    onChange(
+      items.map((it, idx) =>
+        idx === i ? { ...it, options: it.options.map((o, k) => (k === oi ? val : o)) } : it,
+      ),
+    );
   };
   return (
     <div className="space-y-3">
@@ -249,9 +286,7 @@ function CqEditor({ items, onChange }: { items: CqItem[]; onChange: (v: CqItem[]
     onChange(items.map((it, idx) => (idx === i ? { ...it, ...patch } : it)));
   };
   const updPart = (i: number, key: "ka" | "kha" | "ga" | "gha", patch: Partial<CqPart>) => {
-    onChange(
-      items.map((it, idx) => (idx === i ? { ...it, [key]: { ...it[key], ...patch } } : it)),
-    );
+    onChange(items.map((it, idx) => (idx === i ? { ...it, [key]: { ...it[key], ...patch } } : it)));
   };
   return (
     <div className="space-y-4">
@@ -272,7 +307,8 @@ function CqEditor({ items, onChange }: { items: CqItem[]; onChange: (v: CqItem[]
               {(["ka", "kha", "ga", "gha"] as const).map((k) => (
                 <div key={k} className="rounded border p-2">
                   <div className="text-xs font-semibold">
-                    ({k === "ka" ? "ক" : k === "kha" ? "খ" : k === "ga" ? "গ" : "ঘ"}) — {c[k].marks} mark
+                    ({k === "ka" ? "ক" : k === "kha" ? "খ" : k === "ga" ? "গ" : "ঘ"}) — {c[k].marks}{" "}
+                    mark
                   </div>
                   <Input
                     value={c[k].q}

@@ -36,10 +36,7 @@ import UserMenu from "@/components/auth/UserMenu";
 
 const BKASH_NUMBER = "01581553923";
 
-const PLAN_INFO: Record<
-  string,
-  { name: string; price: number; cycle: string }
-> = {
+const PLAN_INFO: Record<string, { name: string; price: number; cycle: string }> = {
   student_monthly: { name: "Student Monthly", price: 99, cycle: "মাসিক" },
   student_yearly: { name: "Student Yearly", price: 999, cycle: "বার্ষিক" },
   teacher_monthly: { name: "Teacher Monthly", price: 299, cycle: "মাসিক" },
@@ -228,7 +225,11 @@ function BillingPage() {
   );
 }
 
-function StatusBadge({ entitlements }: { entitlements: ReturnType<typeof useEntitlements>["entitlements"] }) {
+function StatusBadge({
+  entitlements,
+}: {
+  entitlements: ReturnType<typeof useEntitlements>["entitlements"];
+}) {
   if (!entitlements) return null;
   const styles =
     entitlements.status === "active"
@@ -244,7 +245,9 @@ function StatusBadge({ entitlements }: { entitlements: ReturnType<typeof useEnti
         : entitlements.status === "expired"
           ? "Expired"
           : "Free";
-  return <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${styles}`}>{label}</span>;
+  return (
+    <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${styles}`}>{label}</span>
+  );
 }
 
 function PaymentStatusBadge({ status }: { status: string }) {
@@ -268,14 +271,15 @@ function PaymentStatusBadge({ status }: { status: string }) {
   const v = map[status] ?? map.pending;
   const I = v.Icon;
   return (
-    <span className={`text-xs font-semibold px-2.5 py-1 rounded-full flex items-center gap-1 ${v.cls}`}>
+    <span
+      className={`text-xs font-semibold px-2.5 py-1 rounded-full flex items-center gap-1 ${v.cls}`}
+    >
       <I className="h-3 w-3" /> {v.label}
     </span>
   );
 }
 
 /* ─────────── Payment form ─────────── */
-
 
 function PaymentForm({
   preselectedPlan,
@@ -299,7 +303,11 @@ function PaymentForm({
     try {
       await submitFn({
         data: {
-          planCode: plan as "student_monthly" | "student_yearly" | "teacher_monthly" | "teacher_yearly",
+          planCode: plan as
+            | "student_monthly"
+            | "student_yearly"
+            | "teacher_monthly"
+            | "teacher_yearly",
           senderPhone,
         },
       });
@@ -333,7 +341,9 @@ function PaymentForm({
               type="button"
               onClick={() => setPlan(code)}
               className={`text-left p-3 rounded-lg border-2 transition-colors ${
-                plan === code ? "border-primary bg-primary/10" : "border-border hover:border-primary/40"
+                plan === code
+                  ? "border-primary bg-primary/10"
+                  : "border-border hover:border-primary/40"
               }`}
             >
               <div className="text-xs text-muted-foreground">{p.cycle}</div>
@@ -365,8 +375,8 @@ function PaymentForm({
             </div>
           </li>
           <li>
-            <strong>৩.</strong> Amount:{" "}
-            <strong className="text-base">৳{info.price}</strong> (Reference: "DrChem")
+            <strong>৩.</strong> Amount: <strong className="text-base">৳{info.price}</strong>{" "}
+            (Reference: "DrChem")
           </li>
           <li>
             <strong>৪.</strong> পেমেন্ট শেষে নিচে আপনার bKash নম্বরটি দিয়ে Submit করুন
@@ -395,9 +405,7 @@ function PaymentForm({
         {busy ? (
           <Loader2 className="h-4 w-4 animate-spin" />
         ) : (
-          <>
-            ৳{info.price} এর Payment Submit করো
-          </>
+          <>৳{info.price} এর Payment Submit করো</>
         )}
       </Button>
 
@@ -412,7 +420,11 @@ function CancelButton({ onCancel }: { onCancel: () => void | Promise<void> }) {
   const [busy, setBusy] = useState(false);
   const cancelFn = useServerFn(cancelSubscription);
   const handle = async () => {
-    if (!confirm("আপনি কি subscription cancel করতে চান? Current period শেষ হলে Free tier এ চলে যাবেন।"))
+    if (
+      !confirm(
+        "আপনি কি subscription cancel করতে চান? Current period শেষ হলে Free tier এ চলে যাবেন।",
+      )
+    )
       return;
     setBusy(true);
     try {

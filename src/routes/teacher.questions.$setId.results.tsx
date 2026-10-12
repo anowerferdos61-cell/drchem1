@@ -64,16 +64,25 @@ function ResultsPage() {
               {rows.map((r) => (
                 <tr key={r.id} className="border-t">
                   <td className="px-4 py-2 font-medium">{r.name}</td>
-                  <td className="px-4 py-2">{r.mcq_score} / {r.mcq_total}</td>
                   <td className="px-4 py-2">
-                    {r.cq_score == null ? <span className="text-muted-foreground">Pending</span> : r.cq_score}
+                    {r.mcq_score} / {r.mcq_total}
+                  </td>
+                  <td className="px-4 py-2">
+                    {r.cq_score == null ? (
+                      <span className="text-muted-foreground">Pending</span>
+                    ) : (
+                      r.cq_score
+                    )}
                   </td>
                   <td className="px-4 py-2 text-muted-foreground">
                     {r.submitted_at ? new Date(r.submitted_at).toLocaleString() : "—"}
                   </td>
                   <td className="px-4 py-2 text-right">
                     <Button asChild size="sm" variant="ghost">
-                      <Link to="/teacher/questions/$setId/attempts/$attemptId" params={{ setId, attemptId: r.id }}>
+                      <Link
+                        to="/teacher/questions/$setId/attempts/$attemptId"
+                        params={{ setId, attemptId: r.id }}
+                      >
                         Grade →
                       </Link>
                     </Button>

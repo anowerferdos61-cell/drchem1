@@ -52,7 +52,6 @@ export type ExperimentId =
   | "transformation_matrix"
   | "polymerization";
 
-
 export type Mode = "guide" | "student" | "classroom";
 
 export type EquipmentId =
@@ -178,19 +177,19 @@ export interface IonicPlaced {
 }
 
 export interface NaClPlaced {
-  mortar: boolean;       // mortar & pestle ready
-  beaker_1: boolean;     // dissolving beaker present
-  salt: boolean;         // impure salt added (crushed)
-  water: boolean;        // distilled water poured
-  dissolved: boolean;    // salt fully stirred into water
+  mortar: boolean; // mortar & pestle ready
+  beaker_1: boolean; // dissolving beaker present
+  salt: boolean; // impure salt added (crushed)
+  water: boolean; // distilled water poured
+  dissolved: boolean; // salt fully stirred into water
   filter_setup: boolean; // funnel + filter paper + Beaker-2 set up
   beaker_2: boolean;
-  filtered: boolean;     // filtration complete (filtrate in Beaker-2)
+  filtered: boolean; // filtration complete (filtrate in Beaker-2)
   evaporating_dish: boolean;
-  heat_setup: boolean;   // tripod + wire gauze + bunsen burner placed
-  burning: boolean;      // burner currently on
-  cooling: boolean;      // burner off, cooling stage
-  seeded: boolean;       // seed crystal introduced
+  heat_setup: boolean; // tripod + wire gauze + bunsen burner placed
+  burning: boolean; // burner currently on
+  cooling: boolean; // burner off, cooling stage
+  seeded: boolean; // seed crystal introduced
   crystallized: boolean; // crystals fully grown
 }
 
@@ -198,18 +197,18 @@ export interface CuSO4Placed {
   // Weighing
   balanceOn: boolean;
   crucibleOnBalance: boolean;
-  emptyCrucibleMass: number;     // x (g) ~20
+  emptyCrucibleMass: number; // x (g) ~20
   weighedEmpty: boolean;
   tared: boolean;
-  hydratedSampleMass: number;    // sample added (y - x)
+  hydratedSampleMass: number; // sample added (y - x)
   weighedHydrated: boolean;
   // Heating
   tripodReady: boolean;
   crucibleOnTripod: boolean;
   burnerOn: boolean;
-  heatingTime: number;           // accumulated seconds
-  dehydrationFraction: number;   // 0..1
-  stirred: number;               // gentle stir count
+  heatingTime: number; // accumulated seconds
+  dehydrationFraction: number; // 0..1
+  stirred: number; // gentle stir count
   spilled: boolean;
   // Cooling
   inDesiccator: boolean;
@@ -218,15 +217,15 @@ export interface CuSO4Placed {
   touchedBare: boolean;
   // Final weigh
   weighedAnhydrous: boolean;
-  finalCrucibleMass: number;     // z (g)
+  finalCrucibleMass: number; // z (g)
 }
 
 export interface Na2CO3Placed {
   balanceOn: boolean;
   watchGlassOnBalance: boolean;
-  watchGlassMass: number;   // initial tare mass (~26 g)
+  watchGlassMass: number; // initial tare mass (~26 g)
   tared: boolean;
-  actualAddedMass: number;  // grams of Na2CO3 on watch glass
+  actualAddedMass: number; // grams of Na2CO3 on watch glass
   flaskReady: boolean;
   funnelOnFlask: boolean;
   soluteTransferred: boolean;
@@ -310,7 +309,6 @@ export type AIContext = {
   goal?: string;
 };
 
-
 export interface Step {
   id: string;
   label: string; // bilingual
@@ -332,7 +330,7 @@ export interface Report {
   tests?: Record<TestId, TestResult>;
   // NaCl
   volumeReductionPct?: number; // how much the filtrate was reduced (target ≈ 50%)
-  crystalQuality?: number;     // 0-100, cubic geometry quality
+  crystalQuality?: number; // 0-100, cubic geometry quality
   seedUsed?: boolean;
   // Ionic vs Covalent
   solubilityScore?: number;
@@ -347,16 +345,11 @@ export interface Report {
   massError?: number;
   volumeError?: number;
   // CuSO4·5H2O crystallization water
-  cuEmptyMass?: number;        // x
-  cuHydratedMass?: number;     // y
-  cuAnhydrousMass?: number;    // z
+  cuEmptyMass?: number; // x
+  cuHydratedMass?: number; // y
+  cuAnhydrousMass?: number; // z
   cuWaterPct?: number;
   cuTheoreticalPct?: number;
-
-
-
-
-
 
   accuracy: number; // %
   grade: "A" | "B" | "C" | "D" | "F";

@@ -22,10 +22,7 @@ import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
-import {
-  ELECTROCHEMICAL_SERIES,
-  type SeriesMetal,
-} from "@/lib/electrochemical-series";
+import { ELECTROCHEMICAL_SERIES, type SeriesMetal } from "@/lib/electrochemical-series";
 
 interface Props {
   onBack: () => void;
@@ -88,9 +85,7 @@ export default function ElectrochemicalSeriesLab({ onBack }: Props) {
       <Card className="mb-4 border-2 border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 p-4">
         <div className="flex items-start gap-3">
           <Info className="mt-1 h-5 w-5 shrink-0 text-amber-600" />
-          <p className="text-sm leading-relaxed text-slate-800 md:text-base">
-            {data.definition}
-          </p>
+          <p className="text-sm leading-relaxed text-slate-800 md:text-base">{data.definition}</p>
         </div>
       </Card>
 
@@ -128,9 +123,7 @@ export default function ElectrochemicalSeriesLab({ onBack }: Props) {
                         : undefined
                     }
                   >
-                    <span className="w-5 text-xs font-mono text-muted-foreground">
-                      {i + 1}.
-                    </span>
+                    <span className="w-5 text-xs font-mono text-muted-foreground">{i + 1}.</span>
                     <span
                       className="flex h-9 w-9 items-center justify-center rounded-md font-bold text-white shadow-sm"
                       style={{ background: m.color }}
@@ -139,9 +132,7 @@ export default function ElectrochemicalSeriesLab({ onBack }: Props) {
                     </span>
                     <div className="flex-1">
                       <div className="text-sm font-semibold">{m.name}</div>
-                      <div className="text-[11px] text-muted-foreground">
-                        {m.reactivity}
-                      </div>
+                      <div className="text-[11px] text-muted-foreground">{m.reactivity}</div>
                     </div>
                   </button>
                 </li>
@@ -153,9 +144,7 @@ export default function ElectrochemicalSeriesLab({ onBack }: Props) {
           <div className="mt-4 rounded-lg border-2 border-indigo-200 bg-indigo-50 p-3">
             <div className="flex items-start gap-2">
               <Lightbulb className="mt-0.5 h-4 w-4 shrink-0 text-indigo-600" />
-              <p className="text-xs leading-relaxed text-indigo-900">
-                {data.key_point}
-              </p>
+              <p className="text-xs leading-relaxed text-indigo-900">{data.key_point}</p>
             </div>
           </div>
         </Card>
@@ -166,7 +155,8 @@ export default function ElectrochemicalSeriesLab({ onBack }: Props) {
           <Card className="p-4">
             <h2 className="mb-2 text-base font-semibold">নির্বাচিত ধাতুর তথ্য</h2>
             {selectedMetal ? (
-              <div className="rounded-lg border-2 p-3"
+              <div
+                className="rounded-lg border-2 p-3"
                 style={{
                   borderColor: selectedMetal.color,
                   background: `linear-gradient(135deg, ${selectedMetal.color}10, ${selectedMetal.color}05)`,
@@ -199,9 +189,7 @@ export default function ElectrochemicalSeriesLab({ onBack }: Props) {
           <Card className="border-2 border-emerald-200 bg-emerald-50/60 p-4">
             <div className="mb-2 flex items-center gap-2">
               <FlaskConical className="h-4 w-4 text-emerald-700" />
-              <h2 className="text-base font-semibold text-emerald-900">
-                উদাহরণ বিক্রিয়া
-              </h2>
+              <h2 className="text-base font-semibold text-emerald-900">উদাহরণ বিক্রিয়া</h2>
             </div>
             <div className="rounded-md bg-white px-3 py-2 text-center text-sm shadow-inner">
               {md(`$${data.example.equation}$`)}
@@ -218,8 +206,8 @@ export default function ElectrochemicalSeriesLab({ onBack }: Props) {
               <h2 className="text-base font-semibold">প্রতিস্থাপন সিমুলেটর</h2>
             </div>
             <p className="mb-3 text-xs text-muted-foreground">
-              একটি ধাতু (Reactant) এবং একটি লবণ-দ্রবণ (Salt of Metal) বেছে নিন।
-              দেখুন উপরের ধাতু কীভাবে নিচের ধাতুকে প্রতিস্থাপন করে।
+              একটি ধাতু (Reactant) এবং একটি লবণ-দ্রবণ (Salt of Metal) বেছে নিন। দেখুন উপরের ধাতু
+              কীভাবে নিচের ধাতুকে প্রতিস্থাপন করে।
             </p>
 
             <div className="grid grid-cols-2 gap-3">
@@ -339,7 +327,14 @@ export default function ElectrochemicalSeriesLab({ onBack }: Props) {
                         ))}
                       </>
                     )}
-                    <text x="60" y="16" textAnchor="middle" fontSize="10" fontWeight="700" fill="#1e293b">
+                    <text
+                      x="60"
+                      y="16"
+                      textAnchor="middle"
+                      fontSize="10"
+                      fontWeight="700"
+                      fill="#1e293b"
+                    >
                       {result.reactive.symbol}
                     </text>
                   </svg>
@@ -367,16 +362,14 @@ export default function ElectrochemicalSeriesLab({ onBack }: Props) {
                     {result.willReact ? (
                       <>
                         <strong>বিক্রিয়া ঘটবে ✓</strong> — {result.reactive.name} (
-                        {result.reactive.symbol}) সারিতে {result.salt.name} (
-                        {result.salt.symbol})-এর ওপরে থাকায় এটি দ্রবণ থেকে{" "}
-                        {result.salt.symbol}-কে প্রতিস্থাপন করবে।
+                        {result.reactive.symbol}) সারিতে {result.salt.name} ({result.salt.symbol}
+                        )-এর ওপরে থাকায় এটি দ্রবণ থেকে {result.salt.symbol}-কে প্রতিস্থাপন করবে।
                       </>
                     ) : (
                       <>
                         <strong>বিক্রিয়া ঘটবে না ✗</strong> — {result.reactive.name} (
-                        {result.reactive.symbol}) সারিতে {result.salt.name} (
-                        {result.salt.symbol})-এর নিচে / সমান অবস্থানে আছে, তাই এটি
-                        প্রতিস্থাপন করতে পারবে না।
+                        {result.reactive.symbol}) সারিতে {result.salt.name} ({result.salt.symbol}
+                        )-এর নিচে / সমান অবস্থানে আছে, তাই এটি প্রতিস্থাপন করতে পারবে না।
                       </>
                     )}
                   </p>
@@ -391,16 +384,11 @@ export default function ElectrochemicalSeriesLab({ onBack }: Props) {
       <Card className="mt-4 border-2 border-fuchsia-200 bg-fuchsia-50/60 p-4">
         <div className="mb-2 flex items-center gap-2">
           <Lightbulb className="h-4 w-4 text-fuchsia-700" />
-          <h2 className="text-base font-semibold text-fuchsia-900">
-            পরীক্ষার টিপস ও ছন্দ
-          </h2>
+          <h2 className="text-base font-semibold text-fuchsia-900">পরীক্ষার টিপস ও ছন্দ</h2>
         </div>
         <ul className="space-y-2">
           {data.exam_tricks.map((t, i) => (
-            <li
-              key={i}
-              className="rounded-md bg-white px-3 py-2 text-xs leading-relaxed shadow-sm"
-            >
+            <li key={i} className="rounded-md bg-white px-3 py-2 text-xs leading-relaxed shadow-sm">
               {t}
             </li>
           ))}

@@ -15,13 +15,7 @@ interface Props {
   ragMode: boolean;
 }
 
-export default function Composer({
-  onSend,
-  onStop,
-  isStreaming,
-  disabled,
-  ragMode,
-}: Props) {
+export default function Composer({ onSend, onStop, isStreaming, disabled, ragMode }: Props) {
   const [value, setValue] = useState("");
   const ref = useRef<HTMLTextAreaElement>(null);
 
@@ -75,11 +69,7 @@ export default function Composer({
             value={value}
             onChange={(e) => setValue(e.target.value)}
             onKeyDown={onKey}
-            placeholder={
-              ragMode
-                ? "📚 বই থেকে প্রশ্ন করুন…"
-                : "যেকোনো রসায়ন প্রশ্ন লিখুন…"
-            }
+            placeholder={ragMode ? "📚 বই থেকে প্রশ্ন করুন…" : "যেকোনো রসায়ন প্রশ্ন লিখুন…"}
             rows={1}
             disabled={disabled}
             className="flex-1 resize-none bg-transparent px-2 py-2 text-sm leading-relaxed outline-none placeholder:text-muted-foreground disabled:opacity-50"

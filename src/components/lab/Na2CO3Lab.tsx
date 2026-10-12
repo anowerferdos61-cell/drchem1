@@ -26,21 +26,9 @@ import EquipmentPanel, { NA2CO3_ITEMS } from "./EquipmentPanel";
 import StepsPanel from "./StepsPanel";
 import LabReport from "./LabReport";
 import Na2CO3Workspace from "./workspaces/Na2CO3Workspace";
-import type {
-  EquipmentId,
-  Mistake,
-  Mode,
-  Na2CO3Placed,
-  Report,
-  Step,
-} from "./types";
+import type { EquipmentId, Mistake, Mode, Na2CO3Placed, Report, Step } from "./types";
 import { setAIContext } from "@/lib/ai-context-store";
-import {
-  TARGET_MASS_G,
-  TARGET_VOLUME_ML,
-  gradeNa2CO3,
-  randomWatchGlassMass,
-} from "@/lib/na2co3";
+import { TARGET_MASS_G, TARGET_VOLUME_ML, gradeNa2CO3, randomWatchGlassMass } from "@/lib/na2co3";
 
 function makeInitial(): Na2CO3Placed {
   return {
@@ -63,13 +51,37 @@ function makeInitial(): Na2CO3Placed {
 
 function buildSteps(): Step[] {
   return [
-    { id: "tare", label: "Tare balance with watch glass · ব্যালান্স Tare করো (watch glass সহ)", done: false },
+    {
+      id: "tare",
+      label: "Tare balance with watch glass · ব্যালান্স Tare করো (watch glass সহ)",
+      done: false,
+    },
     { id: "weigh", label: "Weigh ~2.650 g Na₂CO₃ · ২.৬৫০ g সোডিয়াম কার্বনেট নাও", done: false },
-    { id: "setup", label: "Place funnel on 250 mL volumetric flask · ফ্লাস্কে ফানেল বসাও", done: false },
-    { id: "transfer", label: "Transfer solute into the flask · দ্রব্য ফ্লাস্কে স্থানান্তর করো", done: false },
-    { id: "wash", label: "Wash watch glass & funnel with H₂O · ওয়াশ বটল দিয়ে ধুয়ে নাও", done: false },
-    { id: "fill", label: "Add water close to 250 mL mark, then meniscus align · 250 mL দাগে meniscus মিলাও", done: false },
-    { id: "homogenize", label: "Stopper and invert to homogenize · ছিপি লাগিয়ে মিশাও", done: false },
+    {
+      id: "setup",
+      label: "Place funnel on 250 mL volumetric flask · ফ্লাস্কে ফানেল বসাও",
+      done: false,
+    },
+    {
+      id: "transfer",
+      label: "Transfer solute into the flask · দ্রব্য ফ্লাস্কে স্থানান্তর করো",
+      done: false,
+    },
+    {
+      id: "wash",
+      label: "Wash watch glass & funnel with H₂O · ওয়াশ বটল দিয়ে ধুয়ে নাও",
+      done: false,
+    },
+    {
+      id: "fill",
+      label: "Add water close to 250 mL mark, then meniscus align · 250 mL দাগে meniscus মিলাও",
+      done: false,
+    },
+    {
+      id: "homogenize",
+      label: "Stopper and invert to homogenize · ছিপি লাগিয়ে মিশাও",
+      done: false,
+    },
   ];
 }
 
@@ -95,8 +107,10 @@ export default function Na2CO3Lab({ onBack }: Props) {
   useEffect(() => {
     const stepIdx = steps.findIndex((s) => !s.done);
     const chemicals: string[] = [];
-    if (placed.actualAddedMass > 0) chemicals.push(`Na₂CO₃ (${placed.actualAddedMass.toFixed(3)} g)`);
-    if (placed.addedWaterVolume > 0) chemicals.push(`H₂O (${placed.addedWaterVolume.toFixed(1)} mL)`);
+    if (placed.actualAddedMass > 0)
+      chemicals.push(`Na₂CO₃ (${placed.actualAddedMass.toFixed(3)} g)`);
+    if (placed.addedWaterVolume > 0)
+      chemicals.push(`H₂O (${placed.addedWaterVolume.toFixed(1)} mL)`);
     const equipment: string[] = [];
     if (placed.balanceOn) equipment.push("Digital balance");
     if (placed.watchGlassOnBalance) equipment.push("Watch glass");
@@ -109,8 +123,7 @@ export default function Na2CO3Lab({ onBack }: Props) {
       mistakesMade: mistakes.map((m) => m.message),
       currentChemicals: chemicals,
       currentEquipment: equipment,
-      goal:
-        "Prepare 250 mL of standard 0.1 M Na₂CO₃ solution by weighing 2.650 g (W = SMV/1000), transferring quantitatively through a funnel into a volumetric flask and diluting to the calibration mark.",
+      goal: "Prepare 250 mL of standard 0.1 M Na₂CO₃ solution by weighing 2.650 g (W = SMV/1000), transferring quantitatively through a funnel into a volumetric flask and diluting to the calibration mark.",
     });
   }, [mode, steps, placed, mistakes]);
 
@@ -246,8 +259,7 @@ export default function Na2CO3Lab({ onBack }: Props) {
       logMistake({
         type: "no_funnel_pour",
         severity: "high",
-        message:
-          "ফানেল ছাড়া পাউডার ঢালা হয়েছে · spillage হবে, analyte নষ্ট হবে!",
+        message: "ফানেল ছাড়া পাউডার ঢালা হয়েছে · spillage হবে, analyte নষ্ট হবে!",
       });
       // simulate ~30% loss
       setPlaced((p) => ({
@@ -289,8 +301,7 @@ export default function Na2CO3Lab({ onBack }: Props) {
         logMistake({
           type: "overfill_meniscus",
           severity: "high",
-          message:
-            "250 mL দাগ ছাড়িয়ে গেছে · over-diluted solution. পুনরায় শুরু করতে হবে।",
+          message: "250 mL দাগ ছাড়িয়ে গেছে · over-diluted solution. পুনরায় শুরু করতে হবে।",
         });
       }
       return { ...p, addedWaterVolume: next };
@@ -336,8 +347,7 @@ export default function Na2CO3Lab({ onBack }: Props) {
       logMistake({
         type: "not_washed_down",
         severity: "med",
-        message:
-          "Watch glass / funnel ধোয়া হয়নি · low recovery, প্রকৃত concentration কম হবে।",
+        message: "Watch glass / funnel ধোয়া হয়নি · low recovery, প্রকৃত concentration কম হবে।",
       });
     }
     const high = mistakes.filter((m) => m.severity === "high").length;
@@ -392,13 +402,15 @@ export default function Na2CO3Lab({ onBack }: Props) {
     if (!placed.tared) return "Press TARE to zero out the watch-glass mass.";
     if (placed.actualAddedMass < 2.6 || placed.actualAddedMass > 2.7)
       return `Add Na₂CO₃ until display ≈ 2.650 g (currently ${placed.actualAddedMass.toFixed(3)} g).`;
-    if (!steps.find((s) => s.id === "weigh")?.done) return "Click 'Record mass' to lock the weight.";
+    if (!steps.find((s) => s.id === "weigh")?.done)
+      return "Click 'Record mass' to lock the weight.";
     if (!placed.flaskReady) return "Place the 250 mL volumetric flask.";
     if (!placed.funnelOnFlask) return "Place the funnel on the flask mouth.";
     if (!placed.soluteTransferred) return "Click 'Transfer solute' to pour through the funnel.";
     if (!placed.washedDown) return "Use 'Wash down' to rinse watch glass & funnel.";
     if (placed.addedWaterVolume < 240) return "Add water until close to the 250 mL mark.";
-    if (!placed.meniscusChecked) return "Use 'Check meniscus' to align the lower meniscus with the ring.";
+    if (!placed.meniscusChecked)
+      return "Use 'Check meniscus' to align the lower meniscus with the ring.";
     if (!placed.stoppered) return "Place the stopper on the flask.";
     if (!placed.shaken) return "Invert/shake to homogenize the solution.";
     return "Done — Submit your report.";
@@ -553,10 +565,20 @@ export default function Na2CO3Lab({ onBack }: Props) {
                 </Button>
               </div>
               <div className="flex items-center gap-1 border-l pl-2">
-                <Button size="sm" variant="outline" onClick={reset} className="h-7 px-2 text-[10px]">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={reset}
+                  className="h-7 px-2 text-[10px]"
+                >
                   <RotateCcw className="mr-1 h-3 w-3" /> Reset
                 </Button>
-                <Button size="sm" onClick={submit} disabled={submitted} className="h-7 px-2 text-[10px]">
+                <Button
+                  size="sm"
+                  onClick={submit}
+                  disabled={submitted}
+                  className="h-7 px-2 text-[10px]"
+                >
                   <Trophy className="mr-1 h-3 w-3" /> Submit
                 </Button>
               </div>
@@ -630,13 +652,7 @@ function ModeToggle({ mode, setMode }: { mode: Mode; setMode: (m: Mode) => void 
   );
 }
 
-function StatusCard({
-  placed,
-  targetDelta,
-}: {
-  placed: Na2CO3Placed;
-  targetDelta: number;
-}) {
+function StatusCard({ placed, targetDelta }: { placed: Na2CO3Placed; targetDelta: number }) {
   const massPct = Math.min(100, (placed.actualAddedMass / TARGET_MASS_G) * 100);
   const volPct = Math.min(100, (placed.addedWaterVolume / TARGET_VOLUME_ML) * 100);
   return (
@@ -660,8 +676,16 @@ function StatusCard({
       </div>
 
       <div className="space-y-2 text-xs">
-        <ProgressRow label="Mass progress" value={`${placed.actualAddedMass.toFixed(3)} g`} pct={massPct} />
-        <ProgressRow label="Volume progress" value={`${placed.addedWaterVolume.toFixed(0)} mL`} pct={volPct} />
+        <ProgressRow
+          label="Mass progress"
+          value={`${placed.actualAddedMass.toFixed(3)} g`}
+          pct={massPct}
+        />
+        <ProgressRow
+          label="Volume progress"
+          value={`${placed.addedWaterVolume.toFixed(0)} mL`}
+          pct={volPct}
+        />
       </div>
 
       <div className="rounded-md border bg-muted/40 p-2 text-[10px]">

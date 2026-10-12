@@ -3,18 +3,11 @@ import { Check, Sparkles, ArrowRight, PlayCircle, Film } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DEMO_VIDEO_ID } from "./VideoModal";
 
-const features = [
-  "৪০+ ভার্চুয়াল ল্যাব",
-  "AI টিউটর (বাংলা + English)",
-  "ভাইভা প্র্যাকটিস",
-];
+const features = ["৪০+ ভার্চুয়াল ল্যাব", "AI টিউটর (বাংলা + English)", "ভাইভা প্র্যাকটিস"];
 
 export function DemoVideoSection() {
   return (
-    <section
-      id="what-is-dr-chem"
-      className="relative py-20 md:py-28 overflow-hidden"
-    >
+    <section id="what-is-dr-chem" className="relative py-20 md:py-28 overflow-hidden">
       {/* soft page-level ambience */}
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[900px] h-[500px] rounded-full bg-primary/5 blur-3xl" />
@@ -37,9 +30,8 @@ export function DemoVideoSection() {
                 </span>
               </h2>
               <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-lg">
-                ৯০ সেকেন্ডের একটি ভিডিওতে দেখে নিন — ভার্চুয়াল ল্যাব, AI টিউটর ও
-                ভাইভা প্র্যাকটিস কীভাবে একসাথে Class 9–10 কেমিস্ট্রি শেখাকে সহজ
-                করে তোলে।
+                ৯০ সেকেন্ডের একটি ভিডিওতে দেখে নিন — ভার্চুয়াল ল্যাব, AI টিউটর ও ভাইভা প্র্যাকটিস
+                কীভাবে একসাথে Class 9–10 কেমিস্ট্রি শেখাকে সহজ করে তোলে।
               </p>
             </div>
 

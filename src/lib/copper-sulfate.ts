@@ -15,8 +15,8 @@ export const M_HYDRATED = 249.5;
 export const M_ANHYDROUS = 159.5;
 export const M_WATER = 90.0;
 export const THEORETICAL_WATER_PCT = (M_WATER / M_HYDRATED) * 100; // 36.07
-export const ANHYDROUS_FRACTION = M_ANHYDROUS / M_HYDRATED;       // 0.6393
-export const WATER_FRACTION = M_WATER / M_HYDRATED;               // 0.3607
+export const ANHYDROUS_FRACTION = M_ANHYDROUS / M_HYDRATED; // 0.6393
+export const WATER_FRACTION = M_WATER / M_HYDRATED; // 0.3607
 
 export const HEATING_TIME_FOR_FULL_DEHYDRATION = 35; // seconds
 export const TOLERANCE_PCT = 1.5;
@@ -91,8 +91,7 @@ export function gradeCuSO4(input: CuSO4GradeInput): CuSO4GradeOutput {
   if (input.spilled) acc -= 10;
   acc = Math.max(0, Math.min(100, acc));
 
-  const grade =
-    acc >= 90 ? "A" : acc >= 80 ? "B" : acc >= 70 ? "C" : acc >= 60 ? "D" : "F";
+  const grade = acc >= 90 ? "A" : acc >= 80 ? "B" : acc >= 70 ? "C" : acc >= 60 ? "D" : "F";
 
   return { waterPct, errorPct, accuracy: acc, grade };
 }

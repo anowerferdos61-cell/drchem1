@@ -6,14 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  ArrowLeft,
-  Zap,
-  RotateCcw,
-  AlertTriangle,
-  Sparkles,
-  Atom as AtomIcon,
-} from "lucide-react";
+import { ArrowLeft, Zap, RotateCcw, AlertTriangle, Sparkles, Atom as AtomIcon } from "lucide-react";
 
 type Props = { onBack: () => void };
 
@@ -48,7 +41,7 @@ export default function AtomModelsLab({ onBack }: Props) {
   const [electronLevel, setElectronLevel] = useState<1 | 2 | 3>(1);
   const [photonPhase, setPhotonPhase] = useState<"idle" | "absorb" | "emit">("idle");
   const [message, setMessage] = useState<string>(
-    "নিম্ন শক্তিস্তরে (n=1) ইলেকট্রন স্থির — শক্তি দিন!"
+    "নিম্ন শক্তিস্তরে (n=1) ইলেকট্রন স্থির — শক্তি দিন!",
   );
 
   const excite = useCallback(() => {
@@ -102,7 +95,12 @@ export default function AtomModelsLab({ onBack }: Props) {
       <header className="sticky top-0 z-20 border-b border-white/10 bg-slate-950/70 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3">
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="sm" onClick={onBack} className="text-slate-200 hover:bg-white/10">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onBack}
+              className="text-slate-200 hover:bg-white/10"
+            >
               <ArrowLeft className="h-4 w-4" /> ড্যাশবোর্ড
             </Button>
             <div className="hidden md:block h-6 w-px bg-white/10" />
@@ -130,7 +128,8 @@ export default function AtomModelsLab({ onBack }: Props) {
               <div>
                 <div className="text-xs uppercase tracking-wider text-rose-300/80">Left Panel</div>
                 <h2 className="text-lg font-bold text-rose-100">
-                  রাদারফোর্ড মডেল <span className="text-rose-300/70 text-sm">(Solar System Analogy)</span>
+                  রাদারফোর্ড মডেল{" "}
+                  <span className="text-rose-300/70 text-sm">(Solar System Analogy)</span>
                 </h2>
               </div>
               <Button
@@ -153,7 +152,12 @@ export default function AtomModelsLab({ onBack }: Props) {
                     <stop offset="100%" stopColor="#b45309" />
                   </radialGradient>
                   <pattern id="gridR" width="20" height="20" patternUnits="userSpaceOnUse">
-                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="1" />
+                    <path
+                      d="M 20 0 L 0 0 0 20"
+                      fill="none"
+                      stroke="rgba(255,255,255,0.04)"
+                      strokeWidth="1"
+                    />
                   </pattern>
                 </defs>
                 <rect width="400" height="400" fill="url(#gridR)" />
@@ -185,15 +189,39 @@ export default function AtomModelsLab({ onBack }: Props) {
 
                 {/* Dense nucleus */}
                 <circle cx={NUCLEUS.cx} cy={NUCLEUS.cy} r="22" fill="url(#nucR)" />
-                <circle cx={NUCLEUS.cx} cy={NUCLEUS.cy} r="22" fill="none" stroke="#fbbf24" strokeWidth="1.5" opacity="0.6" />
-                <text x={NUCLEUS.cx} y={NUCLEUS.cy + 4} textAnchor="middle" fontSize="10" fontWeight="700" fill="#7c2d12">
+                <circle
+                  cx={NUCLEUS.cx}
+                  cy={NUCLEUS.cy}
+                  r="22"
+                  fill="none"
+                  stroke="#fbbf24"
+                  strokeWidth="1.5"
+                  opacity="0.6"
+                />
+                <text
+                  x={NUCLEUS.cx}
+                  y={NUCLEUS.cy + 4}
+                  textAnchor="middle"
+                  fontSize="10"
+                  fontWeight="700"
+                  fill="#7c2d12"
+                >
                   Nucleus
                 </text>
 
                 {/* Collapse warning at end */}
                 {collapseT > 0.85 && (
                   <g>
-                    <text x="200" y="50" textAnchor="middle" fontSize="22" fontWeight="900" fill="#fb7185">✕</text>
+                    <text
+                      x="200"
+                      y="50"
+                      textAnchor="middle"
+                      fontSize="22"
+                      fontWeight="900"
+                      fill="#fb7185"
+                    >
+                      ✕
+                    </text>
                   </g>
                 )}
               </svg>
@@ -203,7 +231,8 @@ export default function AtomModelsLab({ onBack }: Props) {
                 <div>
                   <div className="font-bold">LIMITATION: Instability</div>
                   <div className="opacity-90">
-                    ত্বরিত ইলেকট্রন শক্তি বিকিরণ করে spiraling হয়ে নিউক্লিয়াসে collapse করার কথা — কিন্তু বাস্তবে পরমাণু স্থিতিশীল! এটি রাদারফোর্ড মডেলের প্রধান সীমাবদ্ধতা।
+                    ত্বরিত ইলেকট্রন শক্তি বিকিরণ করে spiraling হয়ে নিউক্লিয়াসে collapse করার কথা —
+                    কিন্তু বাস্তবে পরমাণু স্থিতিশীল! এটি রাদারফোর্ড মডেলের প্রধান সীমাবদ্ধতা।
                   </div>
                 </div>
               </div>
@@ -257,7 +286,12 @@ export default function AtomModelsLab({ onBack }: Props) {
                     <stop offset="100%" stopColor="#b45309" />
                   </radialGradient>
                   <pattern id="gridB" width="20" height="20" patternUnits="userSpaceOnUse">
-                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="1" />
+                    <path
+                      d="M 20 0 L 0 0 0 20"
+                      fill="none"
+                      stroke="rgba(255,255,255,0.04)"
+                      strokeWidth="1"
+                    />
                   </pattern>
                 </defs>
                 <rect width="400" height="400" fill="url(#gridB)" />
@@ -286,11 +320,7 @@ export default function AtomModelsLab({ onBack }: Props) {
                 ))}
 
                 {/* Stationary electron on n=2 */}
-                <Electron
-                  x={NUCLEUS.cx - SHELLS[2]}
-                  y={NUCLEUS.cy}
-                  glow="cyan"
-                />
+                <Electron x={NUCLEUS.cx - SHELLS[2]} y={NUCLEUS.cy} glow="cyan" />
 
                 {/* Active animated electron */}
                 <g
@@ -298,21 +328,12 @@ export default function AtomModelsLab({ onBack }: Props) {
                     transition: "transform 0.7s cubic-bezier(.5,-0.2,.5,1.4)",
                   }}
                 >
-                  <Electron
-                    x={NUCLEUS.cx + electronR}
-                    y={NUCLEUS.cy}
-                    glow="yellow"
-                    big
-                  />
+                  <Electron x={NUCLEUS.cx + electronR} y={NUCLEUS.cy} glow="yellow" big />
                 </g>
 
                 {/* Photon animation */}
-                {photonPhase === "absorb" && (
-                  <PhotonWave direction="in" />
-                )}
-                {photonPhase === "emit" && (
-                  <PhotonWave direction="out" />
-                )}
+                {photonPhase === "absorb" && <PhotonWave direction="in" />}
+                {photonPhase === "emit" && <PhotonWave direction="out" />}
 
                 {/* Nucleus */}
                 <circle cx={NUCLEUS.cx} cy={NUCLEUS.cy} r="22" fill="url(#nucB)" />
@@ -332,7 +353,8 @@ export default function AtomModelsLab({ onBack }: Props) {
                 <div className="font-semibold">{message}</div>
                 <div className="flex flex-wrap gap-2 pt-1">
                   <Badge className="bg-cyan-500/20 text-cyan-100 border-cyan-400/30">
-                    Current: n={electronLevel} ({electronLevel === 1 ? "K" : electronLevel === 2 ? "L" : "M"})
+                    Current: n={electronLevel} (
+                    {electronLevel === 1 ? "K" : electronLevel === 2 ? "L" : "M"})
                   </Badge>
                   <Badge className="bg-amber-500/20 text-amber-100 border-amber-400/30">
                     Photon: hν = E_high − E_low
@@ -415,25 +437,28 @@ function Electron({
   glow?: "yellow" | "rose" | "cyan";
   big?: boolean;
 }) {
-  const color =
-    glow === "rose" ? "#fb7185" : glow === "cyan" ? "#67e8f9" : "#fde047";
+  const color = glow === "rose" ? "#fb7185" : glow === "cyan" ? "#67e8f9" : "#fde047";
   return (
     <g>
       <circle cx={x} cy={y} r={big ? 9 : 6} fill={color} opacity="0.25" />
       <circle cx={x} cy={y} r={big ? 6 : 4.5} fill={color} />
-      <circle cx={x} cy={y} r={big ? 6 : 4.5} fill="none" stroke="#fff" strokeWidth="0.6" opacity="0.9" />
+      <circle
+        cx={x}
+        cy={y}
+        r={big ? 6 : 4.5}
+        fill="none"
+        stroke="#fff"
+        strokeWidth="0.6"
+        opacity="0.9"
+      />
     </g>
   );
 }
 
 function PhotonWave({ direction }: { direction: "in" | "out" }) {
   // Simple wavy arrow from outside → nucleus area (in), or outward (out).
-  const from = direction === "in"
-    ? { x: 370, y: 60 }
-    : { x: NUCLEUS.cx, y: NUCLEUS.cy };
-  const to = direction === "in"
-    ? { x: NUCLEUS.cx + 40, y: NUCLEUS.cy - 30 }
-    : { x: 30, y: 60 };
+  const from = direction === "in" ? { x: 370, y: 60 } : { x: NUCLEUS.cx, y: NUCLEUS.cy };
+  const to = direction === "in" ? { x: NUCLEUS.cx + 40, y: NUCLEUS.cy - 30 } : { x: 30, y: 60 };
 
   // Generate a wavy path between from and to
   const dx = to.x - from.x;

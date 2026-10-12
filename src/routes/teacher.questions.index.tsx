@@ -89,7 +89,11 @@ function QuestionsList() {
                           : "bg-muted text-muted-foreground"
                       }`}
                     >
-                      {r.status === "published" ? <Send className="h-3 w-3" /> : <FileEdit className="h-3 w-3" />}
+                      {r.status === "published" ? (
+                        <Send className="h-3 w-3" />
+                      ) : (
+                        <FileEdit className="h-3 w-3" />
+                      )}
                       {r.status}
                     </span>
                     {r.status === "published" ? (
@@ -97,7 +101,14 @@ function QuestionsList() {
                         <span className="text-muted-foreground">
                           → <span className="font-medium text-foreground">{r.class_name}</span>
                           {r.published_at && (
-                            <> · {new Date(r.published_at).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })}</>
+                            <>
+                              {" "}
+                              ·{" "}
+                              {new Date(r.published_at).toLocaleString(undefined, {
+                                dateStyle: "medium",
+                                timeStyle: "short",
+                              })}
+                            </>
                           )}
                         </span>
                       ) : (

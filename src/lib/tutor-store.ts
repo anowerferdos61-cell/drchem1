@@ -130,8 +130,7 @@ export function deleteConversation(id: string) {
   state = {
     ...state,
     conversations: remaining,
-    activeId:
-      state.activeId === id ? (remaining[0]?.id ?? null) : state.activeId,
+    activeId: state.activeId === id ? (remaining[0]?.id ?? null) : state.activeId,
   };
   emit();
 }
@@ -141,10 +140,7 @@ export function setRagMode(on: boolean) {
   emit();
 }
 
-function patchConvo(
-  id: string,
-  patch: (c: TutorConversation) => TutorConversation,
-) {
+function patchConvo(id: string, patch: (c: TutorConversation) => TutorConversation) {
   state = {
     ...state,
     conversations: state.conversations.map((c) => (c.id === id ? patch(c) : c)),
@@ -169,11 +165,7 @@ export function appendMessage(
   return m;
 }
 
-export function updateMessage(
-  convoId: string,
-  msgId: string,
-  patch: Partial<TutorMessage>,
-) {
+export function updateMessage(convoId: string, msgId: string, patch: Partial<TutorMessage>) {
   patchConvo(convoId, (c) => ({
     ...c,
     messages: c.messages.map((m) => (m.id === msgId ? { ...m, ...patch } : m)),
@@ -181,16 +173,10 @@ export function updateMessage(
   }));
 }
 
-export function appendToMessage(
-  convoId: string,
-  msgId: string,
-  delta: string,
-) {
+export function appendToMessage(convoId: string, msgId: string, delta: string) {
   patchConvo(convoId, (c) => ({
     ...c,
-    messages: c.messages.map((m) =>
-      m.id === msgId ? { ...m, content: m.content + delta } : m,
-    ),
+    messages: c.messages.map((m) => (m.id === msgId ? { ...m, content: m.content + delta } : m)),
     updatedAt: Date.now(),
   }));
 }

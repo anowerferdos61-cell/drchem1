@@ -33,12 +33,7 @@ import {
 } from "recharts";
 
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useAuth } from "@/lib/auth-store";
 import UserMenu from "@/components/auth/UserMenu";
 import {
@@ -173,12 +168,20 @@ function AdminAnalytics() {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="icon" onClick={() => shiftDay(-1)} aria-label="Previous day">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => shiftDay(-1)}
+              aria-label="Previous day"
+            >
               <ChevronLeft className="h-4 w-4" />
             </Button>
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="outline" className={cn("min-w-[180px] justify-start text-left font-normal")}>
+                <Button
+                  variant="outline"
+                  className={cn("min-w-[180px] justify-start text-left font-normal")}
+                >
                   <CalendarIcon className="h-4 w-4 mr-2" />
                   {format(selectedDate, "PPP")}
                 </Button>
@@ -187,7 +190,9 @@ function AdminAnalytics() {
                 <Calendar
                   mode="single"
                   selected={selectedDate}
-                  onSelect={(d) => d && setSelectedDate(new Date(d.getFullYear(), d.getMonth(), d.getDate()))}
+                  onSelect={(d) =>
+                    d && setSelectedDate(new Date(d.getFullYear(), d.getMonth(), d.getDate()))
+                  }
                   disabled={(d) => d > new Date()}
                   initialFocus
                   className={cn("p-3 pointer-events-auto")}
@@ -204,7 +209,15 @@ function AdminAnalytics() {
               <ChevronRight className="h-4 w-4" />
             </Button>
             {!isToday && (
-              <Button variant="ghost" size="sm" onClick={() => setSelectedDate(new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()))}>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() =>
+                  setSelectedDate(
+                    new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()),
+                  )
+                }
+              >
                 Today
               </Button>
             )}

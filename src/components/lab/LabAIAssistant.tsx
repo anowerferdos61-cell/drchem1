@@ -46,10 +46,7 @@ export default function LabAIAssistant({ context }: Props) {
   // Persist
   useEffect(() => {
     try {
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(messages.slice(-MAX_PERSIST)),
-      );
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(messages.slice(-MAX_PERSIST)));
     } catch {
       /* ignore */
     }
@@ -86,9 +83,7 @@ export default function LabAIAssistant({ context }: Props) {
         id: uid(),
         role: "assistant",
         content:
-          res.error || !res.reply
-            ? `⚠️ ${res.error || "কোনো উত্তর পাওয়া যায়নি।"}`
-            : res.reply,
+          res.error || !res.reply ? `⚠️ ${res.error || "কোনো উত্তর পাওয়া যায়নি।"}` : res.reply,
         timestamp: Date.now(),
       };
       setMessages((prev) => [...prev, reply]);
@@ -119,26 +114,13 @@ export default function LabAIAssistant({ context }: Props) {
 
   const suggestions = useMemo(() => {
     if (context.experimentId === "oxygen_prep")
-      return [
-        "MnO₂ এর ভূমিকা কী?",
-        "Glowing splint test কেন করি?",
-      ];
+      return ["MnO₂ এর ভূমিকা কী?", "Glowing splint test কেন করি?"];
     if (context.experimentId === "co2_prep")
-      return [
-        "Limewater কেন ঘোলা হয়?",
-        "CO₂ upward displacement এ কেন collect করি?",
-      ];
+      return ["Limewater কেন ঘোলা হয়?", "CO₂ upward displacement এ কেন collect করি?"];
     if (context.experimentId === "nacl_crystal")
-      return [
-        "ফিল্টার না করলে কী হবে?",
-        "সম্পৃক্ত দ্রবণ কেন দরকার?",
-        "বীজ কেলাস কেন যোগ করি?",
-      ];
+      return ["ফিল্টার না করলে কী হবে?", "সম্পৃক্ত দ্রবণ কেন দরকার?", "বীজ কেলাস কেন যোগ করি?"];
     if (context.experimentId === "titration")
-      return [
-        "Equivalence point আর endpoint এর পার্থক্য?",
-        "Phenolphthalein কেন use করি?",
-      ];
+      return ["Equivalence point আর endpoint এর পার্থক্য?", "Phenolphthalein কেন use করি?"];
     if (context.experimentId === "ionic_covalent")
       return [
         "আয়নিক ও সমযোজী যৌগের মৌলিক পার্থক্য?",
@@ -191,12 +173,8 @@ export default function LabAIAssistant({ context }: Props) {
               <Bot className="h-4 w-4 text-primary" />
             </div>
             <div>
-              <p className="text-sm font-semibold leading-none">
-                Chemistry সহকারী
-              </p>
-              <p className="mt-0.5 text-[10px] text-muted-foreground">
-                Bilingual · context-aware
-              </p>
+              <p className="text-sm font-semibold leading-none">Chemistry সহকারী</p>
+              <p className="mt-0.5 text-[10px] text-muted-foreground">Bilingual · context-aware</p>
             </div>
           </div>
           <div className="flex items-center gap-1">
@@ -211,12 +189,7 @@ export default function LabAIAssistant({ context }: Props) {
                 <Trash2 className="h-3.5 w-3.5" />
               </Button>
             )}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-7 w-7"
-              onClick={() => setOpen(false)}
-            >
+            <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setOpen(false)}>
               <X className="h-4 w-4" />
             </Button>
           </div>
@@ -297,17 +270,8 @@ export default function LabAIAssistant({ context }: Props) {
             className="flex-1"
             autoComplete="off"
           />
-          <Button
-            type="submit"
-            size="icon"
-            disabled={loading || !input.trim()}
-            aria-label="Send"
-          >
-            {loading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Send className="h-4 w-4" />
-            )}
+          <Button type="submit" size="icon" disabled={loading || !input.trim()} aria-label="Send">
+            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
           </Button>
         </form>
       </div>

@@ -8,14 +8,16 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 export const generateTitle = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
-    z.object({ message: z.string().min(1).max(4000) }).parse(input),
-  )
+  .inputValidator((input) => z.object({ message: z.string().min(1).max(4000) }).parse(input))
   .handler(async ({ data }) => {
     const key = getGeminiApiKey();
     if (!key) return { title: "নতুন চ্যাট" };
     try {
-      const { text: reply, usage, model } = await chatComplete({
+      const {
+        text: reply,
+        usage,
+        model,
+      } = await chatComplete({
         apiKey: key,
         systemPrompt:
           "You generate a short conversation title (max 5 words) in Bangla summarizing the user's message. Return ONLY the title, no quotes, no punctuation at the end.",

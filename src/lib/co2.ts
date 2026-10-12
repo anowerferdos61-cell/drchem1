@@ -31,10 +31,11 @@ export function maxCO2VolumeMl(cfg: CO2Config): number {
  * elapsed reaction time. Tuned so that a typical 0.5 g CaCO3 + 2 M HCl run
  * fills a ~250 mL gas jar in ~30–60 s.
  */
-export function computeCO2Generation(args: {
-  cfg: CO2Config;
-  timeElapsedSec: number;
-}): { totalMaxMl: number; generatedMl: number; rateMlPerSec: number } {
+export function computeCO2Generation(args: { cfg: CO2Config; timeElapsedSec: number }): {
+  totalMaxMl: number;
+  generatedMl: number;
+  rateMlPerSec: number;
+} {
   const totalMax = maxCO2VolumeMl(args.cfg);
   // Surface-area & acidity factor — saturates at 2 M / 1 g.
   const acidFactor = Math.min(args.cfg.hclConcM, 4) / 4;
@@ -85,7 +86,6 @@ export function co2Grade(args: {
   const passedTests = Object.values(args.tests).filter(Boolean).length;
   let acc = ratio * 60 + passedTests * 10 - 6 * args.highMistakes;
   acc = Math.max(0, Math.min(100, acc));
-  const grade =
-    acc >= 90 ? "A" : acc >= 80 ? "B" : acc >= 70 ? "C" : acc >= 60 ? "D" : "F";
+  const grade = acc >= 90 ? "A" : acc >= 80 ? "B" : acc >= 70 ? "C" : acc >= 60 ? "D" : "F";
   return { accuracy: acc, grade };
 }

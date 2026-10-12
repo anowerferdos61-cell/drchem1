@@ -14,7 +14,6 @@ import { useAuth } from "@/lib/auth-store";
 import type { ExperimentId } from "./types";
 import welcomeHero from "@/assets/welcome-hero.png.asset.json";
 
-
 const LAST_LAB_KEY = "drchem:last_lab";
 const CHALLENGE_KEY = "drchem:challenge_v1"; // { days: number, lastDate: 'YYYY-MM-DD', startDate: 'YYYY-MM-DD' }
 const WELCOME_SHOWN_KEY = "drchem:welcome_shown_session";
@@ -45,7 +44,12 @@ function daysBetween(a: string, b: string) {
   return Math.round((db.getTime() - da.getTime()) / 86400000);
 }
 
-type ChallengeState = { days: number; lastDate: string | null; startDate: string; justChecked: boolean };
+type ChallengeState = {
+  days: number;
+  lastDate: string | null;
+  startDate: string;
+  justChecked: boolean;
+};
 
 function loadOrAdvanceChallenge(): ChallengeState {
   const today = todayISO();
@@ -138,7 +142,6 @@ export function PersonalHero({
     }
   }, [isAuthenticated, doCheckin]);
 
-
   useEffect(() => {
     try {
       const raw = localStorage.getItem(LAST_LAB_KEY);
@@ -203,7 +206,10 @@ export function PersonalHero({
             })}
           </div>
 
-          <div className="relative" style={{ animation: "heroPop 0.7s cubic-bezier(.34,1.56,.64,1) both" }}>
+          <div
+            className="relative"
+            style={{ animation: "heroPop 0.7s cubic-bezier(.34,1.56,.64,1) both" }}
+          >
             {/* Halo pulse behind character */}
             <div
               className="absolute inset-0 -m-6 rounded-full bg-gradient-to-br from-emerald-400/40 via-cyan-400/40 to-violet-400/30 blur-2xl"
@@ -261,7 +267,10 @@ export function PersonalHero({
                 </span>{" "}
                 <span
                   className="inline-block"
-                  style={{ animation: "wave 1.6s ease-in-out infinite", transformOrigin: "70% 70%" }}
+                  style={{
+                    animation: "wave 1.6s ease-in-out infinite",
+                    transformOrigin: "70% 70%",
+                  }}
                 >
                   👋
                 </span>
@@ -372,11 +381,12 @@ export function PersonalHero({
                         (done
                           ? "border-emerald-500/40 bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-sm shadow-emerald-500/30"
                           : today
-                          ? "border-primary bg-gradient-to-br from-primary/90 to-cyan-500 text-primary-foreground shadow-md shadow-primary/40"
-                          : "border-border/60 bg-muted/40 text-muted-foreground/60")
+                            ? "border-primary bg-gradient-to-br from-primary/90 to-cyan-500 text-primary-foreground shadow-md shadow-primary/40"
+                            : "border-border/60 bg-muted/40 text-muted-foreground/60")
                       }
                       style={{
-                        animation: done || today ? `dotFill 0.4s ${i * 0.03}s ease-out both` : undefined,
+                        animation:
+                          done || today ? `dotFill 0.4s ${i * 0.03}s ease-out both` : undefined,
                       }}
                     >
                       {today && checkPop && (

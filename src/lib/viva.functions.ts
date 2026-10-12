@@ -16,7 +16,15 @@ const GenerateSchema = z.object({
   questions: z.array(QuestionSchema),
 });
 
-const ExperimentEnum = z.enum(["titration", "oxygen_prep", "co2_prep", "nacl_crystal", "ionic_covalent", "na2co3_standard", "cuso4_water"]);
+const ExperimentEnum = z.enum([
+  "titration",
+  "oxygen_prep",
+  "co2_prep",
+  "nacl_crystal",
+  "ionic_covalent",
+  "na2co3_standard",
+  "cuso4_water",
+]);
 
 function experimentContext(exp: z.infer<typeof ExperimentEnum>): string {
   if (exp === "oxygen_prep") {
@@ -100,8 +108,6 @@ function experimentContext(exp: z.infer<typeof ExperimentEnum>): string {
     "burette/pipette technique and sources of error.",
   ].join(" ");
 }
-
-
 
 export const generateViva = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])

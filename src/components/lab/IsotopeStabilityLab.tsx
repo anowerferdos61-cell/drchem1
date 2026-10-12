@@ -80,9 +80,17 @@ const ELEMENTS: Record<ElementKey, ElementData> = {
     maxN: 4,
     isotopes: {
       0: { N: 0, stable: true, abundance: "~99.98%", noteBn: "প্রোটিয়াম — সাধারণ হাইড্রোজেন।" },
-      1: { N: 1, stable: true, abundance: "~0.02%", noteBn: "ডিউটেরিয়াম (²H) — ভারী পানির উপাদান।" },
+      1: {
+        N: 1,
+        stable: true,
+        abundance: "~0.02%",
+        noteBn: "ডিউটেরিয়াম (²H) — ভারী পানির উপাদান।",
+      },
       2: {
-        N: 2, stable: false, halfLife: "১২.৩ বছর", decay: "β",
+        N: 2,
+        stable: false,
+        halfLife: "১২.৩ বছর",
+        decay: "β",
         noteBn: "ট্রিটিয়াম (³H) — তেজস্ক্রিয়, β-ক্ষয় ঘটে।",
       },
       3: { N: 3, stable: false, halfLife: "~১০⁻²² s", decay: "β", noteBn: "অস্থিতিশীল আইসোটোপ।" },
@@ -103,7 +111,10 @@ const ELEMENTS: Record<ElementKey, ElementData> = {
       6: { N: 6, stable: true, abundance: "~98.9%", noteBn: "কার্বন-১২ — প্রকৃতিতে সর্বাধিক।" },
       7: { N: 7, stable: true, abundance: "~1.1%", noteBn: "কার্বন-১৩ — স্থিতিশীল।" },
       8: {
-        N: 8, stable: false, halfLife: "৫৭৩০ বছর", decay: "β",
+        N: 8,
+        stable: false,
+        halfLife: "৫৭৩০ বছর",
+        decay: "β",
         noteBn: "কার্বন-১৪ — তেজস্ক্রিয়।",
         application: {
           titleBn: "কার্বন ডেটিং",
@@ -130,12 +141,20 @@ const ELEMENTS: Record<ElementKey, ElementData> = {
       71: { N: 71, stable: false, halfLife: "১৩ ঘণ্টা", decay: "β" },
       72: { N: 72, stable: false, halfLife: "৫৯.৪ দিন", decay: "γ" },
       73: { N: 73, stable: false, halfLife: "২৫ মিনিট", decay: "β" },
-      74: { N: 74, stable: true, abundance: "১০০%", noteBn: "আয়োডিন-১২৭ — একমাত্র স্থিতিশীল আইসোটোপ।" },
+      74: {
+        N: 74,
+        stable: true,
+        abundance: "১০০%",
+        noteBn: "আয়োডিন-১২৭ — একমাত্র স্থিতিশীল আইসোটোপ।",
+      },
       75: { N: 75, stable: false, halfLife: "২৫ মিনিট", decay: "β" },
       76: { N: 76, stable: false, halfLife: "৬.৫৭ ঘণ্টা", decay: "β" },
       77: { N: 77, stable: false, halfLife: "১৬.১৪ ঘণ্টা", decay: "β" },
       78: {
-        N: 78, stable: false, halfLife: "৮.০২ দিন", decay: "β",
+        N: 78,
+        stable: false,
+        halfLife: "৮.০২ দিন",
+        decay: "β",
         noteBn: "আয়োডিন-১৩১ — চিকিৎসায় ব্যবহৃত।",
         application: {
           titleBn: "চিকিৎসা ব্যবহার",
@@ -159,15 +178,39 @@ const toBn = (n: number) => String(n).replace(/\d/g, (d) => BN_DIGIT[Number(d)])
 
 // Map Z digits and A digits to unicode super/sub.
 const SUP: Record<string, string> = {
-  "0": "⁰", "1": "¹", "2": "²", "3": "³", "4": "⁴",
-  "5": "⁵", "6": "⁶", "7": "⁷", "8": "⁸", "9": "⁹",
+  "0": "⁰",
+  "1": "¹",
+  "2": "²",
+  "3": "³",
+  "4": "⁴",
+  "5": "⁵",
+  "6": "⁶",
+  "7": "⁷",
+  "8": "⁸",
+  "9": "⁹",
 };
 const SUB: Record<string, string> = {
-  "0": "₀", "1": "₁", "2": "₂", "3": "₃", "4": "₄",
-  "5": "₅", "6": "₆", "7": "₇", "8": "₈", "9": "₉",
+  "0": "₀",
+  "1": "₁",
+  "2": "₂",
+  "3": "₃",
+  "4": "₄",
+  "5": "₅",
+  "6": "₆",
+  "7": "₇",
+  "8": "₈",
+  "9": "₉",
 };
-const sup = (n: number) => String(n).split("").map((d) => SUP[d]).join("");
-const sub = (n: number) => String(n).split("").map((d) => SUB[d]).join("");
+const sup = (n: number) =>
+  String(n)
+    .split("")
+    .map((d) => SUP[d])
+    .join("");
+const sub = (n: number) =>
+  String(n)
+    .split("")
+    .map((d) => SUB[d])
+    .join("");
 
 // Lay out N circles in a hexagonal-ish packed disc.
 function packedPositions(count: number, radius: number) {
@@ -261,10 +304,7 @@ export default function IsotopeStabilityLab({ onBack }: { onBack: () => void }) 
   const neutrons = Math.min(N, 120);
 
   const radius = 11;
-  const positions = useMemo(
-    () => packedPositions(protons + neutrons, radius),
-    [protons, neutrons],
-  );
+  const positions = useMemo(() => packedPositions(protons + neutrons, radius), [protons, neutrons]);
 
   const isotopeLabel = `${sup(A)}${element.symbol}`;
   const fullNotation = `${sup(A)}${sub(Z)}${element.symbol}`;
@@ -274,7 +314,12 @@ export default function IsotopeStabilityLab({ onBack }: { onBack: () => void }) 
       {/* Header */}
       <div className="sticky top-0 z-20 flex items-center justify-between border-b border-white/10 bg-slate-950/70 px-4 py-3 backdrop-blur">
         <div className="flex items-center gap-3">
-          <Button variant="ghost" size="sm" onClick={onBack} className="text-slate-200 hover:bg-white/10">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onBack}
+            className="text-slate-200 hover:bg-white/10"
+          >
             <ArrowLeft className="mr-1 h-4 w-4" /> ফিরুন
           </Button>
           <div>
@@ -286,7 +331,10 @@ export default function IsotopeStabilityLab({ onBack }: { onBack: () => void }) 
             </p>
           </div>
         </div>
-        <Badge variant="outline" className="border-emerald-500/40 bg-emerald-500/10 text-emerald-200">
+        <Badge
+          variant="outline"
+          className="border-emerald-500/40 bg-emerald-500/10 text-emerald-200"
+        >
           NCTB · 9-10
         </Badge>
       </div>
@@ -345,13 +393,7 @@ export default function IsotopeStabilityLab({ onBack }: { onBack: () => void }) 
                         strokeWidth={0.5}
                       />
                       {isProton && (
-                        <text
-                          y={2}
-                          textAnchor="middle"
-                          fontSize={7}
-                          fontWeight={700}
-                          fill="#fff"
-                        >
+                        <text y={2} textAnchor="middle" fontSize={7} fontWeight={700} fill="#fff">
                           +
                         </text>
                       )}
@@ -495,7 +537,9 @@ export default function IsotopeStabilityLab({ onBack }: { onBack: () => void }) 
           <div className="mb-3 grid grid-cols-2 gap-2 text-xs">
             <div className="rounded-lg border border-white/10 bg-slate-900/50 p-2">
               <div className="text-[10px] text-slate-400">Element · মৌল</div>
-              <div className="font-semibold">{element.nameEn} · {element.nameBn}</div>
+              <div className="font-semibold">
+                {element.nameEn} · {element.nameBn}
+              </div>
             </div>
             <div className="rounded-lg border border-white/10 bg-slate-900/50 p-2">
               <div className="text-[10px] text-slate-400">Symbol · প্রতীক</div>
@@ -505,7 +549,7 @@ export default function IsotopeStabilityLab({ onBack }: { onBack: () => void }) 
               <div className="text-[10px] text-slate-400">অর্ধায়ু · Half-life</div>
               <div className="flex items-center gap-1 font-medium">
                 <Hourglass className="h-3 w-3 text-slate-300" />
-                {stable ? "—" : info?.halfLife ?? "অজানা"}
+                {stable ? "—" : (info?.halfLife ?? "অজানা")}
               </div>
             </div>
             <div className="rounded-lg border border-white/10 bg-slate-900/50 p-2">
@@ -530,11 +574,15 @@ export default function IsotopeStabilityLab({ onBack }: { onBack: () => void }) 
               <>
                 {/* Parent nucleus glow */}
                 <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-                  <div className={`relative h-12 w-12 rounded-full bg-gradient-to-br ${
-                    decay === "α" ? "from-amber-400 to-rose-600" :
-                    decay === "β" ? "from-emerald-400 to-cyan-600" :
-                                     "from-violet-400 to-fuchsia-600"
-                  } shadow-[0_0_30px_rgba(244,114,182,0.6)] animate-pulse`}>
+                  <div
+                    className={`relative h-12 w-12 rounded-full bg-gradient-to-br ${
+                      decay === "α"
+                        ? "from-amber-400 to-rose-600"
+                        : decay === "β"
+                          ? "from-emerald-400 to-cyan-600"
+                          : "from-violet-400 to-fuchsia-600"
+                    } shadow-[0_0_30px_rgba(244,114,182,0.6)] animate-pulse`}
+                  >
                     <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-white">
                       {isotopeLabel}
                     </span>
@@ -545,19 +593,23 @@ export default function IsotopeStabilityLab({ onBack }: { onBack: () => void }) 
                   const dx = Math.cos(p.angle) * 140;
                   const dy = Math.sin(p.angle) * 90;
                   const color =
-                    p.type === "α" ? "bg-amber-400 shadow-amber-400/70" :
-                    p.type === "β" ? "bg-emerald-400 shadow-emerald-400/70" :
-                                     "bg-violet-400 shadow-violet-400/70";
+                    p.type === "α"
+                      ? "bg-amber-400 shadow-amber-400/70"
+                      : p.type === "β"
+                        ? "bg-emerald-400 shadow-emerald-400/70"
+                        : "bg-violet-400 shadow-violet-400/70";
                   return (
                     <span
                       key={p.id}
                       className={`absolute left-1/2 top-1/2 h-2 w-2 rounded-full ${color} shadow-[0_0_12px_currentColor]`}
-                      style={{
-                        animation: "radiate 1.4s ease-out forwards",
-                        // CSS vars consumed by keyframes
-                        ['--dx' as never]: `${dx}px`,
-                        ['--dy' as never]: `${dy}px`,
-                      } as React.CSSProperties}
+                      style={
+                        {
+                          animation: "radiate 1.4s ease-out forwards",
+                          // CSS vars consumed by keyframes
+                          ["--dx" as never]: `${dx}px`,
+                          ["--dy" as never]: `${dy}px`,
+                        } as React.CSSProperties
+                      }
                     >
                       <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[10px] font-bold text-white/90">
                         {p.type}
@@ -607,11 +659,10 @@ export default function IsotopeStabilityLab({ onBack }: { onBack: () => void }) 
               আইসোটোপ {isotopeLabel} এর বাস্তব প্রয়োগ
             </DialogDescription>
           </DialogHeader>
-          <p className="text-sm leading-relaxed text-slate-200">
-            {info?.application?.bodyBn}
-          </p>
+          <p className="text-sm leading-relaxed text-slate-200">{info?.application?.bodyBn}</p>
           <div className="mt-2 rounded-lg border border-white/10 bg-slate-950/60 p-3 text-xs text-slate-400">
-            অর্ধায়ু · Half-life: <span className="text-slate-100">{info?.halfLife}</span> · Decay: {decay}
+            অর্ধায়ু · Half-life: <span className="text-slate-100">{info?.halfLife}</span> · Decay:{" "}
+            {decay}
           </div>
         </DialogContent>
       </Dialog>

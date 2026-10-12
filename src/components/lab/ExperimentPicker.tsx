@@ -1,6 +1,20 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FlaskConical, Wind, FlaskRound, Gem, Zap, Beaker, Droplet, Activity, TestTubes, Layers, Atom, Sparkles, Flame } from "lucide-react";
+import {
+  FlaskConical,
+  Wind,
+  FlaskRound,
+  Gem,
+  Zap,
+  Beaker,
+  Droplet,
+  Activity,
+  TestTubes,
+  Layers,
+  Atom,
+  Sparkles,
+  Flame,
+} from "lucide-react";
 import type { ExperimentId } from "./types";
 
 interface Props {
@@ -38,96 +52,84 @@ const EXPERIMENTS: Array<{
   {
     id: "nacl_crystal",
     title: "NaCl Crystallisation · সোডিয়াম ক্লোরাইডের কেলাস",
-    subtitle:
-      "অবিশুদ্ধ লবণ → পরিশ্রবণ → সম্পৃক্ত দ্রবণ → ঠান্ডা → ঘনকীয় কেলাস",
+    subtitle: "অবিশুদ্ধ লবণ → পরিশ্রবণ → সম্পৃক্ত দ্রবণ → ঠান্ডা → ঘনকীয় কেলাস",
     icon: Gem,
     gradient: "from-indigo-100 via-sky-50 to-cyan-100",
   },
   {
     id: "ionic_covalent",
     title: "Ionic vs Covalent · আয়নিক ও সমযোজী যৌগ",
-    subtitle:
-      "দ্রবণীয়তা · তড়িৎ পরিবাহিতা · গলনাঙ্ক · CuSO₄ এর তড়িৎ বিশ্লেষণ",
+    subtitle: "দ্রবণীয়তা · তড়িৎ পরিবাহিতা · গলনাঙ্ক · CuSO₄ এর তড়িৎ বিশ্লেষণ",
     icon: Zap,
     gradient: "from-violet-100 via-purple-50 to-fuchsia-100",
   },
   {
     id: "na2co3_standard",
     title: "0.1 M Na₂CO₃ Standard · প্রমাণ দ্রবণ",
-    subtitle:
-      "W = (S × M × V)/1000 = 2.650 g · 250 mL volumetric flask, meniscus alignment",
+    subtitle: "W = (S × M × V)/1000 = 2.650 g · 250 mL volumetric flask, meniscus alignment",
     icon: Beaker,
     gradient: "from-emerald-100 via-teal-50 to-sky-100",
   },
   {
     id: "cuso4_water",
     title: "Crystallization Water · CuSO₄·5H₂O",
-    subtitle:
-      "%H₂O = (y − z)/(y − x) × 100 · নীল → সাদা · theoretical 36.07%",
+    subtitle: "%H₂O = (y − z)/(y − x) × 100 · নীল → সাদা · theoretical 36.07%",
     icon: Droplet,
     gradient: "from-sky-100 via-blue-50 to-indigo-100",
   },
   {
     id: "ph_scale",
     title: "pH Scale · pH স্কেল",
-    subtitle:
-      "Interactive Universal Indicator · pH = −log[H⁺] · 0 → 14 (acidic ↔ basic)",
+    subtitle: "Interactive Universal Indicator · pH = −log[H⁺] · 0 → 14 (acidic ↔ basic)",
     icon: Activity,
     gradient: "from-rose-100 via-yellow-50 to-indigo-100",
   },
   {
     id: "indicator_compare",
     title: "Indicator Comparison · নির্দেশক তুলনা",
-    subtitle:
-      "Litmus · Phenolphthalein · Methyl Orange — HCl / H₂O / NaOH ড্রপ টেস্ট",
+    subtitle: "Litmus · Phenolphthalein · Methyl Orange — HCl / H₂O / NaOH ড্রপ টেস্ট",
     icon: TestTubes,
     gradient: "from-pink-100 via-orange-50 to-yellow-100",
   },
   {
     id: "solubility_rules",
     title: "Solubility Rules · দ্রাব্যতা নীতি",
-    subtitle:
-      "Drag-and-drop game · NAG SAG · Soluble vs Insoluble · অধঃক্ষেপ চেনা",
+    subtitle: "Drag-and-drop game · NAG SAG · Soluble vs Insoluble · অধঃক্ষেপ চেনা",
     icon: Layers,
     gradient: "from-sky-100 via-blue-50 to-rose-100",
   },
   {
     id: "electrochemical_series",
     title: "Electrochemical Series · তড়িৎ-রাসায়নিক সারি",
-    subtitle:
-      "K → Au reactivity ladder · Displacement simulator · NCTB Chapter 8",
+    subtitle: "K → Au reactivity ladder · Displacement simulator · NCTB Chapter 8",
     icon: Atom,
     gradient: "from-rose-100 via-amber-50 to-emerald-100",
   },
   {
     id: "bonding_basics",
     title: "Chemical Bonding · রাসায়নিক বন্ধন",
-    subtitle:
-      "Ionic transfer (Na→Cl) vs Covalent sharing (Cl₂) · Drag valence electrons",
+    subtitle: "Ionic transfer (Na→Cl) vs Covalent sharing (Cl₂) · Drag valence electrons",
     icon: Sparkles,
     gradient: "from-violet-100 via-rose-50 to-sky-100",
   },
   {
     id: "metallic_bonding",
     title: "Metallic Bonding · ধাতব বন্ধন",
-    subtitle:
-      "Electron Sea Model · Cu²⁺ lattice + delocalized e⁻ · Battery & Malleability test",
+    subtitle: "Electron Sea Model · Cu²⁺ lattice + delocalized e⁻ · Battery & Malleability test",
     icon: Atom,
     gradient: "from-orange-100 via-amber-50 to-rose-100",
   },
   {
     id: "ionic_vs_covalent_theory",
     title: "Ionic vs Covalent Properties · ধর্ম তুলনা",
-    subtitle:
-      "Split-screen NaCl vs Sugar · Melting point + Conductivity test with animated ions",
+    subtitle: "Split-screen NaCl vs Sugar · Melting point + Conductivity test with animated ions",
     icon: Zap,
     gradient: "from-violet-100 via-fuchsia-50 to-rose-100",
   },
   {
     id: "mole_concept",
     title: "Mole & Avogadro · মোল ও অ্যাভোগাড্রো সংখ্যা",
-    subtitle:
-      "n = W/M · Digital scale + particle viewer showing 6.023 × 10²³ particles",
+    subtitle: "n = W/M · Digital scale + particle viewer showing 6.023 × 10²³ particles",
     icon: Atom,
     gradient: "from-emerald-100 via-teal-50 to-cyan-100",
   },
@@ -197,7 +199,8 @@ const EXPERIMENTS: Array<{
   {
     id: "role_of_water",
     title: "Role of Water · এসিড-ক্ষারকে পানির ভূমিকা",
-    subtitle: "Dry HCl / Ethanol / NaOH — litmus stays put till water arrives · H⁺ ≠ acid without H₂O",
+    subtitle:
+      "Dry HCl / Ethanol / NaOH — litmus stays put till water arrives · H⁺ ≠ acid without H₂O",
     icon: Droplet,
     gradient: "from-sky-100 via-cyan-50 to-blue-100",
   },
@@ -239,7 +242,8 @@ const EXPERIMENTS: Array<{
   {
     id: "metallurgy_steps",
     title: "Steps of Metallurgy · ধাতু নিষ্কাশনের ধাপ",
-    subtitle: "Crush → Concentrate → Roast → Oxide → Reduce → Refine · ৬-ধাপের ইন্টারেক্টিভ পাইপলাইন",
+    subtitle:
+      "Crush → Concentrate → Roast → Oxide → Reduce → Refine · ৬-ধাপের ইন্টারেক্টিভ পাইপলাইন",
     icon: Flame,
     gradient: "from-indigo-100 via-violet-50 to-fuchsia-100",
   },
@@ -267,49 +271,50 @@ const EXPERIMENTS: Array<{
   {
     id: "petroleum_distillation",
     title: "Fractional Distillation · পেট্রোলিয়ামের আংশিক পাতন",
-    subtitle: "Crude Oil → LPG/Petrol/Kerosene/Diesel/Bitumen · Temperature slider + molecular chains + BP graph",
+    subtitle:
+      "Crude Oil → LPG/Petrol/Kerosene/Diesel/Bitumen · Temperature slider + molecular chains + BP graph",
     icon: Flame,
     gradient: "from-orange-100 via-amber-50 to-rose-100",
   },
   {
     id: "hydrocarbon_3d",
     title: "3D Hydrocarbon Models · হাইড্রোকার্বনের ৩ডি মডেল",
-    subtitle: "Methane / Ethane / Ethene / Ethyne · Ball-and-stick 3D · Bond angles 109.5°/120°/180°",
+    subtitle:
+      "Methane / Ethane / Ethene / Ethyne · Ball-and-stick 3D · Bond angles 109.5°/120°/180°",
     icon: Atom,
     gradient: "from-emerald-100 via-teal-50 to-cyan-100",
   },
   {
     id: "unsaturation_test",
     title: "Unsaturation Test · অসম্পৃক্ততা পরীক্ষা",
-    subtitle: "Br₂/H₂O ও Baeyer's (KMnO₄) — Hexane vs Ethene, রঙ পরিবর্তন + π-বন্ড ভাঙার অ্যানিমেশন",
+    subtitle:
+      "Br₂/H₂O ও Baeyer's (KMnO₄) — Hexane vs Ethene, রঙ পরিবর্তন + π-বন্ড ভাঙার অ্যানিমেশন",
     icon: TestTubes,
     gradient: "from-amber-100 via-rose-50 to-fuchsia-100",
   },
   {
     id: "transformation_matrix",
     title: "Transformation Matrix · জৈব যৌগ রূপান্তর",
-    subtitle: "Alkane → Halide → Alcohol → Aldehyde → Acid · Drag-and-drop reagent mission (gamified)",
+    subtitle:
+      "Alkane → Halide → Alcohol → Aldehyde → Acid · Drag-and-drop reagent mission (gamified)",
     icon: Sparkles,
     gradient: "from-emerald-100 via-cyan-50 to-sky-100",
   },
   {
     id: "polymerization",
     title: "Polymerization · পলিমারকরণ (Polyethene & PVC)",
-    subtitle: "Ethene → Polyethene · Vinyl Chloride → PVC · Pressure + Temperature + Catalyst simulator with chain animation",
+    subtitle:
+      "Ethene → Polyethene · Vinyl Chloride → PVC · Pressure + Temperature + Catalyst simulator with chain animation",
     icon: Sparkles,
     gradient: "from-sky-100 via-emerald-50 to-cyan-100",
   },
 ];
 
-
-
 export default function ExperimentPicker({ onPick }: Props) {
   return (
     <div className="mx-auto flex min-h-screen max-w-5xl flex-col items-center justify-center px-4 py-10">
       <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
-          Virtual Chemistry Lab
-        </h1>
+        <h1 className="text-3xl font-bold tracking-tight md:text-4xl">Virtual Chemistry Lab</h1>
         <p className="mt-2 text-sm text-muted-foreground md:text-base">
           ভার্চুয়াল রসায়ন ল্যাব · Choose an experiment to begin
         </p>

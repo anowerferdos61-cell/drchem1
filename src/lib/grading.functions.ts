@@ -25,12 +25,8 @@ export const getSetResults = createServerFn({ method: "POST" })
 
     const ids = (attempts ?? []).map((a) => a.student_id);
     const profiles = ids.length
-      ? (
-          await supabase
-            .from("profiles")
-            .select("user_id, display_name, email")
-            .in("user_id", ids)
-        ).data ?? []
+      ? ((await supabase.from("profiles").select("user_id, display_name, email").in("user_id", ids))
+          .data ?? [])
       : [];
     const map = new Map(profiles.map((p) => [p.user_id, p]));
     const rows = (attempts ?? []).map((a) => ({
@@ -51,13 +47,15 @@ export const getAttemptDetail = createServerFn({ method: "POST" })
       .select("*")
       .eq("id", data.attempt_id)
       .maybeSingle();
-    if (!attempt) return { error: "Not found", attempt: null, set: null, questions: [], grades: [] };
+    if (!attempt)
+      return { error: "Not found", attempt: null, set: null, questions: [], grades: [] };
     const { data: set } = await supabase
       .from("question_sets")
       .select("id, title, teacher_id")
       .eq("id", attempt.set_id)
       .maybeSingle();
-    if (!set || set.teacher_id !== userId) return { error: "Forbidden", attempt: null, set: null, questions: [], grades: [] };
+    if (!set || set.teacher_id !== userId)
+      return { error: "Forbidden", attempt: null, set: null, questions: [], grades: [] };
     const { data: qs } = await supabase
       .from("questions")
       .select("*")
@@ -67,7 +65,13 @@ export const getAttemptDetail = createServerFn({ method: "POST" })
       .from("cq_grades")
       .select("*")
       .eq("attempt_id", data.attempt_id);
-    return { error: null as string | null, attempt, set, questions: qs ?? [], grades: grades ?? [] };
+    return {
+      error: null as string | null,
+      attempt,
+      set,
+      questions: qs ?? [],
+      grades: grades ?? [],
+    };
   });
 
 const SaveGradeSchema = z.object({
@@ -164,7 +168,10 @@ export const getClassAssignmentsOverview = createServerFn({ method: "POST" })
       : { data: [] as { set_id: string }[] };
     const countBySet = new Map<string, number>();
     for (const r of qCounts ?? []) countBySet.set(r.set_id, (countBySet.get(r.set_id) ?? 0) + 1);
-    const setsWithCount = (sets ?? []).map((s) => ({ ...s, question_count: countBySet.get(s.id) ?? 0 }));
+    const setsWithCount = (sets ?? []).map((s) => ({
+      ...s,
+      question_count: countBySet.get(s.id) ?? 0,
+    }));
 
     const { data: mm } = await supabase
       .from("class_members")
@@ -172,22 +179,31 @@ export const getClassAssignmentsOverview = createServerFn({ method: "POST" })
       .eq("class_id", data.class_id);
     const memberIds = (mm ?? []).map((m) => m.student_id);
     const profiles = memberIds.length
-      ? (await supabase.from("profiles").select("user_id, display_name, email").in("user_id", memberIds)).data ?? []
+      ? ((
+          await supabase
+            .from("profiles")
+            .select("user_id, display_name, email")
+            .in("user_id", memberIds)
+        ).data ?? [])
       : [];
     const pMap = new Map(profiles.map((p) => [p.user_id, p]));
     const members = (mm ?? []).map((m) => ({
       student_id: m.student_id,
-      name: pMap.get(m.student_id)?.display_name ?? pMap.get(m.student_id)?.email?.split("@")[0] ?? "Student",
+      name:
+        pMap.get(m.student_id)?.display_name ??
+        pMap.get(m.student_id)?.email?.split("@")[0] ??
+        "Student",
       email: pMap.get(m.student_id)?.email ?? null,
     }));
 
-    const { data: attempts } = setIds.length && memberIds.length
-      ? await supabase
-          .from("test_attempts")
-          .select("id, set_id, student_id, submitted_at, mcq_score, mcq_total, cq_score")
-          .in("set_id", setIds)
-          .in("student_id", memberIds)
-      : { data: [] };
+    const { data: attempts } =
+      setIds.length && memberIds.length
+        ? await supabase
+            .from("test_attempts")
+            .select("id, set_id, student_id, submitted_at, mcq_score, mcq_total, cq_score")
+            .in("set_id", setIds)
+            .in("student_id", memberIds)
+        : { data: [] };
 
     return { error: null as string | null, sets: setsWithCount, members, attempts: attempts ?? [] };
   });

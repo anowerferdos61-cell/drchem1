@@ -3,15 +3,7 @@
  * NCTB Class 9-10 · Chapter 8 · রসায়ন ও শক্তি
  */
 import { useEffect, useRef, useState } from "react";
-import {
-  Battery,
-  Power,
-  RotateCcw,
-  Layers,
-  Atom,
-  Lightbulb,
-  Zap,
-} from "lucide-react";
+import { Battery, Power, RotateCcw, Layers, Atom, Lightbulb, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -36,11 +28,46 @@ interface LayerInfo {
 }
 
 const LAYERS: LayerInfo[] = [
-  { id: "cap", bn: "মেটাল ক্যাপ", en: "Metal Cap (+)", role: "ধনাত্মক প্রান্ত · Positive terminal", color: "#94a3b8", stroke: "#475569" },
-  { id: "carbon", bn: "কার্বন দণ্ড", en: "Carbon Rod (Cathode)", role: "ইলেকট্রন গ্রহণ করে · Current collector", color: "#1e293b", stroke: "#0f172a" },
-  { id: "paste", bn: "রাসায়নিক পেস্ট", en: "Moist Paste (NH₄Cl + ZnCl₂ + MnO₂ + C)", role: "ইলেকট্রোলাইট · Redox medium", color: "#78350f", stroke: "#451a03" },
-  { id: "zinc", bn: "জিংক কেসিং", en: "Zinc Casing (Anode)", role: "ইলেকট্রন দান করে · Loses e⁻", color: "#cbd5e1", stroke: "#64748b" },
-  { id: "jacket", bn: "বাইরের লেবেল", en: "Outer Label / Jacket", role: "সুরক্ষা · Insulation & branding", color: "#dc2626", stroke: "#7f1d1d" },
+  {
+    id: "cap",
+    bn: "মেটাল ক্যাপ",
+    en: "Metal Cap (+)",
+    role: "ধনাত্মক প্রান্ত · Positive terminal",
+    color: "#94a3b8",
+    stroke: "#475569",
+  },
+  {
+    id: "carbon",
+    bn: "কার্বন দণ্ড",
+    en: "Carbon Rod (Cathode)",
+    role: "ইলেকট্রন গ্রহণ করে · Current collector",
+    color: "#1e293b",
+    stroke: "#0f172a",
+  },
+  {
+    id: "paste",
+    bn: "রাসায়নিক পেস্ট",
+    en: "Moist Paste (NH₄Cl + ZnCl₂ + MnO₂ + C)",
+    role: "ইলেকট্রোলাইট · Redox medium",
+    color: "#78350f",
+    stroke: "#451a03",
+  },
+  {
+    id: "zinc",
+    bn: "জিংক কেসিং",
+    en: "Zinc Casing (Anode)",
+    role: "ইলেকট্রন দান করে · Loses e⁻",
+    color: "#cbd5e1",
+    stroke: "#64748b",
+  },
+  {
+    id: "jacket",
+    bn: "বাইরের লেবেল",
+    en: "Outer Label / Jacket",
+    role: "সুরক্ষা · Insulation & branding",
+    color: "#dc2626",
+    stroke: "#7f1d1d",
+  },
 ];
 
 /* ─────────────────────────────────────────────────────────
@@ -66,14 +93,54 @@ function LayersScene({
 
   const layerBoxes = [
     // outer jacket (peels fully to the right)
-    { id: "jacket", x: cx - baseHalfW - 10 + off * 220, y: topY, w: 12, h: botY - topY, fill: "#dc2626", stroke: "#7f1d1d" },
+    {
+      id: "jacket",
+      x: cx - baseHalfW - 10 + off * 220,
+      y: topY,
+      w: 12,
+      h: botY - topY,
+      fill: "#dc2626",
+      stroke: "#7f1d1d",
+    },
     // right jacket half mirror
-    { id: "jacket", x: cx + baseHalfW - 2 + off * 260, y: topY, w: 12, h: botY - topY, fill: "#dc2626", stroke: "#7f1d1d" },
+    {
+      id: "jacket",
+      x: cx + baseHalfW - 2 + off * 260,
+      y: topY,
+      w: 12,
+      h: botY - topY,
+      fill: "#dc2626",
+      stroke: "#7f1d1d",
+    },
     // zinc casing
-    { id: "zinc", x: cx - baseHalfW + off * 160, y: topY - off * 8, w: 10, h: botY - topY + off * 16, fill: "#cbd5e1", stroke: "#64748b" },
-    { id: "zinc", x: cx + baseHalfW - 12 + off * 200, y: topY - off * 8, w: 10, h: botY - topY + off * 16, fill: "#cbd5e1", stroke: "#64748b" },
+    {
+      id: "zinc",
+      x: cx - baseHalfW + off * 160,
+      y: topY - off * 8,
+      w: 10,
+      h: botY - topY + off * 16,
+      fill: "#cbd5e1",
+      stroke: "#64748b",
+    },
+    {
+      id: "zinc",
+      x: cx + baseHalfW - 12 + off * 200,
+      y: topY - off * 8,
+      w: 10,
+      h: botY - topY + off * 16,
+      fill: "#cbd5e1",
+      stroke: "#64748b",
+    },
     // paste (large body)
-    { id: "paste", x: cx - baseHalfW + 12 + off * 100, y: topY + 8, w: 2 * (baseHalfW - 20), h: botY - topY - 16, fill: "#78350f", stroke: "#451a03" },
+    {
+      id: "paste",
+      x: cx - baseHalfW + 12 + off * 100,
+      y: topY + 8,
+      w: 2 * (baseHalfW - 20),
+      h: botY - topY - 16,
+      fill: "#78350f",
+      stroke: "#451a03",
+    },
   ];
 
   return (
@@ -105,7 +172,16 @@ function LayersScene({
       </defs>
 
       {/* Bench line */}
-      <line x1="40" y1="410" x2="600" y2="410" stroke="#334155" strokeWidth="1" strokeDasharray="4 4" opacity="0.4" />
+      <line
+        x1="40"
+        y1="410"
+        x2="600"
+        y2="410"
+        stroke="#334155"
+        strokeWidth="1"
+        strokeDasharray="4 4"
+        opacity="0.4"
+      />
 
       {/* Metal cap (+) — offset up when sliced */}
       <g
@@ -113,40 +189,153 @@ function LayersScene({
         style={{ cursor: "pointer" }}
         transform={`translate(0 ${-off * 40})`}
       >
-        <rect x={cx - 22} y={topY - 18} width="44" height="10" rx="2" fill="url(#capMetal)" stroke="#475569" />
-        <rect x={cx - 12} y={topY - 24} width="24" height="8" rx="2" fill="url(#capMetal)" stroke="#475569" />
-        <text x={cx} y={topY - 30} textAnchor="middle" fontSize="10" fontWeight="800" fill="#dc2626">+</text>
-        {selected === "cap" && <rect x={cx - 26} y={topY - 28} width="52" height="24" fill="none" stroke="#22d3ee" strokeDasharray="3 2" />}
+        <rect
+          x={cx - 22}
+          y={topY - 18}
+          width="44"
+          height="10"
+          rx="2"
+          fill="url(#capMetal)"
+          stroke="#475569"
+        />
+        <rect
+          x={cx - 12}
+          y={topY - 24}
+          width="24"
+          height="8"
+          rx="2"
+          fill="url(#capMetal)"
+          stroke="#475569"
+        />
+        <text
+          x={cx}
+          y={topY - 30}
+          textAnchor="middle"
+          fontSize="10"
+          fontWeight="800"
+          fill="#dc2626"
+        >
+          +
+        </text>
+        {selected === "cap" && (
+          <rect
+            x={cx - 26}
+            y={topY - 28}
+            width="52"
+            height="24"
+            fill="none"
+            stroke="#22d3ee"
+            strokeDasharray="3 2"
+          />
+        )}
       </g>
 
       {/* Outer jacket layers */}
       <g onClick={() => onPickLayer("jacket")} style={{ cursor: "pointer" }}>
-        <rect x={cx - baseHalfW - 6 - off * 180} y={topY} width="8" height={botY - topY} fill="url(#jacketG)" stroke="#7f1d1d" />
-        <rect x={cx + baseHalfW - 2 + off * 180} y={topY} width="8" height={botY - topY} fill="url(#jacketG)" stroke="#7f1d1d" />
+        <rect
+          x={cx - baseHalfW - 6 - off * 180}
+          y={topY}
+          width="8"
+          height={botY - topY}
+          fill="url(#jacketG)"
+          stroke="#7f1d1d"
+        />
+        <rect
+          x={cx + baseHalfW - 2 + off * 180}
+          y={topY}
+          width="8"
+          height={botY - topY}
+          fill="url(#jacketG)"
+          stroke="#7f1d1d"
+        />
         {off > 0.15 && (
           <>
-            <text x={cx - baseHalfW - 10 - off * 180} y={topY + 20} textAnchor="end" fontSize="9" fill="#7f1d1d" fontWeight="700">Label</text>
+            <text
+              x={cx - baseHalfW - 10 - off * 180}
+              y={topY + 20}
+              textAnchor="end"
+              fontSize="9"
+              fill="#7f1d1d"
+              fontWeight="700"
+            >
+              Label
+            </text>
           </>
         )}
         {selected === "jacket" && (
           <>
-            <rect x={cx - baseHalfW - 10 - off * 180} y={topY - 4} width="12" height={botY - topY + 8} fill="none" stroke="#22d3ee" strokeDasharray="3 2" />
-            <rect x={cx + baseHalfW - 2 + off * 180} y={topY - 4} width="12" height={botY - topY + 8} fill="none" stroke="#22d3ee" strokeDasharray="3 2" />
+            <rect
+              x={cx - baseHalfW - 10 - off * 180}
+              y={topY - 4}
+              width="12"
+              height={botY - topY + 8}
+              fill="none"
+              stroke="#22d3ee"
+              strokeDasharray="3 2"
+            />
+            <rect
+              x={cx + baseHalfW - 2 + off * 180}
+              y={topY - 4}
+              width="12"
+              height={botY - topY + 8}
+              fill="none"
+              stroke="#22d3ee"
+              strokeDasharray="3 2"
+            />
           </>
         )}
       </g>
 
       {/* Zinc casing */}
       <g onClick={() => onPickLayer("zinc")} style={{ cursor: "pointer" }}>
-        <rect x={cx - baseHalfW + 2 - off * 130} y={topY - off * 6} width="10" height={botY - topY + off * 12} fill="url(#zincG)" stroke="#64748b" />
-        <rect x={cx + baseHalfW - 12 + off * 130} y={topY - off * 6} width="10" height={botY - topY + off * 12} fill="url(#zincG)" stroke="#64748b" />
+        <rect
+          x={cx - baseHalfW + 2 - off * 130}
+          y={topY - off * 6}
+          width="10"
+          height={botY - topY + off * 12}
+          fill="url(#zincG)"
+          stroke="#64748b"
+        />
+        <rect
+          x={cx + baseHalfW - 12 + off * 130}
+          y={topY - off * 6}
+          width="10"
+          height={botY - topY + off * 12}
+          fill="url(#zincG)"
+          stroke="#64748b"
+        />
         {off > 0.2 && (
-          <text x={cx - baseHalfW - off * 130 - 4} y={topY + 60} textAnchor="end" fontSize="9" fill="#334155" fontWeight="700">Zn (−)</text>
+          <text
+            x={cx - baseHalfW - off * 130 - 4}
+            y={topY + 60}
+            textAnchor="end"
+            fontSize="9"
+            fill="#334155"
+            fontWeight="700"
+          >
+            Zn (−)
+          </text>
         )}
         {selected === "zinc" && (
           <>
-            <rect x={cx - baseHalfW - off * 130} y={topY - off * 6 - 3} width="14" height={botY - topY + off * 12 + 6} fill="none" stroke="#22d3ee" strokeDasharray="3 2" />
-            <rect x={cx + baseHalfW - 14 + off * 130} y={topY - off * 6 - 3} width="14" height={botY - topY + off * 12 + 6} fill="none" stroke="#22d3ee" strokeDasharray="3 2" />
+            <rect
+              x={cx - baseHalfW - off * 130}
+              y={topY - off * 6 - 3}
+              width="14"
+              height={botY - topY + off * 12 + 6}
+              fill="none"
+              stroke="#22d3ee"
+              strokeDasharray="3 2"
+            />
+            <rect
+              x={cx + baseHalfW - 14 + off * 130}
+              y={topY - off * 6 - 3}
+              width="14"
+              height={botY - topY + off * 12 + 6}
+              fill="none"
+              stroke="#22d3ee"
+              strokeDasharray="3 2"
+            />
           </>
         )}
       </g>
@@ -163,7 +352,14 @@ function LayersScene({
           opacity={0.95}
         />
         {off > 0.35 && (
-          <text x={cx} y={botY + 24} textAnchor="middle" fontSize="9" fill="#78350f" fontWeight="700">
+          <text
+            x={cx}
+            y={botY + 24}
+            textAnchor="middle"
+            fontSize="9"
+            fill="#78350f"
+            fontWeight="700"
+          >
             NH₄Cl · ZnCl₂ · MnO₂ · Carbon
           </text>
         )}
@@ -173,27 +369,71 @@ function LayersScene({
             y={topY + 4 - off * 4}
             width={2 * (baseHalfW - 18) + off * 120}
             height={botY - topY - 8 + off * 8}
-            fill="none" stroke="#22d3ee" strokeDasharray="3 2"
+            fill="none"
+            stroke="#22d3ee"
+            strokeDasharray="3 2"
           />
         )}
       </g>
 
       {/* Carbon rod (center) */}
       <g onClick={() => onPickLayer("carbon")} style={{ cursor: "pointer" }}>
-        <rect x={cx - 6} y={topY - 12} width="12" height={botY - topY + 18} rx="2" fill="#0f172a" stroke="#000" />
-        <rect x={cx - 4} y={topY - 10} width="4" height={botY - topY + 12} fill="#334155" opacity="0.6" />
+        <rect
+          x={cx - 6}
+          y={topY - 12}
+          width="12"
+          height={botY - topY + 18}
+          rx="2"
+          fill="#0f172a"
+          stroke="#000"
+        />
+        <rect
+          x={cx - 4}
+          y={topY - 10}
+          width="4"
+          height={botY - topY + 12}
+          fill="#334155"
+          opacity="0.6"
+        />
         {off > 0.5 && (
-          <text x={cx + 14} y={topY + 40} fontSize="9" fill="#0f172a" fontWeight="700">Carbon (+)</text>
+          <text x={cx + 14} y={topY + 40} fontSize="9" fill="#0f172a" fontWeight="700">
+            Carbon (+)
+          </text>
         )}
         {selected === "carbon" && (
-          <rect x={cx - 9} y={topY - 15} width="18" height={botY - topY + 22} fill="none" stroke="#22d3ee" strokeDasharray="3 2" />
+          <rect
+            x={cx - 9}
+            y={topY - 15}
+            width="18"
+            height={botY - topY + 22}
+            fill="none"
+            stroke="#22d3ee"
+            strokeDasharray="3 2"
+          />
         )}
       </g>
 
       {/* Bottom Zn cap (-) */}
       <g>
-        <rect x={cx - 22} y={botY - 2} width="44" height="10" rx="2" fill="url(#zincG)" stroke="#475569" />
-        <text x={cx} y={botY + 22} textAnchor="middle" fontSize="10" fontWeight="800" fill="#0284c7">−</text>
+        <rect
+          x={cx - 22}
+          y={botY - 2}
+          width="44"
+          height="10"
+          rx="2"
+          fill="url(#zincG)"
+          stroke="#475569"
+        />
+        <text
+          x={cx}
+          y={botY + 22}
+          textAnchor="middle"
+          fontSize="10"
+          fontWeight="800"
+          fill="#0284c7"
+        >
+          −
+        </text>
       </g>
 
       {/* Instruction */}
@@ -236,23 +476,35 @@ function MicroScene({ on }: { on: boolean }) {
       {/* Wire */}
       <path
         d={`M${cx + 20} ${topY - 10} L${cx + 130} ${topY - 10} L${cx + 130} 60 L${cx + 30} 60`}
-        stroke={on ? "#ef4444" : "#94a3b8"} strokeWidth="3" fill="none"
+        stroke={on ? "#ef4444" : "#94a3b8"}
+        strokeWidth="3"
+        fill="none"
       />
       <path
         d={`M${cx - 30} 60 L${cx - 130} 60 L${cx - 130} ${botY + 20} L${cx - 20} ${botY + 20}`}
-        stroke={on ? "#0284c7" : "#94a3b8"} strokeWidth="3" fill="none"
+        stroke={on ? "#0284c7" : "#94a3b8"}
+        strokeWidth="3"
+        fill="none"
       />
 
       {/* Bulb */}
       <g transform={`translate(${cx} 55)`}>
-        {on && <circle r="34" fill="url(#bulbGlow)">
-          <animate attributeName="r" values="30;38;30" dur="1s" repeatCount="indefinite" />
-        </circle>}
+        {on && (
+          <circle r="34" fill="url(#bulbGlow)">
+            <animate attributeName="r" values="30;38;30" dur="1s" repeatCount="indefinite" />
+          </circle>
+        )}
         <circle r="18" fill={on ? "#fef08a" : "#e2e8f0"} stroke="#a16207" strokeWidth="1.5" />
         <LightbulbSvg />
 
         <path d="M-6 12 L6 12 L4 20 L-4 20 Z" fill="#64748b" />
-        <text y="-22" textAnchor="middle" fontSize="10" fontWeight="700" fill={on ? "#a16207" : "#64748b"}>
+        <text
+          y="-22"
+          textAnchor="middle"
+          fontSize="10"
+          fontWeight="700"
+          fill={on ? "#a16207" : "#64748b"}
+        >
           {on ? "Glowing" : "Bulb"}
         </text>
       </g>
@@ -260,89 +512,215 @@ function MicroScene({ on }: { on: boolean }) {
       {/* Battery body (cutaway) */}
       <g>
         {/* Zinc left wall */}
-        <rect x={cx - 90} y={topY} width="14" height={botY - topY} fill="url(#zincSide)" stroke="#475569" />
-        <text x={cx - 96} y={topY - 6} textAnchor="end" fontSize="10" fontWeight="700" fill="#334155">Zn wall (−)</text>
+        <rect
+          x={cx - 90}
+          y={topY}
+          width="14"
+          height={botY - topY}
+          fill="url(#zincSide)"
+          stroke="#475569"
+        />
+        <text
+          x={cx - 96}
+          y={topY - 6}
+          textAnchor="end"
+          fontSize="10"
+          fontWeight="700"
+          fill="#334155"
+        >
+          Zn wall (−)
+        </text>
         {/* Zinc right wall */}
-        <rect x={cx + 76} y={topY} width="14" height={botY - topY} fill="url(#zincSide)" stroke="#475569" />
+        <rect
+          x={cx + 76}
+          y={topY}
+          width="14"
+          height={botY - topY}
+          fill="url(#zincSide)"
+          stroke="#475569"
+        />
 
         {/* Paste zone */}
-        <rect x={cx - 74} y={topY} width="150" height={botY - topY} fill="url(#pasteBg)" stroke="#78350f" strokeDasharray="4 3" />
+        <rect
+          x={cx - 74}
+          y={topY}
+          width="150"
+          height={botY - topY}
+          fill="url(#pasteBg)"
+          stroke="#78350f"
+          strokeDasharray="4 3"
+        />
         <text x={cx} y={topY + 14} textAnchor="middle" fontSize="9" fill="#78350f" fontWeight="700">
           NH₄⁺ · MnO₂ · Cl⁻ paste
         </text>
 
         {/* Carbon rod */}
         <rect x={cx - 6} y={topY - 12} width="12" height={botY - topY + 20} rx="2" fill="#0f172a" />
-        <rect x={cx - 22} y={topY - 22} width="44" height="10" rx="2" fill="#f1f5f9" stroke="#475569" />
-        <text x={cx} y={topY - 28} textAnchor="middle" fontSize="10" fontWeight="800" fill="#dc2626">+</text>
-        <text x={cx + 18} y={topY + 40} fontSize="9" fontWeight="700" fill="#0f172a">Carbon (+)</text>
+        <rect
+          x={cx - 22}
+          y={topY - 22}
+          width="44"
+          height="10"
+          rx="2"
+          fill="#f1f5f9"
+          stroke="#475569"
+        />
+        <text
+          x={cx}
+          y={topY - 28}
+          textAnchor="middle"
+          fontSize="10"
+          fontWeight="800"
+          fill="#dc2626"
+        >
+          +
+        </text>
+        <text x={cx + 18} y={topY + 40} fontSize="9" fontWeight="700" fill="#0f172a">
+          Carbon (+)
+        </text>
 
         {/* Bottom cap */}
         <rect x={cx - 22} y={botY} width="44" height="10" rx="2" fill="url(#zincSide)" />
       </g>
 
       {/* Electron flow: bottom Zn (-) → wire → bulb → top (+) */}
-      {on && [0, 0.4, 0.8, 1.2].map((delay, i) => (
-        <g key={i}>
-          <circle r="3.5" fill="#fde047">
-            <animateMotion
-              dur={dur}
-              begin={`${delay}s`}
-              repeatCount="indefinite"
-              path={`M${cx - 20} ${botY + 20} L${cx - 130} ${botY + 20} L${cx - 130} 60 L${cx - 30} 60 L${cx} 55 L${cx + 30} 60 L${cx + 130} 60 L${cx + 130} ${topY - 10} L${cx + 20} ${topY - 10}`}
-            />
-          </circle>
-          <text fontSize="8" fill="#a16207" fontWeight="700" dy="-6">
-            <animateMotion
-              dur={dur}
-              begin={`${delay}s`}
-              repeatCount="indefinite"
-              path={`M${cx - 20} ${botY + 20} L${cx - 130} ${botY + 20} L${cx - 130} 60 L${cx - 30} 60 L${cx} 55 L${cx + 30} 60 L${cx + 130} 60 L${cx + 130} ${topY - 10} L${cx + 20} ${topY - 10}`}
-            />
-            e⁻
-          </text>
-        </g>
-      ))}
+      {on &&
+        [0, 0.4, 0.8, 1.2].map((delay, i) => (
+          <g key={i}>
+            <circle r="3.5" fill="#fde047">
+              <animateMotion
+                dur={dur}
+                begin={`${delay}s`}
+                repeatCount="indefinite"
+                path={`M${cx - 20} ${botY + 20} L${cx - 130} ${botY + 20} L${cx - 130} 60 L${cx - 30} 60 L${cx} 55 L${cx + 30} 60 L${cx + 130} 60 L${cx + 130} ${topY - 10} L${cx + 20} ${topY - 10}`}
+              />
+            </circle>
+            <text fontSize="8" fill="#a16207" fontWeight="700" dy="-6">
+              <animateMotion
+                dur={dur}
+                begin={`${delay}s`}
+                repeatCount="indefinite"
+                path={`M${cx - 20} ${botY + 20} L${cx - 130} ${botY + 20} L${cx - 130} 60 L${cx - 30} 60 L${cx} 55 L${cx + 30} 60 L${cx + 130} 60 L${cx + 130} ${topY - 10} L${cx + 20} ${topY - 10}`}
+              />
+              e⁻
+            </text>
+          </g>
+        ))}
 
       {/* Anode: Zn²⁺ leaving wall */}
-      {on && Array.from({ length: 4 }).map((_, i) => (
-        <g key={`zn${i}`}>
-          <circle r="4" fill="#60a5fa">
-            <animate attributeName="cx" values={`${cx - 76};${cx - 30}`} dur="2.4s" begin={`${i * 0.5}s`} repeatCount="indefinite" />
-            <animate attributeName="cy" values={`${topY + 40 + i * 40};${topY + 60 + i * 40}`} dur="2.4s" begin={`${i * 0.5}s`} repeatCount="indefinite" />
-            <animate attributeName="opacity" values="1;0" dur="2.4s" begin={`${i * 0.5}s`} repeatCount="indefinite" />
-          </circle>
-          <text fontSize="8" fill="#0c4a6e" fontWeight="700">
-            <animate attributeName="x" values={`${cx - 72};${cx - 26}`} dur="2.4s" begin={`${i * 0.5}s`} repeatCount="indefinite" />
-            <animate attributeName="y" values={`${topY + 44 + i * 40};${topY + 64 + i * 40}`} dur="2.4s" begin={`${i * 0.5}s`} repeatCount="indefinite" />
-            <animate attributeName="opacity" values="1;0" dur="2.4s" begin={`${i * 0.5}s`} repeatCount="indefinite" />
-            Zn²⁺
-          </text>
-        </g>
-      ))}
+      {on &&
+        Array.from({ length: 4 }).map((_, i) => (
+          <g key={`zn${i}`}>
+            <circle r="4" fill="#60a5fa">
+              <animate
+                attributeName="cx"
+                values={`${cx - 76};${cx - 30}`}
+                dur="2.4s"
+                begin={`${i * 0.5}s`}
+                repeatCount="indefinite"
+              />
+              <animate
+                attributeName="cy"
+                values={`${topY + 40 + i * 40};${topY + 60 + i * 40}`}
+                dur="2.4s"
+                begin={`${i * 0.5}s`}
+                repeatCount="indefinite"
+              />
+              <animate
+                attributeName="opacity"
+                values="1;0"
+                dur="2.4s"
+                begin={`${i * 0.5}s`}
+                repeatCount="indefinite"
+              />
+            </circle>
+            <text fontSize="8" fill="#0c4a6e" fontWeight="700">
+              <animate
+                attributeName="x"
+                values={`${cx - 72};${cx - 26}`}
+                dur="2.4s"
+                begin={`${i * 0.5}s`}
+                repeatCount="indefinite"
+              />
+              <animate
+                attributeName="y"
+                values={`${topY + 44 + i * 40};${topY + 64 + i * 40}`}
+                dur="2.4s"
+                begin={`${i * 0.5}s`}
+                repeatCount="indefinite"
+              />
+              <animate
+                attributeName="opacity"
+                values="1;0"
+                dur="2.4s"
+                begin={`${i * 0.5}s`}
+                repeatCount="indefinite"
+              />
+              Zn²⁺
+            </text>
+          </g>
+        ))}
 
       {/* Cathode: NH4+ arriving, NH3 gas bubbling up */}
-      {on && Array.from({ length: 3 }).map((_, i) => (
-        <g key={`nh4${i}`}>
-          <circle r="3.5" fill="#c084fc">
-            <animate attributeName="cx" values={`${cx + 60};${cx + 8}`} dur="2s" begin={`${i * 0.6}s`} repeatCount="indefinite" />
-            <animate attributeName="cy" values={`${topY + 80 + i * 50};${topY + 100 + i * 50}`} dur="2s" begin={`${i * 0.6}s`} repeatCount="indefinite" />
+      {on &&
+        Array.from({ length: 3 }).map((_, i) => (
+          <g key={`nh4${i}`}>
+            <circle r="3.5" fill="#c084fc">
+              <animate
+                attributeName="cx"
+                values={`${cx + 60};${cx + 8}`}
+                dur="2s"
+                begin={`${i * 0.6}s`}
+                repeatCount="indefinite"
+              />
+              <animate
+                attributeName="cy"
+                values={`${topY + 80 + i * 50};${topY + 100 + i * 50}`}
+                dur="2s"
+                begin={`${i * 0.6}s`}
+                repeatCount="indefinite"
+              />
+            </circle>
+          </g>
+        ))}
+      {on &&
+        Array.from({ length: 3 }).map((_, i) => (
+          <circle key={`nh3${i}`} r="2.5" fill="#ffffff" opacity="0.9" cx={cx + 18 + i * 4}>
+            <animate
+              attributeName="cy"
+              values={`${topY + 40};${topY - 8}`}
+              dur="1.4s"
+              begin={`${i * 0.3}s`}
+              repeatCount="indefinite"
+            />
+            <animate
+              attributeName="opacity"
+              values="0.9;0"
+              dur="1.4s"
+              begin={`${i * 0.3}s`}
+              repeatCount="indefinite"
+            />
           </circle>
-        </g>
-      ))}
-      {on && Array.from({ length: 3 }).map((_, i) => (
-        <circle key={`nh3${i}`} r="2.5" fill="#ffffff" opacity="0.9" cx={cx + 18 + i * 4}>
-          <animate attributeName="cy" values={`${topY + 40};${topY - 8}`} dur="1.4s" begin={`${i * 0.3}s`} repeatCount="indefinite" />
-          <animate attributeName="opacity" values="0.9;0" dur="1.4s" begin={`${i * 0.3}s`} repeatCount="indefinite" />
-        </circle>
-      ))}
+        ))}
 
       {/* Legend */}
       <g transform="translate(20 400)">
-        <circle cx="0" cy="0" r="4" fill="#fde047" /> <text x="8" y="4" fontSize="9" fill="#f8fafc">e⁻</text>
-        <circle cx="40" cy="0" r="4" fill="#60a5fa" /> <text x="48" y="4" fontSize="9" fill="#f8fafc">Zn²⁺</text>
-        <circle cx="90" cy="0" r="4" fill="#c084fc" /> <text x="98" y="4" fontSize="9" fill="#f8fafc">NH₄⁺</text>
-        <circle cx="150" cy="0" r="4" fill="#ffffff" /> <text x="158" y="4" fontSize="9" fill="#f8fafc">NH₃↑</text>
+        <circle cx="0" cy="0" r="4" fill="#fde047" />{" "}
+        <text x="8" y="4" fontSize="9" fill="#f8fafc">
+          e⁻
+        </text>
+        <circle cx="40" cy="0" r="4" fill="#60a5fa" />{" "}
+        <text x="48" y="4" fontSize="9" fill="#f8fafc">
+          Zn²⁺
+        </text>
+        <circle cx="90" cy="0" r="4" fill="#c084fc" />{" "}
+        <text x="98" y="4" fontSize="9" fill="#f8fafc">
+          NH₄⁺
+        </text>
+        <circle cx="150" cy="0" r="4" fill="#ffffff" />{" "}
+        <text x="158" y="4" fontSize="9" fill="#f8fafc">
+          NH₃↑
+        </text>
       </g>
     </svg>
   );
@@ -352,12 +730,17 @@ function MicroScene({ on }: { on: boolean }) {
 function LightbulbSvg() {
   return (
     <g transform="translate(-6 -12)">
-      <path d="M6 2a6 6 0 0 1 4 10.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-1.5A6 6 0 0 1 6 2z" fill="none" stroke="#a16207" strokeWidth="1" />
+      <path
+        d="M6 2a6 6 0 0 1 4 10.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-1.5A6 6 0 0 1 6 2z"
+        fill="none"
+        stroke="#a16207"
+        strokeWidth="1"
+      />
     </g>
   );
 }
 // Alias so JSX <Lightbulb-svg /> compiles as component
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 const LightbulbSvg2 = LightbulbSvg;
 
 /* ─────────────────────────────────────────────────────────
@@ -409,7 +792,10 @@ export default function DryCellMechanismLab({ onBack }: Props) {
   );
 
   const Badge_ = (
-    <Badge variant="outline" className="gap-1 border-amber-400/60 bg-amber-50 text-amber-900 dark:bg-amber-950 dark:text-amber-200">
+    <Badge
+      variant="outline"
+      className="gap-1 border-amber-400/60 bg-amber-50 text-amber-900 dark:bg-amber-950 dark:text-amber-200"
+    >
       <Zap className="h-3 w-3" /> Dry Cell 1.5 V
     </Badge>
   );
@@ -435,14 +821,22 @@ export default function DryCellMechanismLab({ onBack }: Props) {
           {selectedLayer ? (
             <div className="rounded-lg border border-cyan-300 bg-cyan-50 dark:bg-cyan-950/40 p-2 space-y-1">
               <div className="flex items-center gap-2">
-                <span className="inline-block h-3 w-3 rounded" style={{ background: selectedLayer.color, border: `1px solid ${selectedLayer.stroke}` }} />
+                <span
+                  className="inline-block h-3 w-3 rounded"
+                  style={{
+                    background: selectedLayer.color,
+                    border: `1px solid ${selectedLayer.stroke}`,
+                  }}
+                />
                 <span className="text-xs font-bold">{selectedLayer.bn}</span>
               </div>
               <div className="text-[11px] text-muted-foreground">{selectedLayer.en}</div>
               <div className="text-[11px]">{selectedLayer.role}</div>
             </div>
           ) : (
-            <div className="text-[11px] text-muted-foreground">কোনো লেয়ারে ক্লিক করো · Click a layer</div>
+            <div className="text-[11px] text-muted-foreground">
+              কোনো লেয়ারে ক্লিক করো · Click a layer
+            </div>
           )}
           <div className="grid grid-cols-1 gap-1 pt-1">
             {LAYERS.map((l) => (
@@ -451,7 +845,10 @@ export default function DryCellMechanismLab({ onBack }: Props) {
                 onClick={() => setSelected(l.id)}
                 className={`flex items-center gap-2 rounded border px-2 py-1 text-left text-[11px] transition ${selected === l.id ? "border-cyan-400 bg-cyan-50 dark:bg-cyan-950/40" : "border-slate-200 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-900"}`}
               >
-                <span className="inline-block h-3 w-3 rounded" style={{ background: l.color, border: `1px solid ${l.stroke}` }} />
+                <span
+                  className="inline-block h-3 w-3 rounded"
+                  style={{ background: l.color, border: `1px solid ${l.stroke}` }}
+                />
                 <span className="font-semibold">{l.bn}</span>
                 <span className="text-muted-foreground text-[10px]">· {l.en}</span>
               </button>
@@ -469,12 +866,16 @@ export default function DryCellMechanismLab({ onBack }: Props) {
             <span className="text-[10px] text-muted-foreground">t={runtime.toFixed(1)}s</span>
           </div>
 
-          <div className={`rounded border p-2 text-[11px] transition ${stage >= 1 ? "border-rose-400 bg-rose-50 dark:bg-rose-950/40" : "border-slate-200 opacity-50"}`}>
+          <div
+            className={`rounded border p-2 text-[11px] transition ${stage >= 1 ? "border-rose-400 bg-rose-50 dark:bg-rose-950/40" : "border-slate-200 opacity-50"}`}
+          >
             <div className="font-bold text-rose-700 dark:text-rose-300">Anode (Zn wall) −</div>
             <div className="font-mono">Zn(s) → Zn²⁺(aq) + 2e⁻</div>
           </div>
 
-          <div className={`rounded border p-2 text-[11px] transition ${stage >= 2 ? "border-sky-400 bg-sky-50 dark:bg-sky-950/40" : "border-slate-200 opacity-50"}`}>
+          <div
+            className={`rounded border p-2 text-[11px] transition ${stage >= 2 ? "border-sky-400 bg-sky-50 dark:bg-sky-950/40" : "border-slate-200 opacity-50"}`}
+          >
             <div className="font-bold text-sky-700 dark:text-sky-300">Cathode (Carbon rod) +</div>
             <div className="font-mono leading-snug">
               2NH₄⁺ + 2MnO₂ + 2e⁻ →<br />
@@ -482,8 +883,12 @@ export default function DryCellMechanismLab({ onBack }: Props) {
             </div>
           </div>
 
-          <div className={`rounded border p-2 text-[11px] transition ${stage >= 2 ? "border-violet-400 bg-violet-50 dark:bg-violet-950/40" : "border-slate-200 opacity-50"}`}>
-            <div className="font-bold text-violet-700 dark:text-violet-300">Complexation · কমপ্লেক্স গঠন</div>
+          <div
+            className={`rounded border p-2 text-[11px] transition ${stage >= 2 ? "border-violet-400 bg-violet-50 dark:bg-violet-950/40" : "border-slate-200 opacity-50"}`}
+          >
+            <div className="font-bold text-violet-700 dark:text-violet-300">
+              Complexation · কমপ্লেক্স গঠন
+            </div>
             <div>
               Zn²⁺ + 4NH₃ → [Zn(NH₃)₄]²⁺ ·
               <span className="text-muted-foreground"> NH₃ গ্যাসের চাপ কমায়।</span>
@@ -511,8 +916,12 @@ export default function DryCellMechanismLab({ onBack }: Props) {
         <div className="text-xs font-bold uppercase text-muted-foreground">View · ভিউ</div>
         <Tabs value={view} onValueChange={(v) => setView(v as ViewMode)}>
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="layers" className="text-[11px]">Layers</TabsTrigger>
-            <TabsTrigger value="micro" className="text-[11px]">Micro</TabsTrigger>
+            <TabsTrigger value="layers" className="text-[11px]">
+              Layers
+            </TabsTrigger>
+            <TabsTrigger value="micro" className="text-[11px]">
+              Micro
+            </TabsTrigger>
           </TabsList>
         </Tabs>
       </Card>
@@ -525,9 +934,16 @@ export default function DryCellMechanismLab({ onBack }: Props) {
             </span>
             <span className="font-mono text-amber-600">{Math.round(slice * 100)}%</span>
           </div>
-          <Slider value={[slice * 100]} onValueChange={(v) => setSlice(v[0] / 100)} min={0} max={100} step={1} />
+          <Slider
+            value={[slice * 100]}
+            onValueChange={(v) => setSlice(v[0] / 100)}
+            min={0}
+            max={100}
+            step={1}
+          />
           <div className="flex justify-between text-[10px] text-muted-foreground">
-            <span>Intact</span><span>Exploded</span>
+            <span>Intact</span>
+            <span>Exploded</span>
           </div>
         </Card>
       )}
@@ -541,7 +957,9 @@ export default function DryCellMechanismLab({ onBack }: Props) {
             </div>
             <Switch checked={circuit} onCheckedChange={setCircuit} />
           </div>
-          <div className={`flex items-center gap-2 rounded border p-2 text-[11px] ${circuit ? "border-yellow-400 bg-yellow-50 dark:bg-yellow-950/40" : "border-slate-200"}`}>
+          <div
+            className={`flex items-center gap-2 rounded border p-2 text-[11px] ${circuit ? "border-yellow-400 bg-yellow-50 dark:bg-yellow-950/40" : "border-slate-200"}`}
+          >
             <Lightbulb className={`h-4 w-4 ${circuit ? "text-yellow-500" : "text-slate-400"}`} />
             <span>{circuit ? "বাল্ব জ্বলছে · Bulb glowing" : "সার্কিট খোলা · Circuit open"}</span>
           </div>

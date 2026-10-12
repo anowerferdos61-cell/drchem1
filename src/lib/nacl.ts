@@ -42,11 +42,7 @@ export function tickEvaporation(volumeFrac: number, dt: number): number {
  * Natural cooling — exponential decay toward room temperature.
  * "Fast cool" applies a much larger k.
  */
-export function tickCooling(
-  tempC: number,
-  dt: number,
-  fast: boolean,
-): number {
+export function tickCooling(tempC: number, dt: number, fast: boolean): number {
   const k = fast ? 0.6 : 0.06;
   const next = ROOM_TEMP + (tempC - ROOM_TEMP) * Math.exp(-k * dt);
   return next;
@@ -103,8 +99,7 @@ export function gradeNaCl(input: NaClGradeInput): NaClGradeOutput {
   if (!input.seeded) quality -= 15;
   quality = Math.max(0, Math.min(100, quality));
 
-  const grade =
-    acc >= 90 ? "A" : acc >= 80 ? "B" : acc >= 70 ? "C" : acc >= 60 ? "D" : "F";
+  const grade = acc >= 90 ? "A" : acc >= 80 ? "B" : acc >= 70 ? "C" : acc >= 60 ? "D" : "F";
 
   return { accuracy: acc, grade, crystalQuality: quality };
 }

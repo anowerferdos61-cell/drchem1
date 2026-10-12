@@ -46,9 +46,9 @@ async function loadProfileAndRoles(userId: string) {
   const seq = ++profileLoadSeq;
   try {
     const profileAndRolesPromise = Promise.all([
-        supabase.from("profiles").select("*").eq("user_id", userId).maybeSingle(),
-        supabase.from("user_roles").select("role").eq("user_id", userId),
-      ]);
+      supabase.from("profiles").select("*").eq("user_id", userId).maybeSingle(),
+      supabase.from("user_roles").select("role").eq("user_id", userId),
+    ]);
 
     const timeoutPromise = new Promise<"timeout">((resolve) => {
       window.setTimeout(() => resolve("timeout"), PROFILE_LOAD_TIMEOUT_MS);
@@ -90,33 +90,47 @@ function initialize() {
     if (event === "TOKEN_REFRESHED") {
       const user = session?.user ?? state.user;
       const sameUser = !!user && state.user?.id === user.id;
-      setState({
-        user,
-        loading: false,
-        profile: sameUser ? state.profile : null,
-        roles: sameUser ? state.roles : [],
-        rolesLoaded: user ? (sameUser ? state.rolesLoaded : false) : true,
-      });
       if (user && (!sameUser || !state.rolesLoaded)) {
+        setState({
+          user,
+          loading: false,
+          profile: sameUser ? state.profile : null,
+          roles: sameUser ? state.roles : [],
+          rolesLoaded: false,
+        });
         void loadProfileAndRoles(user.id);
+      } else {
+        setState({
+          user,
+          loading: false,
+        });
       }
       return;
     }
 
     const user = session?.user ?? null;
-    const sameUser = !!user && state.user?.id === user.id;
-    setState({
-      user,
-      loading: false,
-      profile: sameUser ? state.profile : null,
-      roles: sameUser ? state.roles : [],
-      rolesLoaded: user ? (sameUser ? state.rolesLoaded : false) : true,
-    });
-    if (user && (!sameUser || !state.rolesLoaded)) {
+    if (!user) {
+      profileLoadSeq += 1;
+      setState({ user: null, profile: null, roles: [], loading: false, rolesLoaded: true });
+      return;
+    }
+
+    const sameUser = !!state.user && state.user.id === user.id;
+    if (!sameUser || !state.rolesLoaded) {
+      setState({
+        user,
+        loading: false,
+        profile: sameUser ? state.profile : null,
+        roles: sameUser ? state.roles : [],
+        rolesLoaded: sameUser ? state.rolesLoaded : false,
+      });
       void loadProfileAndRoles(user.id);
     } else {
-      profileLoadSeq += 1;
-      setState({ profile: null, roles: [], rolesLoaded: true });
+      // Same user and roles already loaded: keep profile and roles intact!
+      setState({
+        user,
+        loading: false,
+      });
     }
   });
 
@@ -128,24 +142,39 @@ function initialize() {
     setState({ user: null, profile: null, roles: [], loading: false, rolesLoaded: true });
   }, SESSION_LOAD_TIMEOUT_MS);
 
-  supabase.auth.getSession().then(({ data }) => {
-    window.clearTimeout(sessionTimeout);
-    const user = data.session?.user ?? null;
-    const sameUser = !!user && state.user?.id === user.id;
-    setState({
-      user,
-      loading: false,
-      profile: sameUser ? state.profile : null,
-      roles: sameUser ? state.roles : [],
-      rolesLoaded: user ? (sameUser ? state.rolesLoaded : false) : true,
+  supabase.auth
+    .getSession()
+    .then(({ data }) => {
+      window.clearTimeout(sessionTimeout);
+      const user = data.session?.user ?? null;
+      if (!user) {
+        profileLoadSeq += 1;
+        setState({ user: null, profile: null, roles: [], loading: false, rolesLoaded: true });
+        return;
+      }
+      const sameUser = !!state.user && state.user.id === user.id;
+      if (!sameUser || !state.rolesLoaded) {
+        setState({
+          user,
+          loading: false,
+          profile: sameUser ? state.profile : null,
+          roles: sameUser ? state.roles : [],
+          rolesLoaded: sameUser ? state.rolesLoaded : false,
+        });
+        void loadProfileAndRoles(user.id);
+      } else {
+        setState({
+          user,
+          loading: false,
+        });
+      }
+    })
+    .catch((error) => {
+      window.clearTimeout(sessionTimeout);
+      console.error(error);
+      profileLoadSeq += 1;
+      setState({ user: null, profile: null, roles: [], loading: false, rolesLoaded: true });
     });
-    if (user && (!sameUser || !state.rolesLoaded)) void loadProfileAndRoles(user.id);
-  }).catch((error) => {
-    window.clearTimeout(sessionTimeout);
-    console.error(error);
-    profileLoadSeq += 1;
-    setState({ user: null, profile: null, roles: [], loading: false, rolesLoaded: true });
-  });
 }
 
 export function useAuth() {
@@ -166,10 +195,7 @@ export function useAuth() {
     setState({ user: null, profile: null, roles: [], loading: false, rolesLoaded: true });
   }, []);
 
-  const hasRole = useCallback(
-    (role: AppRole) => snap.roles.includes(role),
-    [snap.roles],
-  );
+  const hasRole = useCallback((role: AppRole) => snap.roles.includes(role), [snap.roles]);
 
   const refreshProfile = useCallback(async () => {
     if (state.user) await loadProfileAndRoles(state.user.id);

@@ -69,16 +69,9 @@ function TutorPage() {
               className="h-8 w-8"
               aria-label="Toggle sidebar"
             >
-              {sidebarOpen ? (
-                <X className="h-4 w-4" />
-              ) : (
-                <Menu className="h-4 w-4" />
-              )}
+              {sidebarOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
             </Button>
-            <Link
-              to="/"
-              className="flex items-center gap-1 text-xs text-muted-foreground"
-            >
+            <Link to="/" className="flex items-center gap-1 text-xs text-muted-foreground">
               <ArrowLeft className="h-3.5 w-3.5" />
               হোম
             </Link>

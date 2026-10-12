@@ -9,11 +9,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Bot, FileText, Lock, NotebookPen } from "lucide-react";
-import {
-  LibraryShell,
-  PremiumLockCard,
-  useLibraryRows,
-} from "@/components/library/LibraryLayout";
+import { LibraryShell, PremiumLockCard, useLibraryRows } from "@/components/library/LibraryLayout";
 import { useEntitlements } from "@/hooks/useEntitlements";
 
 interface NoteRow {
@@ -63,8 +59,7 @@ function NotesPage() {
     [rows, activeChapter],
   );
 
-  const selected =
-    chapterNotes.find((n) => n.id === selectedId) ?? chapterNotes[0] ?? null;
+  const selected = chapterNotes.find((n) => n.id === selectedId) ?? chapterNotes[0] ?? null;
   const locked = !!selected && selected.is_premium && !isPro;
 
   const askTutor = () => {
@@ -95,9 +90,7 @@ function NotesPage() {
       countsByChapter={countsByChapter}
     >
       {isLoading ? (
-        <div className="grid h-64 place-items-center text-sm text-muted-foreground">
-          লোড হচ্ছে…
-        </div>
+        <div className="grid h-64 place-items-center text-sm text-muted-foreground">লোড হচ্ছে…</div>
       ) : chapterNotes.length === 0 ? (
         <Card className="grid h-64 place-items-center border-dashed text-center">
           <div>
@@ -122,9 +115,7 @@ function NotesPage() {
                   key={n.id}
                   onClick={() => setSelectedId(n.id)}
                   className={`w-full rounded-lg border p-3 text-left transition ${
-                    isActive
-                      ? "border-amber-500 bg-amber-500/10 shadow-sm"
-                      : "hover:bg-muted"
+                    isActive ? "border-amber-500 bg-amber-500/10 shadow-sm" : "hover:bg-muted"
                   }`}
                 >
                   <div className="flex items-start justify-between gap-2">
@@ -147,7 +138,9 @@ function NotesPage() {
                     CH {String(selected.chapter_number).padStart(2, "0")}
                   </Badge>
                   {selected.is_premium && (
-                    <Badge className="bg-amber-500/10 text-amber-700 dark:text-amber-300">Pro</Badge>
+                    <Badge className="bg-amber-500/10 text-amber-700 dark:text-amber-300">
+                      Pro
+                    </Badge>
                   )}
                 </div>
                 <article className="prose prose-slate max-w-none dark:prose-invert prose-headings:font-extrabold prose-h1:text-3xl prose-h2:mt-8 prose-h2:text-xl prose-p:leading-relaxed prose-strong:text-foreground">
@@ -185,9 +178,7 @@ function MarkdownLite({ text }: { text: string }) {
 
   const flushList = () => {
     if (!listType || listBuf.length === 0) return;
-    const items = listBuf.map((l, i) => (
-      <li key={i}>{inline(l)}</li>
-    ));
+    const items = listBuf.map((l, i) => <li key={i}>{inline(l)}</li>);
     out.push(
       listType === "ul" ? (
         <ul key={`l${out.length}`}>{items}</ul>

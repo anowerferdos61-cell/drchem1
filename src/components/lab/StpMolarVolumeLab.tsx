@@ -5,7 +5,15 @@
  * Three responsive panes: Gas Source · Piston Lab · Data Panel.
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, FlaskConical, Lock, RefreshCw, Sparkles, Thermometer, Wind } from "lucide-react";
+import {
+  ArrowLeft,
+  FlaskConical,
+  Lock,
+  RefreshCw,
+  Sparkles,
+  Thermometer,
+  Wind,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -22,11 +30,11 @@ interface GasMeta {
   labelBn: string;
   labelEn: string;
   formula: string;
-  M: number;              // g/mol
-  radius: number;         // px, particle size
-  speed: number;          // relative speed
-  color: string;          // fill
-  glow: string;           // glow
+  M: number; // g/mol
+  radius: number; // px, particle size
+  speed: number; // relative speed
+  color: string; // fill
+  glow: string; // glow
 }
 
 const GASES: Record<GasKey, GasMeta> = {
@@ -74,7 +82,7 @@ const CANVAS_W = 520;
 const CANVAS_H = 560;
 const CHAMBER_LEFT = 120;
 const CHAMBER_RIGHT = 420;
-const CHAMBER_TOP_MIN = 60;     // piston can rise this high (max volume ~ 3 mol → 67.2 L)
+const CHAMBER_TOP_MIN = 60; // piston can rise this high (max volume ~ 3 mol → 67.2 L)
 const CHAMBER_BOTTOM = 520;
 const PISTON_H = 26;
 
@@ -84,8 +92,8 @@ function volumeFor(n: number) {
 
 // Map moles → piston top Y (linear). 0.5 mol shrinks, 3 mol expands.
 function pistonYFor(n: number) {
-  const maxVol = MAX_MOLES * STP_VOLUME;   // 67.2 L
-  const minVol = MIN_MOLES * STP_VOLUME;   // 11.2 L
+  const maxVol = MAX_MOLES * STP_VOLUME; // 67.2 L
+  const minVol = MIN_MOLES * STP_VOLUME; // 11.2 L
   const usable = CHAMBER_BOTTOM - CHAMBER_TOP_MIN;
   const v = volumeFor(n);
   const t = (v - minVol) / (maxVol - minVol); // 0..1
@@ -102,15 +110,7 @@ interface Particle {
   vy: number;
 }
 
-function PistonCanvas({
-  gas,
-  moles,
-  atSTP,
-}: {
-  gas: GasMeta;
-  moles: number;
-  atSTP: boolean;
-}) {
+function PistonCanvas({ gas, moles, atSTP }: { gas: GasMeta; moles: number; atSTP: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<Particle[]>([]);
   const pistonYRef = useRef(pistonYFor(moles));
@@ -131,7 +131,8 @@ function PistonCanvas({
     const count = Math.round(20 + moles * 22);
     const arr: Particle[] = [];
     for (let i = 0; i < count; i++) {
-      const y = pistonYRef.current + 12 + Math.random() * (CHAMBER_BOTTOM - pistonYRef.current - 20);
+      const y =
+        pistonYRef.current + 12 + Math.random() * (CHAMBER_BOTTOM - pistonYRef.current - 20);
       arr.push({
         x: CHAMBER_LEFT + 12 + Math.random() * (CHAMBER_RIGHT - CHAMBER_LEFT - 24),
         y,
@@ -186,7 +187,12 @@ function PistonCanvas({
       gasGrad.addColorStop(0, `${g.color}22`);
       gasGrad.addColorStop(1, `${g.color}0a`);
       ctx.fillStyle = gasGrad;
-      ctx.fillRect(CHAMBER_LEFT, pistonY + PISTON_H, CHAMBER_RIGHT - CHAMBER_LEFT, CHAMBER_BOTTOM - pistonY - PISTON_H);
+      ctx.fillRect(
+        CHAMBER_LEFT,
+        pistonY + PISTON_H,
+        CHAMBER_RIGHT - CHAMBER_LEFT,
+        CHAMBER_BOTTOM - pistonY - PISTON_H,
+      );
 
       // STP indicator line (22.4 L) — glowing neon
       ctx.save();
@@ -231,7 +237,14 @@ function PistonCanvas({
         // Particle
         ctx.beginPath();
         ctx.arc(p.x, p.y, g.radius, 0, Math.PI * 2);
-        const grad = ctx.createRadialGradient(p.x - g.radius * 0.3, p.y - g.radius * 0.3, 0.4, p.x, p.y, g.radius);
+        const grad = ctx.createRadialGradient(
+          p.x - g.radius * 0.3,
+          p.y - g.radius * 0.3,
+          0.4,
+          p.x,
+          p.y,
+          g.radius,
+        );
         grad.addColorStop(0, "#fff");
         grad.addColorStop(0.35, g.color);
         grad.addColorStop(1, g.glow);
@@ -317,8 +330,8 @@ function PistonCanvas({
 export default function StpMolarVolumeLab({ onBack }: { onBack: () => void }) {
   const [gasKey, setGasKey] = useState<GasKey>("O2");
   const [moles, setMoles] = useState(1.0);
-  const [tempC, setTempC] = useState(0);          // °C, STP = 0
-  const [pressure, setPressure] = useState(1);    // atm, STP = 1
+  const [tempC, setTempC] = useState(0); // °C, STP = 0
+  const [pressure, setPressure] = useState(1); // atm, STP = 1
   const [mobileTab, setMobileTab] = useState<"source" | "piston" | "data">("piston");
 
   const gas = GASES[gasKey];
@@ -386,13 +399,13 @@ export default function StpMolarVolumeLab({ onBack }: { onBack: () => void }) {
           );
         })}
       </div>
-      <p className="mt-2 text-[11px] text-slate-400">{gas.labelBn} · {gas.labelEn}</p>
+      <p className="mt-2 text-[11px] text-slate-400">
+        {gas.labelBn} · {gas.labelEn}
+      </p>
 
       <div className="mt-5">
         <div className="mb-2 flex items-center justify-between">
-          <label className="text-xs font-semibold text-slate-300">
-            মোল · Moles (n)
-          </label>
+          <label className="text-xs font-semibold text-slate-300">মোল · Moles (n)</label>
           <Badge variant="secondary" className="bg-slate-800 text-emerald-300">
             {moles.toFixed(2)} mol
           </Badge>
@@ -434,7 +447,9 @@ export default function StpMolarVolumeLab({ onBack }: { onBack: () => void }) {
         <div className="flex items-center justify-between text-xs">
           <span className="text-slate-400">Temperature · তাপমাত্রা</span>
           <div className="flex items-center gap-2">
-            <span className="tabular-nums text-slate-100">{tempC}°C ({(tempC + 273.15).toFixed(2)} K)</span>
+            <span className="tabular-nums text-slate-100">
+              {tempC}°C ({(tempC + 273.15).toFixed(2)} K)
+            </span>
             <Switch checked={tempC === 0} onCheckedChange={(c) => setTempC(c ? 0 : 25)} />
           </div>
         </div>
@@ -485,11 +500,7 @@ export default function StpMolarVolumeLab({ onBack }: { onBack: () => void }) {
           value={`${mass.toFixed(2)} g`}
           calc={`${moles.toFixed(2)} × ${gas.M}`}
         />
-        <Row
-          label="Molar mass · মোলার ভর"
-          value={`${gas.M} g/mol`}
-          calc={gas.formula}
-        />
+        <Row label="Molar mass · মোলার ভর" value={`${gas.M} g/mol`} calc={gas.formula} />
         <Row
           label="কণা সংখ্যা"
           value={particles.toExponential(3)}
@@ -506,7 +517,9 @@ export default function StpMolarVolumeLab({ onBack }: { onBack: () => void }) {
         )}
       >
         <div className="flex items-center gap-2 text-xs font-semibold">
-          <Lock className={cn("h-3.5 w-3.5", lockedAtSTP ? "text-emerald-300" : "text-slate-500")} />
+          <Lock
+            className={cn("h-3.5 w-3.5", lockedAtSTP ? "text-emerald-300" : "text-slate-500")}
+          />
           <span className={lockedAtSTP ? "text-emerald-300" : "text-slate-400"}>
             {lockedAtSTP ? "STP LOCK ACTIVE · 22.4 L" : "1 mol নাও, STP-তে থাকো — Lock হবে"}
           </span>
@@ -528,7 +541,12 @@ export default function StpMolarVolumeLab({ onBack }: { onBack: () => void }) {
       <header className="sticky top-0 z-30 border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3">
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="sm" onClick={onBack} className="gap-1 -ml-2 text-slate-300 hover:text-white">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onBack}
+              className="gap-1 -ml-2 text-slate-300 hover:text-white"
+            >
               <ArrowLeft className="h-4 w-4" /> Back
             </Button>
             <div className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg shadow-emerald-500/20">
@@ -541,7 +559,10 @@ export default function StpMolarVolumeLab({ onBack }: { onBack: () => void }) {
               </div>
             </div>
           </div>
-          <Badge variant="secondary" className="hidden gap-1.5 border border-emerald-500/20 bg-emerald-500/10 text-emerald-300 sm:inline-flex">
+          <Badge
+            variant="secondary"
+            className="hidden gap-1.5 border border-emerald-500/20 bg-emerald-500/10 text-emerald-300 sm:inline-flex"
+          >
             V = n × 22.4 L
           </Badge>
         </div>
@@ -579,12 +600,12 @@ export default function StpMolarVolumeLab({ onBack }: { onBack: () => void }) {
                 Lab AI Assistant · Chemistry সহকারী
               </div>
               <p className="text-slate-200">
-                ম্যাজিকটা দেখেছ? তুমি <b>2 g হাইড্রোজেন</b> নাও আর{" "}
-                <b>44 g কার্বন ডাই অক্সাইড</b> নাও — <b>১ মোল</b> হলেই STP-তে
-                তারা ঠিক <b className="text-emerald-300">২২.৪ লিটার</b> জায়গা
-                দখল করবে! তাই পরীক্ষায় গ্যাসের আয়তন দেখলেই চোখ বন্ধ করে{" "}
-                <span className="font-mono text-emerald-300">n = V / 22.4</span>{" "}
-                সূত্রটি ব্যবহার করবে।
+                ম্যাজিকটা দেখেছ? তুমি <b>2 g হাইড্রোজেন</b> নাও আর <b>44 g কার্বন ডাই অক্সাইড</b>{" "}
+                নাও — <b>১ মোল</b> হলেই STP-তে তারা ঠিক{" "}
+                <b className="text-emerald-300">২২.৪ লিটার</b> জায়গা দখল করবে! তাই পরীক্ষায়
+                গ্যাসের আয়তন দেখলেই চোখ বন্ধ করে{" "}
+                <span className="font-mono text-emerald-300">n = V / 22.4</span> সূত্রটি ব্যবহার
+                করবে।
               </p>
             </div>
           </div>
@@ -594,11 +615,13 @@ export default function StpMolarVolumeLab({ onBack }: { onBack: () => void }) {
       {/* Mobile bottom nav */}
       <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-800 bg-slate-950/90 backdrop-blur-xl lg:hidden">
         <div className="mx-auto grid max-w-md grid-cols-3">
-          {([
-            { k: "source", label: "Gas Source" },
-            { k: "piston", label: "Piston Lab" },
-            { k: "data", label: "Data Panel" },
-          ] as const).map((t) => (
+          {(
+            [
+              { k: "source", label: "Gas Source" },
+              { k: "piston", label: "Piston Lab" },
+              { k: "data", label: "Data Panel" },
+            ] as const
+          ).map((t) => (
             <button
               key={t.k}
               onClick={() => setMobileTab(t.k)}

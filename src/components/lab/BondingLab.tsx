@@ -111,9 +111,7 @@ function IonicSim({
   onMistake: (t: BondingMistakeType) => void;
 }) {
   const svgRef = useRef<SVGSVGElement | null>(null);
-  const [dragging, setDragging] = useState<null | { id: string; x: number; y: number }>(
-    null,
-  );
+  const [dragging, setDragging] = useState<null | { id: string; x: number; y: number }>(null);
   const [shake, setShake] = useState(false);
 
   // Cl valence positions: 7 of 8 — leave a vacant slot at angle index 7 (top-right gap).
@@ -215,7 +213,9 @@ function IonicSim({
               <line x1={235} y1={90} x2={235} y2={310} stroke="currentColor" strokeWidth={2} />
               <line x1={220} y1={90} x2={235} y2={90} stroke="currentColor" strokeWidth={2} />
               <line x1={220} y1={310} x2={235} y2={310} stroke="currentColor" strokeWidth={2} />
-              <text x={245} y={105} fontSize={22} fontWeight={700} fill="currentColor">+</text>
+              <text x={245} y={105} fontSize={22} fontWeight={700} fill="currentColor">
+                +
+              </text>
 
               <line x1={370} y1={90} x2={370} y2={310} stroke="currentColor" strokeWidth={2} />
               <line x1={370} y1={90} x2={385} y2={90} stroke="currentColor" strokeWidth={2} />
@@ -223,7 +223,9 @@ function IonicSim({
               <line x1={565} y1={90} x2={565} y2={310} stroke="currentColor" strokeWidth={2} />
               <line x1={550} y1={90} x2={565} y2={90} stroke="currentColor" strokeWidth={2} />
               <line x1={550} y1={310} x2={565} y2={310} stroke="currentColor" strokeWidth={2} />
-              <text x={573} y={105} fontSize={22} fontWeight={700} fill="currentColor">−</text>
+              <text x={573} y={105} fontSize={22} fontWeight={700} fill="currentColor">
+                −
+              </text>
             </g>
           </>
         )}
@@ -267,10 +269,7 @@ function IonicSim({
           ))}
           {/* Na valence electron — draggable until transferred */}
           {!t && !dragging && (
-            <g
-              onPointerDown={onElectronDown("na-valence")}
-              style={{ cursor: "grab" }}
-            >
+            <g onPointerDown={onElectronDown("na-valence")} style={{ cursor: "grab" }}>
               <circle
                 cx={naValence.x}
                 cy={naValence.y}
@@ -356,7 +355,12 @@ function IonicSim({
               stroke="#f59e0b"
               strokeDasharray="2 2"
             >
-              <animate attributeName="fillOpacity" values="0.25;0.7;0.25" dur="1.2s" repeatCount="indefinite" />
+              <animate
+                attributeName="fillOpacity"
+                values="0.25;0.7;0.25"
+                dur="1.2s"
+                repeatCount="indefinite"
+              />
             </circle>
           )}
           {/* Transferred electron (red dot, now in Cl shell) */}
@@ -536,20 +540,59 @@ function CovalentSim({
           />
         ))}
         <circle cx={cx} cy={CCL_CY} r={18} fill="url(#clCore2)" />
-        <text x={cx} y={CCL_CY + 5} textAnchor="middle" fontSize={14} fontWeight={700} fill="#064e3b">
+        <text
+          x={cx}
+          y={CCL_CY + 5}
+          textAnchor="middle"
+          fontSize={14}
+          fontWeight={700}
+          fill="#064e3b"
+        >
           Cl
         </text>
         {/* inner shells (2 + 8) — green crosses, non-draggable mistake source */}
         {shellPositions(cx, CCL_CY, SHELL_RADII[0], 2).map((p, i) => (
           <g key={`inner1-${side}-${i}`} onPointerDown={startDrag(side, false)}>
-            <line x1={p.x - 4} y1={p.y - 4} x2={p.x + 4} y2={p.y + 4} stroke="#059669" strokeWidth={2.4} strokeLinecap="round" />
-            <line x1={p.x - 4} y1={p.y + 4} x2={p.x + 4} y2={p.y - 4} stroke="#059669" strokeWidth={2.4} strokeLinecap="round" />
+            <line
+              x1={p.x - 4}
+              y1={p.y - 4}
+              x2={p.x + 4}
+              y2={p.y + 4}
+              stroke="#059669"
+              strokeWidth={2.4}
+              strokeLinecap="round"
+            />
+            <line
+              x1={p.x - 4}
+              y1={p.y + 4}
+              x2={p.x + 4}
+              y2={p.y - 4}
+              stroke="#059669"
+              strokeWidth={2.4}
+              strokeLinecap="round"
+            />
           </g>
         ))}
         {shellPositions(cx, CCL_CY, SHELL_RADII[1], 8).map((p, i) => (
           <g key={`inner2-${side}-${i}`} onPointerDown={startDrag(side, false)}>
-            <line x1={p.x - 4} y1={p.y - 4} x2={p.x + 4} y2={p.y + 4} stroke="#059669" strokeWidth={2.4} strokeLinecap="round" />
-            <line x1={p.x - 4} y1={p.y + 4} x2={p.x + 4} y2={p.y - 4} stroke="#059669" strokeWidth={2.4} strokeLinecap="round" />
+            <line
+              x1={p.x - 4}
+              y1={p.y - 4}
+              x2={p.x + 4}
+              y2={p.y + 4}
+              stroke="#059669"
+              strokeWidth={2.4}
+              strokeLinecap="round"
+            />
+            <line
+              x1={p.x - 4}
+              y1={p.y + 4}
+              x2={p.x + 4}
+              y2={p.y - 4}
+              stroke="#059669"
+              strokeWidth={2.4}
+              strokeLinecap="round"
+            />
           </g>
         ))}
         {/* valence (7) — the shared-side one is draggable & highlighted */}
@@ -564,11 +607,32 @@ function CovalentSim({
             >
               {isShare && (
                 <circle cx={p.x} cy={p.y} r={E_RADIUS + 4} fill="#86efac" fillOpacity={0.4}>
-                  <animate attributeName="r" values={`${E_RADIUS + 4};${E_RADIUS + 9};${E_RADIUS + 4}`} dur="1.4s" repeatCount="indefinite" />
+                  <animate
+                    attributeName="r"
+                    values={`${E_RADIUS + 4};${E_RADIUS + 9};${E_RADIUS + 4}`}
+                    dur="1.4s"
+                    repeatCount="indefinite"
+                  />
                 </circle>
               )}
-              <line x1={p.x - 4} y1={p.y - 4} x2={p.x + 4} y2={p.y + 4} stroke="#059669" strokeWidth={2.4} strokeLinecap="round" />
-              <line x1={p.x - 4} y1={p.y + 4} x2={p.x + 4} y2={p.y - 4} stroke="#059669" strokeWidth={2.4} strokeLinecap="round" />
+              <line
+                x1={p.x - 4}
+                y1={p.y - 4}
+                x2={p.x + 4}
+                y2={p.y + 4}
+                stroke="#059669"
+                strokeWidth={2.4}
+                strokeLinecap="round"
+              />
+              <line
+                x1={p.x - 4}
+                y1={p.y + 4}
+                x2={p.x + 4}
+                y2={p.y - 4}
+                stroke="#059669"
+                strokeWidth={2.4}
+                strokeLinecap="round"
+              />
             </g>
           );
         })}
@@ -605,10 +669,21 @@ function CovalentSim({
           strokeDasharray={bondFormed ? "0" : "4 3"}
           strokeWidth={2}
         />
-        <text x={SHARE_CX} y={SHARE_CY - 38} textAnchor="middle" fontSize={11} fill="#78350f" fontWeight={600}>
+        <text
+          x={SHARE_CX}
+          y={SHARE_CY - 38}
+          textAnchor="middle"
+          fontSize={11}
+          fill="#78350f"
+          fontWeight={600}
+        >
           {bondFormed
-            ? lang === "bn" ? "যৌথ ইলেকট্রন জোড়া" : "Shared pair"
-            : lang === "bn" ? "শেয়ারিং জোন" : "Sharing zone"}
+            ? lang === "bn"
+              ? "যৌথ ইলেকট্রন জোড়া"
+              : "Shared pair"
+            : lang === "bn"
+              ? "শেয়ারিং জোন"
+              : "Sharing zone"}
         </text>
 
         {renderClAtom(CCL1_CX, state.shared.left, "left")}
@@ -617,29 +692,84 @@ function CovalentSim({
         {/* Shared electrons inside zone */}
         {state.shared.left && (
           <g>
-            <line x1={SHARE_CX - 14 - 4} y1={SHARE_CY - 4} x2={SHARE_CX - 14 + 4} y2={SHARE_CY + 4} stroke="#059669" strokeWidth={2.4} strokeLinecap="round" />
-            <line x1={SHARE_CX - 14 - 4} y1={SHARE_CY + 4} x2={SHARE_CX - 14 + 4} y2={SHARE_CY - 4} stroke="#059669" strokeWidth={2.4} strokeLinecap="round" />
+            <line
+              x1={SHARE_CX - 14 - 4}
+              y1={SHARE_CY - 4}
+              x2={SHARE_CX - 14 + 4}
+              y2={SHARE_CY + 4}
+              stroke="#059669"
+              strokeWidth={2.4}
+              strokeLinecap="round"
+            />
+            <line
+              x1={SHARE_CX - 14 - 4}
+              y1={SHARE_CY + 4}
+              x2={SHARE_CX - 14 + 4}
+              y2={SHARE_CY - 4}
+              stroke="#059669"
+              strokeWidth={2.4}
+              strokeLinecap="round"
+            />
           </g>
         )}
         {state.shared.right && (
           <g>
-            <line x1={SHARE_CX + 14 - 4} y1={SHARE_CY - 4} x2={SHARE_CX + 14 + 4} y2={SHARE_CY + 4} stroke="#059669" strokeWidth={2.4} strokeLinecap="round" />
-            <line x1={SHARE_CX + 14 - 4} y1={SHARE_CY + 4} x2={SHARE_CX + 14 + 4} y2={SHARE_CY - 4} stroke="#059669" strokeWidth={2.4} strokeLinecap="round" />
+            <line
+              x1={SHARE_CX + 14 - 4}
+              y1={SHARE_CY - 4}
+              x2={SHARE_CX + 14 + 4}
+              y2={SHARE_CY + 4}
+              stroke="#059669"
+              strokeWidth={2.4}
+              strokeLinecap="round"
+            />
+            <line
+              x1={SHARE_CX + 14 - 4}
+              y1={SHARE_CY + 4}
+              x2={SHARE_CX + 14 + 4}
+              y2={SHARE_CY - 4}
+              stroke="#059669"
+              strokeWidth={2.4}
+              strokeLinecap="round"
+            />
           </g>
         )}
 
         {/* Drag ghost */}
         {dragging && (
           <g pointerEvents="none">
-            <line x1={dragging.x - 4} y1={dragging.y - 4} x2={dragging.x + 4} y2={dragging.y + 4} stroke="#059669" strokeWidth={2.4} strokeLinecap="round" />
-            <line x1={dragging.x - 4} y1={dragging.y + 4} x2={dragging.x + 4} y2={dragging.y - 4} stroke="#059669" strokeWidth={2.4} strokeLinecap="round" />
+            <line
+              x1={dragging.x - 4}
+              y1={dragging.y - 4}
+              x2={dragging.x + 4}
+              y2={dragging.y + 4}
+              stroke="#059669"
+              strokeWidth={2.4}
+              strokeLinecap="round"
+            />
+            <line
+              x1={dragging.x - 4}
+              y1={dragging.y + 4}
+              x2={dragging.x + 4}
+              y2={dragging.y - 4}
+              stroke="#059669"
+              strokeWidth={2.4}
+              strokeLinecap="round"
+            />
           </g>
         )}
 
         {/* Final Lewis dash structure */}
         {bondFormed && (
           <g>
-            <text x={SHARE_CX} y={340} textAnchor="middle" fontSize={28} fontWeight={700} fill="#065f46">
+            <text
+              x={SHARE_CX}
+              y={340}
+              textAnchor="middle"
+              fontSize={28}
+              fontWeight={700}
+              fill="#065f46"
+            >
               Cl — Cl
             </text>
             <text x={SHARE_CX} y={365} textAnchor="middle" fontSize={12} fill="#065f46">
@@ -661,8 +791,8 @@ export default function BondingLab({ onBack }: Props) {
   const [covalent, setCovalent] = useState<CovalentState>({
     shared: { left: false, right: false },
   });
-  const [quizAnswers, setQuizAnswers] = useState<Record<string, BondKind | null>>(
-    () => Object.fromEntries(CONCEPT_QUESTIONS.map((q) => [q.id, null])),
+  const [quizAnswers, setQuizAnswers] = useState<Record<string, BondKind | null>>(() =>
+    Object.fromEntries(CONCEPT_QUESTIONS.map((q) => [q.id, null])),
   );
   const [mistakes, setMistakes] = useState<BondingMistake[]>([]);
   const [startedAt] = useState<number>(() => Date.now());
@@ -699,15 +829,10 @@ export default function BondingLab({ onBack }: Props) {
     [lang],
   );
 
-  const covalentSharedPairs =
-    covalent.shared.left && covalent.shared.right ? 1 : 0;
+  const covalentSharedPairs = covalent.shared.left && covalent.shared.right ? 1 : 0;
 
   const quizCorrect = useMemo(
-    () =>
-      CONCEPT_QUESTIONS.reduce(
-        (sum, q) => sum + (quizAnswers[q.id] === q.answer ? 1 : 0),
-        0,
-      ),
+    () => CONCEPT_QUESTIONS.reduce((sum, q) => sum + (quizAnswers[q.id] === q.answer ? 1 : 0), 0),
     [quizAnswers],
   );
   const allQuizAnswered = useMemo(
@@ -770,9 +895,7 @@ export default function BondingLab({ onBack }: Props) {
             <div className="flex items-center gap-2">
               <Atom className="h-6 w-6 text-violet-600" />
               <div>
-                <h1 className="text-xl font-bold leading-tight md:text-2xl">
-                  {tx("title", lang)}
-                </h1>
+                <h1 className="text-xl font-bold leading-tight md:text-2xl">{tx("title", lang)}</h1>
                 <p className="text-xs text-muted-foreground">{tx("subtitle", lang)}</p>
               </div>
             </div>
@@ -812,9 +935,7 @@ export default function BondingLab({ onBack }: Props) {
                   <Sparkles className="mt-1 h-5 w-5 text-violet-600" />
                   <div className="flex-1">
                     <h2 className="text-lg font-semibold">{tx("introTitle", lang)}</h2>
-                    <p className="mt-2 text-sm text-muted-foreground">
-                      {tx("introBody", lang)}
-                    </p>
+                    <p className="mt-2 text-sm text-muted-foreground">{tx("introBody", lang)}</p>
                     <Button
                       className="mt-4"
                       onClick={() => {
@@ -848,9 +969,7 @@ export default function BondingLab({ onBack }: Props) {
                                 key={opt}
                                 size="sm"
                                 variant={selected ? "default" : "outline"}
-                                onClick={() =>
-                                  setQuizAnswers((p) => ({ ...p, [q.id]: opt }))
-                                }
+                                onClick={() => setQuizAnswers((p) => ({ ...p, [q.id]: opt }))}
                               >
                                 {opt === "ionic"
                                   ? tx("ionicChoice", lang)
@@ -925,12 +1044,8 @@ export default function BondingLab({ onBack }: Props) {
                 </div>
                 <div className="grid grid-cols-3 gap-3 text-center">
                   <div className="rounded-md bg-muted p-3">
-                    <div className="text-2xl font-bold text-emerald-600">
-                      {grade.accuracy}%
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      {tx("accuracy", lang)}
-                    </div>
+                    <div className="text-2xl font-bold text-emerald-600">{grade.accuracy}%</div>
+                    <div className="text-xs text-muted-foreground">{tx("accuracy", lang)}</div>
                   </div>
                   <div className="rounded-md bg-muted p-3">
                     <div className="text-2xl font-bold">
@@ -942,20 +1057,12 @@ export default function BondingLab({ onBack }: Props) {
                     <div className="text-2xl font-bold">
                       {Math.floor((Date.now() - startedAt) / 60000)}m
                     </div>
-                    <div className="text-xs text-muted-foreground">
-                      {tx("duration", lang)}
-                    </div>
+                    <div className="text-xs text-muted-foreground">{tx("duration", lang)}</div>
                   </div>
                 </div>
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  onClick={() => setShowViva((v) => !v)}
-                >
+                <Button variant="outline" className="w-full" onClick={() => setShowViva((v) => !v)}>
                   <GraduationCap className="mr-2 h-4 w-4" />
-                  {showViva
-                    ? lang === "bn" ? "ভাইভা লুকান" : "Hide Viva"
-                    : tx("viva", lang)}
+                  {showViva ? (lang === "bn" ? "ভাইভা লুকান" : "Hide Viva") : tx("viva", lang)}
                 </Button>
                 {showViva && (
                   <div className="space-y-3">
@@ -978,9 +1085,7 @@ export default function BondingLab({ onBack }: Props) {
             <Card className="p-4 space-y-3">
               <div>
                 <div className="mb-1 flex items-center justify-between text-xs text-muted-foreground">
-                  <span className="font-semibold uppercase tracking-wide">
-                    {tx("steps", lang)}
-                  </span>
+                  <span className="font-semibold uppercase tracking-wide">{tx("steps", lang)}</span>
                   <span>
                     {stepIdx + 1}/{BONDING_STEPS.length}
                   </span>

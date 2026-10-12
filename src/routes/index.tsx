@@ -131,17 +131,20 @@ function Hero({ onWatchDemo }: { onWatchDemo: () => void }) {
             for Class 9-10
           </h1>
           <p className="mt-5 text-lg text-muted-foreground max-w-xl">
-            Perform chemistry experiments safely, learn visually, and get instant help
-            from <strong className="text-foreground">Dr. Chem AI Tutor</strong> — anywhere,
-            anytime.
+            Perform chemistry experiments safely, learn visually, and get instant help from{" "}
+            <strong className="text-foreground">Dr. Chem AI Tutor</strong> — anywhere, anytime.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <Button asChild size="lg" className="text-base">
               <Link to="/app">
                 {isAuthenticated ? (
-                  <><ArrowRight className="h-4 w-4" /> ড্যাশবোর্ডে যান</>
+                  <>
+                    <ArrowRight className="h-4 w-4" /> ড্যাশবোর্ডে যান
+                  </>
                 ) : (
-                  <><Sparkles className="h-4 w-4" /> Try Free</>
+                  <>
+                    <Sparkles className="h-4 w-4" /> Try Free
+                  </>
                 )}
               </Link>
             </Button>
@@ -349,9 +352,17 @@ function Experiments() {
 function Teachers() {
   const items = [
     { icon: Users, title: "Class Demo", desc: "Project any experiment live to the whole class." },
-    { icon: ClipboardList, title: "Assignments", desc: "Set practice tasks and viva for students." },
+    {
+      icon: ClipboardList,
+      title: "Assignments",
+      desc: "Set practice tasks and viva for students.",
+    },
     { icon: BarChart3, title: "Student Reports", desc: "See every student's accuracy & mistakes." },
-    { icon: GraduationCap, title: "Viva Practice", desc: "Auto-generated viva questions with grading." },
+    {
+      icon: GraduationCap,
+      title: "Viva Practice",
+      desc: "Auto-generated viva questions with grading.",
+    },
   ];
   return (
     <section id="teachers" className="py-16 md:py-24">
@@ -364,8 +375,8 @@ function Teachers() {
             Teach chemistry without a physical lab
           </h2>
           <p className="mt-3 text-muted-foreground">
-            Demonstrate every experiment from a single screen. Save lab time, save chemicals,
-            and reach every student — including those who learn slower.
+            Demonstrate every experiment from a single screen. Save lab time, save chemicals, and
+            reach every student — including those who learn slower.
           </p>
         </div>
         <div className="grid sm:grid-cols-2 gap-4">
@@ -387,10 +398,22 @@ function Teachers() {
 /* ───────────── Students ───────────── */
 function Students() {
   const items = [
-    { icon: Eye, title: "Visual Learning", desc: "See molecules, reactions, color changes in real time." },
+    {
+      icon: Eye,
+      title: "Visual Learning",
+      desc: "See molecules, reactions, color changes in real time.",
+    },
     { icon: ShieldCheck, title: "Safe Experiments", desc: "Mix acids, prepare gases — zero risk." },
-    { icon: Brain, title: "Instant AI Help", desc: "Stuck on a step? Dr. Chem explains it your way." },
-    { icon: BookOpen, title: "Exam Preparation", desc: "NCTB syllabus mapped — viva + theory + lab in one place." },
+    {
+      icon: Brain,
+      title: "Instant AI Help",
+      desc: "Stuck on a step? Dr. Chem explains it your way.",
+    },
+    {
+      icon: BookOpen,
+      title: "Exam Preparation",
+      desc: "NCTB syllabus mapped — viva + theory + lab in one place.",
+    },
   ];
   return (
     <section className="py-16 md:py-24 bg-gradient-to-br from-primary/5 via-background to-blue-500/5">
@@ -414,8 +437,8 @@ function Students() {
             Chemistry, but actually fun
           </h2>
           <p className="mt-3 text-muted-foreground">
-            Drag equipment, mix chemicals, watch reactions — then ask Dr. Chem
-            anything you didn't get. Built for the way you actually study.
+            Drag equipment, mix chemicals, watch reactions — then ask Dr. Chem anything you didn't
+            get. Built for the way you actually study.
           </p>
         </div>
       </div>
@@ -441,8 +464,7 @@ function Testimonials() {
     {
       name: "Sumaiya Islam",
       role: "Senior Teacher · Chattogram",
-      quote:
-        "Viva practice with instant grading saved me hours every week. My pass rate jumped.",
+      quote: "Viva practice with instant grading saved me hours every week. My pass rate jumped.",
     },
   ];
   return (
@@ -455,10 +477,7 @@ function Testimonials() {
         </div>
         <div className="grid md:grid-cols-3 gap-5">
           {reviews.map((r) => (
-            <div
-              key={r.name}
-              className="rounded-2xl border border-border bg-card p-6 relative"
-            >
+            <div key={r.name} className="rounded-2xl border border-border bg-card p-6 relative">
               <Quote className="h-7 w-7 text-primary/30 mb-3" />
               <p className="text-sm leading-relaxed">"{r.quote}"</p>
               <div className="mt-5 pt-4 border-t border-border">
@@ -495,9 +514,13 @@ function FinalCTA() {
               <Button asChild size="lg" variant="secondary" className="text-base">
                 <Link to="/app">
                   {isAuthenticated ? (
-                    <><ArrowRight className="h-4 w-4" /> ড্যাশবোর্ডে যান</>
+                    <>
+                      <ArrowRight className="h-4 w-4" /> ড্যাশবোর্ডে যান
+                    </>
                   ) : (
-                    <><Sparkles className="h-4 w-4" /> Create Free Account</>
+                    <>
+                      <Sparkles className="h-4 w-4" /> Create Free Account
+                    </>
                   )}
                 </Link>
               </Button>
@@ -539,8 +562,8 @@ function Footer() {
               <span className="font-bold text-2xl tracking-tight">Dr. Chem</span>
             </div>
             <p className="text-base text-muted-foreground leading-relaxed max-w-xs">
-              Class 9-10-এর জন্য AI-পাওয়ার্ড ভার্চুয়াল কেমিস্ট্রি ল্যাব। নিরাপদে শিখুন,
-              যেকোনো সময়, যেকোনো জায়গায়।
+              Class 9-10-এর জন্য AI-পাওয়ার্ড ভার্চুয়াল কেমিস্ট্রি ল্যাব। নিরাপদে শিখুন, যেকোনো
+              সময়, যেকোনো জায়গায়।
             </p>
             <span className="text-sm text-muted-foreground">
               © {new Date().getFullYear()} · Made with 💙 in Bangladesh

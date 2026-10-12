@@ -78,9 +78,18 @@ const L = {
   netIonic: { bn: "নেট আয়নিক প্রশমন", en: "Net Ionic Neutralization" },
   saltResidue: { bn: "লবণ কণা (স্ফটিক)", en: "Salt Residue (Crystal)" },
   conceptCheck: { bn: "ধারণা যাচাই", en: "Concept Check" },
-  phaseUnmixed: { bn: "মিশ্রণের পূর্বে · দুটি আলাদা দ্রবণ", en: "Before mixing · two separate solutions" },
-  phaseDissociated: { bn: "আয়ন বিয়োজন · Free H⁺, OH⁻, স্পেক্টেটর আয়ন", en: "Dissociation · free H⁺, OH⁻ and spectator ions" },
-  phaseColliding: { bn: "H⁺ + OH⁻ চৌম্বকীয় আকর্ষণে ছুটছে", en: "H⁺ + OH⁻ pulled together by attraction" },
+  phaseUnmixed: {
+    bn: "মিশ্রণের পূর্বে · দুটি আলাদা দ্রবণ",
+    en: "Before mixing · two separate solutions",
+  },
+  phaseDissociated: {
+    bn: "আয়ন বিয়োজন · Free H⁺, OH⁻, স্পেক্টেটর আয়ন",
+    en: "Dissociation · free H⁺, OH⁻ and spectator ions",
+  },
+  phaseColliding: {
+    bn: "H⁺ + OH⁻ চৌম্বকীয় আকর্ষণে ছুটছে",
+    en: "H⁺ + OH⁻ pulled together by attraction",
+  },
   phaseNeutralized: { bn: "H₂O + লবণ কেলাস গঠিত", en: "H₂O + ionic salt lattice formed" },
   legend: { bn: "লেজেন্ড", en: "Legend" },
   ionH: { bn: "H⁺ (হাইড্রোজেন)", en: "H⁺ (hydrogen)" },
@@ -307,10 +316,38 @@ export default function NeutralizationReactionLab({ onBack }: Props) {
     const arr: Ion[] = [];
     const N = 8;
     for (let i = 0; i < N; i++) {
-      arr.push({ id: nextIdRef.current++, kind: "H", x: rand(BEAKER_X + 40, BEAKER_X + BEAKER_W - 40), y: rand(BEAKER_Y + 40, BEAKER_Y + BEAKER_H - 80), vx: 0, vy: 0 });
-      arr.push({ id: nextIdRef.current++, kind: "OH", x: rand(BEAKER_X + 40, BEAKER_X + BEAKER_W - 40), y: rand(BEAKER_Y + 40, BEAKER_Y + BEAKER_H - 80), vx: 0, vy: 0 });
-      arr.push({ id: nextIdRef.current++, kind: "cation", x: rand(BEAKER_X + 40, BEAKER_X + BEAKER_W - 40), y: rand(BEAKER_Y + 40, BEAKER_Y + BEAKER_H - 80), vx: 0, vy: 0 });
-      arr.push({ id: nextIdRef.current++, kind: "anion", x: rand(BEAKER_X + 40, BEAKER_X + BEAKER_W - 40), y: rand(BEAKER_Y + 40, BEAKER_Y + BEAKER_H - 80), vx: 0, vy: 0 });
+      arr.push({
+        id: nextIdRef.current++,
+        kind: "H",
+        x: rand(BEAKER_X + 40, BEAKER_X + BEAKER_W - 40),
+        y: rand(BEAKER_Y + 40, BEAKER_Y + BEAKER_H - 80),
+        vx: 0,
+        vy: 0,
+      });
+      arr.push({
+        id: nextIdRef.current++,
+        kind: "OH",
+        x: rand(BEAKER_X + 40, BEAKER_X + BEAKER_W - 40),
+        y: rand(BEAKER_Y + 40, BEAKER_Y + BEAKER_H - 80),
+        vx: 0,
+        vy: 0,
+      });
+      arr.push({
+        id: nextIdRef.current++,
+        kind: "cation",
+        x: rand(BEAKER_X + 40, BEAKER_X + BEAKER_W - 40),
+        y: rand(BEAKER_Y + 40, BEAKER_Y + BEAKER_H - 80),
+        vx: 0,
+        vy: 0,
+      });
+      arr.push({
+        id: nextIdRef.current++,
+        kind: "anion",
+        x: rand(BEAKER_X + 40, BEAKER_X + BEAKER_W - 40),
+        y: rand(BEAKER_Y + 40, BEAKER_Y + BEAKER_H - 80),
+        vx: 0,
+        vy: 0,
+      });
     }
     return arr;
   }, []);
@@ -439,7 +476,12 @@ export default function NeutralizationReactionLab({ onBack }: Props) {
       <header className="sticky top-0 z-20 border-b border-slate-800/60 bg-slate-950/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3">
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="sm" onClick={onBack} className="text-slate-200 hover:bg-slate-800">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onBack}
+              className="text-slate-200 hover:bg-slate-800"
+            >
               <ArrowLeft className="mr-1 h-4 w-4" />
               {t("back")}
             </Button>
@@ -475,9 +517,7 @@ export default function NeutralizationReactionLab({ onBack }: Props) {
         {/* ─── LEFT SIDEBAR ─── */}
         <aside className="space-y-4">
           <Card className="border-slate-800 bg-slate-900/70 p-4">
-            <h2 className="mb-3 text-sm font-semibold text-slate-200">
-              {t("reactantSelect")}
-            </h2>
+            <h2 className="mb-3 text-sm font-semibold text-slate-200">{t("reactantSelect")}</h2>
             <div className="space-y-2">
               {(Object.keys(REACTIONS) as ReactionKey[]).map((key) => {
                 const r = REACTIONS[key];
@@ -582,10 +622,7 @@ export default function NeutralizationReactionLab({ onBack }: Props) {
                   {lang === "bn" ? "আয়নিক নাচ · অণু-পরমাণুর ভাঙা-গড়া" : "The Ionic Dance"}
                 </h2>
               </div>
-              <Badge
-                variant="outline"
-                className="border-rose-500/40 bg-rose-500/10 text-rose-200"
-              >
+              <Badge variant="outline" className="border-rose-500/40 bg-rose-500/10 text-rose-200">
                 {conceptLine}
               </Badge>
             </div>
@@ -617,8 +654,24 @@ export default function NeutralizationReactionLab({ onBack }: Props) {
                 {/* Two separate beakers before mixing */}
                 {phase === "unmixed" && (
                   <>
-                    <BeakerShape x={140} y={140} w={140} h={220} label={reaction.acid} labelColor="#fca5a5" tint="rgba(239,68,68,0.15)" />
-                    <BeakerShape x={360} y={140} w={140} h={220} label={reaction.base} labelColor="#93c5fd" tint="rgba(59,130,246,0.15)" />
+                    <BeakerShape
+                      x={140}
+                      y={140}
+                      w={140}
+                      h={220}
+                      label={reaction.acid}
+                      labelColor="#fca5a5"
+                      tint="rgba(239,68,68,0.15)"
+                    />
+                    <BeakerShape
+                      x={360}
+                      y={140}
+                      w={140}
+                      h={220}
+                      label={reaction.base}
+                      labelColor="#93c5fd"
+                      tint="rgba(59,130,246,0.15)"
+                    />
                     <text
                       x={CANVAS_W / 2}
                       y={CANVAS_H - 30}
@@ -681,8 +734,7 @@ export default function NeutralizationReactionLab({ onBack }: Props) {
                         fontSize="13"
                         fontWeight="600"
                       >
-                        {reaction.saltFormula} (
-                        {lang === "bn" ? "স্ফটিক জালি" : "crystal lattice"})
+                        {reaction.saltFormula} ({lang === "bn" ? "স্ফটিক জালি" : "crystal lattice"})
                       </text>
                     )}
                   </>
@@ -724,10 +776,7 @@ export default function NeutralizationReactionLab({ onBack }: Props) {
               <div className="mt-1 text-[11px] text-slate-400">{t("temperature")}</div>
             </div>
             <div className="mt-3">
-              <Progress
-                value={Math.min(100, ((temperature - 25) / 10) * 100)}
-                className="h-2"
-              />
+              <Progress value={Math.min(100, ((temperature - 25) / 10) * 100)} className="h-2" />
               <div className="mt-2 text-[11px] text-slate-400">
                 <div className="font-mono text-orange-300">{t("deltaH")}</div>
                 <div>{t("exothermic")}</div>
@@ -788,7 +837,9 @@ export default function NeutralizationReactionLab({ onBack }: Props) {
 // ─────────────────────────────────────────────────────────────
 // Small helpers
 // ─────────────────────────────────────────────────────────────
-function phaseKey(p: ReactionPhase): "phaseUnmixed" | "phaseDissociated" | "phaseColliding" | "phaseNeutralized" {
+function phaseKey(
+  p: ReactionPhase,
+): "phaseUnmixed" | "phaseDissociated" | "phaseColliding" | "phaseNeutralized" {
   switch (p) {
     case "unmixed":
       return "phaseUnmixed";
@@ -895,8 +946,22 @@ function IonSphere({ ion, reaction }: { ion: Ion; reaction: Reactant }) {
   if (ion.kind === "cation") {
     return (
       <g>
-        <circle cx={ion.x} cy={ion.y} r={8} fill={reaction.cationColor} stroke="#1e293b" strokeWidth={1} />
-        <text x={ion.x} y={ion.y + 3} textAnchor="middle" fontSize="7" fill="white" fontWeight="700">
+        <circle
+          cx={ion.x}
+          cy={ion.y}
+          r={8}
+          fill={reaction.cationColor}
+          stroke="#1e293b"
+          strokeWidth={1}
+        />
+        <text
+          x={ion.x}
+          y={ion.y + 3}
+          textAnchor="middle"
+          fontSize="7"
+          fill="white"
+          fontWeight="700"
+        >
           {reaction.cationLabel.slice(0, 2)}
         </text>
       </g>
@@ -905,8 +970,22 @@ function IonSphere({ ion, reaction }: { ion: Ion; reaction: Reactant }) {
   if (ion.kind === "anion") {
     return (
       <g>
-        <circle cx={ion.x} cy={ion.y} r={8} fill={reaction.anionColor} stroke="#1e293b" strokeWidth={1} />
-        <text x={ion.x} y={ion.y + 3} textAnchor="middle" fontSize="7" fill="white" fontWeight="700">
+        <circle
+          cx={ion.x}
+          cy={ion.y}
+          r={8}
+          fill={reaction.anionColor}
+          stroke="#1e293b"
+          strokeWidth={1}
+        />
+        <text
+          x={ion.x}
+          y={ion.y + 3}
+          textAnchor="middle"
+          fontSize="7"
+          fill="white"
+          fontWeight="700"
+        >
           {reaction.anionLabel.slice(0, 2)}
         </text>
       </g>
@@ -915,10 +994,25 @@ function IonSphere({ ion, reaction }: { ion: Ion; reaction: Reactant }) {
   // H2O
   return (
     <g>
-      <circle cx={ion.x} cy={ion.y} r={9} fill="#e0e7ff" opacity={0.9} stroke="#94a3b8" strokeWidth={1} />
+      <circle
+        cx={ion.x}
+        cy={ion.y}
+        r={9}
+        fill="#e0e7ff"
+        opacity={0.9}
+        stroke="#94a3b8"
+        strokeWidth={1}
+      />
       <circle cx={ion.x - 5} cy={ion.y - 5} r={3} fill="#fca5a5" />
       <circle cx={ion.x + 5} cy={ion.y - 5} r={3} fill="#fca5a5" />
-      <text x={ion.x} y={ion.y + 3} textAnchor="middle" fontSize="6" fill="#0f172a" fontWeight="700">
+      <text
+        x={ion.x}
+        y={ion.y + 3}
+        textAnchor="middle"
+        fontSize="6"
+        fill="#0f172a"
+        fontWeight="700"
+      >
         H₂O
       </text>
     </g>
@@ -953,9 +1047,7 @@ function EqBlock({
       <div className={`mb-1 text-[10px] font-semibold uppercase tracking-wider ${titleColor}`}>
         {title}
       </div>
-      <div className="break-words font-mono text-[11px] leading-relaxed text-slate-100">
-        {eq}
-      </div>
+      <div className="break-words font-mono text-[11px] leading-relaxed text-slate-100">{eq}</div>
     </div>
   );
 }

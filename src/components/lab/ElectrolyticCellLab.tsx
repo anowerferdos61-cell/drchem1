@@ -87,35 +87,62 @@ function WaterScene({
           DC {voltage.toFixed(1)} V
         </text>
         <circle cx="255" cy="31" r="4" fill={on ? "#22c55e" : "#7f1d1d"}>
-          {on && <animate attributeName="opacity" values="1;0.4;1" dur="1.2s" repeatCount="indefinite" />}
+          {on && (
+            <animate attributeName="opacity" values="1;0.4;1" dur="1.2s" repeatCount="indefinite" />
+          )}
         </circle>
-        <text x="248" y="60" fontSize="11" fontWeight="700" fill="#ef4444">+</text>
-        <text x="386" y="60" fontSize="11" fontWeight="700" fill="#38bdf8">−</text>
+        <text x="248" y="60" fontSize="11" fontWeight="700" fill="#ef4444">
+          +
+        </text>
+        <text x="386" y="60" fontSize="11" fontWeight="700" fill="#38bdf8">
+          −
+        </text>
       </g>
 
       {/* Wires from battery down to electrodes */}
-      <path d={`M250 48 L250 260 L${leftX + tubeW / 2} 260`} stroke="#ef4444" strokeWidth="3" fill="none" />
-      <path d={`M390 48 L390 260 L${rightX + tubeW / 2} 260`} stroke="#38bdf8" strokeWidth="3" fill="none" />
+      <path
+        d={`M250 48 L250 260 L${leftX + tubeW / 2} 260`}
+        stroke="#ef4444"
+        strokeWidth="3"
+        fill="none"
+      />
+      <path
+        d={`M390 48 L390 260 L${rightX + tubeW / 2} 260`}
+        stroke="#38bdf8"
+        strokeWidth="3"
+        fill="none"
+      />
 
       {/* Electron flow arrows (- → +) — outside battery: cathode wire → battery → anode wire */}
       {active && (
         <>
           <circle r="3.5" fill="#fde047">
-            <animateMotion dur={`${1.4 / Math.max(0.2, rate)}s`} repeatCount="indefinite"
-              path={`M${rightX + tubeW / 2} 260 L390 260 L390 48 L250 48 L250 260 L${leftX + tubeW / 2} 260`} />
+            <animateMotion
+              dur={`${1.4 / Math.max(0.2, rate)}s`}
+              repeatCount="indefinite"
+              path={`M${rightX + tubeW / 2} 260 L390 260 L390 48 L250 48 L250 260 L${leftX + tubeW / 2} 260`}
+            />
           </circle>
           <circle r="3.5" fill="#fde047">
-            <animateMotion dur={`${1.4 / Math.max(0.2, rate)}s`} begin="0.7s" repeatCount="indefinite"
-              path={`M${rightX + tubeW / 2} 260 L390 260 L390 48 L250 48 L250 260 L${leftX + tubeW / 2} 260`} />
+            <animateMotion
+              dur={`${1.4 / Math.max(0.2, rate)}s`}
+              begin="0.7s"
+              repeatCount="indefinite"
+              path={`M${rightX + tubeW / 2} 260 L390 260 L390 48 L250 48 L250 260 L${leftX + tubeW / 2} 260`}
+            />
           </circle>
-          <text x="320" y="12" fontSize="10" fill="#eab308" textAnchor="middle" fontWeight="700">e⁻ flow</text>
+          <text x="320" y="12" fontSize="10" fill="#eab308" textAnchor="middle" fontWeight="700">
+            e⁻ flow
+          </text>
         </>
       )}
 
       {/* Beaker */}
       <path
         d="M120 230 L120 380 Q120 400 140 400 L500 400 Q520 400 520 380 L520 230"
-        fill="url(#glassW)" stroke="#94a3b8" strokeWidth="2"
+        fill="url(#glassW)"
+        stroke="#94a3b8"
+        strokeWidth="2"
       />
       {/* Water */}
       <path
@@ -136,57 +163,120 @@ function WaterScene({
         {/* Tube glass */}
         <path
           d={`M${leftX} ${tubeTop} L${leftX} ${tubeTop + tubeH} Q${leftX} ${tubeTop + tubeH + 10} ${leftX + tubeW / 2} ${tubeTop + tubeH + 10} Q${leftX + tubeW} ${tubeTop + tubeH + 10} ${leftX + tubeW} ${tubeTop + tubeH} L${leftX + tubeW} ${tubeTop} Z`}
-          fill="url(#glassW)" stroke="#64748b" strokeWidth="1.5"
+          fill="url(#glassW)"
+          stroke="#64748b"
+          strokeWidth="1.5"
         />
         {/* Water inside */}
-        <rect x={leftX + 2} y={tubeTop + o2GasH} width={tubeW - 4} height={tubeH - o2GasH + 10} fill="url(#waterFill)" />
+        <rect
+          x={leftX + 2}
+          y={tubeTop + o2GasH}
+          width={tubeW - 4}
+          height={tubeH - o2GasH + 10}
+          fill="url(#waterFill)"
+        />
         {/* Gas headspace label */}
         {o2GasH > 6 && (
-          <text x={leftX + tubeW / 2} y={tubeTop + o2GasH / 2 + 4} textAnchor="middle" fontSize="9" fill="#0f172a" fontWeight="700">
+          <text
+            x={leftX + tubeW / 2}
+            y={tubeTop + o2GasH / 2 + 4}
+            textAnchor="middle"
+            fontSize="9"
+            fill="#0f172a"
+            fontWeight="700"
+          >
             O₂
           </text>
         )}
         {/* Rising bubbles */}
-        {active && Array.from({ length: 3 }).map((_, i) => (
-          <circle key={i} cx={leftX + 12 + i * 8} r="2.5" fill="#ffffff" opacity="0.9">
-            <animate attributeName="cy"
-              values={`${tubeTop + tubeH + 6};${tubeTop + o2GasH + 4}`}
-              dur={`${1.6 / Math.max(0.15, rate)}s`}
-              begin={`${i * 0.35}s`}
-              repeatCount="indefinite" />
-          </circle>
-        ))}
+        {active &&
+          Array.from({ length: 3 }).map((_, i) => (
+            <circle key={i} cx={leftX + 12 + i * 8} r="2.5" fill="#ffffff" opacity="0.9">
+              <animate
+                attributeName="cy"
+                values={`${tubeTop + tubeH + 6};${tubeTop + o2GasH + 4}`}
+                dur={`${1.6 / Math.max(0.15, rate)}s`}
+                begin={`${i * 0.35}s`}
+                repeatCount="indefinite"
+              />
+            </circle>
+          ))}
         {/* Electrode */}
-        <rect x={leftX + tubeW / 2 - 2} y={tubeTop + tubeH - 30} width="4" height="80" fill="#475569" />
+        <rect
+          x={leftX + tubeW / 2 - 2}
+          y={tubeTop + tubeH - 30}
+          width="4"
+          height="80"
+          fill="#475569"
+        />
         {/* Volume marker */}
-        <text x={leftX - 6} y={tubeTop - 6} textAnchor="end" fontSize="10" fontWeight="700" fill="#dc2626">Anode (+)</text>
-        <text x={leftX - 6} y={tubeTop + 8} textAnchor="end" fontSize="9" fill="#64748b">O₂ · 1 Vol</text>
+        <text
+          x={leftX - 6}
+          y={tubeTop - 6}
+          textAnchor="end"
+          fontSize="10"
+          fontWeight="700"
+          fill="#dc2626"
+        >
+          Anode (+)
+        </text>
+        <text x={leftX - 6} y={tubeTop + 8} textAnchor="end" fontSize="9" fill="#64748b">
+          O₂ · 1 Vol
+        </text>
       </g>
 
       {/* RIGHT test tube — H₂ (Cathode -) */}
       <g>
         <path
           d={`M${rightX} ${tubeTop} L${rightX} ${tubeTop + tubeH} Q${rightX} ${tubeTop + tubeH + 10} ${rightX + tubeW / 2} ${tubeTop + tubeH + 10} Q${rightX + tubeW} ${tubeTop + tubeH + 10} ${rightX + tubeW} ${tubeTop + tubeH} L${rightX + tubeW} ${tubeTop} Z`}
-          fill="url(#glassW)" stroke="#64748b" strokeWidth="1.5"
+          fill="url(#glassW)"
+          stroke="#64748b"
+          strokeWidth="1.5"
         />
-        <rect x={rightX + 2} y={tubeTop + h2GasH} width={tubeW - 4} height={tubeH - h2GasH + 10} fill="url(#waterFill)" />
+        <rect
+          x={rightX + 2}
+          y={tubeTop + h2GasH}
+          width={tubeW - 4}
+          height={tubeH - h2GasH + 10}
+          fill="url(#waterFill)"
+        />
         {h2GasH > 6 && (
-          <text x={rightX + tubeW / 2} y={tubeTop + h2GasH / 2 + 4} textAnchor="middle" fontSize="9" fill="#0f172a" fontWeight="700">
+          <text
+            x={rightX + tubeW / 2}
+            y={tubeTop + h2GasH / 2 + 4}
+            textAnchor="middle"
+            fontSize="9"
+            fill="#0f172a"
+            fontWeight="700"
+          >
             H₂
           </text>
         )}
-        {active && Array.from({ length: 5 }).map((_, i) => (
-          <circle key={i} cx={rightX + 8 + (i % 3) * 10} r="2.5" fill="#ffffff" opacity="0.95">
-            <animate attributeName="cy"
-              values={`${tubeTop + tubeH + 6};${tubeTop + h2GasH + 4}`}
-              dur={`${0.9 / Math.max(0.15, rate)}s`}
-              begin={`${i * 0.18}s`}
-              repeatCount="indefinite" />
-          </circle>
-        ))}
-        <rect x={rightX + tubeW / 2 - 2} y={tubeTop + tubeH - 30} width="4" height="80" fill="#475569" />
-        <text x={rightX + tubeW + 6} y={tubeTop - 6} fontSize="10" fontWeight="700" fill="#0284c7">Cathode (−)</text>
-        <text x={rightX + tubeW + 6} y={tubeTop + 8} fontSize="9" fill="#64748b">H₂ · 2 Vol</text>
+        {active &&
+          Array.from({ length: 5 }).map((_, i) => (
+            <circle key={i} cx={rightX + 8 + (i % 3) * 10} r="2.5" fill="#ffffff" opacity="0.95">
+              <animate
+                attributeName="cy"
+                values={`${tubeTop + tubeH + 6};${tubeTop + h2GasH + 4}`}
+                dur={`${0.9 / Math.max(0.15, rate)}s`}
+                begin={`${i * 0.18}s`}
+                repeatCount="indefinite"
+              />
+            </circle>
+          ))}
+        <rect
+          x={rightX + tubeW / 2 - 2}
+          y={tubeTop + tubeH - 30}
+          width="4"
+          height="80"
+          fill="#475569"
+        />
+        <text x={rightX + tubeW + 6} y={tubeTop - 6} fontSize="10" fontWeight="700" fill="#0284c7">
+          Cathode (−)
+        </text>
+        <text x={rightX + tubeW + 6} y={tubeTop + 8} fontSize="9" fill="#64748b">
+          H₂ · 2 Vol
+        </text>
       </g>
 
       {/* Ratio callout */}
@@ -254,10 +344,16 @@ function PlatingScene({
           DC {voltage.toFixed(1)} V
         </text>
         <circle cx="255" cy="31" r="4" fill={on ? "#22c55e" : "#7f1d1d"}>
-          {on && <animate attributeName="opacity" values="1;0.4;1" dur="1.2s" repeatCount="indefinite" />}
+          {on && (
+            <animate attributeName="opacity" values="1;0.4;1" dur="1.2s" repeatCount="indefinite" />
+          )}
         </circle>
-        <text x="248" y="60" fontSize="11" fontWeight="700" fill="#ef4444">+</text>
-        <text x="386" y="60" fontSize="11" fontWeight="700" fill="#38bdf8">−</text>
+        <text x="248" y="60" fontSize="11" fontWeight="700" fill="#ef4444">
+          +
+        </text>
+        <text x="386" y="60" fontSize="11" fontWeight="700" fill="#38bdf8">
+          −
+        </text>
       </g>
 
       {/* Wires */}
@@ -268,61 +364,99 @@ function PlatingScene({
       {active && (
         <>
           <circle r="3.5" fill="#fde047">
-            <animateMotion dur={`${1.4 / Math.max(0.2, rate)}s`} repeatCount="indefinite"
-              path="M425 210 L390 210 L390 48 L250 48 L250 210 L215 210" />
+            <animateMotion
+              dur={`${1.4 / Math.max(0.2, rate)}s`}
+              repeatCount="indefinite"
+              path="M425 210 L390 210 L390 48 L250 48 L250 210 L215 210"
+            />
           </circle>
-          <text x="320" y="12" fontSize="10" fill="#eab308" textAnchor="middle" fontWeight="700">e⁻ flow</text>
+          <text x="320" y="12" fontSize="10" fill="#eab308" textAnchor="middle" fontWeight="700">
+            e⁻ flow
+          </text>
         </>
       )}
 
       {/* Beaker */}
       <path
         d="M110 220 L110 390 Q110 410 130 410 L510 410 Q530 410 530 390 L530 220"
-        fill="url(#glassP)" stroke="#94a3b8" strokeWidth="2"
+        fill="url(#glassP)"
+        stroke="#94a3b8"
+        strokeWidth="2"
       />
       {/* CuSO4 solution */}
-      <path d="M116 260 L116 388 Q116 404 132 404 L508 404 Q524 404 524 388 L524 260 Z" fill="url(#cuso4)" />
+      <path
+        d="M116 260 L116 388 Q116 404 132 404 L508 404 Q524 404 524 388 L524 260 Z"
+        fill="url(#cuso4)"
+      />
 
       {/* Cu²⁺ ions migrating from anode (left) to cathode (right) */}
-      {active && Array.from({ length: 6 }).map((_, i) => (
-        <g key={i}>
-          <circle r="4" fill="#60a5fa" opacity="0.9">
-            <animate attributeName="cx"
-              values={`${230 - anodeThinning};${400}`}
-              dur={`${2.2 / Math.max(0.25, rate)}s`}
-              begin={`${i * 0.35}s`}
-              repeatCount="indefinite" />
-            <animate attributeName="cy"
-              values={`${300 + (i % 3) * 20};${320 + (i % 3) * 15}`}
-              dur={`${2.2 / Math.max(0.25, rate)}s`}
-              begin={`${i * 0.35}s`}
-              repeatCount="indefinite" />
-          </circle>
-          <text fontSize="8" fill="#0f172a" fontWeight="700">
-            <animate attributeName="x"
-              values={`${234 - anodeThinning};${404}`}
-              dur={`${2.2 / Math.max(0.25, rate)}s`}
-              begin={`${i * 0.35}s`}
-              repeatCount="indefinite" />
-            <animate attributeName="y"
-              values={`${303 + (i % 3) * 20};${323 + (i % 3) * 15}`}
-              dur={`${2.2 / Math.max(0.25, rate)}s`}
-              begin={`${i * 0.35}s`}
-              repeatCount="indefinite" />
-            Cu²⁺
-          </text>
-        </g>
-      ))}
+      {active &&
+        Array.from({ length: 6 }).map((_, i) => (
+          <g key={i}>
+            <circle r="4" fill="#60a5fa" opacity="0.9">
+              <animate
+                attributeName="cx"
+                values={`${230 - anodeThinning};${400}`}
+                dur={`${2.2 / Math.max(0.25, rate)}s`}
+                begin={`${i * 0.35}s`}
+                repeatCount="indefinite"
+              />
+              <animate
+                attributeName="cy"
+                values={`${300 + (i % 3) * 20};${320 + (i % 3) * 15}`}
+                dur={`${2.2 / Math.max(0.25, rate)}s`}
+                begin={`${i * 0.35}s`}
+                repeatCount="indefinite"
+              />
+            </circle>
+            <text fontSize="8" fill="#0f172a" fontWeight="700">
+              <animate
+                attributeName="x"
+                values={`${234 - anodeThinning};${404}`}
+                dur={`${2.2 / Math.max(0.25, rate)}s`}
+                begin={`${i * 0.35}s`}
+                repeatCount="indefinite"
+              />
+              <animate
+                attributeName="y"
+                values={`${303 + (i % 3) * 20};${323 + (i % 3) * 15}`}
+                dur={`${2.2 / Math.max(0.25, rate)}s`}
+                begin={`${i * 0.35}s`}
+                repeatCount="indefinite"
+              />
+              Cu²⁺
+            </text>
+          </g>
+        ))}
 
       {/* ANODE — Copper strip (left) */}
       <g>
-        <rect x={215 - anodeThinning / 2} y="240" width={20 - anodeThinning} height="150" fill="url(#copperG)" stroke="#7c2d12" />
+        <rect
+          x={215 - anodeThinning / 2}
+          y="240"
+          width={20 - anodeThinning}
+          height="150"
+          fill="url(#copperG)"
+          stroke="#7c2d12"
+        />
         {plating > 0.1 && (
-          <rect x={215 - anodeThinning / 2} y="240" width={20 - anodeThinning} height="150"
-            fill="url(#copperG)" opacity="0.5" strokeDasharray="3 2" stroke="#78350f" />
+          <rect
+            x={215 - anodeThinning / 2}
+            y="240"
+            width={20 - anodeThinning}
+            height="150"
+            fill="url(#copperG)"
+            opacity="0.5"
+            strokeDasharray="3 2"
+            stroke="#78350f"
+          />
         )}
-        <text x="225" y="230" textAnchor="middle" fontSize="10" fontWeight="700" fill="#dc2626">Anode (+)</text>
-        <text x="225" y="428" textAnchor="middle" fontSize="9" fill="#7c2d12" fontWeight="700">Cu strip</text>
+        <text x="225" y="230" textAnchor="middle" fontSize="10" fontWeight="700" fill="#dc2626">
+          Anode (+)
+        </text>
+        <text x="225" y="428" textAnchor="middle" fontSize="9" fill="#7c2d12" fontWeight="700">
+          Cu strip
+        </text>
       </g>
 
       {/* CATHODE — Iron spoon (right) */}
@@ -330,12 +464,31 @@ function PlatingScene({
         {/* Handle */}
         <rect x="20" y="0" width="10" height="120" fill="url(#ironG)" stroke="#334155" />
         {/* Bowl */}
-        <ellipse cx="25" cy="150" rx="26" ry="34" fill="url(#ironG)" stroke="#334155" strokeWidth="1.5" />
+        <ellipse
+          cx="25"
+          cy="150"
+          rx="26"
+          ry="34"
+          fill="url(#ironG)"
+          stroke="#334155"
+          strokeWidth="1.5"
+        />
         {/* Copper plating overlay */}
         <ellipse cx="25" cy="150" rx="26" ry="34" fill="url(#copperG)" opacity={coatOpacity} />
-        <rect x="20" y="0" width="10" height="120" fill="url(#copperG)" opacity={coatOpacity * 0.85} />
-        <text x="25" y="-6" textAnchor="middle" fontSize="10" fontWeight="700" fill="#0284c7">Cathode (−)</text>
-        <text x="25" y="200" textAnchor="middle" fontSize="9" fill="#334155" fontWeight="700">Fe spoon</text>
+        <rect
+          x="20"
+          y="0"
+          width="10"
+          height="120"
+          fill="url(#copperG)"
+          opacity={coatOpacity * 0.85}
+        />
+        <text x="25" y="-6" textAnchor="middle" fontSize="10" fontWeight="700" fill="#0284c7">
+          Cathode (−)
+        </text>
+        <text x="25" y="200" textAnchor="middle" fontSize="9" fill="#334155" fontWeight="700">
+          Fe spoon
+        </text>
       </g>
 
       {/* Solution label */}
@@ -416,19 +569,20 @@ export default function ElectrolyticCellLab({ onBack }: Props) {
   }, [on, voltage, acid, mode]);
 
   // Steps
-  const steps = mode === "water"
-    ? [
-        { label: "Add H₂SO₄ drops (conductivity ↑) · সালফিউরিক এসিড দাও", done: acid > 0 },
-        { label: "Turn ON the battery · ব্যাটারি চালু করো", done: on },
-        { label: "Increase voltage · ভোল্টেজ বাড়াও (>4V)", done: voltage >= 4 },
-        { label: "Observe 2:1 ratio · H₂:O₂ = 2:1 দেখো", done: h2Frac > 0.15 },
-      ]
-    : [
-        { label: "Turn ON the battery · ব্যাটারি চালু করো", done: on },
-        { label: "Cu²⁺ ions migrate · আয়ন গতিশীল হয়েছে", done: on && voltage > 0 },
-        { label: "Copper layer grows on spoon · চামচে আবরণ", done: plating > 0.2 },
-        { label: "Full plating · সম্পূর্ণ প্লেটিং", done: plating > 0.75 },
-      ];
+  const steps =
+    mode === "water"
+      ? [
+          { label: "Add H₂SO₄ drops (conductivity ↑) · সালফিউরিক এসিড দাও", done: acid > 0 },
+          { label: "Turn ON the battery · ব্যাটারি চালু করো", done: on },
+          { label: "Increase voltage · ভোল্টেজ বাড়াও (>4V)", done: voltage >= 4 },
+          { label: "Observe 2:1 ratio · H₂:O₂ = 2:1 দেখো", done: h2Frac > 0.15 },
+        ]
+      : [
+          { label: "Turn ON the battery · ব্যাটারি চালু করো", done: on },
+          { label: "Cu²⁺ ions migrate · আয়ন গতিশীল হয়েছে", done: on && voltage > 0 },
+          { label: "Copper layer grows on spoon · চামচে আবরণ", done: plating > 0.2 },
+          { label: "Full plating · সম্পূর্ণ প্লেটিং", done: plating > 0.75 },
+        ];
 
   const Header = (
     <div className="flex items-center gap-2">
@@ -439,7 +593,10 @@ export default function ElectrolyticCellLab({ onBack }: Props) {
   );
 
   const Badge_ = (
-    <Badge variant="outline" className="gap-1 border-amber-400/60 bg-amber-50 text-amber-900 dark:bg-amber-950 dark:text-amber-200">
+    <Badge
+      variant="outline"
+      className="gap-1 border-amber-400/60 bg-amber-50 text-amber-900 dark:bg-amber-950 dark:text-amber-200"
+    >
       <BatteryCharging className="h-3 w-3" />
       Electrolytic Cell
     </Badge>
@@ -538,11 +695,15 @@ export default function ElectrolyticCellLab({ onBack }: Props) {
         {compareOpen && (
           <div className="mt-2 space-y-2 text-[11px]">
             <div className="rounded border border-amber-300 bg-amber-50 dark:bg-amber-950/40 p-2">
-              <div className="font-bold text-amber-800 dark:text-amber-200">Electrolytic (এই ল্যাব)</div>
+              <div className="font-bold text-amber-800 dark:text-amber-200">
+                Electrolytic (এই ল্যাব)
+              </div>
               <div>Electrical → Chemical · Anode (+) · Cathode (−) · Battery required</div>
             </div>
             <div className="rounded border border-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 p-2">
-              <div className="font-bold text-emerald-800 dark:text-emerald-200">Galvanic (Daniel Cell)</div>
+              <div className="font-bold text-emerald-800 dark:text-emerald-200">
+                Galvanic (Daniel Cell)
+              </div>
               <div>Chemical → Electrical · Anode (−) · Cathode (+) · Spontaneous</div>
             </div>
           </div>
@@ -554,11 +715,17 @@ export default function ElectrolyticCellLab({ onBack }: Props) {
   const controls = (
     <>
       <Card className="p-3 space-y-3">
-        <div className="text-xs font-bold uppercase text-muted-foreground">Experiment · পরীক্ষা</div>
+        <div className="text-xs font-bold uppercase text-muted-foreground">
+          Experiment · পরীক্ষা
+        </div>
         <Tabs value={mode} onValueChange={(v) => setMode(v as Mode)}>
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="water" className="text-[11px]">A · Water</TabsTrigger>
-            <TabsTrigger value="plating" className="text-[11px]">B · Plating</TabsTrigger>
+            <TabsTrigger value="water" className="text-[11px]">
+              A · Water
+            </TabsTrigger>
+            <TabsTrigger value="plating" className="text-[11px]">
+              B · Plating
+            </TabsTrigger>
           </TabsList>
         </Tabs>
       </Card>
@@ -571,16 +738,25 @@ export default function ElectrolyticCellLab({ onBack }: Props) {
           </div>
           <Switch checked={on} onCheckedChange={setOn} />
         </div>
-        <div className={`h-2 rounded-full ${on ? "bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.7)]" : "bg-rose-500/60"}`} />
+        <div
+          className={`h-2 rounded-full ${on ? "bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.7)]" : "bg-rose-500/60"}`}
+        />
 
         <div className="space-y-1">
           <div className="flex items-center justify-between text-xs">
             <span className="font-semibold">Voltage (Rheostat)</span>
             <span className="font-mono text-amber-600">{voltage.toFixed(1)} V</span>
           </div>
-          <Slider value={[voltage]} onValueChange={(v) => setVoltage(v[0])} min={0} max={12} step={0.5} />
+          <Slider
+            value={[voltage]}
+            onValueChange={(v) => setVoltage(v[0])}
+            min={0}
+            max={12}
+            step={0.5}
+          />
           <div className="flex justify-between text-[10px] text-muted-foreground">
-            <span>0V</span><span>12V</span>
+            <span>0V</span>
+            <span>12V</span>
           </div>
         </div>
 
@@ -594,7 +770,8 @@ export default function ElectrolyticCellLab({ onBack }: Props) {
             </div>
             <Slider value={[acid]} onValueChange={(v) => setAcid(v[0])} min={0} max={10} step={1} />
             <div className="flex justify-between text-[10px] text-muted-foreground">
-              <span>Pure H₂O (no conduct)</span><span>10 drops</span>
+              <span>Pure H₂O (no conduct)</span>
+              <span>10 drops</span>
             </div>
           </div>
         )}
@@ -609,7 +786,9 @@ export default function ElectrolyticCellLab({ onBack }: Props) {
         <ul className="space-y-1">
           {steps.map((s, i) => (
             <li key={i} className="flex items-start gap-2 text-[11px]">
-              <span className={`mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full text-[9px] font-bold ${s.done ? "bg-emerald-500 text-white" : "border border-slate-300 text-slate-400"}`}>
+              <span
+                className={`mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full text-[9px] font-bold ${s.done ? "bg-emerald-500 text-white" : "border border-slate-300 text-slate-400"}`}
+              >
                 {s.done ? "✓" : i + 1}
               </span>
               <span className={s.done ? "text-muted-foreground line-through" : ""}>{s.label}</span>
@@ -645,9 +824,9 @@ export default function ElectrolyticCellLab({ onBack }: Props) {
     <div>
       <h3>তড়িৎবিশ্লেষণ (Electrolysis) কী?</h3>
       <p>
-        যে প্রক্রিয়ায় বহিরাগত বৈদ্যুতিক শক্তির সাহায্যে একটি অস্বতঃস্ফূর্ত রাসায়নিক
-        বিক্রিয়া ঘটানো হয়, তাকে তড়িৎবিশ্লেষণ বলে। যে কোষে এটি ঘটে তাকে তড়িৎবিশ্লেষ্য
-        কোষ (Electrolytic Cell) বলে।
+        যে প্রক্রিয়ায় বহিরাগত বৈদ্যুতিক শক্তির সাহায্যে একটি অস্বতঃস্ফূর্ত রাসায়নিক বিক্রিয়া
+        ঘটানো হয়, তাকে তড়িৎবিশ্লেষণ বলে। যে কোষে এটি ঘটে তাকে তড়িৎবিশ্লেষ্য কোষ (Electrolytic
+        Cell) বলে।
       </p>
       <h4>মূল বৈশিষ্ট্য</h4>
       <ul>

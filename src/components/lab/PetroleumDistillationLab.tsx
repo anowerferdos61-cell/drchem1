@@ -10,8 +10,19 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
 import {
-  ArrowLeft, Play, RotateCcw, Flame, Droplet, Wind, Fuel, Car, Truck,
-  Cog, Layers, Sparkles, ArrowDown,
+  ArrowLeft,
+  Play,
+  RotateCcw,
+  Flame,
+  Droplet,
+  Wind,
+  Fuel,
+  Car,
+  Truck,
+  Cog,
+  Layers,
+  Sparkles,
+  ArrowDown,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import DraggableTheoryFab from "./DraggableTheoryFab";
@@ -21,12 +32,12 @@ type Fraction = {
   id: string;
   nameBn: string;
   nameEn: string;
-  bpMin: number;   // °C
-  bpMax: number;   // °C (Infinity for residue)
+  bpMin: number; // °C
+  bpMax: number; // °C (Infinity for residue)
   cMin: number;
-  cMax: number;    // sentinel large number for residue
+  cMax: number; // sentinel large number for residue
   usesBn: string[];
-  color: string;   // tailwind bg color for column band + chip
+  color: string; // tailwind bg color for column band + chip
   ring: string;
   outletColor: string;
   icon: typeof Fuel;
@@ -37,8 +48,10 @@ const FRACTIONS: Fraction[] = [
     id: "gas",
     nameBn: "পেট্রোলিয়াম গ্যাস",
     nameEn: "Petroleum Gas (LPG)",
-    bpMin: -160, bpMax: 20,
-    cMin: 1, cMax: 4,
+    bpMin: -160,
+    bpMax: 20,
+    cMin: 1,
+    cMax: 4,
     usesBn: ["রান্নার গ্যাস (LPG)", "গৃহস্থালি জ্বালানি"],
     color: "from-sky-400/70 to-cyan-400/50",
     ring: "ring-sky-400/60",
@@ -49,8 +62,10 @@ const FRACTIONS: Fraction[] = [
     id: "petrol",
     nameBn: "পেট্রোল (গ্যাসোলিন)",
     nameEn: "Gasoline / Petrol",
-    bpMin: 20, bpMax: 70,
-    cMin: 5, cMax: 10,
+    bpMin: 20,
+    bpMax: 70,
+    cMin: 5,
+    cMax: 10,
     usesBn: ["গাড়ির জ্বালানি", "মোটরসাইকেল"],
     color: "from-yellow-300/70 to-amber-300/50",
     ring: "ring-amber-400/60",
@@ -61,8 +76,10 @@ const FRACTIONS: Fraction[] = [
     id: "naphtha",
     nameBn: "ন্যাপথা",
     nameEn: "Naphtha",
-    bpMin: 70, bpMax: 120,
-    cMin: 8, cMax: 12,
+    bpMin: 70,
+    bpMax: 120,
+    cMin: 8,
+    cMax: 12,
     usesBn: ["পেট্রোকেমিক্যাল কাঁচামাল", "প্লাস্টিক শিল্প"],
     color: "from-amber-400/70 to-orange-400/50",
     ring: "ring-orange-400/60",
@@ -73,8 +90,10 @@ const FRACTIONS: Fraction[] = [
     id: "kerosene",
     nameBn: "কেরোসিন",
     nameEn: "Kerosene",
-    bpMin: 120, bpMax: 170,
-    cMin: 10, cMax: 16,
+    bpMin: 120,
+    bpMax: 170,
+    cMin: 10,
+    cMax: 16,
     usesBn: ["জেট ফুয়েল", "কুপি বাতি", "স্টোভ"],
     color: "from-orange-400/70 to-red-400/50",
     ring: "ring-orange-500/60",
@@ -85,8 +104,10 @@ const FRACTIONS: Fraction[] = [
     id: "diesel",
     nameBn: "ডিজেল তেল",
     nameEn: "Diesel Oil",
-    bpMin: 170, bpMax: 250,
-    cMin: 14, cMax: 20,
+    bpMin: 170,
+    bpMax: 250,
+    cMin: 14,
+    cMax: 20,
     usesBn: ["ট্রাক-বাস", "জেনারেটর", "ট্রেন"],
     color: "from-red-400/70 to-rose-500/50",
     ring: "ring-rose-500/60",
@@ -97,8 +118,10 @@ const FRACTIONS: Fraction[] = [
     id: "fuel_oil",
     nameBn: "জ্বালানি তেল",
     nameEn: "Fuel Oil",
-    bpMin: 250, bpMax: 300,
-    cMin: 20, cMax: 30,
+    bpMin: 250,
+    bpMax: 300,
+    cMin: 20,
+    cMax: 30,
     usesBn: ["জাহাজের জ্বালানি", "ইন্ডাস্ট্রিয়াল বয়লার"],
     color: "from-rose-500/70 to-fuchsia-600/50",
     ring: "ring-fuchsia-500/60",
@@ -109,8 +132,10 @@ const FRACTIONS: Fraction[] = [
     id: "lube",
     nameBn: "লুব্রিকেটিং তেল",
     nameEn: "Lubricating Oil",
-    bpMin: 300, bpMax: 350,
-    cMin: 30, cMax: 40,
+    bpMin: 300,
+    bpMax: 350,
+    cMin: 30,
+    cMax: 40,
     usesBn: ["ইঞ্জিন অয়েল", "মেশিন লুব্রিকেন্ট", "গ্রীজ"],
     color: "from-purple-500/70 to-violet-700/50",
     ring: "ring-violet-500/60",
@@ -121,8 +146,10 @@ const FRACTIONS: Fraction[] = [
     id: "bitumen",
     nameBn: "বিটুমিন / আলকাতরা",
     nameEn: "Bitumen",
-    bpMin: 350, bpMax: 999,
-    cMin: 40, cMax: 70,
+    bpMin: 350,
+    bpMax: 999,
+    cMin: 40,
+    cMax: 70,
     usesBn: ["রাস্তার পিচ", "ছাদের জলরোধক"],
     color: "from-neutral-700/80 to-black/70",
     ring: "ring-neutral-500/60",
@@ -133,8 +160,7 @@ const FRACTIONS: Fraction[] = [
 
 function fractionAt(temp: number): Fraction {
   return (
-    FRACTIONS.find((f) => temp >= f.bpMin && temp < f.bpMax) ??
-    FRACTIONS[FRACTIONS.length - 1]
+    FRACTIONS.find((f) => temp >= f.bpMin && temp < f.bpMax) ?? FRACTIONS[FRACTIONS.length - 1]
   );
 }
 
@@ -171,7 +197,12 @@ export default function PetroleumDistillationLab({ onBack }: { onBack: () => voi
       <header className="sticky top-0 z-20 border-b bg-background/85 backdrop-blur-xl">
         <div className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-2.5">
           <div className="flex min-w-0 items-center gap-2">
-            <Button variant="ghost" size="sm" onClick={onBack} className="-ml-2 h-8 shrink-0 gap-1 px-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onBack}
+              className="-ml-2 h-8 shrink-0 gap-1 px-2"
+            >
               <ArrowLeft className="h-4 w-4" />
               <span className="hidden sm:inline">ফিরে যান</span>
             </Button>
@@ -218,10 +249,10 @@ export default function PetroleumDistillationLab({ onBack }: { onBack: () => voi
       <DraggableTheoryFab storageKey="petroleum-distillation">
         <h3>আংশিক পাতন (Fractional Distillation) কী?</h3>
         <p>
-          বিভিন্ন উপাদানের স্ফুটনাঙ্কের (Boiling Point) পার্থক্যকে কাজে লাগিয়ে
-          অপরিশোধিত তেল (Crude Oil) থেকে বিভিন্ন উপযোগী উপাদান আলাদা করার পদ্ধতিকে
-          <strong> আংশিক পাতন</strong> বলে। এটি একটি লম্বা <em>Fractionating Column</em>{" "}
-          বা পাতন-স্তম্ভে সম্পন্ন হয়।
+          বিভিন্ন উপাদানের স্ফুটনাঙ্কের (Boiling Point) পার্থক্যকে কাজে লাগিয়ে অপরিশোধিত তেল (Crude
+          Oil) থেকে বিভিন্ন উপযোগী উপাদান আলাদা করার পদ্ধতিকে
+          <strong> আংশিক পাতন</strong> বলে। এটি একটি লম্বা <em>Fractionating Column</em> বা
+          পাতন-স্তম্ভে সম্পন্ন হয়।
         </p>
 
         <h4>মূলনীতি (Principle)</h4>
@@ -243,21 +274,64 @@ export default function PetroleumDistillationLab({ onBack }: { onBack: () => voi
             </tr>
           </thead>
           <tbody>
-            <tr><td>Petroleum Gas</td><td>C₁–C₄</td><td>&lt; 20</td><td>LPG, রান্নার গ্যাস</td></tr>
-            <tr><td>Petrol / Gasoline</td><td>C₅–C₁₀</td><td>20–70</td><td>গাড়ির জ্বালানি</td></tr>
-            <tr><td>Naphtha</td><td>C₈–C₁₂</td><td>70–120</td><td>পেট্রোকেমিক্যাল কাঁচামাল</td></tr>
-            <tr><td>Kerosene</td><td>C₁₀–C₁₆</td><td>120–170</td><td>জেট ফুয়েল, স্টোভ</td></tr>
-            <tr><td>Diesel</td><td>C₁₄–C₂₀</td><td>170–250</td><td>ট্রাক-বাস, জেনারেটর</td></tr>
-            <tr><td>Fuel Oil</td><td>C₂₀–C₃₀</td><td>250–300</td><td>জাহাজ, বয়লার</td></tr>
-            <tr><td>Lubricating Oil</td><td>C₃₀–C₄₀</td><td>300–350</td><td>ইঞ্জিন অয়েল, গ্রীজ</td></tr>
-            <tr><td>Bitumen</td><td>C₄₀+</td><td>&gt; 350</td><td>রাস্তার পিচ</td></tr>
+            <tr>
+              <td>Petroleum Gas</td>
+              <td>C₁–C₄</td>
+              <td>&lt; 20</td>
+              <td>LPG, রান্নার গ্যাস</td>
+            </tr>
+            <tr>
+              <td>Petrol / Gasoline</td>
+              <td>C₅–C₁₀</td>
+              <td>20–70</td>
+              <td>গাড়ির জ্বালানি</td>
+            </tr>
+            <tr>
+              <td>Naphtha</td>
+              <td>C₈–C₁₂</td>
+              <td>70–120</td>
+              <td>পেট্রোকেমিক্যাল কাঁচামাল</td>
+            </tr>
+            <tr>
+              <td>Kerosene</td>
+              <td>C₁₀–C₁₆</td>
+              <td>120–170</td>
+              <td>জেট ফুয়েল, স্টোভ</td>
+            </tr>
+            <tr>
+              <td>Diesel</td>
+              <td>C₁₄–C₂₀</td>
+              <td>170–250</td>
+              <td>ট্রাক-বাস, জেনারেটর</td>
+            </tr>
+            <tr>
+              <td>Fuel Oil</td>
+              <td>C₂₀–C₃₀</td>
+              <td>250–300</td>
+              <td>জাহাজ, বয়লার</td>
+            </tr>
+            <tr>
+              <td>Lubricating Oil</td>
+              <td>C₃₀–C₄₀</td>
+              <td>300–350</td>
+              <td>ইঞ্জিন অয়েল, গ্রীজ</td>
+            </tr>
+            <tr>
+              <td>Bitumen</td>
+              <td>C₄₀+</td>
+              <td>&gt; 350</td>
+              <td>রাস্তার পিচ</td>
+            </tr>
           </tbody>
         </table>
 
         <h4>পরীক্ষায় মনে রাখো</h4>
         <ul>
           <li>Crude oil একটি hydrocarbon mixture — এতে alkane, cycloalkane ও aromatic থাকে।</li>
-          <li>Fractionating column-এ থাকে <em>bubble caps</em> — যা vapour ও liquid-এর সংস্পর্শ বাড়ায়।</li>
+          <li>
+            Fractionating column-এ থাকে <em>bubble caps</em> — যা vapour ও liquid-এর সংস্পর্শ
+            বাড়ায়।
+          </li>
           <li>উঁচু স্তরে হালকা (light) fraction, নিচু স্তরে ভারী (heavy) fraction পাওয়া যায়।</li>
           <li>Bitumen ও lubricating oil সরাসরি স্তম্ভের নিচে residue হিসেবে জমা হয়।</li>
         </ul>
@@ -268,9 +342,13 @@ export default function PetroleumDistillationLab({ onBack }: { onBack: () => voi
 
 /* ═════════════ Panel 1: Fractionating Column ═════════════ */
 function FractionatingColumn({
-  temp, running, active,
+  temp,
+  running,
+  active,
 }: {
-  temp: number; running: boolean; active: Fraction;
+  temp: number;
+  running: boolean;
+  active: Fraction;
 }) {
   // Draw fractions top→bottom: top = coldest (gas) → bottom = bitumen
   const bands = FRACTIONS; // already ordered coldest→hottest
@@ -295,7 +373,8 @@ function FractionatingColumn({
                 key={f.id}
                 className={cn(
                   "relative flex items-center justify-between border-b border-white/30 px-3 text-[10px] font-semibold text-slate-800 dark:text-slate-100 transition-all",
-                  "bg-gradient-to-r", f.color,
+                  "bg-gradient-to-r",
+                  f.color,
                   isActive && `ring-2 ${f.ring} z-10 shadow-lg`,
                 )}
                 style={{ height: `${100 / bands.length}%` }}
@@ -317,11 +396,13 @@ function FractionatingColumn({
                 {/* Outlet pipe + glow when active */}
                 <div className="absolute right-0 top-1/2 flex -translate-y-1/2 translate-x-full items-center">
                   <div className={cn("h-1.5 w-8", f.outletColor)} />
-                  <div className={cn(
-                    "grid h-6 w-6 place-items-center rounded-full text-white shadow",
-                    f.outletColor,
-                    isActive && "animate-pulse ring-4 ring-white/40",
-                  )}>
+                  <div
+                    className={cn(
+                      "grid h-6 w-6 place-items-center rounded-full text-white shadow",
+                      f.outletColor,
+                      isActive && "animate-pulse ring-4 ring-white/40",
+                    )}
+                  >
                     <f.icon className="h-3 w-3" />
                   </div>
                 </div>
@@ -390,9 +471,9 @@ function FractionatingColumn({
         </div>
 
         <div className="mt-3 rounded-lg border bg-muted/40 p-2 text-[11px] leading-snug">
-          <strong>স্তম্ভের নিয়ম:</strong> নিচে সর্বোচ্চ তাপ ({">"}340°C) — উপরে সর্বনিম্ন
-          তাপ ({"<"}20°C)। প্রতিটি হাইড্রোকার্বন নিজের স্ফুটনাঙ্কের স্তরে ঘনীভূত হয়ে
-          পার্শ্ব-নালী দিয়ে বেরিয়ে আসে।
+          <strong>স্তম্ভের নিয়ম:</strong> নিচে সর্বোচ্চ তাপ ({">"}340°C) — উপরে সর্বনিম্ন তাপ (
+          {"<"}20°C)। প্রতিটি হাইড্রোকার্বন নিজের স্ফুটনাঙ্কের স্তরে ঘনীভূত হয়ে পার্শ্ব-নালী দিয়ে
+          বেরিয়ে আসে।
         </div>
       </div>
     </Card>
@@ -400,9 +481,7 @@ function FractionatingColumn({
 }
 
 function BubbleCap() {
-  return (
-    <div className="h-2 w-2 rounded-full border border-white/60 bg-white/30 shadow-inner" />
-  );
+  return <div className="h-2 w-2 rounded-full border border-white/60 bg-white/30 shadow-inner" />;
 }
 
 /* ═════════════ Panel 2: Molecular View ═════════════ */
@@ -434,7 +513,8 @@ function MolecularPanel({ active }: { active: Fraction }) {
                 key={i}
                 className={cn(
                   "flex h-8 w-8 items-center justify-center rounded-full text-[10px] font-bold text-white shadow",
-                  "bg-gradient-to-br", active.color,
+                  "bg-gradient-to-br",
+                  active.color,
                 )}
                 animate={{ y: [0, -2, 0, 2, 0] }}
                 transition={{ repeat: Infinity, duration: 1.6 + i * 0.05, delay: i * 0.05 }}
@@ -452,12 +532,12 @@ function MolecularPanel({ active }: { active: Fraction }) {
           <span className="text-muted-foreground">({active.nameEn})</span>
         </div>
         <div className="text-muted-foreground">
-          স্ফুটনাঙ্ক: {active.bpMin < 0 ? "<20" : active.bpMin}
-          –{active.bpMax === 999 ? "∞" : active.bpMax}°C
+          স্ফুটনাঙ্ক: {active.bpMin < 0 ? "<20" : active.bpMin}–
+          {active.bpMax === 999 ? "∞" : active.bpMax}°C
         </div>
         <div className="mt-1 rounded-md bg-muted/50 px-2 py-1.5 text-[11px]">
-          💡 ছোট শিকল = কম আন্তঃআণবিক বল = <strong>কম স্ফুটনাঙ্ক</strong>।
-          বড় শিকল = বেশি বল = <strong>বেশি স্ফুটনাঙ্ক</strong>।
+          💡 ছোট শিকল = কম আন্তঃআণবিক বল = <strong>কম স্ফুটনাঙ্ক</strong>। বড় শিকল = বেশি বল ={" "}
+          <strong>বেশি স্ফুটনাঙ্ক</strong>।
         </div>
       </div>
     </Card>
@@ -466,8 +546,11 @@ function MolecularPanel({ active }: { active: Fraction }) {
 
 /* ═════════════ Boiling Point Graph ═════════════ */
 function BoilingPointGraph({ active, temp }: { active: Fraction; temp: number }) {
-  const W = 320, H = 140, PAD = 28;
-  const maxC = 60, maxBp = 400;
+  const W = 320,
+    H = 140,
+    PAD = 28;
+  const maxC = 60,
+    maxBp = 400;
   const points = FRACTIONS.map((f) => {
     const c = (f.cMin + f.cMax) / 2;
     const bp = (Math.max(0, f.bpMin) + Math.min(400, f.bpMax === 999 ? 380 : f.bpMax)) / 2;
@@ -484,26 +567,66 @@ function BoilingPointGraph({ active, temp }: { active: Fraction; temp: number })
         <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
           BP vs Carbon # · স্ফুটনাঙ্ক বনাম কার্বন সংখ্যা
         </div>
-        <Badge variant="outline" className="text-[10px]">{Math.round(temp)}°C</Badge>
+        <Badge variant="outline" className="text-[10px]">
+          {Math.round(temp)}°C
+        </Badge>
       </div>
       <svg viewBox={`0 0 ${W} ${H}`} className="w-full">
         {/* axes */}
-        <line x1={PAD} y1={H - PAD} x2={W - PAD / 2} y2={H - PAD} className="stroke-muted-foreground/60" strokeWidth={1} />
-        <line x1={PAD} y1={PAD / 2} x2={PAD} y2={H - PAD} className="stroke-muted-foreground/60" strokeWidth={1} />
-        <text x={W / 2} y={H - 4} textAnchor="middle" className="fill-muted-foreground" fontSize="9">
+        <line
+          x1={PAD}
+          y1={H - PAD}
+          x2={W - PAD / 2}
+          y2={H - PAD}
+          className="stroke-muted-foreground/60"
+          strokeWidth={1}
+        />
+        <line
+          x1={PAD}
+          y1={PAD / 2}
+          x2={PAD}
+          y2={H - PAD}
+          className="stroke-muted-foreground/60"
+          strokeWidth={1}
+        />
+        <text
+          x={W / 2}
+          y={H - 4}
+          textAnchor="middle"
+          className="fill-muted-foreground"
+          fontSize="9"
+        >
           Carbon Number (C)
         </text>
-        <text x={8} y={H / 2} textAnchor="middle" fontSize="9" transform={`rotate(-90 8 ${H / 2})`} className="fill-muted-foreground">
+        <text
+          x={8}
+          y={H / 2}
+          textAnchor="middle"
+          fontSize="9"
+          transform={`rotate(-90 8 ${H / 2})`}
+          className="fill-muted-foreground"
+        >
           Boiling Point (°C)
         </text>
         {/* line */}
         <path d={path} fill="none" strokeWidth={2} className="stroke-orange-500" />
         {points.map((p) => (
-          <circle key={p.id} cx={p.x} cy={p.y} r={p.id === active.id ? 5 : 2.5}
-            className={p.id === active.id ? "fill-rose-500" : "fill-orange-400"} />
+          <circle
+            key={p.id}
+            cx={p.x}
+            cy={p.y}
+            r={p.id === active.id ? 5 : 2.5}
+            className={p.id === active.id ? "fill-rose-500" : "fill-orange-400"}
+          />
         ))}
         {/* active label */}
-        <text x={activePt.x} y={activePt.y - 8} textAnchor="middle" fontSize="9" className="fill-rose-600 font-bold">
+        <text
+          x={activePt.x}
+          y={activePt.y - 8}
+          textAnchor="middle"
+          fontSize="9"
+          className="fill-rose-600 font-bold"
+        >
           {active.nameEn}
         </text>
       </svg>
@@ -513,7 +636,12 @@ function BoilingPointGraph({ active, temp }: { active: Fraction; temp: number })
 
 /* ═════════════ Panel 3: Control Panel ═════════════ */
 function ControlPanel({
-  temp, setTemp, running, onRun, onReset, active,
+  temp,
+  setTemp,
+  running,
+  onRun,
+  onReset,
+  active,
 }: {
   temp: number;
   setTemp: (n: number) => void;
@@ -541,28 +669,36 @@ function ControlPanel({
         className="my-2"
       />
       <div className="mb-3 flex justify-between text-[9px] text-muted-foreground">
-        <span>0°</span><span>70°</span><span>170°</span><span>250°</span><span>350°</span><span>400°</span>
+        <span>0°</span>
+        <span>70°</span>
+        <span>170°</span>
+        <span>250°</span>
+        <span>350°</span>
+        <span>400°</span>
       </div>
 
       <div
         className={cn(
           "mb-3 rounded-xl border-2 p-3 transition-all",
           `bg-gradient-to-r ${active.color}`,
-          active.ring, "ring-2",
+          active.ring,
+          "ring-2",
         )}
       >
         <div className="flex items-center gap-2 text-sm font-bold text-slate-900 dark:text-white">
           <active.icon className="h-4 w-4" />
-          {active.nameBn}{" "}
-          <span className="text-xs font-normal opacity-80">({active.nameEn})</span>
+          {active.nameBn} <span className="text-xs font-normal opacity-80">({active.nameEn})</span>
         </div>
         <div className="mt-1 text-[11px] text-slate-800 dark:text-slate-100">
-          C{active.cMin}–C{active.cMax} · BP {active.bpMin < 0 ? "<20" : active.bpMin}
-          –{active.bpMax === 999 ? "∞" : active.bpMax}°C
+          C{active.cMin}–C{active.cMax} · BP {active.bpMin < 0 ? "<20" : active.bpMin}–
+          {active.bpMax === 999 ? "∞" : active.bpMax}°C
         </div>
         <div className="mt-1.5 flex flex-wrap gap-1">
           {active.usesBn.map((u) => (
-            <span key={u} className="rounded-full bg-white/70 px-2 py-0.5 text-[10px] font-medium text-slate-800 dark:bg-black/40 dark:text-white">
+            <span
+              key={u}
+              className="rounded-full bg-white/70 px-2 py-0.5 text-[10px] font-medium text-slate-800 dark:bg-black/40 dark:text-white"
+            >
               {u}
             </span>
           ))}
@@ -583,9 +719,13 @@ function ControlPanel({
 
 /* ═════════════ Panel 4: Steps & Status ═════════════ */
 function StepsStatusPanel({
-  stepIdx, active, running,
+  stepIdx,
+  active,
+  running,
 }: {
-  stepIdx: number; active: Fraction; running: boolean;
+  stepIdx: number;
+  active: Fraction;
+  running: boolean;
 }) {
   const steps = [
     "অপরিশোধিত তেল প্রবেশ করান (Feed Crude Oil)",
@@ -622,7 +762,8 @@ function StepsStatusPanel({
               className={cn(
                 "flex items-start gap-2 rounded-md border px-2 py-1.5",
                 done && "border-emerald-400/40 bg-emerald-50/50 dark:bg-emerald-950/20",
-                current && "border-orange-400/60 bg-orange-50/50 dark:bg-orange-950/20 ring-1 ring-orange-400/40",
+                current &&
+                  "border-orange-400/60 bg-orange-50/50 dark:bg-orange-950/20 ring-1 ring-orange-400/40",
               )}
             >
               <span

@@ -1,6 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { CreditCard, GraduationCap, LogIn, LogOut, ShieldCheck, Sparkles, User as UserIcon } from "lucide-react";
+import {
+  CreditCard,
+  GraduationCap,
+  LogIn,
+  LogOut,
+  ShieldCheck,
+  Sparkles,
+  User as UserIcon,
+} from "lucide-react";
 import { useAuth } from "@/lib/auth-store";
 import { Button } from "@/components/ui/button";
 import {
@@ -30,7 +38,6 @@ export default function UserMenu() {
     return <div className="h-9 w-32 rounded-md bg-muted animate-pulse" />;
   }
 
-
   if (!isAuthenticated) {
     return (
       <div className="flex items-center gap-2">
@@ -52,11 +59,7 @@ export default function UserMenu() {
   const name = profile?.display_name || user?.email?.split("@")[0] || "User";
   const initial = name.charAt(0).toUpperCase();
   const isAdmin = roles.includes("admin");
-  const role = isAdmin
-    ? "Admin"
-    : roles.includes("teacher")
-      ? "শিক্ষক"
-      : "শিক্ষার্থী";
+  const role = isAdmin ? "Admin" : roles.includes("teacher") ? "শিক্ষক" : "শিক্ষার্থী";
 
   return (
     <DropdownMenu>

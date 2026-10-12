@@ -1,6 +1,17 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowDown, Flame, RefreshCw, Dna, ChevronLeft, ChevronRight, Thermometer, Wind, Layers } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowDown,
+  Flame,
+  RefreshCw,
+  Dna,
+  ChevronLeft,
+  ChevronRight,
+  Thermometer,
+  Wind,
+  Layers,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -43,8 +54,10 @@ const ZONES: Zone[] = [
     ring: "ring-amber-400/80",
     glow: "shadow-[0_0_60px_-10px] shadow-amber-400/60",
     icon: RefreshCw,
-    summaryBn: "উপরের তুলনামূলক ঠান্ডা অংশে CO গ্যাস উপরের দিকে উঠে হেমাটাইট আকরিককে ধাপে ধাপে বিজারিত করে।",
-    reasonBn: "কেন এখানে সরাসরি Fe তৈরি হয় না? কারণ তাপমাত্রা কম, তাই বিজারণ ধাপে ধাপে ঘটে — প্রথমে Fe₂O₃ → Fe₃O₄, তারপর Fe₃O₄ → FeO।",
+    summaryBn:
+      "উপরের তুলনামূলক ঠান্ডা অংশে CO গ্যাস উপরের দিকে উঠে হেমাটাইট আকরিককে ধাপে ধাপে বিজারিত করে।",
+    reasonBn:
+      "কেন এখানে সরাসরি Fe তৈরি হয় না? কারণ তাপমাত্রা কম, তাই বিজারণ ধাপে ধাপে ঘটে — প্রথমে Fe₂O₃ → Fe₃O₄, তারপর Fe₃O₄ → FeO।",
     equations: [
       { lhs: "3Fe₂O₃ + CO", rhs: "2Fe₃O₄ + CO₂" },
       { lhs: "Fe₃O₄ + CO", rhs: "3FeO + CO₂" },
@@ -67,8 +80,10 @@ const ZONES: Zone[] = [
     ring: "ring-orange-500/80",
     glow: "shadow-[0_0_70px_-10px] shadow-orange-500/60",
     icon: Dna,
-    summaryBn: "চুনাপাথর (CaCO₃) ভস্মীভূত হয়ে CaO দেয়, যা আকরিকের সিলিকা অপদ্রব্যের সাথে বিক্রিয়া করে গলিত ধাতুমল (slag) তৈরি করে।",
-    reasonBn: "কেন এখানে চুনাপাথর ভেঙে ক্যালসিয়াম অক্সাইড তৈরি হচ্ছে? — কারণ CaO একটি ক্ষারীয় ফ্লাক্স, যা আম্লিক অপদ্রব্য SiO₂-কে দূর করতে সাহায্য করে।",
+    summaryBn:
+      "চুনাপাথর (CaCO₃) ভস্মীভূত হয়ে CaO দেয়, যা আকরিকের সিলিকা অপদ্রব্যের সাথে বিক্রিয়া করে গলিত ধাতুমল (slag) তৈরি করে।",
+    reasonBn:
+      "কেন এখানে চুনাপাথর ভেঙে ক্যালসিয়াম অক্সাইড তৈরি হচ্ছে? — কারণ CaO একটি ক্ষারীয় ফ্লাক্স, যা আম্লিক অপদ্রব্য SiO₂-কে দূর করতে সাহায্য করে।",
     equations: [
       { lhs: "CaCO₃", rhs: "CaO + CO₂", note: "ভস্মীকরণ" },
       { lhs: "CaO + SiO₂", rhs: "CaSiO₃", note: "ধাতুমল (slag)" },
@@ -91,11 +106,11 @@ const ZONES: Zone[] = [
     ring: "ring-rose-500/80",
     glow: "shadow-[0_0_80px_-10px] shadow-rose-500/70",
     icon: ArrowDown,
-    summaryBn: "FeO শেষবারের মতো CO দ্বারা বিজারিত হয়ে মুক্ত Fe দেয়। এই তাপমাত্রায় লোহা গলে ফোঁটা ফোঁটা হয়ে নিচের দিকে নামতে থাকে।",
-    reasonBn: "লোহা গলে কেন নিচে পড়ে? — কারণ Fe-এর গলনাঙ্ক (~1538°C) এই অঞ্চলে ছুঁইছুঁই, এবং কার্বন শোষণ করে গলনাঙ্ক কমে যায় (~1200°C), ফলে গলিত অবস্থায় থাকে।",
-    equations: [
-      { lhs: "FeO + CO", rhs: "Fe + CO₂", note: "চূড়ান্ত বিজারণ" },
-    ],
+    summaryBn:
+      "FeO শেষবারের মতো CO দ্বারা বিজারিত হয়ে মুক্ত Fe দেয়। এই তাপমাত্রায় লোহা গলে ফোঁটা ফোঁটা হয়ে নিচের দিকে নামতে থাকে।",
+    reasonBn:
+      "লোহা গলে কেন নিচে পড়ে? — কারণ Fe-এর গলনাঙ্ক (~1538°C) এই অঞ্চলে ছুঁইছুঁই, এবং কার্বন শোষণ করে গলনাঙ্ক কমে যায় (~1200°C), ফলে গলিত অবস্থায় থাকে।",
+    equations: [{ lhs: "FeO + CO", rhs: "Fe + CO₂", note: "চূড়ান্ত বিজারণ" }],
     keyBn: [
       "গলিত Fe কার্বন শোষণ করে → পিগ আয়রন",
       "ফোঁটা ফোঁটা লোহা নিচে জমা হয়",
@@ -114,8 +129,10 @@ const ZONES: Zone[] = [
     ring: "ring-fuchsia-500/80",
     glow: "shadow-[0_0_90px_-10px] shadow-fuchsia-500/70",
     icon: Flame,
-    summaryBn: "টুয়ের (tuyeres) দিয়ে গরম বায়ু ঢুকে কোককে দহন করে CO₂ তৈরি করে, যা আরও কোকের সাথে বিক্রিয়া করে বিজারক CO গ্যাসে রূপান্তরিত হয়।",
-    reasonBn: "এখানেই সমস্ত তাপ ও বিজারক CO তৈরি হয়। এই CO উপরের দিকে উঠে অন্য সব অঞ্চলে বিক্রিয়া চালায়।",
+    summaryBn:
+      "টুয়ের (tuyeres) দিয়ে গরম বায়ু ঢুকে কোককে দহন করে CO₂ তৈরি করে, যা আরও কোকের সাথে বিক্রিয়া করে বিজারক CO গ্যাসে রূপান্তরিত হয়।",
+    reasonBn:
+      "এখানেই সমস্ত তাপ ও বিজারক CO তৈরি হয়। এই CO উপরের দিকে উঠে অন্য সব অঞ্চলে বিক্রিয়া চালায়।",
     equations: [
       { lhs: "C + O₂", rhs: "CO₂", note: "তাপ উৎপন্ন" },
       { lhs: "CO₂ + C", rhs: "2CO", note: "বিজারক গ্যাস" },
@@ -143,7 +160,12 @@ export default function BlastFurnaceLab({ onBack }: Props) {
       {/* Header */}
       <header className="sticky top-0 z-30 border-b border-white/10 bg-slate-950/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3">
-          <Button variant="ghost" size="sm" onClick={onBack} className="gap-1 text-slate-200 hover:bg-white/10 hover:text-white">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onBack}
+            className="gap-1 text-slate-200 hover:bg-white/10 hover:text-white"
+          >
             <ArrowLeft className="h-4 w-4" />
             <span className="hidden sm:inline">Back</span>
           </Button>
@@ -175,9 +197,13 @@ export default function BlastFurnaceLab({ onBack }: Props) {
                 কাঁচামাল চার্জ
               </div>
               <div className="flex flex-wrap items-center gap-1.5 text-[10px]">
-                <span className="rounded-full bg-rose-500/20 px-2 py-0.5 text-rose-200">হেমাটাইট Fe₂O₃</span>
+                <span className="rounded-full bg-rose-500/20 px-2 py-0.5 text-rose-200">
+                  হেমাটাইট Fe₂O₃
+                </span>
                 <span className="rounded-full bg-zinc-500/30 px-2 py-0.5 text-zinc-200">কোক C</span>
-                <span className="rounded-full bg-sky-500/20 px-2 py-0.5 text-sky-200">চুনাপাথর CaCO₃</span>
+                <span className="rounded-full bg-sky-500/20 px-2 py-0.5 text-sky-200">
+                  চুনাপাথর CaCO₃
+                </span>
               </div>
             </div>
 
@@ -235,8 +261,12 @@ export default function BlastFurnaceLab({ onBack }: Props) {
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.25 }}
             >
-              <Card className={`relative overflow-hidden border-white/10 bg-slate-900/70 p-5 backdrop-blur-xl ${active.glow}`}>
-                <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${active.gradient}`} />
+              <Card
+                className={`relative overflow-hidden border-white/10 bg-slate-900/70 p-5 backdrop-blur-xl ${active.glow}`}
+              >
+                <div
+                  className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${active.gradient}`}
+                />
 
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
@@ -302,13 +332,22 @@ export default function BlastFurnaceLab({ onBack }: Props) {
                 </div>
 
                 <div className="mt-5 flex items-center justify-between border-t border-white/10 pt-4">
-                  <Button variant="outline" size="sm" onClick={() => go(-1)} className="gap-1 border-white/20 bg-white/5 text-slate-100 hover:bg-white/10">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => go(-1)}
+                    className="gap-1 border-white/20 bg-white/5 text-slate-100 hover:bg-white/10"
+                  >
                     <ChevronLeft className="h-4 w-4" /> পূর্ববর্তী
                   </Button>
                   <div className="text-xs text-slate-400">
                     {active.index} / {ZONES.length}
                   </div>
-                  <Button size="sm" onClick={() => go(1)} className="gap-1 bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-500 hover:to-rose-500">
+                  <Button
+                    size="sm"
+                    onClick={() => go(1)}
+                    className="gap-1 bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-500 hover:to-rose-500"
+                  >
                     পরবর্তী <ChevronRight className="h-4 w-4" />
                   </Button>
                 </div>
@@ -320,21 +359,49 @@ export default function BlastFurnaceLab({ onBack }: Props) {
 
       <DraggableTheoryFab storageKey="blast-furnace">
         <h3>বাতচুল্লী (Blast Furnace) — লোহা নিষ্কাশন</h3>
-        <p>হেমাটাইট (Fe₂O₃) থেকে গলিত লোহা (pig iron) তৈরির জন্য ব্যবহৃত উল্লম্ব চুল্লি। উপরের দিক থেকে <strong>আকরিক (Fe₂O₃) : কোক (C) : চুনাপাথর (CaCO₃) = ৮ : ৪ : ১</strong> অনুপাতে যোগ করা হয় এবং নিচে টুয়ারের মাধ্যমে গরম বাতাস (hot blast) প্রবেশ করানো হয়।</p>
+        <p>
+          হেমাটাইট (Fe₂O₃) থেকে গলিত লোহা (pig iron) তৈরির জন্য ব্যবহৃত উল্লম্ব চুল্লি। উপরের দিক
+          থেকে <strong>আকরিক (Fe₂O₃) : কোক (C) : চুনাপাথর (CaCO₃) = ৮ : ৪ : ১</strong> অনুপাতে যোগ
+          করা হয় এবং নিচে টুয়ারের মাধ্যমে গরম বাতাস (hot blast) প্রবেশ করানো হয়।
+        </p>
         <h4>প্রধান জোন ও বিক্রিয়াসমূহ</h4>
         <ul>
-          <li><strong>দহন অঞ্চল (Combustion, ~1900°C):</strong> C + O₂ → CO₂ + তাপ; CO₂ + C → 2CO (বিজারক গ্যাস তৈরি)।</li>
-          <li><strong>গলন অঞ্চল (Fusion, ~1200°C):</strong> CaCO₃ → CaO + CO₂; CaO + SiO₂ → CaSiO₃ (স্ল্যাগ)।</li>
-          <li><strong>স্ল্যাগ অঞ্চল (Slag Zone, ~1000°C):</strong> হালকা CaSiO₃ গলিত লোহার উপরে ভাসে, অশুদ্ধি আটকায়।</li>
-          <li><strong>বিজারণ অঞ্চল (Reduction, ~400–700°C):</strong> Fe₂O₃ + 3CO → 2Fe + 3CO₂ (মূল বিজারণ)।</li>
+          <li>
+            <strong>দহন অঞ্চল (Combustion, ~1900°C):</strong> C + O₂ → CO₂ + তাপ; CO₂ + C → 2CO
+            (বিজারক গ্যাস তৈরি)।
+          </li>
+          <li>
+            <strong>গলন অঞ্চল (Fusion, ~1200°C):</strong> CaCO₃ → CaO + CO₂; CaO + SiO₂ → CaSiO₃
+            (স্ল্যাগ)।
+          </li>
+          <li>
+            <strong>স্ল্যাগ অঞ্চল (Slag Zone, ~1000°C):</strong> হালকা CaSiO₃ গলিত লোহার উপরে ভাসে,
+            অশুদ্ধি আটকায়।
+          </li>
+          <li>
+            <strong>বিজারণ অঞ্চল (Reduction, ~400–700°C):</strong> Fe₂O₃ + 3CO → 2Fe + 3CO₂ (মূল
+            বিজারণ)।
+          </li>
         </ul>
         <h4>উৎপাদ (Products)</h4>
         <ul>
-          <li><strong>Pig Iron</strong> — ~৯৪% Fe, ~৪% C, বাকিটা Si, Mn, P, S। এটি চুল্লির নিচে টেপ-হোল দিয়ে বের করা হয়।</li>
-          <li><strong>Slag (CaSiO₃)</strong> — সিমেন্ট ও রাস্তা তৈরিতে ব্যবহৃত হয়।</li>
-          <li><strong>Flue gas</strong> — মূলত N₂ ও CO₂, তাপ পুনর্ব্যবহার করে "hot blast" গরম করা হয়।</li>
+          <li>
+            <strong>Pig Iron</strong> — ~৯৪% Fe, ~৪% C, বাকিটা Si, Mn, P, S। এটি চুল্লির নিচে
+            টেপ-হোল দিয়ে বের করা হয়।
+          </li>
+          <li>
+            <strong>Slag (CaSiO₃)</strong> — সিমেন্ট ও রাস্তা তৈরিতে ব্যবহৃত হয়।
+          </li>
+          <li>
+            <strong>Flue gas</strong> — মূলত N₂ ও CO₂, তাপ পুনর্ব্যবহার করে "hot blast" গরম করা হয়।
+          </li>
         </ul>
-        <p><em>মূল ধারণা: চুল্লির ভেতর গরম CO গ্যাসই আসল বিজারক (reducing agent), এবং চুনাপাথর অপদ্রব্য (SiO₂) সরিয়ে স্ল্যাগ তৈরি করে।</em></p>
+        <p>
+          <em>
+            মূল ধারণা: চুল্লির ভেতর গরম CO গ্যাসই আসল বিজারক (reducing agent), এবং চুনাপাথর অপদ্রব্য
+            (SiO₂) সরিয়ে স্ল্যাগ তৈরি করে।
+          </em>
+        </p>
       </DraggableTheoryFab>
     </div>
   );
@@ -429,13 +496,18 @@ function FurnaceSVG({ activeId, onPick }: { activeId: ZoneId; onPick: (id: ZoneI
           {[...Array(6)].map((_, i) => (
             <motion.circle
               key={i}
-              cx={140 + (i * 30) % 120}
+              cx={140 + ((i * 30) % 120)}
               cy={460}
               r={3}
               fill="#e0f2fe"
               opacity={0.6}
               animate={{ cy: [460, 60], opacity: [0.7, 0] }}
-              transition={{ duration: 4 + i * 0.4, repeat: Infinity, delay: i * 0.5, ease: "easeOut" }}
+              transition={{
+                duration: 4 + i * 0.4,
+                repeat: Infinity,
+                delay: i * 0.5,
+                ease: "easeOut",
+              }}
             />
           ))}
 
@@ -455,14 +527,20 @@ function FurnaceSVG({ activeId, onPick }: { activeId: ZoneId; onPick: (id: ZoneI
 
         {/* Charge chute at top */}
         <rect x={175} y={10} width={50} height={30} fill="#475569" rx="4" />
-        <text x={200} y={30} textAnchor="middle" fontSize="10" fill="#e2e8f0" fontWeight="700">Charge</text>
+        <text x={200} y={30} textAnchor="middle" fontSize="10" fill="#e2e8f0" fontWeight="700">
+          Charge
+        </text>
 
         {/* Tuyeres (hot air blasts) — left & right */}
         <g>
           <rect x={0} y={420} width={65} height={14} fill="#64748b" rx="3" />
           <rect x={335} y={420} width={65} height={14} fill="#64748b" rx="3" />
-          <text x={4} y={415} fontSize="9" fill="#93c5fd" fontWeight="700">Hot Air →</text>
-          <text x={340} y={415} fontSize="9" fill="#93c5fd" fontWeight="700">← Hot Air</text>
+          <text x={4} y={415} fontSize="9" fill="#93c5fd" fontWeight="700">
+            Hot Air →
+          </text>
+          <text x={340} y={415} fontSize="9" fill="#93c5fd" fontWeight="700">
+            ← Hot Air
+          </text>
           {[0, 1, 2].map((i) => (
             <motion.circle
               key={`lb-${i}`}
@@ -491,8 +569,12 @@ function FurnaceSVG({ activeId, onPick }: { activeId: ZoneId; onPick: (id: ZoneI
         <g>
           <rect x={100} y={455} width={200} height={10} fill="#f97316" opacity={0.9} />
           <rect x={100} y={465} width={200} height={12} fill="#7f1d1d" />
-          <text x={105} y={463} fontSize="8" fill="#fff7ed" fontWeight="700">Slag ↑</text>
-          <text x={105} y={475} fontSize="8" fill="#fecaca" fontWeight="700">Molten Fe ↓</text>
+          <text x={105} y={463} fontSize="8" fill="#fff7ed" fontWeight="700">
+            Slag ↑
+          </text>
+          <text x={105} y={475} fontSize="8" fill="#fecaca" fontWeight="700">
+            Molten Fe ↓
+          </text>
           {/* Tap-out spouts */}
           <path d="M 300 460 L 335 455 L 335 462 L 300 467 Z" fill="#f97316" />
           <path d="M 300 470 L 335 476 L 335 483 L 300 477 Z" fill="#7f1d1d" />

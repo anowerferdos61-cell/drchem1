@@ -74,7 +74,8 @@ function buildSteps(): Step[] {
     },
     {
       id: "cork",
-      label: "Secure two-hole cork with thistle funnel & delivery tube · কর্ক দিয়ে থিসল ফানেল ও ডেলিভারি টিউব আটকাও।",
+      label:
+        "Secure two-hole cork with thistle funnel & delivery tube · কর্ক দিয়ে থিসল ফানেল ও ডেলিভারি টিউব আটকাও।",
       done: false,
     },
     {
@@ -94,7 +95,8 @@ function buildSteps(): Step[] {
     },
     {
       id: "collect",
-      label: "Observe bubbles & collect CO₂ in the gas jar · বুদবুদ পর্যবেক্ষণ করো ও CO₂ সংগ্রহ করো।",
+      label:
+        "Observe bubbles & collect CO₂ in the gas jar · বুদবুদ পর্যবেক্ষণ করো ও CO₂ সংগ্রহ করো।",
       done: false,
     },
     {
@@ -176,10 +178,7 @@ export default function CO2Lab({ onBack }: Props) {
     }
   }, []);
 
-  const targetMl = useMemo(
-    () => Math.min(maxCO2VolumeMl(cfg), JAR_CAPACITY_ML),
-    [cfg],
-  );
+  const targetMl = useMemo(() => Math.min(maxCO2VolumeMl(cfg), JAR_CAPACITY_ML), [cfg]);
   const guide = mode === "guide";
 
   // Funnel is submerged once water (or acid) covers the tip. The tip sits at
@@ -261,8 +260,7 @@ export default function CO2Lab({ onBack }: Props) {
             logMistake({
               type: "funnel_not_submerged",
               severity: "high",
-              message:
-                "Thistle funnel tip is not submerged — CO₂ will escape through the funnel.",
+              message: "Thistle funnel tip is not submerged — CO₂ will escape through the funnel.",
             });
           }
           if (placed.gas_jar && !jarUpright) {
@@ -486,9 +484,7 @@ export default function CO2Lab({ onBack }: Props) {
               <h1 className="text-lg font-bold leading-tight">
                 Preparation of CO₂ · কার্বন ডাইঅক্সাইড প্রস্তুতি
               </h1>
-              <p className="text-xs text-muted-foreground">
-                CaCO₃ + 2 HCl → CaCl₂ + H₂O + CO₂
-              </p>
+              <p className="text-xs text-muted-foreground">CaCO₃ + 2 HCl → CaCl₂ + H₂O + CO₂</p>
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -745,8 +741,8 @@ function CO2ConfigPanel({
         onChange={(hclVolumeMl) => setDraft({ ...draft, hclVolumeMl })}
       />
       <div className="text-xs text-muted-foreground">
-        Theoretical CO₂ ={" "}
-        <span className="font-mono">{maxCO2VolumeMl(draft).toFixed(0)}</span> mL at STP
+        Theoretical CO₂ = <span className="font-mono">{maxCO2VolumeMl(draft).toFixed(0)}</span> mL
+        at STP
       </div>
       <Button onClick={apply} size="sm" className="w-full">
         Apply · প্রয়োগ

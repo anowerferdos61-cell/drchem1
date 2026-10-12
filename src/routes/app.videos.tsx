@@ -7,11 +7,7 @@ import { useMemo, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Lock, PlayCircle, Video as VideoIcon } from "lucide-react";
-import {
-  LibraryShell,
-  PremiumLockCard,
-  useLibraryRows,
-} from "@/components/library/LibraryLayout";
+import { LibraryShell, PremiumLockCard, useLibraryRows } from "@/components/library/LibraryLayout";
 import { useEntitlements } from "@/hooks/useEntitlements";
 
 interface VideoRow {
@@ -61,8 +57,7 @@ function VideosPage() {
     [rows, activeChapter],
   );
 
-  const selected =
-    chapterVideos.find((v) => v.id === selectedId) ?? chapterVideos[0] ?? null;
+  const selected = chapterVideos.find((v) => v.id === selectedId) ?? chapterVideos[0] ?? null;
   const locked = !!selected && selected.is_premium && !isPro;
 
   return (
@@ -80,9 +75,7 @@ function VideosPage() {
       countsByChapter={countsByChapter}
     >
       {isLoading ? (
-        <div className="grid h-64 place-items-center text-sm text-muted-foreground">
-          লোড হচ্ছে…
-        </div>
+        <div className="grid h-64 place-items-center text-sm text-muted-foreground">লোড হচ্ছে…</div>
       ) : chapterVideos.length === 0 ? (
         <Card className="grid h-64 place-items-center border-dashed text-center">
           <div>
@@ -116,10 +109,14 @@ function VideosPage() {
                   <div className="flex items-center justify-between gap-3 p-4">
                     <div>
                       <h2 className="text-base font-extrabold md:text-lg">{selected.title}</h2>
-                      <p className="text-xs text-muted-foreground">Chapter {selected.chapter_number}</p>
+                      <p className="text-xs text-muted-foreground">
+                        Chapter {selected.chapter_number}
+                      </p>
                     </div>
                     {selected.is_premium && (
-                      <Badge className="bg-amber-500/10 text-amber-700 dark:text-amber-300">Pro</Badge>
+                      <Badge className="bg-amber-500/10 text-amber-700 dark:text-amber-300">
+                        Pro
+                      </Badge>
                     )}
                   </div>
                 </Card>

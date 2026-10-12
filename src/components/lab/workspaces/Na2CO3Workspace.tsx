@@ -48,7 +48,16 @@ export default function Na2CO3Workspace({ placed }: Props) {
             Digital Analytical Balance · ডিজিটাল ব্যালান্স
           </text>
           {/* Balance body */}
-          <rect x="0" y="40" width="200" height="120" rx="8" fill="#1f2937" stroke="#0f172a" strokeWidth="2" />
+          <rect
+            x="0"
+            y="40"
+            width="200"
+            height="120"
+            rx="8"
+            fill="#1f2937"
+            stroke="#0f172a"
+            strokeWidth="2"
+          />
           {/* Display */}
           <rect x="20" y="55" width="160" height="40" rx="3" fill="#0a0a0a" />
           {placed.balanceOn ? (
@@ -64,7 +73,14 @@ export default function Na2CO3Workspace({ placed }: Props) {
               {displayMass.toFixed(3)} g
             </text>
           ) : (
-            <text x="100" y="82" textAnchor="middle" fontFamily="ui-monospace,monospace" fontSize="11" fill="#475569">
+            <text
+              x="100"
+              y="82"
+              textAnchor="middle"
+              fontFamily="ui-monospace,monospace"
+              fontSize="11"
+              fill="#475569"
+            >
               OFF
             </text>
           )}
@@ -112,7 +128,7 @@ export default function Na2CO3Workspace({ placed }: Props) {
                     (_, i) => (
                       <circle
                         key={i}
-                        cx={40 + (i % 5 - 2) * 3}
+                        cx={40 + ((i % 5) - 2) * 3}
                         cy={18 + Math.floor(i / 5) * 2}
                         r="0.8"
                         fill="#cbd5e1"
@@ -137,7 +153,15 @@ export default function Na2CO3Workspace({ placed }: Props) {
           {placed.flaskReady && (
             <g>
               {/* Long neck */}
-              <rect x="68" y="10" width="24" height="120" fill="url(#naGlass)" stroke="#64748b" strokeWidth="1.5" />
+              <rect
+                x="68"
+                y="10"
+                width="24"
+                height="120"
+                fill="url(#naGlass)"
+                stroke="#64748b"
+                strokeWidth="1.5"
+              />
               {/* Calibration mark */}
               <line x1="62" y1="120" x2="98" y2="120" stroke="#dc2626" strokeWidth="1.5" />
               <text x="104" y="124" fontSize="9" fill="#dc2626" fontWeight="600">
@@ -152,54 +176,54 @@ export default function Na2CO3Workspace({ placed }: Props) {
               />
 
               {/* Water + dissolved Na2CO3 (light blue tint when solute present) */}
-              {placed.addedWaterVolume > 0 && (() => {
-                const maxLiquidH = 195; // px from bottom of bulb to calibration mark area
-                const liquidH = Math.min(maxLiquidH + 8, maxLiquidH * fillPct);
-                const bottomY = 320;
-                const topY = bottomY - liquidH;
-                // top in neck if past bulb top
-                const inNeck = liquidH > 190;
-                const tint = placed.soluteTransferred ? "#dbeafe" : "#cfe9ff";
-                return (
-                  <>
-                    {/* Bulb liquid */}
-                    <path
-                      d={`M10 230 Q10 320 80 320 Q150 320 150 230 L150 ${Math.max(130, Math.min(230, topY))} Q80 ${Math.max(120, Math.min(220, topY - 8))} 10 ${Math.max(130, Math.min(230, topY))} Z`}
-                      fill={tint}
-                      opacity="0.85"
-                    />
-                    {/* Neck liquid */}
-                    {inNeck && (
-                      <rect
-                        x="68"
-                        y={Math.max(10, topY)}
-                        width="24"
-                        height={Math.min(120, 320 - liquidH > 130 ? 0 : 130 - Math.max(10, topY))}
+              {placed.addedWaterVolume > 0 &&
+                (() => {
+                  const maxLiquidH = 195; // px from bottom of bulb to calibration mark area
+                  const liquidH = Math.min(maxLiquidH + 8, maxLiquidH * fillPct);
+                  const bottomY = 320;
+                  const topY = bottomY - liquidH;
+                  // top in neck if past bulb top
+                  const inNeck = liquidH > 190;
+                  const tint = placed.soluteTransferred ? "#dbeafe" : "#cfe9ff";
+                  return (
+                    <>
+                      {/* Bulb liquid */}
+                      <path
+                        d={`M10 230 Q10 320 80 320 Q150 320 150 230 L150 ${Math.max(130, Math.min(230, topY))} Q80 ${Math.max(120, Math.min(220, topY - 8))} 10 ${Math.max(130, Math.min(230, topY))} Z`}
                         fill={tint}
                         opacity="0.85"
                       />
-                    )}
-                    {/* Meniscus line */}
-                    {placed.meniscusChecked && Math.abs(placed.addedWaterVolume - 250) < 1.5 && (
-                      <circle cx="80" cy="120" r="3" fill="#16a34a">
-                        <animate attributeName="r" values="3;6;3" dur="1s" repeatCount="indefinite" />
-                      </circle>
-                    )}
-                  </>
-                );
-              })()}
+                      {/* Neck liquid */}
+                      {inNeck && (
+                        <rect
+                          x="68"
+                          y={Math.max(10, topY)}
+                          width="24"
+                          height={Math.min(120, 320 - liquidH > 130 ? 0 : 130 - Math.max(10, topY))}
+                          fill={tint}
+                          opacity="0.85"
+                        />
+                      )}
+                      {/* Meniscus line */}
+                      {placed.meniscusChecked && Math.abs(placed.addedWaterVolume - 250) < 1.5 && (
+                        <circle cx="80" cy="120" r="3" fill="#16a34a">
+                          <animate
+                            attributeName="r"
+                            values="3;6;3"
+                            dur="1s"
+                            repeatCount="indefinite"
+                          />
+                        </circle>
+                      )}
+                    </>
+                  );
+                })()}
 
               {/* Solute particles dissolving */}
               {placed.soluteTransferred && !placed.initialDissolved && (
                 <g>
                   {[0, 1, 2, 3, 4].map((i) => (
-                    <circle
-                      key={i}
-                      cx={50 + i * 12}
-                      cy={250 + (i % 2) * 20}
-                      r="2"
-                      fill="#94a3b8"
-                    >
+                    <circle key={i} cx={50 + i * 12} cy={250 + (i % 2) * 20} r="2" fill="#94a3b8">
                       <animate
                         attributeName="cy"
                         values={`${250 + (i % 2) * 20};${300 + (i % 2) * 10};${250 + (i % 2) * 20}`}
@@ -230,13 +254,27 @@ export default function Na2CO3Workspace({ placed }: Props) {
 
               {/* Overfill warning */}
               {overfilled && (
-                <text x="80" y="100" textAnchor="middle" fontSize="11" fontWeight="700" fill="#dc2626">
+                <text
+                  x="80"
+                  y="100"
+                  textAnchor="middle"
+                  fontSize="11"
+                  fontWeight="700"
+                  fill="#dc2626"
+                >
                   ⚠ Over 250 mL!
                 </text>
               )}
 
               {/* Volume readout */}
-              <text x="80" y="345" textAnchor="middle" fontSize="9" fontFamily="ui-monospace,monospace" fill="#475569">
+              <text
+                x="80"
+                y="345"
+                textAnchor="middle"
+                fontSize="9"
+                fontFamily="ui-monospace,monospace"
+                fill="#475569"
+              >
                 {placed.addedWaterVolume.toFixed(1)} / 250 mL
               </text>
             </g>
@@ -251,15 +289,36 @@ export default function Na2CO3Workspace({ placed }: Props) {
                 stroke="#64748b"
                 strokeWidth="1.5"
               />
-              <rect x="68" y="0" width="24" height="12" fill="url(#naGlass)" stroke="#64748b" strokeWidth="1" />
+              <rect
+                x="68"
+                y="0"
+                width="24"
+                height="12"
+                fill="url(#naGlass)"
+                stroke="#64748b"
+                strokeWidth="1"
+              />
               {/* powder falling */}
               {placed.soluteTransferred && !placed.washedDown && (
                 <g fill="#cbd5e1">
                   <circle cx="80" cy="-20" r="1.5">
-                    <animate attributeName="cy" from="-50" to="20" dur="0.6s" repeatCount="indefinite" />
+                    <animate
+                      attributeName="cy"
+                      from="-50"
+                      to="20"
+                      dur="0.6s"
+                      repeatCount="indefinite"
+                    />
                   </circle>
                   <circle cx="76" cy="-30" r="1.5">
-                    <animate attributeName="cy" from="-50" to="20" dur="0.7s" repeatCount="indefinite" begin="0.2s" />
+                    <animate
+                      attributeName="cy"
+                      from="-50"
+                      to="20"
+                      dur="0.7s"
+                      repeatCount="indefinite"
+                      begin="0.2s"
+                    />
                   </circle>
                 </g>
               )}
@@ -273,7 +332,16 @@ export default function Na2CO3Workspace({ placed }: Props) {
             Wash Bottle · ওয়াশ বটল (H₂O)
           </text>
           {/* Body */}
-          <rect x="20" y="40" width="60" height="100" rx="8" fill="#dbeafe" stroke="#3b82f6" strokeWidth="1.5" />
+          <rect
+            x="20"
+            y="40"
+            width="60"
+            height="100"
+            rx="8"
+            fill="#dbeafe"
+            stroke="#3b82f6"
+            strokeWidth="1.5"
+          />
           <rect x="32" y="50" width="36" height="80" rx="4" fill="#bfdbfe" opacity="0.7" />
           <text x="50" y="98" textAnchor="middle" fontSize="9" fontWeight="700" fill="#1e40af">
             H₂O
@@ -281,18 +349,25 @@ export default function Na2CO3Workspace({ placed }: Props) {
           {/* Cap */}
           <rect x="35" y="30" width="30" height="12" rx="2" fill="#1e3a8a" />
           {/* Curved spout */}
-          <path
-            d="M50 30 Q50 0 90 0 Q120 0 120 -25"
-            fill="none"
-            stroke="#1e3a8a"
-            strokeWidth="3"
-          />
+          <path d="M50 30 Q50 0 90 0 Q120 0 120 -25" fill="none" stroke="#1e3a8a" strokeWidth="3" />
           {/* Spray when adding water */}
           {placed.addedWaterVolume > 0 && placed.addedWaterVolume < 250 && (
             <g fill="#3b82f6" opacity="0.6">
               <circle cx="120" cy="-30" r="2">
-                <animate attributeName="cy" from="-30" to="-80" dur="0.5s" repeatCount="indefinite" />
-                <animate attributeName="opacity" from="0.8" to="0" dur="0.5s" repeatCount="indefinite" />
+                <animate
+                  attributeName="cy"
+                  from="-30"
+                  to="-80"
+                  dur="0.5s"
+                  repeatCount="indefinite"
+                />
+                <animate
+                  attributeName="opacity"
+                  from="0.8"
+                  to="0"
+                  dur="0.5s"
+                  repeatCount="indefinite"
+                />
               </circle>
             </g>
           )}

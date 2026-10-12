@@ -172,14 +172,20 @@ export default function AntacidActionLab({ onBack }: Props) {
     const rand = (a: number, b: number) => a + Math.random() * (b - a);
     for (let i = 0; i < nH; i++) {
       arr.push({
-        id: nextIdRef.current++, kind: "H",
-        x: rand(30, MICRO_W - 30), y: rand(30, MICRO_H - 30),
-        vx: rand(-0.7, 0.7), vy: rand(-0.7, 0.7),
+        id: nextIdRef.current++,
+        kind: "H",
+        x: rand(30, MICRO_W - 30),
+        y: rand(30, MICRO_H - 30),
+        vx: rand(-0.7, 0.7),
+        vy: rand(-0.7, 0.7),
       });
       arr.push({
-        id: nextIdRef.current++, kind: "Cl",
-        x: rand(30, MICRO_W - 30), y: rand(30, MICRO_H - 30),
-        vx: rand(-0.5, 0.5), vy: rand(-0.5, 0.5),
+        id: nextIdRef.current++,
+        kind: "Cl",
+        x: rand(30, MICRO_W - 30),
+        y: rand(30, MICRO_H - 30),
+        vx: rand(-0.5, 0.5),
+        vy: rand(-0.5, 0.5),
       });
     }
     setIons(arr);
@@ -197,16 +203,22 @@ export default function AntacidActionLab({ onBack }: Props) {
     const additions: Ion[] = [];
     for (let i = 0; i < nOH; i++) {
       additions.push({
-        id: nextIdRef.current++, kind: "OH",
-        x: rand(30, MICRO_W - 30), y: rand(10, 40),
-        vx: rand(-0.5, 0.5), vy: rand(0.3, 0.9),
+        id: nextIdRef.current++,
+        kind: "OH",
+        x: rand(30, MICRO_W - 30),
+        y: rand(10, 40),
+        vx: rand(-0.5, 0.5),
+        vy: rand(0.3, 0.9),
       });
     }
     for (let i = 0; i < nM; i++) {
       additions.push({
-        id: nextIdRef.current++, kind: "M",
-        x: rand(30, MICRO_W - 30), y: rand(10, 40),
-        vx: rand(-0.4, 0.4), vy: rand(0.3, 0.7),
+        id: nextIdRef.current++,
+        kind: "M",
+        x: rand(30, MICRO_W - 30),
+        y: rand(10, 40),
+        vx: rand(-0.4, 0.4),
+        vy: rand(0.3, 0.7),
       });
     }
     setIons((prev) => [...prev, ...additions]);
@@ -225,8 +237,14 @@ export default function AntacidActionLab({ onBack }: Props) {
           let y = io.y + io.vy;
           let vx = io.vx;
           let vy = io.vy;
-          if (x < 20 || x > MICRO_W - 20) { vx = -vx; x = Math.max(20, Math.min(MICRO_W - 20, x)); }
-          if (y < 20 || y > MICRO_H - 20) { vy = -vy; y = Math.max(20, Math.min(MICRO_H - 20, y)); }
+          if (x < 20 || x > MICRO_W - 20) {
+            vx = -vx;
+            x = Math.max(20, Math.min(MICRO_W - 20, x));
+          }
+          if (y < 20 || y > MICRO_H - 20) {
+            vy = -vy;
+            y = Math.max(20, Math.min(MICRO_H - 20, y));
+          }
           return { ...io, x, y, vx, vy };
         });
 
@@ -240,7 +258,10 @@ export default function AntacidActionLab({ onBack }: Props) {
           for (const oh of ohs) {
             if (used.has(oh.id)) continue;
             const d = (h.x - oh.x) ** 2 + (h.y - oh.y) ** 2;
-            if (d < bestD) { bestD = d; best = oh; }
+            if (d < bestD) {
+              bestD = d;
+              best = oh;
+            }
           }
           if (best) {
             used.add(best.id);
@@ -248,9 +269,12 @@ export default function AntacidActionLab({ onBack }: Props) {
             h.gone = true;
             best.gone = true;
             next.push({
-              id: nextIdRef.current++, kind: "H2O",
-              x: (h.x + best.x) / 2, y: (h.y + best.y) / 2,
-              vx: (h.vx + best.vx) / 2 * 0.6, vy: (h.vy + best.vy) / 2 * 0.6,
+              id: nextIdRef.current++,
+              kind: "H2O",
+              x: (h.x + best.x) / 2,
+              y: (h.y + best.y) / 2,
+              vx: ((h.vx + best.vx) / 2) * 0.6,
+              vy: ((h.vy + best.vy) / 2) * 0.6,
             });
           } else {
             // Also attract slightly toward nearest OH even if not close yet
@@ -259,10 +283,14 @@ export default function AntacidActionLab({ onBack }: Props) {
             for (const oh of ohs) {
               if (used.has(oh.id)) continue;
               const d = (h.x - oh.x) ** 2 + (h.y - oh.y) ** 2;
-              if (d < nd) { nd = d; near = oh; }
+              if (d < nd) {
+                nd = d;
+                near = oh;
+              }
             }
             if (near) {
-              const dx = near.x - h.x, dy = near.y - h.y;
+              const dx = near.x - h.x,
+                dy = near.y - h.y;
               const dist = Math.sqrt(dx * dx + dy * dy) || 1;
               h.vx += (dx / dist) * 0.05;
               h.vy += (dy / dist) * 0.05;
@@ -308,7 +336,12 @@ export default function AntacidActionLab({ onBack }: Props) {
       <div className="border-b border-slate-800 bg-slate-950/80 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="sm" onClick={onBack} className="text-slate-300 hover:text-white">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onBack}
+              className="text-slate-300 hover:text-white"
+            >
               <ArrowLeft className="mr-1 h-4 w-4" /> {t("back")}
             </Button>
             <div>
@@ -318,15 +351,20 @@ export default function AntacidActionLab({ onBack }: Props) {
           </div>
           <div className="flex items-center gap-2">
             <Button
-              variant="outline" size="sm"
+              variant="outline"
+              size="sm"
               onClick={() => setLang(lang === "bn" ? "en" : "bn")}
               className="border-slate-700 bg-slate-900 text-slate-100 hover:bg-slate-800"
             >
               <Languages className="mr-1 h-4 w-4" />
               {lang === "bn" ? "English" : "বাংলা"}
             </Button>
-            <Button variant="outline" size="sm" onClick={reset}
-              className="border-slate-700 bg-slate-900 text-slate-100 hover:bg-slate-800">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={reset}
+              className="border-slate-700 bg-slate-900 text-slate-100 hover:bg-slate-800"
+            >
               <RotateCcw className="mr-1 h-4 w-4" /> {t("reset")}
             </Button>
           </div>
@@ -374,8 +412,12 @@ export default function AntacidActionLab({ onBack }: Props) {
             </div>
             <Tabs value={antacid} onValueChange={(v) => setAntacid(v as Antacid)}>
               <TabsList className="grid w-full grid-cols-2 bg-slate-800">
-                <TabsTrigger value="mgoh2" className="text-xs">Mg(OH)₂</TabsTrigger>
-                <TabsTrigger value="aloh3" className="text-xs">Al(OH)₃</TabsTrigger>
+                <TabsTrigger value="mgoh2" className="text-xs">
+                  Mg(OH)₂
+                </TabsTrigger>
+                <TabsTrigger value="aloh3" className="text-xs">
+                  Al(OH)₃
+                </TabsTrigger>
               </TabsList>
               <TabsContent value="mgoh2" className="mt-2 text-xs text-slate-300">
                 {t("mgoh2")} — {ANTACIDS.mgoh2.eqEn}
@@ -407,7 +449,10 @@ export default function AntacidActionLab({ onBack }: Props) {
             <div>
               <div className="mb-2 flex items-center justify-between">
                 <div className="text-sm font-semibold">{t("stomach")}</div>
-                <Badge variant="outline" className="border-slate-600 bg-slate-800 text-xs text-slate-200">
+                <Badge
+                  variant="outline"
+                  className="border-slate-600 bg-slate-800 text-xs text-slate-200"
+                >
                   pH {pH.toFixed(1)}
                 </Badge>
               </div>
@@ -424,13 +469,18 @@ export default function AntacidActionLab({ onBack }: Props) {
                     </clipPath>
                     <filter id="glow">
                       <feGaussianBlur stdDeviation="4" result="b" />
-                      <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+                      <feMerge>
+                        <feMergeNode in="b" />
+                        <feMergeNode in="SourceGraphic" />
+                      </feMerge>
                     </filter>
                   </defs>
                   {/* tissue */}
                   <path
                     d="M80 30 Q60 40 55 90 Q40 130 60 200 Q80 270 150 275 Q220 265 210 200 Q225 140 200 100 Q195 55 155 40 Q120 25 100 40 Q88 20 80 30 Z"
-                    fill="url(#stomachTissue)" stroke="#7f1d1d" strokeWidth="2"
+                    fill="url(#stomachTissue)"
+                    stroke="#7f1d1d"
+                    strokeWidth="2"
                     filter={acidActive && meal === "oily" ? "url(#glow)" : undefined}
                   />
                   {/* esophagus */}
@@ -438,29 +488,65 @@ export default function AntacidActionLab({ onBack }: Props) {
                   {/* fluid */}
                   <g clipPath="url(#stomachClip)">
                     <rect
-                      x="0" y={300 - fluidLevel * 240}
-                      width="260" height={fluidLevel * 240}
+                      x="0"
+                      y={300 - fluidLevel * 240}
+                      width="260"
+                      height={fluidLevel * 240}
                       fill={fluidColor}
                     >
-                      <animate attributeName="y" values={`${300 - fluidLevel * 240};${298 - fluidLevel * 240};${300 - fluidLevel * 240}`} dur="2s" repeatCount="indefinite" />
+                      <animate
+                        attributeName="y"
+                        values={`${300 - fluidLevel * 240};${298 - fluidLevel * 240};${300 - fluidLevel * 240}`}
+                        dur="2s"
+                        repeatCount="indefinite"
+                      />
                     </rect>
                     {/* bubbles when acidic */}
-                    {acidActive && meal === "oily" &&
+                    {acidActive &&
+                      meal === "oily" &&
                       Array.from({ length: 6 }).map((_, i) => (
-                        <circle key={i} cx={70 + i * 25} cy={260 - (i % 3) * 20}
-                          r="4" fill="rgba(255,200,120,0.7)">
-                          <animate attributeName="cy" from="260" to="80" dur={`${2 + i * 0.3}s`} repeatCount="indefinite" />
-                          <animate attributeName="opacity" values="0.9;0.9;0" dur={`${2 + i * 0.3}s`} repeatCount="indefinite" />
+                        <circle
+                          key={i}
+                          cx={70 + i * 25}
+                          cy={260 - (i % 3) * 20}
+                          r="4"
+                          fill="rgba(255,200,120,0.7)"
+                        >
+                          <animate
+                            attributeName="cy"
+                            from="260"
+                            to="80"
+                            dur={`${2 + i * 0.3}s`}
+                            repeatCount="indefinite"
+                          />
+                          <animate
+                            attributeName="opacity"
+                            values="0.9;0.9;0"
+                            dur={`${2 + i * 0.3}s`}
+                            repeatCount="indefinite"
+                          />
                         </circle>
-                      ))
-                    }
+                      ))}
                   </g>
                   {/* pain sparks */}
                   {acidActive && meal === "oily" && (
                     <g>
-                      {[[70, 90], [190, 100], [60, 180], [200, 190], [100, 60]].map(([x, y], i) => (
+                      {[
+                        [70, 90],
+                        [190, 100],
+                        [60, 180],
+                        [200, 190],
+                        [100, 60],
+                      ].map(([x, y], i) => (
                         <text key={i} x={x} y={y} fontSize="16" fill="#fde047">
-                          <animate attributeName="opacity" values="0;1;0" dur="1.2s" begin={`${i * 0.2}s`} repeatCount="indefinite" />⚡
+                          <animate
+                            attributeName="opacity"
+                            values="0;1;0"
+                            dur="1.2s"
+                            begin={`${i * 0.2}s`}
+                            repeatCount="indefinite"
+                          />
+                          ⚡
                         </text>
                       ))}
                     </g>
@@ -475,7 +561,11 @@ export default function AntacidActionLab({ onBack }: Props) {
                     </span>
                     <span>{Math.round(progress * 100)}%</span>
                   </div>
-                  <Progress value={medTaken ? progress * 100 : (meal === "oily" ? 5 : meal === "healthy" ? 55 : 80)} />
+                  <Progress
+                    value={
+                      medTaken ? progress * 100 : meal === "oily" ? 5 : meal === "healthy" ? 55 : 80
+                    }
+                  />
                 </div>
               </div>
             </div>
@@ -484,7 +574,10 @@ export default function AntacidActionLab({ onBack }: Props) {
             <div>
               <div className="mb-2 flex items-center justify-between">
                 <div className="text-sm font-semibold">{t("micro")}</div>
-                <Badge variant="outline" className="border-slate-600 bg-slate-800 text-xs text-slate-200">
+                <Badge
+                  variant="outline"
+                  className="border-slate-600 bg-slate-800 text-xs text-slate-200"
+                >
                   <Activity className="mr-1 h-3 w-3" />
                   {medTaken ? t("reaction") : meal !== "none" ? t("obsOily") : t("baseline")}
                 </Badge>
@@ -499,36 +592,100 @@ export default function AntacidActionLab({ onBack }: Props) {
                   </defs>
                   <rect x="0" y="0" width={MICRO_W} height={MICRO_H} fill="url(#microBg)" />
                   {/* stomach lining hint */}
-                  <path d={`M0 ${MICRO_H - 10} Q${MICRO_W / 2} ${MICRO_H - 30} ${MICRO_W} ${MICRO_H - 10} L${MICRO_W} ${MICRO_H} L0 ${MICRO_H} Z`}
-                    fill="#7f1d1d" opacity="0.35" />
+                  <path
+                    d={`M0 ${MICRO_H - 10} Q${MICRO_W / 2} ${MICRO_H - 30} ${MICRO_W} ${MICRO_H - 10} L${MICRO_W} ${MICRO_H} L0 ${MICRO_H} Z`}
+                    fill="#7f1d1d"
+                    opacity="0.35"
+                  />
                   {visibleIons.map((io) => {
                     if (io.kind === "H")
-                      return <g key={io.id}>
-                        <circle cx={io.x} cy={io.y} r="9" fill="#fb7185" />
-                        <text x={io.x} y={io.y + 3.5} textAnchor="middle" fontSize="9" fill="#fff" fontWeight="bold">H⁺</text>
-                      </g>;
+                      return (
+                        <g key={io.id}>
+                          <circle cx={io.x} cy={io.y} r="9" fill="#fb7185" />
+                          <text
+                            x={io.x}
+                            y={io.y + 3.5}
+                            textAnchor="middle"
+                            fontSize="9"
+                            fill="#fff"
+                            fontWeight="bold"
+                          >
+                            H⁺
+                          </text>
+                        </g>
+                      );
                     if (io.kind === "Cl")
-                      return <g key={io.id}>
-                        <circle cx={io.x} cy={io.y} r="9" fill="#4ade80" />
-                        <text x={io.x} y={io.y + 3.5} textAnchor="middle" fontSize="9" fill="#052e16" fontWeight="bold">Cl⁻</text>
-                      </g>;
+                      return (
+                        <g key={io.id}>
+                          <circle cx={io.x} cy={io.y} r="9" fill="#4ade80" />
+                          <text
+                            x={io.x}
+                            y={io.y + 3.5}
+                            textAnchor="middle"
+                            fontSize="9"
+                            fill="#052e16"
+                            fontWeight="bold"
+                          >
+                            Cl⁻
+                          </text>
+                        </g>
+                      );
                     if (io.kind === "OH")
-                      return <g key={io.id}>
-                        <circle cx={io.x} cy={io.y} r="9" fill="#38bdf8" />
-                        <text x={io.x} y={io.y + 3.5} textAnchor="middle" fontSize="8" fill="#082f49" fontWeight="bold">OH⁻</text>
-                      </g>;
+                      return (
+                        <g key={io.id}>
+                          <circle cx={io.x} cy={io.y} r="9" fill="#38bdf8" />
+                          <text
+                            x={io.x}
+                            y={io.y + 3.5}
+                            textAnchor="middle"
+                            fontSize="8"
+                            fill="#082f49"
+                            fontWeight="bold"
+                          >
+                            OH⁻
+                          </text>
+                        </g>
+                      );
                     if (io.kind === "M")
-                      return <g key={io.id}>
-                        <circle cx={io.x} cy={io.y} r="10" fill="#a78bfa" />
-                        <text x={io.x} y={io.y + 3.5} textAnchor="middle" fontSize="8" fill="#1e1b4b" fontWeight="bold">{meta.metal}</text>
-                      </g>;
-                    return <g key={io.id}>
-                      <circle cx={io.x} cy={io.y} r="7" fill="#e0f2fe" opacity="0.85" />
-                      <text x={io.x} y={io.y + 3} textAnchor="middle" fontSize="7" fill="#0c4a6e" fontWeight="bold">H₂O</text>
-                    </g>;
+                      return (
+                        <g key={io.id}>
+                          <circle cx={io.x} cy={io.y} r="10" fill="#a78bfa" />
+                          <text
+                            x={io.x}
+                            y={io.y + 3.5}
+                            textAnchor="middle"
+                            fontSize="8"
+                            fill="#1e1b4b"
+                            fontWeight="bold"
+                          >
+                            {meta.metal}
+                          </text>
+                        </g>
+                      );
+                    return (
+                      <g key={io.id}>
+                        <circle cx={io.x} cy={io.y} r="7" fill="#e0f2fe" opacity="0.85" />
+                        <text
+                          x={io.x}
+                          y={io.y + 3}
+                          textAnchor="middle"
+                          fontSize="7"
+                          fill="#0c4a6e"
+                          fontWeight="bold"
+                        >
+                          H₂O
+                        </text>
+                      </g>
+                    );
                   })}
                   {meal === "none" && (
-                    <text x={MICRO_W / 2} y={MICRO_H / 2} textAnchor="middle" fill="#64748b" fontSize="12">
+                    <text
+                      x={MICRO_W / 2}
+                      y={MICRO_H / 2}
+                      textAnchor="middle"
+                      fill="#64748b"
+                      fontSize="12"
+                    >
                       {t("chooseFirst")}
                     </text>
                   )}
@@ -538,8 +695,12 @@ export default function AntacidActionLab({ onBack }: Props) {
                 {meal === "none"
                   ? t("chooseFirst")
                   : !medTaken
-                  ? meal === "oily" ? t("obsOily") : t("obsHealthy")
-                  : progress > 0.9 ? t("neutral") : t("obsMed")}
+                    ? meal === "oily"
+                      ? t("obsOily")
+                      : t("obsHealthy")
+                    : progress > 0.9
+                      ? t("neutral")
+                      : t("obsMed")}
               </div>
             </div>
           </div>
@@ -605,7 +766,15 @@ function LegendRow({ color, text }: { color: string; text: string }) {
   );
 }
 
-function ObsCard({ active, color, text }: { active: boolean; color: "emerald" | "rose" | "sky" | "teal"; text: string }) {
+function ObsCard({
+  active,
+  color,
+  text,
+}: {
+  active: boolean;
+  color: "emerald" | "rose" | "sky" | "teal";
+  text: string;
+}) {
   const map = {
     emerald: "border-emerald-500 bg-emerald-500/15 text-emerald-100",
     rose: "border-rose-500 bg-rose-500/15 text-rose-100",

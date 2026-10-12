@@ -42,12 +42,27 @@ function TeacherHome() {
 
   const kpis = [
     { label: "My Classes · আমার ক্লাস", value: classCount, icon: Users, to: "/teacher/classes" },
-    { label: "Total Students · মোট ছাত্র", value: studentCount, icon: Users, to: "/teacher/classes" },
+    {
+      label: "Total Students · মোট ছাত্র",
+      value: studentCount,
+      icon: Users,
+      to: "/teacher/classes",
+    },
   ] as const;
 
   const links = [
-    { to: "/teacher/classes", label: "Manage Classes · ক্লাস ব্যবস্থাপনা", desc: "Create classes, share join codes, see student progress.", icon: Users },
-    { to: "/teacher/questions", label: "AI Question Generator · AI প্রশ্ন", desc: "AI দিয়ে NCTB standard MCQ / সৃজনশীল প্রশ্ন বানাও, ক্লাসে assign করো।", icon: Sparkles },
+    {
+      to: "/teacher/classes",
+      label: "Manage Classes · ক্লাস ব্যবস্থাপনা",
+      desc: "Create classes, share join codes, see student progress.",
+      icon: Users,
+    },
+    {
+      to: "/teacher/questions",
+      label: "AI Question Generator · AI প্রশ্ন",
+      desc: "AI দিয়ে NCTB standard MCQ / সৃজনশীল প্রশ্ন বানাও, ক্লাসে assign করো।",
+      icon: Sparkles,
+    },
   ] as const;
 
   return (

@@ -3,7 +3,13 @@ import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "sonner";
 import { ArrowLeft, Send, BarChart3 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -22,9 +28,7 @@ function EditSet() {
   const save = useServerFn(saveQuestionSet);
   const pub = useServerFn(publishQuestionSet);
   const [loading, setLoading] = useState(true);
-  // deno-lint-ignore no-explicit-any
   const [set, setSet] = useState<any>(null);
-  // deno-lint-ignore no-explicit-any
   const [questions, setQuestions] = useState<any[]>([]);
   const [classes, setClasses] = useState<Array<{ id: string; name: string }>>([]);
   const [selectedClass, setSelectedClass] = useState<string>("");
@@ -130,15 +134,21 @@ function EditSet() {
         <div className="flex-1 min-w-[200px]">
           <label className="text-xs text-muted-foreground">Assign to class</label>
           <Select value={selectedClass} onValueChange={setSelectedClass}>
-            <SelectTrigger><SelectValue placeholder="Select class" /></SelectTrigger>
+            <SelectTrigger>
+              <SelectValue placeholder="Select class" />
+            </SelectTrigger>
             <SelectContent>
               {classes.map((c) => (
-                <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                <SelectItem key={c.id} value={c.id}>
+                  {c.name}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
-        <Button variant="outline" onClick={persist}>Save</Button>
+        <Button variant="outline" onClick={persist}>
+          Save
+        </Button>
         <Button onClick={doPublish}>
           <Send className="h-4 w-4" /> Publish to Class
         </Button>
@@ -219,7 +229,8 @@ function EditSet() {
                     return (
                       <div key={k} className="rounded border p-2">
                         <div className="text-xs font-semibold">
-                          ({k === "ka" ? "ক" : k === "kha" ? "খ" : k === "ga" ? "গ" : "ঘ"}) — {p.marks} mark
+                          ({k === "ka" ? "ক" : k === "kha" ? "খ" : k === "ga" ? "গ" : "ঘ"}) —{" "}
+                          {p.marks} mark
                         </div>
                         <input
                           className="mt-1 w-full rounded border p-1 text-sm bg-background"

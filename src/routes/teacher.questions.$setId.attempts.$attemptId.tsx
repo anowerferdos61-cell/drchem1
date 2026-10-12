@@ -18,11 +18,8 @@ function GradeAttempt() {
   const load = useServerFn(getAttemptDetail);
   const saveG = useServerFn(saveCqGrade);
   const suggest = useServerFn(aiSuggestCqScore);
-  // deno-lint-ignore no-explicit-any
   const [attempt, setAttempt] = useState<any>(null);
-  // deno-lint-ignore no-explicit-any
   const [questions, setQuestions] = useState<any[]>([]);
-  // deno-lint-ignore no-explicit-any
   const [grades, setGrades] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -41,11 +38,23 @@ function GradeAttempt() {
   if (!attempt) return <p className="text-sm">Not found</p>;
 
   const cqs = questions.filter((q) => q.type === "cq");
-  const gradeFor = (qid: string, part: string) => grades.find((g) => g.question_id === qid && g.part === part);
+  const gradeFor = (qid: string, part: string) =>
+    grades.find((g) => g.question_id === qid && g.part === part);
 
-  const doSave = async (qid: string, part: "ka" | "kha" | "ga" | "gha", marks: number, similarity: number | null) => {
+  const doSave = async (
+    qid: string,
+    part: "ka" | "kha" | "ga" | "gha",
+    marks: number,
+    similarity: number | null,
+  ) => {
     const r = await saveG({
-      data: { attempt_id: attemptId, question_id: qid, part, marks_awarded: marks, ai_similarity_score: similarity },
+      data: {
+        attempt_id: attemptId,
+        question_id: qid,
+        part,
+        marks_awarded: marks,
+        ai_similarity_score: similarity,
+      },
     });
     if (r.error) return toast.error(r.error);
     toast.success("Saved");
@@ -54,7 +63,13 @@ function GradeAttempt() {
     setGrades(rr.grades);
   };
 
-  const doAiSuggest = async (qid: string, part: "ka" | "kha" | "ga" | "gha", sample: string, student: string, max: number) => {
+  const doAiSuggest = async (
+    qid: string,
+    part: "ka" | "kha" | "ga" | "gha",
+    sample: string,
+    student: string,
+    max: number,
+  ) => {
     if (!sample) return toast.error("No sample answer");
     const r = await suggest({ data: { sample, student, max_marks: max } });
     if (r.error || !r.result) return toast.error(r.error ?? "Failed");
@@ -64,7 +79,11 @@ function GradeAttempt() {
 
   return (
     <div className="space-y-4">
-      <Button variant="ghost" size="sm" onClick={() => navigate({ to: "/teacher/questions/$setId/results", params: { setId } })}>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => navigate({ to: "/teacher/questions/$setId/results", params: { setId } })}
+      >
         <ArrowLeft className="h-4 w-4" /> Back to results
       </Button>
       <Card className="p-4">
@@ -90,7 +109,8 @@ function GradeAttempt() {
               return (
                 <div key={part} className="rounded border p-3 space-y-2">
                   <div className="text-sm font-semibold">
-                    ({part === "ka" ? "ক" : part === "kha" ? "খ" : part === "ga" ? "গ" : "ঘ"}) {p.q} — {p.marks} mark
+                    ({part === "ka" ? "ক" : part === "kha" ? "খ" : part === "ga" ? "গ" : "ঘ"}) {p.q}{" "}
+                    — {p.marks} mark
                   </div>
                   <div>
                     <div className="text-xs text-muted-foreground">শিক্ষার্থীর উত্তর:</div>
@@ -99,8 +119,12 @@ function GradeAttempt() {
                     </div>
                   </div>
                   <details className="text-xs">
-                    <summary className="cursor-pointer text-muted-foreground">আদর্শ উত্তর দেখুন</summary>
-                    <div className="mt-1 whitespace-pre-wrap rounded bg-emerald-50 dark:bg-emerald-900/20 p-2">{p.sample}</div>
+                    <summary className="cursor-pointer text-muted-foreground">
+                      আদর্শ উত্তর দেখুন
+                    </summary>
+                    <div className="mt-1 whitespace-pre-wrap rounded bg-emerald-50 dark:bg-emerald-900/20 p-2">
+                      {p.sample}
+                    </div>
                   </details>
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="text-xs">মার্কস:</span>
@@ -110,7 +134,9 @@ function GradeAttempt() {
                       max={p.marks}
                       defaultValue={g?.marks_awarded ?? 0}
                       className="w-20"
-                      onBlur={(e) => doSave(q.id, part, Number(e.target.value), g?.ai_similarity_score ?? null)}
+                      onBlur={(e) =>
+                        doSave(q.id, part, Number(e.target.value), g?.ai_similarity_score ?? null)
+                      }
                     />
                     <span className="text-xs text-muted-foreground">/ {p.marks}</span>
                     {g?.ai_similarity_score != null && (
@@ -118,7 +144,11 @@ function GradeAttempt() {
                         AI match: {Math.round(g.ai_similarity_score)}%
                       </span>
                     )}
-                    <Button size="sm" variant="outline" onClick={() => doAiSuggest(q.id, part, p.sample, studentText, p.marks)}>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => doAiSuggest(q.id, part, p.sample, studentText, p.marks)}
+                    >
                       <Sparkles className="h-3 w-3" /> AI Suggest
                     </Button>
                   </div>

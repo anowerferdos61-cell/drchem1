@@ -21,7 +21,6 @@ import {
   type Element,
 } from "@/lib/electron-config";
 
-
 interface Props {
   onBack: () => void;
 }
@@ -171,16 +170,35 @@ function BohrModel({
       {/* Legend */}
       <g fontSize="9" fill="hsl(var(--muted-foreground))">
         <circle cx={14} cy={384} r={5} fill="url(#nucleusGrad)" />
-        <text x={24} y={387}>nucleus · নিউক্লিয়াস</text>
-        <circle cx={150} cy={384} r={5} fill="url(#electronGrad)" stroke="#92400e" strokeWidth={0.6} />
-        <text x={160} y={387}>electron</text>
-        <circle cx={240} cy={384} r={5} fill="url(#electronGrad)" stroke="#ef4444" strokeWidth={1.5} />
-        <text x={250} y={387}>valence · যোজ্যতা</text>
+        <text x={24} y={387}>
+          nucleus · নিউক্লিয়াস
+        </text>
+        <circle
+          cx={150}
+          cy={384}
+          r={5}
+          fill="url(#electronGrad)"
+          stroke="#92400e"
+          strokeWidth={0.6}
+        />
+        <text x={160} y={387}>
+          electron
+        </text>
+        <circle
+          cx={240}
+          cy={384}
+          r={5}
+          fill="url(#electronGrad)"
+          stroke="#ef4444"
+          strokeWidth={1.5}
+        />
+        <text x={250} y={387}>
+          valence · যোজ্যতা
+        </text>
       </g>
     </svg>
   );
 }
-
 
 // ────────────────────────────────────────────────────────────
 // Config display
@@ -244,8 +262,9 @@ function DeterminationPanel({ element }: { element: Element }) {
         body={
           <>
             <p className="text-sm">
-              বিন্যাসের সর্বোচ্চ <b>n</b> = <span className="font-mono text-primary">{element.period}</span>{" "}
-              ⟹ <b>Period {element.period}</b>
+              বিন্যাসের সর্বোচ্চ <b>n</b> ={" "}
+              <span className="font-mono text-primary">{element.period}</span> ⟹{" "}
+              <b>Period {element.period}</b>
             </p>
           </>
         }
@@ -278,7 +297,9 @@ function DeterminationPanel({ element }: { element: Element }) {
         body={
           <>
             <p className="text-sm">{rule.ruleBn}</p>
-            <p className="mt-1 font-mono text-sm text-primary">{rule.calc} ⟹ Group {element.group}</p>
+            <p className="mt-1 font-mono text-sm text-primary">
+              {rule.calc} ⟹ Group {element.group}
+            </p>
           </>
         }
       />
@@ -335,21 +356,27 @@ function PeriodicSnippet({
         <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
           Periodic Table · পর্যায় সারণি (H – Zn)
         </div>
-        <div className="text-[10px] text-muted-foreground">মৌল বেছে নিতে ক্লিক করুন · click to select</div>
+        <div className="text-[10px] text-muted-foreground">
+          মৌল বেছে নিতে ক্লিক করুন · click to select
+        </div>
       </div>
       <div className="overflow-x-auto">
-        <div className="grid min-w-[640px] gap-1" style={{ gridTemplateColumns: `28px repeat(18, minmax(28px, 1fr))` }}>
+        <div
+          className="grid min-w-[640px] gap-1"
+          style={{ gridTemplateColumns: `28px repeat(18, minmax(28px, 1fr))` }}
+        >
           <div />
           {groups.map((g) => (
-            <div key={`gh-${g}`} className="text-center text-[9px] font-medium text-muted-foreground">
+            <div
+              key={`gh-${g}`}
+              className="text-center text-[9px] font-medium text-muted-foreground"
+            >
               {g}
             </div>
           ))}
           {periods.map((p) => (
             <Fragment key={`row-${p}`}>
-              <div className="self-center text-[9px] font-medium text-muted-foreground">
-                {p}
-              </div>
+              <div className="self-center text-[9px] font-medium text-muted-foreground">{p}</div>
               {groups.map((g) => {
                 const el = lookup.get(`${p}-${g}`);
                 if (!el) return <div key={`c-${p}-${g}`} className="h-9 rounded-sm bg-muted/20" />;
@@ -377,7 +404,6 @@ function PeriodicSnippet({
     </div>
   );
 }
-
 
 // ────────────────────────────────────────────────────────────
 // Main component
@@ -415,7 +441,10 @@ export default function ElectronConfigLab({ onBack }: Props) {
               </div>
             </div>
           </div>
-          <Badge variant="secondary" className="hidden border bg-fuchsia-500/10 text-fuchsia-700 sm:inline-flex dark:text-fuchsia-300">
+          <Badge
+            variant="secondary"
+            className="hidden border bg-fuchsia-500/10 text-fuchsia-700 sm:inline-flex dark:text-fuchsia-300"
+          >
             Interactive Bohr Model
           </Badge>
         </div>
@@ -494,14 +523,20 @@ export default function ElectronConfigLab({ onBack }: Props) {
                 <span className="text-muted-foreground">Animation Speed · গতি</span>
                 <span className="font-mono">{Math.round(speed * 100)}%</span>
               </div>
-              <Slider value={[speed]} onValueChange={(v) => setSpeed(v[0])} min={0} max={1} step={0.05} />
+              <Slider
+                value={[speed]}
+                onValueChange={(v) => setSpeed(v[0])}
+                min={0}
+                max={1}
+                step={0.05}
+              />
               <div className="flex justify-between text-[10px] text-muted-foreground">
-                <span>Slow</span><span>Fast</span>
+                <span>Slow</span>
+                <span>Fast</span>
               </div>
             </div>
           </Card>
         </aside>
-
 
         {/* ── Center: Bohr model + periodic snippet ───────── */}
         <section className="space-y-4">
@@ -522,7 +557,12 @@ export default function ElectronConfigLab({ onBack }: Props) {
               )}
             </div>
             <div className="aspect-square w-full max-w-[460px] mx-auto">
-              <BohrModel element={element} speed={speed} focusShell={focusShell} onFocusShell={setFocusShell} />
+              <BohrModel
+                element={element}
+                speed={speed}
+                focusShell={focusShell}
+                onFocusShell={setFocusShell}
+              />
             </div>
           </Card>
 
@@ -562,4 +602,3 @@ function Prop({ label, value }: { label: string; value: React.ReactNode }) {
     </div>
   );
 }
-

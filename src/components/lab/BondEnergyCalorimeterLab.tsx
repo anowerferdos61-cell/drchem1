@@ -205,8 +205,8 @@ export default function BondEnergyCalorimeterLab({ onBack }: Props) {
   const [rBonds, setRBonds] = useState<Bond[]>(() =>
     rxn.reactantsBonds.map((b) => ({ ...b, broken: false })),
   );
-  const [pBonds, setPBonds] = useState<Bond[]>(() =>
-    rxn.productsBonds.map((b) => ({ ...b, broken: true })), // "broken" = not yet formed
+  const [pBonds, setPBonds] = useState<Bond[]>(
+    () => rxn.productsBonds.map((b) => ({ ...b, broken: true })), // "broken" = not yet formed
   );
 
   // Reset state when reaction changes
@@ -368,10 +368,7 @@ export default function BondEnergyCalorimeterLab({ onBack }: Props) {
                     {formedCount}/{pBonds.length}
                   </span>
                 </div>
-                <Progress
-                  value={(formedCount / pBonds.length) * 100}
-                  className="h-1.5"
-                />
+                <Progress value={(formedCount / pBonds.length) * 100} className="h-1.5" />
               </div>
             </div>
           </Card>
@@ -403,11 +400,7 @@ export default function BondEnergyCalorimeterLab({ onBack }: Props) {
               </div>
               <div className="flex flex-wrap items-center justify-center gap-2">
                 {rxn.reactantMolecules.map((m, i) => (
-                  <MoleculeCard
-                    key={`r-${i}`}
-                    label={m}
-                    tone={allBroken ? "empty" : "reactant"}
-                  />
+                  <MoleculeCard key={`r-${i}`} label={m} tone={allBroken ? "empty" : "reactant"} />
                 ))}
               </div>
               <div className="mt-2 flex flex-wrap items-center justify-center gap-1.5">
@@ -452,11 +445,7 @@ export default function BondEnergyCalorimeterLab({ onBack }: Props) {
               </div>
               <div className="flex flex-wrap items-center justify-center gap-2">
                 {rxn.productMolecules.map((m, i) => (
-                  <MoleculeCard
-                    key={`p-${i}`}
-                    label={m}
-                    tone={allFormed ? "product" : "empty"}
-                  />
+                  <MoleculeCard key={`p-${i}`} label={m} tone={allFormed ? "product" : "empty"} />
                 ))}
               </div>
               <div className="mt-2 flex flex-wrap items-center justify-center gap-1.5">
@@ -568,18 +557,14 @@ export default function BondEnergyCalorimeterLab({ onBack }: Props) {
       theory={
         <div className="space-y-3">
           <h3 className="text-base font-bold">
-            {lang === "bn"
-              ? "বন্ধন শক্তি ও তাপের পরিবর্তন"
-              : "Bond Energy & Enthalpy Change"}
+            {lang === "bn" ? "বন্ধন শক্তি ও তাপের পরিবর্তন" : "Bond Energy & Enthalpy Change"}
           </h3>
           <p>
             {lang === "bn"
               ? "রাসায়নিক বিক্রিয়ায় পুরাতন বন্ধন ভাঙতে শক্তি শোষিত হয় (এন্ডোথার্মিক ধাপ) এবং নতুন বন্ধন গঠনে শক্তি নির্গত হয় (এক্সোথার্মিক ধাপ)।"
               : "In a chemical reaction, breaking old bonds absorbs energy (endothermic step) and forming new bonds releases energy (exothermic step)."}
           </p>
-          <p className="rounded-md bg-slate-100 p-2 font-mono">
-            ΔH = ΣE(broken) − ΣE(formed)
-          </p>
+          <p className="rounded-md bg-slate-100 p-2 font-mono">ΔH = ΣE(broken) − ΣE(formed)</p>
           <ul className="list-disc space-y-1 pl-5">
             <li>
               {lang === "bn"
@@ -607,13 +592,7 @@ export default function BondEnergyCalorimeterLab({ onBack }: Props) {
  * Small sub-components
  * ───────────────────────────────────────────────────────── */
 
-function MoleculeCard({
-  label,
-  tone,
-}: {
-  label: string;
-  tone: "reactant" | "product" | "empty";
-}) {
+function MoleculeCard({ label, tone }: { label: string; tone: "reactant" | "product" | "empty" }) {
   return (
     <div
       className={cn(
@@ -622,8 +601,7 @@ function MoleculeCard({
           "border-rose-400/60 bg-gradient-to-br from-rose-500/20 to-rose-600/10 text-rose-100 shadow-[0_0_10px_rgba(244,63,94,0.35)]",
         tone === "product" &&
           "animate-in fade-in zoom-in border-emerald-400/60 bg-gradient-to-br from-emerald-500/25 to-emerald-600/10 text-emerald-100 shadow-[0_0_12px_rgba(16,185,129,0.45)]",
-        tone === "empty" &&
-          "border-dashed border-slate-600 bg-slate-800/40 text-slate-500",
+        tone === "empty" && "border-dashed border-slate-600 bg-slate-800/40 text-slate-500",
       )}
     >
       {label}
@@ -692,15 +670,7 @@ function BondChip({
   );
 }
 
-function ThermometerGauge({
-  tempC,
-  isExo,
-  lang,
-}: {
-  tempC: number;
-  isExo: boolean;
-  lang: Lang;
-}) {
+function ThermometerGauge({ tempC, isExo, lang }: { tempC: number; isExo: boolean; lang: Lang }) {
   // Map −5..55 °C to 0..1
   const pct = Math.max(0, Math.min(1, (tempC - -5) / 60));
   const fillHeight = pct * 100;
@@ -726,9 +696,7 @@ function ThermometerGauge({
         />
       </div>
       <div className="flex-1">
-        <div className="font-mono text-2xl font-bold text-slate-800">
-          {tempC.toFixed(1)}°C
-        </div>
+        <div className="font-mono text-2xl font-bold text-slate-800">{tempC.toFixed(1)}°C</div>
         <div
           className={cn(
             "mt-1 text-[10px] font-semibold",
@@ -752,15 +720,7 @@ function ThermometerGauge({
   );
 }
 
-function EnergyBars({
-  eBroken,
-  eFormed,
-  lang,
-}: {
-  eBroken: number;
-  eFormed: number;
-  lang: Lang;
-}) {
+function EnergyBars({ eBroken, eFormed, lang }: { eBroken: number; eFormed: number; lang: Lang }) {
   const max = Math.max(eBroken, eFormed, 1);
   const brokenH = (eBroken / max) * 100;
   const formedH = (eFormed / max) * 100;
@@ -798,7 +758,10 @@ function BarCol({
       <div className="font-mono text-[11px] font-bold text-slate-700">{value}</div>
       <div className="relative flex h-24 w-full max-w-[42px] items-end rounded-md bg-slate-100">
         <div
-          className={cn("w-full rounded-md bg-gradient-to-t transition-[height] duration-500", color)}
+          className={cn(
+            "w-full rounded-md bg-gradient-to-t transition-[height] duration-500",
+            color,
+          )}
           style={{ height: `${heightPct}%` }}
         />
       </div>

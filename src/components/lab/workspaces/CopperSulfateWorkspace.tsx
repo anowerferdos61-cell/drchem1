@@ -11,10 +11,8 @@ interface Props {
 
 export default function CopperSulfateWorkspace({ placed }: Props) {
   const color = colorFromFraction(placed.dehydrationFraction);
-  const sampleFill =
-    color === "blue" ? "#1d4ed8" : color === "paleblue" ? "#93c5fd" : "#f8fafc";
-  const sampleStroke =
-    color === "blue" ? "#1e3a8a" : color === "paleblue" ? "#60a5fa" : "#cbd5e1";
+  const sampleFill = color === "blue" ? "#1d4ed8" : color === "paleblue" ? "#93c5fd" : "#f8fafc";
+  const sampleStroke = color === "blue" ? "#1e3a8a" : color === "paleblue" ? "#60a5fa" : "#cbd5e1";
 
   const displayMass = placed.balanceOn
     ? placed.crucibleOnBalance
@@ -64,7 +62,16 @@ export default function CopperSulfateWorkspace({ placed }: Props) {
           <text x="100" y="-10" textAnchor="middle" fontSize="11" fontWeight="600" fill="#475569">
             Analytical Balance · ব্যালান্স
           </text>
-          <rect x="0" y="40" width="200" height="120" rx="8" fill="#1f2937" stroke="#0f172a" strokeWidth="2" />
+          <rect
+            x="0"
+            y="40"
+            width="200"
+            height="120"
+            rx="8"
+            fill="#1f2937"
+            stroke="#0f172a"
+            strokeWidth="2"
+          />
           <rect x="20" y="55" width="160" height="40" rx="3" fill="#0a0a0a" />
           {placed.balanceOn ? (
             <text
@@ -79,7 +86,14 @@ export default function CopperSulfateWorkspace({ placed }: Props) {
               {displayMass.toFixed(3)} g
             </text>
           ) : (
-            <text x="100" y="82" textAnchor="middle" fontFamily="ui-monospace,monospace" fontSize="11" fill="#475569">
+            <text
+              x="100"
+              y="82"
+              textAnchor="middle"
+              fontFamily="ui-monospace,monospace"
+              fontSize="11"
+              fill="#475569"
+            >
               OFF
             </text>
           )}
@@ -121,7 +135,16 @@ export default function CopperSulfateWorkspace({ placed }: Props) {
             <g>
               {/* Wire gauze */}
               <rect x="20" y="120" width="120" height="6" fill="#94a3b8" stroke="#475569" />
-              <rect x="55" y="118" width="50" height="10" rx="1" fill="#fde68a" stroke="#a16207" strokeWidth="0.5" />
+              <rect
+                x="55"
+                y="118"
+                width="50"
+                height="10"
+                rx="1"
+                fill="#fde68a"
+                stroke="#a16207"
+                strokeWidth="0.5"
+              />
               {/* Tripod legs */}
               <line x1="30" y1="124" x2="10" y2="220" stroke="#1f2937" strokeWidth="3" />
               <line x1="130" y1="124" x2="150" y2="220" stroke="#1f2937" strokeWidth="3" />
@@ -133,10 +156,20 @@ export default function CopperSulfateWorkspace({ placed }: Props) {
               {placed.burnerOn && (
                 <g>
                   <ellipse cx="80" cy="150" rx="14" ry="32" fill="url(#cuFlame)">
-                    <animate attributeName="ry" values="28;36;28" dur="0.7s" repeatCount="indefinite" />
+                    <animate
+                      attributeName="ry"
+                      values="28;36;28"
+                      dur="0.7s"
+                      repeatCount="indefinite"
+                    />
                   </ellipse>
                   <ellipse cx="80" cy="155" rx="7" ry="20" fill="#3b82f6" opacity="0.7">
-                    <animate attributeName="ry" values="18;24;18" dur="0.6s" repeatCount="indefinite" />
+                    <animate
+                      attributeName="ry"
+                      values="18;24;18"
+                      dur="0.6s"
+                      repeatCount="indefinite"
+                    />
                   </ellipse>
                   {/* Heat shimmer */}
                   {[0, 1, 2].map((i) => (
@@ -247,7 +280,14 @@ export default function CopperSulfateWorkspace({ placed }: Props) {
                 hot={!placed.cooled}
               />
               {placed.cooled && (
-                <text x="25" y="40" textAnchor="middle" fontSize="8" fill="#16a34a" fontWeight="700">
+                <text
+                  x="25"
+                  y="40"
+                  textAnchor="middle"
+                  fontSize="8"
+                  fill="#16a34a"
+                  fontWeight="700"
+                >
                   ✓ 25 °C
                 </text>
               )}
@@ -289,12 +329,7 @@ function Crucible({
       {/* Lid (small disc above) */}
       <ellipse cx="25" cy="-2" rx="22" ry="3" fill="#f1f5f9" stroke="#94a3b8" strokeWidth="0.8" />
       {/* Walls */}
-      <path
-        d="M0 4 L50 4 L40 38 L10 38 Z"
-        fill="#fef3c7"
-        stroke="#a16207"
-        strokeWidth="1.2"
-      />
+      <path d="M0 4 L50 4 L40 38 L10 38 Z" fill="#fef3c7" stroke="#a16207" strokeWidth="1.2" />
       {/* Sample */}
       {fillSample && sampleAmount > 0 && (
         <path

@@ -22,19 +22,11 @@ import {
 import TeacherViva, { type VivaQuestion } from "@/components/viva/TeacherViva";
 import StudentViva from "@/components/viva/StudentViva";
 
-
 import EquipmentPanel, { NACL_ITEMS } from "./EquipmentPanel";
 import StepsPanel from "./StepsPanel";
 import LabReport from "./LabReport";
 import NaClWorkspace from "./workspaces/NaClWorkspace";
-import type {
-  EquipmentId,
-  Mistake,
-  Mode,
-  NaClPlaced,
-  Report,
-  Step,
-} from "./types";
+import type { EquipmentId, Mistake, Mode, NaClPlaced, Report, Step } from "./types";
 import { setAIContext } from "@/lib/ai-context-store";
 import {
   BOIL_TEMP,
@@ -73,8 +65,7 @@ function buildSteps(): Step[] {
     },
     {
       id: "filter",
-      label:
-        "Filter the solution into Beaker-2 · ফানেল ও ফিল্টার পেপার দিয়ে পরিশ্রবণ করো।",
+      label: "Filter the solution into Beaker-2 · ফানেল ও ফিল্টার পেপার দিয়ে পরিশ্রবণ করো।",
       done: false,
     },
     {
@@ -145,8 +136,7 @@ export default function NaClLab({ onBack }: Props) {
       mistakesMade: mistakes.map((m) => m.message),
       currentChemicals: chemicals,
       currentEquipment: equipment,
-      goal:
-        "Prepare pure cubic NaCl crystals from impure salt via dissolution → filtration → evaporation to saturation → slow cooling crystallisation.",
+      goal: "Prepare pure cubic NaCl crystals from impure salt via dissolution → filtration → evaporation to saturation → slow cooling crystallisation.",
     });
   }, [mode, steps, placed, mistakes]);
 
@@ -311,8 +301,7 @@ export default function NaClLab({ onBack }: Props) {
     logMistake({
       type: "rapid_cooling",
       severity: "low",
-      message:
-        "দ্রুত ঠান্ডা করা হয়েছে · ঘনকীয় lattice geometry নষ্ট হবে।",
+      message: "দ্রুত ঠান্ডা করা হয়েছে · ঘনকীয় lattice geometry নষ্ট হবে।",
     });
     // Crash tempC quickly via flag
     setTempC((t) => ROOM_TEMP + (t - ROOM_TEMP) * 0.1);
@@ -346,8 +335,7 @@ export default function NaClLab({ onBack }: Props) {
               logMistake({
                 type: "over_evaporation",
                 severity: "med",
-                message:
-                  "দ্রবণটিকে সম্পূর্ণ শুকিয়ে ফেলা হয়েছে · কেলাসনের সুযোগ দেওয়া হয়নি।",
+                message: "দ্রবণটিকে সম্পূর্ণ শুকিয়ে ফেলা হয়েছে · কেলাসনের সুযোগ দেওয়া হয়নি।",
               });
             }
             return next;
@@ -404,8 +392,7 @@ export default function NaClLab({ onBack }: Props) {
       logMistake({
         type: "no_seed_crystal",
         severity: "low",
-        message:
-          "বীজ কেলাস (seed crystal) যোগ করা হয়নি · কেলাসগুলো irregular হতে পারে।",
+        message: "বীজ কেলাস (seed crystal) যোগ করা হয়নি · কেলাসগুলো irregular হতে পারে।",
       });
     }
     const r: Report = {
@@ -449,8 +436,7 @@ export default function NaClLab({ onBack }: Props) {
     if (!placed.beaker_2) return "Place Beaker-2 to receive the filtrate.";
     if (!placed.filter_setup) return "Add Funnel and Filter Paper for filtration.";
     if (!placed.filtered) return "Wait for filtration to complete…";
-    if (!placed.heat_setup)
-      return "Set up Tripod + Wire Gauze + Bunsen Burner.";
+    if (!placed.heat_setup) return "Set up Tripod + Wire Gauze + Bunsen Burner.";
     if (!placed.evaporating_dish) return "Place the evaporating dish on the gauze.";
     if (!placed.burning && volumeFrac > SATURATION_FRAC + 0.05)
       return "Light the burner to start evaporation.";
@@ -459,8 +445,7 @@ export default function NaClLab({ onBack }: Props) {
     if (placed.burning && volumeFrac <= SATURATION_FRAC + 0.05)
       return "Saturation reached — stop heating now!";
     if (placed.cooling && tempC > 55) return "Let it cool naturally…";
-    if (!placed.seeded && tempC < 55)
-      return "Add a tiny seed crystal for perfect cubic geometry.";
+    if (!placed.seeded && tempC < 55) return "Add a tiny seed crystal for perfect cubic geometry.";
     if (placed.crystallized) return "Crystals formed! Submit your report.";
     return "Continue the workflow…";
   }, [placed, volumeFrac, tempC]);
@@ -511,7 +496,6 @@ export default function NaClLab({ onBack }: Props) {
           </div>
         </header>
 
-
         <div
           className={[
             "grid gap-4",
@@ -552,7 +536,12 @@ export default function NaClLab({ onBack }: Props) {
                 <Button
                   size="sm"
                   onClick={lightBurner}
-                  disabled={!placed.heat_setup || !placed.evaporating_dish || submitted || placed.crystallized}
+                  disabled={
+                    !placed.heat_setup ||
+                    !placed.evaporating_dish ||
+                    submitted ||
+                    placed.crystallized
+                  }
                 >
                   <Flame className="mr-1 h-4 w-4" /> বার্নার চালু
                 </Button>
@@ -624,7 +613,6 @@ export default function NaClLab({ onBack }: Props) {
     </>
   );
 }
-
 
 function ModeToggle({ mode, setMode }: { mode: Mode; setMode: (m: Mode) => void }) {
   const opts: Array<{ id: Mode; label: string }> = [

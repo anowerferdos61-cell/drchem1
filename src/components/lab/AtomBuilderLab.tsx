@@ -113,7 +113,7 @@ function relationLabel(a: AtomState, b: AtomState) {
       cls: "bg-slate-500/15 text-slate-300 border-slate-400/30",
     };
   }
-  if (a.p === b.p && a.n === b.n && (a.excited !== b.excited)) {
+  if (a.p === b.p && a.n === b.n && a.excited !== b.excited) {
     return {
       key: "isomer",
       title: "আইসোমার (Isomer)!",
@@ -248,13 +248,17 @@ function AtomVisualizer({
     <button
       onClick={onFocus}
       className={`group relative flex aspect-square w-full flex-col items-center justify-center overflow-hidden rounded-xl border-2 bg-slate-950/60 p-2 transition ${
-        focused ? `${accent} shadow-[0_0_24px_rgba(99,102,241,0.25)]` : "border-white/10 hover:border-white/25"
+        focused
+          ? `${accent} shadow-[0_0_24px_rgba(99,102,241,0.25)]`
+          : "border-white/10 hover:border-white/25"
       }`}
     >
       <div className="absolute left-2 top-2 z-10 flex items-center gap-1.5">
         <Badge
           className={`border text-[10px] ${
-            focused ? "bg-violet-500/20 text-violet-100 border-violet-400/50" : "bg-slate-800/70 text-slate-300 border-white/10"
+            focused
+              ? "bg-violet-500/20 text-violet-100 border-violet-400/50"
+              : "bg-slate-800/70 text-slate-300 border-white/10"
           }`}
         >
           {label}
@@ -289,7 +293,9 @@ function AtomVisualizer({
               {hasElectrons && (
                 <div
                   className="absolute inset-0"
-                  style={{ animation: `spin-${label.toLowerCase()}-${i} ${7 + i * 3}s linear infinite` }}
+                  style={{
+                    animation: `spin-${label.toLowerCase()}-${i} ${7 + i * 3}s linear infinite`,
+                  }}
                 >
                   {Array.from({ length: shells[i] }).map((_, k) => {
                     const angle = (k / shells[i]) * 360;
@@ -297,7 +303,9 @@ function AtomVisualizer({
                       <div
                         key={k}
                         className="absolute left-1/2 top-1/2"
-                        style={{ transform: `rotate(${angle}deg) translate(50%) rotate(-${angle}deg)` }}
+                        style={{
+                          transform: `rotate(${angle}deg) translate(50%) rotate(-${angle}deg)`,
+                        }}
                       >
                         <div className="-ml-1.5 -mt-1.5 h-3 w-3 rounded-full bg-yellow-400 shadow-[0_0_10px_rgba(250,204,21,0.9)] ring-2 ring-yellow-200/60" />
                       </div>
@@ -312,7 +320,9 @@ function AtomVisualizer({
         {/* Nucleus */}
         <div
           className={`absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-gradient-to-br from-rose-500/35 via-fuchsia-500/20 to-blue-500/30 ring-2 ring-white/15 ${
-            atom.excited ? "shadow-[0_0_44px_rgba(217,70,239,0.55)] animate-pulse" : "shadow-[0_0_36px_rgba(244,63,94,0.4)]"
+            atom.excited
+              ? "shadow-[0_0_44px_rgba(217,70,239,0.55)] animate-pulse"
+              : "shadow-[0_0_36px_rgba(244,63,94,0.4)]"
           }`}
         >
           <div className="relative h-full w-full">
@@ -395,17 +405,17 @@ export default function AtomBuilderLab({ onBack }: Props) {
   const [focus, setFocus] = useState<AtomKey>("A");
 
   const focused = focus === "A" ? atomA : atomB;
-  const element = useMemo(
-    () => ELEMENTS.find((e) => e.z === focused.p) ?? null,
-    [focused.p],
-  );
+  const element = useMemo(() => ELEMENTS.find((e) => e.z === focused.p) ?? null, [focused.p]);
   const mass = focused.p + focused.n;
   const charge = focused.p - focused.e;
   const shells = useMemo(() => distributeElectrons(focused.e), [focused.e]);
 
   const chargeBadge = useMemo(() => {
     if (charge === 0)
-      return { label: "নিরপেক্ষ পরমাণু (Neutral)", cls: "bg-emerald-500/20 text-emerald-300 border-emerald-400/40" };
+      return {
+        label: "নিরপেক্ষ পরমাণু (Neutral)",
+        cls: "bg-emerald-500/20 text-emerald-300 border-emerald-400/40",
+      };
     if (charge > 0)
       return {
         label: `ধনাত্মক আয়ন (Cation) ${charge > 1 ? charge + "+" : "+"}`,
@@ -444,7 +454,12 @@ export default function AtomBuilderLab({ onBack }: Props) {
         {/* Header */}
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="sm" onClick={onBack} className="text-slate-200 hover:bg-white/10">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onBack}
+              className="text-slate-200 hover:bg-white/10"
+            >
               <ArrowLeft className="mr-1 h-4 w-4" /> ফিরে যাই
             </Button>
             <div>
@@ -457,7 +472,12 @@ export default function AtomBuilderLab({ onBack }: Props) {
               </p>
             </div>
           </div>
-          <Button variant="outline" size="sm" onClick={reset} className="border-white/20 text-slate-200 hover:bg-white/10">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={reset}
+            className="border-white/20 text-slate-200 hover:bg-white/10"
+          >
             <RotateCcw className="mr-1 h-4 w-4" /> Reset Lab
           </Button>
         </div>
@@ -487,7 +507,9 @@ export default function AtomBuilderLab({ onBack }: Props) {
             <div className="grid gap-4 md:grid-cols-2">
               {/* Atom A column */}
               <Card className="border-white/10 bg-slate-900/50 p-3 backdrop-blur">
-                <div className="mb-2 text-center text-sm font-bold text-slate-100">পরমাণু A (Atom A)</div>
+                <div className="mb-2 text-center text-sm font-bold text-slate-100">
+                  পরমাণু A (Atom A)
+                </div>
                 <AtomVisualizer
                   atom={atomA}
                   focused={focus === "A"}
@@ -496,17 +518,15 @@ export default function AtomBuilderLab({ onBack }: Props) {
                   accent="border-emerald-400/60"
                 />
                 <div className="mt-3">
-                  <AtomControls
-                    atom={atomA}
-                    setAtom={setAtomA}
-                    color="border-emerald-400/30"
-                  />
+                  <AtomControls atom={atomA} setAtom={setAtomA} color="border-emerald-400/30" />
                 </div>
               </Card>
 
               {/* Atom B column */}
               <Card className="border-white/10 bg-slate-900/50 p-3 backdrop-blur">
-                <div className="mb-2 text-center text-sm font-bold text-slate-100">পরমাণু B (Atom B)</div>
+                <div className="mb-2 text-center text-sm font-bold text-slate-100">
+                  পরমাণু B (Atom B)
+                </div>
                 <AtomVisualizer
                   atom={atomB}
                   focused={focus === "B"}
@@ -515,11 +535,7 @@ export default function AtomBuilderLab({ onBack }: Props) {
                   accent="border-sky-400/60"
                 />
                 <div className="mt-3">
-                  <AtomControls
-                    atom={atomB}
-                    setAtom={setAtomB}
-                    color="border-sky-400/30"
-                  />
+                  <AtomControls atom={atomB} setAtom={setAtomB} color="border-sky-400/30" />
                 </div>
               </Card>
             </div>
@@ -534,15 +550,18 @@ export default function AtomBuilderLab({ onBack }: Props) {
                 <div className="mt-1 text-xs leading-relaxed opacity-95">{relation.desc}</div>
                 <div className="mt-3 grid grid-cols-2 gap-2 font-mono text-[11px]">
                   <div className="rounded bg-slate-900/60 px-2 py-1 text-slate-200">
-                    A: Z={atomA.p}, N={atomA.n}, A={atomA.p + atomA.n}{atomA.excited ? ", *" : ""}
+                    A: Z={atomA.p}, N={atomA.n}, A={atomA.p + atomA.n}
+                    {atomA.excited ? ", *" : ""}
                   </div>
                   <div className="rounded bg-slate-900/60 px-2 py-1 text-slate-200">
-                    B: Z={atomB.p}, N={atomB.n}, A={atomB.p + atomB.n}{atomB.excited ? ", *" : ""}
+                    B: Z={atomB.p}, N={atomB.n}, A={atomB.p + atomB.n}
+                    {atomB.excited ? ", *" : ""}
                   </div>
                 </div>
               </div>
               <p className="mt-2 text-[11px] leading-relaxed text-slate-400">
-                Tip: যেকোনো পরমাণুর কণা পরিবর্তন করলে এই কার্ডটি সাথে সাথে আপডেট হবে। Isomer বুঝতে একটি পরমাণুর “Excited State” টিক দিন।
+                Tip: যেকোনো পরমাণুর কণা পরিবর্তন করলে এই কার্ডটি সাথে সাথে আপডেট হবে। Isomer বুঝতে
+                একটি পরমাণুর “Excited State” টিক দিন।
               </p>
             </Card>
           </div>
@@ -552,7 +571,9 @@ export default function AtomBuilderLab({ onBack }: Props) {
             <Card className="border-white/10 bg-slate-900/70 p-3 backdrop-blur">
               <div className="flex items-center justify-between text-[11px] uppercase tracking-wide text-slate-400">
                 <span>সক্রিয় পরমাণু</span>
-                <Badge className={`border ${focus === "A" ? "border-emerald-400/50 bg-emerald-500/15 text-emerald-200" : "border-sky-400/50 bg-sky-500/15 text-sky-200"}`}>
+                <Badge
+                  className={`border ${focus === "A" ? "border-emerald-400/50 bg-emerald-500/15 text-emerald-200" : "border-sky-400/50 bg-sky-500/15 text-sky-200"}`}
+                >
                   Atom {focus}
                 </Badge>
               </div>
@@ -561,7 +582,9 @@ export default function AtomBuilderLab({ onBack }: Props) {
                   <div className="text-4xl font-black text-white">{element.symbol}</div>
                   <div>
                     <div className="text-sm font-semibold text-slate-100">{element.nameBn}</div>
-                    <div className="text-xs text-slate-400">{element.nameEn} · Z={element.z}</div>
+                    <div className="text-xs text-slate-400">
+                      {element.nameEn} · Z={element.z}
+                    </div>
                   </div>
                 </div>
               ) : (
@@ -575,7 +598,9 @@ export default function AtomBuilderLab({ onBack }: Props) {
               <Card className="border-white/10 bg-slate-900/70 p-3 text-center backdrop-blur">
                 <div className="text-[10px] uppercase text-slate-400">ভর সংখ্যা (A)</div>
                 <div className="mt-1 font-mono text-2xl font-bold text-white">{mass}</div>
-                <div className="text-[10px] text-slate-500">{focused.p}p + {focused.n}n</div>
+                <div className="text-[10px] text-slate-500">
+                  {focused.p}p + {focused.n}n
+                </div>
               </Card>
               <Card className="border-white/10 bg-slate-900/70 p-3 text-center backdrop-blur">
                 <div className="text-[10px] uppercase text-slate-400">পারমাণবিক সংখ্যা (Z)</div>
@@ -588,7 +613,9 @@ export default function AtomBuilderLab({ onBack }: Props) {
               <div className="mb-2 flex items-center gap-2 text-xs text-slate-400">
                 <Zap className="h-3.5 w-3.5" /> নেট চার্জ
               </div>
-              <Badge className={`w-full justify-center border ${chargeBadge.cls}`}>{chargeBadge.label}</Badge>
+              <Badge className={`w-full justify-center border ${chargeBadge.cls}`}>
+                {chargeBadge.label}
+              </Badge>
               <div className="mt-2 text-center font-mono text-xs text-slate-300">
                 {focused.p}p − {focused.e}e = {charge >= 0 ? `+${charge}` : charge}
               </div>
@@ -608,10 +635,18 @@ export default function AtomBuilderLab({ onBack }: Props) {
                 <Info className="h-3.5 w-3.5" /> সংজ্ঞা স্মরণিকা
               </div>
               <ul className="space-y-1 text-[11px] leading-relaxed text-slate-300">
-                <li><b className="text-emerald-300">আইসোটোপ:</b> Z সমান, A ভিন্ন।</li>
-                <li><b className="text-sky-300">আইসোবার:</b> A সমান, Z ভিন্ন।</li>
-                <li><b className="text-amber-300">আইসোটোন:</b> N সমান, Z ভিন্ন।</li>
-                <li><b className="text-fuchsia-300">আইসোমার:</b> p, n সমান — শক্তিস্তর ভিন্ন।</li>
+                <li>
+                  <b className="text-emerald-300">আইসোটোপ:</b> Z সমান, A ভিন্ন।
+                </li>
+                <li>
+                  <b className="text-sky-300">আইসোবার:</b> A সমান, Z ভিন্ন।
+                </li>
+                <li>
+                  <b className="text-amber-300">আইসোটোন:</b> N সমান, Z ভিন্ন।
+                </li>
+                <li>
+                  <b className="text-fuchsia-300">আইসোমার:</b> p, n সমান — শক্তিস্তর ভিন্ন।
+                </li>
               </ul>
             </Card>
           </div>

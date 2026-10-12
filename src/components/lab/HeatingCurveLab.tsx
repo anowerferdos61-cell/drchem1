@@ -41,11 +41,11 @@ type Point = { t: number; T: number; phase: Phase };
 // Durations (seconds of simulated time) for each phase — picked so that
 // the latent-heat plateaus are visibly long compared to the heating ramps.
 const DUR: Record<Phase, number> = {
-  1: 8,   // ice -20 → 0
-  2: 12,  // melt
-  3: 16,  // water 0 → 100
-  4: 20,  // boil
-  5: 6,   // steam 100 → 120
+  1: 8, // ice -20 → 0
+  2: 12, // melt
+  3: 16, // water 0 → 100
+  4: 20, // boil
+  5: 6, // steam 100 → 120
 };
 const T_START = -20;
 const T_END = 120;
@@ -72,9 +72,21 @@ const TOTAL = DUR[1] + DUR[2] + DUR[3] + DUR[4] + DUR[5];
 
 const PHASE_INFO: Record<Phase, { bn: string; en: string; tint: string }> = {
   1: { bn: "কঠিন বরফ উত্তপ্ত হচ্ছে", en: "Solid ice heating", tint: "from-sky-500 to-cyan-500" },
-  2: { bn: "গলন · লীনতাপ ব্যবহৃত হচ্ছে", en: "Melting · latent heat of fusion", tint: "from-blue-500 to-indigo-500" },
-  3: { bn: "তরল পানি উত্তপ্ত হচ্ছে", en: "Liquid water heating", tint: "from-cyan-500 to-teal-500" },
-  4: { bn: "স্ফুটন · বাষ্পীভবনের লীনতাপ", en: "Boiling · latent heat of vaporization", tint: "from-orange-500 to-rose-500" },
+  2: {
+    bn: "গলন · লীনতাপ ব্যবহৃত হচ্ছে",
+    en: "Melting · latent heat of fusion",
+    tint: "from-blue-500 to-indigo-500",
+  },
+  3: {
+    bn: "তরল পানি উত্তপ্ত হচ্ছে",
+    en: "Liquid water heating",
+    tint: "from-cyan-500 to-teal-500",
+  },
+  4: {
+    bn: "স্ফুটন · বাষ্পীভবনের লীনতাপ",
+    en: "Boiling · latent heat of vaporization",
+    tint: "from-orange-500 to-rose-500",
+  },
   5: { bn: "বাষ্প উত্তপ্ত হচ্ছে", en: "Steam heating", tint: "from-rose-500 to-pink-500" },
 };
 
@@ -148,10 +160,15 @@ export default function HeatingCurveLab({ onBack }: { onBack: () => void }) {
             </div>
             <div className="leading-tight">
               <div className="text-base font-extrabold tracking-tight">পানির তাপন বক্ররেখা</div>
-              <div className="text-[11px] text-muted-foreground">Heating Curve of Water · Phase Changes</div>
+              <div className="text-[11px] text-muted-foreground">
+                Heating Curve of Water · Phase Changes
+              </div>
             </div>
           </div>
-          <Badge variant="secondary" className="hidden sm:inline-flex border border-orange-500/20 bg-orange-500/10 text-orange-700 dark:text-orange-300">
+          <Badge
+            variant="secondary"
+            className="hidden sm:inline-flex border border-orange-500/20 bg-orange-500/10 text-orange-700 dark:text-orange-300"
+          >
             অধ্যায় ২ · পদার্থের অবস্থা
           </Badge>
         </div>
@@ -171,11 +188,13 @@ export default function HeatingCurveLab({ onBack }: { onBack: () => void }) {
 
           {/* Latent heat notices */}
           {(phase === 2 || phase === 4) && (
-            <div className={`mt-3 rounded-lg border px-3 py-2 text-xs leading-relaxed animate-pulse ${
-              phase === 2
-                ? "border-blue-500/30 bg-blue-500/10 text-blue-800 dark:text-blue-200"
-                : "border-orange-500/30 bg-orange-500/10 text-orange-800 dark:text-orange-200"
-            }`}>
+            <div
+              className={`mt-3 rounded-lg border px-3 py-2 text-xs leading-relaxed animate-pulse ${
+                phase === 2
+                  ? "border-blue-500/30 bg-blue-500/10 text-blue-800 dark:text-blue-200"
+                  : "border-orange-500/30 bg-orange-500/10 text-orange-800 dark:text-orange-200"
+              }`}
+            >
               <strong className="font-bold">
                 {phase === 2 ? "লীনতাপ (গলন): " : "স্ফুটনাঙ্ক ও লীনতাপ: "}
               </strong>
@@ -192,7 +211,15 @@ export default function HeatingCurveLab({ onBack }: { onBack: () => void }) {
               disabled={done}
               className={`gap-1.5 ${running ? "bg-amber-600 hover:bg-amber-700" : "bg-rose-600 hover:bg-rose-700"}`}
             >
-              {running ? <><Pause className="h-4 w-4" /> থামান</> : <><Flame className="h-4 w-4" /> {simT === 0 ? "বার্নার চালু করুন" : "চালিয়ে যান"}</>}
+              {running ? (
+                <>
+                  <Pause className="h-4 w-4" /> থামান
+                </>
+              ) : (
+                <>
+                  <Flame className="h-4 w-4" /> {simT === 0 ? "বার্নার চালু করুন" : "চালিয়ে যান"}
+                </>
+              )}
             </Button>
             <Button variant="outline" onClick={reset} className="gap-1.5">
               <RotateCcw className="h-4 w-4" /> Reset
@@ -204,7 +231,9 @@ export default function HeatingCurveLab({ onBack }: { onBack: () => void }) {
           </div>
 
           <div className="mt-3 text-xs text-muted-foreground">
-            <span className={`inline-block h-2 w-2 rounded-full mr-1.5 align-middle ${running ? "bg-emerald-500 animate-pulse" : "bg-muted-foreground/40"}`} />
+            <span
+              className={`inline-block h-2 w-2 rounded-full mr-1.5 align-middle ${running ? "bg-emerald-500 animate-pulse" : "bg-muted-foreground/40"}`}
+            />
             {info.bn} · <span className="text-foreground/60">{info.en}</span>
           </div>
         </Card>
@@ -213,7 +242,9 @@ export default function HeatingCurveLab({ onBack }: { onBack: () => void }) {
         <Card className="p-4 md:p-6">
           <div className="mb-3 flex items-center justify-between">
             <div className="text-sm font-semibold">রিয়েল-টাইম গ্রাফ · T vs t</div>
-            <div className="text-[11px] text-muted-foreground">{simT.toFixed(1)} s / {TOTAL.toFixed(0)} s</div>
+            <div className="text-[11px] text-muted-foreground">
+              {simT.toFixed(1)} s / {TOTAL.toFixed(0)} s
+            </div>
           </div>
           <div className="h-[360px] md:h-[420px] w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -231,7 +262,12 @@ export default function HeatingCurveLab({ onBack }: { onBack: () => void }) {
                   dataKey="t"
                   domain={[0, TOTAL]}
                   tick={{ fontSize: 11 }}
-                  label={{ value: "Time (s) →", position: "insideBottom", offset: -2, fontSize: 11 }}
+                  label={{
+                    value: "Time (s) →",
+                    position: "insideBottom",
+                    offset: -2,
+                    fontSize: 11,
+                  }}
                 />
                 <YAxis
                   domain={[-20, 120]}
@@ -248,18 +284,40 @@ export default function HeatingCurveLab({ onBack }: { onBack: () => void }) {
                       p.phase === 2
                         ? "গলনাঙ্ক (0 °C) — লীনতাপ শোষিত হচ্ছে, তাপমাত্রা ধ্রুব।"
                         : p.phase === 4
-                        ? "স্ফুটনাঙ্ক (100 °C) — বাষ্পীভবনের লীনতাপ, তাপমাত্রা ধ্রুব।"
-                        : inf.bn;
+                          ? "স্ফুটনাঙ্ক (100 °C) — বাষ্পীভবনের লীনতাপ, তাপমাত্রা ধ্রুব।"
+                          : inf.bn;
                     return (
                       <div className="rounded-md border bg-background/95 px-2.5 py-1.5 text-xs shadow-lg">
-                        <div className="font-mono font-semibold">t = {p.t.toFixed(1)} s · T = {p.T.toFixed(1)} °C</div>
+                        <div className="font-mono font-semibold">
+                          t = {p.t.toFixed(1)} s · T = {p.T.toFixed(1)} °C
+                        </div>
                         <div className="text-muted-foreground mt-0.5 max-w-[220px]">{note}</div>
                       </div>
                     );
                   }}
                 />
-                <ReferenceLine y={0} stroke="#3b82f6" strokeDasharray="4 4" label={{ value: "গলনাঙ্ক 0°C", fontSize: 10, fill: "#3b82f6", position: "insideTopLeft" }} />
-                <ReferenceLine y={100} stroke="#f97316" strokeDasharray="4 4" label={{ value: "স্ফুটনাঙ্ক 100°C", fontSize: 10, fill: "#f97316", position: "insideTopLeft" }} />
+                <ReferenceLine
+                  y={0}
+                  stroke="#3b82f6"
+                  strokeDasharray="4 4"
+                  label={{
+                    value: "গলনাঙ্ক 0°C",
+                    fontSize: 10,
+                    fill: "#3b82f6",
+                    position: "insideTopLeft",
+                  }}
+                />
+                <ReferenceLine
+                  y={100}
+                  stroke="#f97316"
+                  strokeDasharray="4 4"
+                  label={{
+                    value: "স্ফুটনাঙ্ক 100°C",
+                    fontSize: 10,
+                    fill: "#f97316",
+                    position: "insideTopLeft",
+                  }}
+                />
                 <Line
                   type="monotone"
                   dataKey="T"
@@ -281,7 +339,11 @@ export default function HeatingCurveLab({ onBack }: { onBack: () => void }) {
                   key={p}
                   className={`rounded-md border px-2 py-1.5 leading-tight ${phase === p ? "ring-2 ring-rose-500/40 bg-muted" : "bg-background"}`}
                 >
-                  <div className={`text-[9px] font-bold uppercase tracking-wide bg-gradient-to-r bg-clip-text text-transparent ${inf.tint}`}>Phase {p}</div>
+                  <div
+                    className={`text-[9px] font-bold uppercase tracking-wide bg-gradient-to-r bg-clip-text text-transparent ${inf.tint}`}
+                  >
+                    Phase {p}
+                  </div>
                   <div className="font-medium">{inf.bn}</div>
                 </div>
               );
@@ -300,11 +362,15 @@ export default function HeatingCurveLab({ onBack }: { onBack: () => void }) {
 function BeakerScene({ phase, T, running }: { phase: Phase; T: number; running: boolean }) {
   // Liquid fill height grows as ice melts and shrinks as water boils away.
   const liquidH =
-    phase === 1 ? 0 :
-    phase === 2 ? 50 + ((T === 0 ? 0 : 0)) : // grows visually with melt fraction handled separately
-    phase === 3 ? 100 :
-    phase === 4 ? Math.max(20, 100 - ((T - 100) * 0 + simBoilOff(phase))) :
-    0;
+    phase === 1
+      ? 0
+      : phase === 2
+        ? 50 + (T === 0 ? 0 : 0) // grows visually with melt fraction handled separately
+        : phase === 3
+          ? 100
+          : phase === 4
+            ? Math.max(20, 100 - ((T - 100) * 0 + simBoilOff(phase)))
+            : 0;
 
   return (
     <div className="relative h-[300px] md:h-[340px] w-full rounded-xl bg-gradient-to-b from-slate-100 to-slate-200 dark:from-slate-900 dark:to-slate-800 overflow-hidden">
@@ -332,7 +398,16 @@ function BeakerScene({ phase, T, running }: { phase: Phase; T: number; running: 
           />
           {/* Scale marks */}
           {[40, 70, 100, 130, 160].map((y) => (
-            <line key={y} x1="30" y1={y} x2="40" y2={y} stroke="currentColor" strokeOpacity="0.3" strokeWidth="1" />
+            <line
+              key={y}
+              x1="30"
+              y1={y}
+              x2="40"
+              y2={y}
+              stroke="currentColor"
+              strokeOpacity="0.3"
+              strokeWidth="1"
+            />
           ))}
 
           {/* Phase 1: solid ice cubes */}
@@ -343,12 +418,29 @@ function BeakerScene({ phase, T, running }: { phase: Phase; T: number; running: 
 
           {/* Phase 3 & part of 4: liquid water */}
           {(phase === 3 || phase === 4) && (
-            <LiquidWater level={phase === 3 ? Math.max(40, 170 - (T / 100) * 5) : 70} boiling={phase === 4} />
+            <LiquidWater
+              level={phase === 3 ? Math.max(40, 170 - (T / 100) * 5) : 70}
+              boiling={phase === 4}
+            />
           )}
 
           {/* Thermometer probe */}
-          <line x1="85" y1="0" x2="85" y2="170" stroke="#94a3b8" strokeWidth="3" strokeLinecap="round" opacity="0.7" />
-          <circle cx="85" cy="172" r="6" fill={phase >= 4 ? "#f97316" : phase >= 3 ? "#06b6d4" : "#3b82f6"} />
+          <line
+            x1="85"
+            y1="0"
+            x2="85"
+            y2="170"
+            stroke="#94a3b8"
+            strokeWidth="3"
+            strokeLinecap="round"
+            opacity="0.7"
+          />
+          <circle
+            cx="85"
+            cy="172"
+            r="6"
+            fill={phase >= 4 ? "#f97316" : phase >= 3 ? "#06b6d4" : "#3b82f6"}
+          />
         </svg>
       </div>
 
@@ -415,7 +507,13 @@ function MeltingIce({ simT }: { simT: number }) {
     <g>
       <rect x="28" y="120" width="115" height="70" fill="#7dd3fc" opacity="0.55" />
       {/* meniscus */}
-      <path d="M 28 120 Q 85 116 142 120" stroke="#0284c7" strokeWidth="1.2" fill="none" opacity="0.6" />
+      <path
+        d="M 28 120 Q 85 116 142 120"
+        stroke="#0284c7"
+        strokeWidth="1.2"
+        fill="none"
+        opacity="0.6"
+      />
       {[
         { x: 50, y: 95 },
         { x: 85, y: 90 },
@@ -443,21 +541,20 @@ function LiquidWater({ level, boiling }: { level: number; boiling: boolean }) {
   return (
     <g>
       <rect x="28" y={level} width="115" height={190 - level} fill="#67e8f9" opacity="0.55" />
-      <path d={`M 28 ${level} Q 85 ${level - 3} 142 ${level}`} stroke="#0e7490" strokeWidth="1.2" fill="none" opacity="0.65" />
+      <path
+        d={`M 28 ${level} Q 85 ${level - 3} 142 ${level}`}
+        stroke="#0e7490"
+        strokeWidth="1.2"
+        fill="none"
+        opacity="0.65"
+      />
       {boiling && (
         <g>
           {Array.from({ length: 14 }).map((_, i) => {
             const x = 35 + ((i * 9) % 100);
             const baseY = 180 - (i % 5) * 10;
             return (
-              <circle
-                key={i}
-                cx={x}
-                cy={baseY}
-                r={2 + (i % 3)}
-                fill="white"
-                opacity={0.85}
-              >
+              <circle key={i} cx={x} cy={baseY} r={2 + (i % 3)} fill="white" opacity={0.85}>
                 <animate
                   attributeName="cy"
                   values={`${baseY};${level + 5}`}

@@ -84,7 +84,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { name: "author", content: "Dr. Chem" },
       { property: "og:site_name", content: "Dr. Chem" },
-      { property: "og:title", content: "Dr. Chem — AI-Powered Virtual Chemistry Lab for Class 9-10" },
+      {
+        property: "og:title",
+        content: "Dr. Chem — AI-Powered Virtual Chemistry Lab for Class 9-10",
+      },
       {
         property: "og:description",
         content:
@@ -92,17 +95,40 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Dr. Chem — AI-Powered Virtual Chemistry Lab for Class 9-10" },
+      {
+        name: "twitter:title",
+        content: "Dr. Chem — AI-Powered Virtual Chemistry Lab for Class 9-10",
+      },
       {
         name: "twitter:description",
         content:
           "Safe, visual, AI-guided chemistry experiments for Class 9-10 students and teachers.",
       },
-      { name: "description", content: "Perform chemistry experiments safely, learn visually, and get instant help from the Dr. Chem AI tutor. Built for Bangladeshi Class 9-10 students and teachers." },
-      { property: "og:description", content: "Perform chemistry experiments safely, learn visually, and get instant help from the Dr. Chem AI tutor. Built for Bangladeshi Class 9-10 students and teachers." },
-      { name: "twitter:description", content: "Perform chemistry experiments safely, learn visually, and get instant help from the Dr. Chem AI tutor. Built for Bangladeshi Class 9-10 students and teachers." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/BNbspVP1QLgQXV1xmKzQ4H5W7yJ2/social-images/social-1780481523006-Gemini_Generated_Image_2no3022no3022no3.webp" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/BNbspVP1QLgQXV1xmKzQ4H5W7yJ2/social-images/social-1780481523006-Gemini_Generated_Image_2no3022no3022no3.webp" },
+      {
+        name: "description",
+        content:
+          "Perform chemistry experiments safely, learn visually, and get instant help from the Dr. Chem AI tutor. Built for Bangladeshi Class 9-10 students and teachers.",
+      },
+      {
+        property: "og:description",
+        content:
+          "Perform chemistry experiments safely, learn visually, and get instant help from the Dr. Chem AI tutor. Built for Bangladeshi Class 9-10 students and teachers.",
+      },
+      {
+        name: "twitter:description",
+        content:
+          "Perform chemistry experiments safely, learn visually, and get instant help from the Dr. Chem AI tutor. Built for Bangladeshi Class 9-10 students and teachers.",
+      },
+      {
+        property: "og:image",
+        content:
+          "https://storage.googleapis.com/gpt-engineer-file-uploads/BNbspVP1QLgQXV1xmKzQ4H5W7yJ2/social-images/social-1780481523006-Gemini_Generated_Image_2no3022no3022no3.webp",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://storage.googleapis.com/gpt-engineer-file-uploads/BNbspVP1QLgQXV1xmKzQ4H5W7yJ2/social-images/social-1780481523006-Gemini_Generated_Image_2no3022no3022no3.webp",
+      },
     ],
     links: [
       {
@@ -118,8 +144,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "@type": "Organization",
           name: "Dr. Chem",
           url: "https://drchemedu.com",
-          description:
-            "AI-powered virtual chemistry lab for Class 9-10 students and teachers.",
+          description: "AI-powered virtual chemistry lab for Class 9-10 students and teachers.",
         }),
       },
       {
@@ -159,7 +184,9 @@ function RootComponent() {
   const router = useRouter();
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event) => {
       if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") {
         return;
       }

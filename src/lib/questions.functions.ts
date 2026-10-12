@@ -181,7 +181,9 @@ export const getMyQuestionSets = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const { data, error } = await context.supabase
       .from("question_sets")
-      .select("id, title, chapter, question_type, difficulty, status, class_id, published_at, created_at")
+      .select(
+        "id, title, chapter, question_type, difficulty, status, class_id, published_at, created_at",
+      )
       .eq("teacher_id", context.userId)
       .order("created_at", { ascending: false });
     const classIds = Array.from(
@@ -197,7 +199,7 @@ export const getMyQuestionSets = createServerFn({ method: "GET" })
     }
     const sets = (data ?? []).map((s) => ({
       ...s,
-      class_name: s.class_id ? classMap.get(s.class_id) ?? null : null,
+      class_name: s.class_id ? (classMap.get(s.class_id) ?? null) : null,
     }));
     return { error: error?.message ?? null, sets };
   });
@@ -258,7 +260,6 @@ export const publishQuestionSet = createServerFn({ method: "POST" })
       .eq("class_id", data.class_id);
     return { error: error?.message ?? null, student_count: count ?? 0, class_name: cls.name };
   });
-
 
 export const deleteQuestionSet = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])

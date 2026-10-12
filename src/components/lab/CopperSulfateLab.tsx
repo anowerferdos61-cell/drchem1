@@ -27,14 +27,7 @@ import EquipmentPanel, { CUSO4_ITEMS } from "./EquipmentPanel";
 import StepsPanel from "./StepsPanel";
 import LabReport from "./LabReport";
 import CopperSulfateWorkspace from "./workspaces/CopperSulfateWorkspace";
-import type {
-  CuSO4Placed,
-  EquipmentId,
-  Mistake,
-  Mode,
-  Report,
-  Step,
-} from "./types";
+import type { CuSO4Placed, EquipmentId, Mistake, Mode, Report, Step } from "./types";
 import { setAIContext } from "@/lib/ai-context-store";
 import {
   ANHYDROUS_FRACTION,
@@ -76,11 +69,19 @@ function makeInitial(): CuSO4Placed {
 function buildSteps(): Step[] {
   return [
     { id: "weigh_empty", label: "Weigh empty crucible (x) · খালি ক্রুসিবল ওজন করো", done: false },
-    { id: "weigh_hydrated", label: "Add 3–5 g blue vitriol & weigh (y) · নীল তুঁতে যোগ করে ওজন", done: false },
+    {
+      id: "weigh_hydrated",
+      label: "Add 3–5 g blue vitriol & weigh (y) · নীল তুঁতে যোগ করে ওজন",
+      done: false,
+    },
     { id: "setup_heat", label: "Place on tripod + wire gauze · ত্রিপদীতে বসাও", done: false },
     { id: "heat", label: "Heat & stir until white · সাদা হওয়া পর্যন্ত উত্তপ্ত করো", done: false },
     { id: "cool", label: "Cool in desiccator · ডেসিকেটরে ঠান্ডা করো", done: false },
-    { id: "weigh_anhydrous", label: "Weigh anhydrous mass (z) · শুষ্ক পদার্থের ওজন (z)", done: false },
+    {
+      id: "weigh_anhydrous",
+      label: "Weigh anhydrous mass (z) · শুষ্ক পদার্থের ওজন (z)",
+      done: false,
+    },
   ];
 }
 
@@ -123,8 +124,7 @@ export default function CopperSulfateLab({ onBack }: Props) {
       mistakesMade: mistakes.map((m) => m.message),
       currentChemicals: chemicals,
       currentEquipment: equipment,
-      goal:
-        "Determine the percentage of crystallization water in CuSO₄·5H₂O by heating to constant mass and applying %H₂O = (y − z)/(y − x) × 100 (theoretical 36.07%).",
+      goal: "Determine the percentage of crystallization water in CuSO₄·5H₂O by heating to constant mass and applying %H₂O = (y − z)/(y − x) × 100 (theoretical 36.07%).",
     });
   }, [mode, steps, placed, mistakes]);
 
@@ -361,17 +361,12 @@ export default function CopperSulfateLab({ onBack }: Props) {
       logMistake({
         type: "weighed_hot",
         severity: "high",
-        message:
-          "গরম অবস্থায় ওজন নেওয়া হয়েছে · convection currents-এর জন্য reading ভুল।",
+        message: "গরম অবস্থায় ওজন নেওয়া হয়েছে · convection currents-এর জন্য reading ভুল।",
       });
     }
     completeStep("cool");
     const frac = placed.dehydrationFraction;
-    const zClean = computeAnhydrousMass(
-      placed.emptyCrucibleMass,
-      placed.hydratedSampleMass,
-      frac,
-    );
+    const zClean = computeAnhydrousMass(placed.emptyCrucibleMass, placed.hydratedSampleMass, frac);
     const z = !placed.cooled ? zClean - 0.05 : zClean; // hot-weigh artifact
     setPlaced((p) => ({
       ...p,
@@ -442,7 +437,8 @@ export default function CopperSulfateLab({ onBack }: Props) {
       return "Place the porcelain crucible on the balance pan.";
     if (!placed.weighedEmpty && placed.crucibleOnBalance && placed.hydratedSampleMass === 0)
       return "Click 'Record x' to log the empty crucible mass.";
-    if (placed.hydratedSampleMass < 2.5) return "Add ~3–5 g of CuSO₄·5H₂O (blue vitriol) to the crucible.";
+    if (placed.hydratedSampleMass < 2.5)
+      return "Add ~3–5 g of CuSO₄·5H₂O (blue vitriol) to the crucible.";
     if (!placed.weighedHydrated) return "Click 'Record y' to log the total mass.";
     if (!placed.tripodReady) return "Set up the tripod + wire gauze + burner.";
     if (!placed.crucibleOnTripod && !placed.inDesiccator)
@@ -455,8 +451,7 @@ export default function CopperSulfateLab({ onBack }: Props) {
       return "Powder is white — turn off the burner.";
     if (!placed.inDesiccator && !placed.weighedAnhydrous)
       return "Use tongs · move the crucible into the desiccator to cool.";
-    if (placed.inDesiccator && !placed.cooled)
-      return `Wait for cooling… ${placed.cooledTime}/5 s`;
+    if (placed.inDesiccator && !placed.cooled) return `Wait for cooling… ${placed.cooledTime}/5 s`;
     if (placed.inDesiccator && placed.cooled) return "Move back to the balance and record z.";
     if (placed.weighedAnhydrous) return "Submit your report.";
     return "";
@@ -548,7 +543,12 @@ export default function CopperSulfateLab({ onBack }: Props) {
                 size="sm"
                 variant="outline"
                 onClick={recordEmpty}
-                disabled={submitted || !placed.crucibleOnBalance || placed.weighedEmpty || placed.hydratedSampleMass > 0}
+                disabled={
+                  submitted ||
+                  !placed.crucibleOnBalance ||
+                  placed.weighedEmpty ||
+                  placed.hydratedSampleMass > 0
+                }
                 className="h-7 px-2 text-[10px]"
               >
                 <Sparkles className="mr-1 h-3 w-3" /> Record x
@@ -566,7 +566,12 @@ export default function CopperSulfateLab({ onBack }: Props) {
                 size="sm"
                 variant="outline"
                 onClick={moveToTripod}
-                disabled={submitted || !placed.weighedHydrated || placed.crucibleOnTripod || placed.inDesiccator}
+                disabled={
+                  submitted ||
+                  !placed.weighedHydrated ||
+                  placed.crucibleOnTripod ||
+                  placed.inDesiccator
+                }
                 className="h-7 px-2 text-[10px]"
               >
                 → Tripod
@@ -623,7 +628,9 @@ export default function CopperSulfateLab({ onBack }: Props) {
                   size="sm"
                   variant="ghost"
                   onClick={() => moveBackToBalance(true)}
-                  disabled={submitted || !placed.inDesiccator || placed.cooled || placed.weighedAnhydrous}
+                  disabled={
+                    submitted || !placed.inDesiccator || placed.cooled || placed.weighedAnhydrous
+                  }
                   className="h-7 px-2 text-[10px]"
                   title="Weigh while still hot (unsafe)"
                 >
@@ -631,10 +638,20 @@ export default function CopperSulfateLab({ onBack }: Props) {
                 </Button>
               </div>
               <div className="flex items-center gap-1 border-l pl-2">
-                <Button size="sm" variant="outline" onClick={reset} className="h-7 px-2 text-[10px]">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={reset}
+                  className="h-7 px-2 text-[10px]"
+                >
                   <RotateCcw className="mr-1 h-3 w-3" /> Reset
                 </Button>
-                <Button size="sm" onClick={submit} disabled={submitted || !placed.weighedAnhydrous} className="h-7 px-2 text-[10px]">
+                <Button
+                  size="sm"
+                  onClick={submit}
+                  disabled={submitted || !placed.weighedAnhydrous}
+                  className="h-7 px-2 text-[10px]"
+                >
                   <Trophy className="mr-1 h-3 w-3" /> Submit
                 </Button>
               </div>
@@ -643,13 +660,7 @@ export default function CopperSulfateLab({ onBack }: Props) {
 
           {showPanels && (
             <div className="space-y-3">
-              <StatusCard
-                placed={placed}
-                x={x}
-                y={y}
-                z={liveZ}
-                pct={livePct}
-              />
+              <StatusCard placed={placed} x={x} y={y} z={liveZ} pct={livePct} />
               {mode !== "student" && (
                 <StepsPanel
                   steps={steps}

@@ -24,34 +24,57 @@ interface Props {
 
 // ─────────── Aufbau order (n+l rule) ────────────────────────
 type Subshell = {
-  key: string;          // "1s", "2p"…
+  key: string; // "1s", "2p"…
   n: number;
-  l: 0 | 1 | 2 | 3;     // s p d f
+  l: 0 | 1 | 2 | 3; // s p d f
   type: "s" | "p" | "d" | "f";
-  orbitals: number;     // boxes
-  capacity: number;     // 2 × orbitals
+  orbitals: number; // boxes
+  capacity: number; // 2 × orbitals
   nl: number;
-  energy: number;       // visual y-rank (lower = bottom)
+  energy: number; // visual y-rank (lower = bottom)
 };
 
 const SUBSHELLS: Subshell[] = [
-  { key: "1s", n: 1, l: 0, type: "s", orbitals: 1, capacity: 2,  nl: 1, energy: 0 },
-  { key: "2s", n: 2, l: 0, type: "s", orbitals: 1, capacity: 2,  nl: 2, energy: 1 },
-  { key: "2p", n: 2, l: 1, type: "p", orbitals: 3, capacity: 6,  nl: 3, energy: 2 },
-  { key: "3s", n: 3, l: 0, type: "s", orbitals: 1, capacity: 2,  nl: 3, energy: 3 },
-  { key: "3p", n: 3, l: 1, type: "p", orbitals: 3, capacity: 6,  nl: 4, energy: 4 },
-  { key: "4s", n: 4, l: 0, type: "s", orbitals: 1, capacity: 2,  nl: 4, energy: 5 },
+  { key: "1s", n: 1, l: 0, type: "s", orbitals: 1, capacity: 2, nl: 1, energy: 0 },
+  { key: "2s", n: 2, l: 0, type: "s", orbitals: 1, capacity: 2, nl: 2, energy: 1 },
+  { key: "2p", n: 2, l: 1, type: "p", orbitals: 3, capacity: 6, nl: 3, energy: 2 },
+  { key: "3s", n: 3, l: 0, type: "s", orbitals: 1, capacity: 2, nl: 3, energy: 3 },
+  { key: "3p", n: 3, l: 1, type: "p", orbitals: 3, capacity: 6, nl: 4, energy: 4 },
+  { key: "4s", n: 4, l: 0, type: "s", orbitals: 1, capacity: 2, nl: 4, energy: 5 },
   { key: "3d", n: 3, l: 2, type: "d", orbitals: 5, capacity: 10, nl: 5, energy: 6 },
-  { key: "4p", n: 4, l: 1, type: "p", orbitals: 3, capacity: 6,  nl: 5, energy: 7 },
+  { key: "4p", n: 4, l: 1, type: "p", orbitals: 3, capacity: 6, nl: 5, energy: 7 },
 ];
 
 const FILL_ORDER = ["1s", "2s", "2p", "3s", "3p", "4s", "3d", "4p"];
 
-const TYPE_COLOR: Record<Subshell["type"], { bg: string; ring: string; text: string; glow: string }> = {
-  s: { bg: "from-sky-500/30 to-blue-600/20",      ring: "ring-sky-400/60",      text: "text-sky-300",      glow: "shadow-sky-500/40" },
-  p: { bg: "from-violet-500/30 to-purple-600/20", ring: "ring-violet-400/60",   text: "text-violet-300",   glow: "shadow-violet-500/40" },
-  d: { bg: "from-orange-500/30 to-amber-600/20",  ring: "ring-orange-400/60",   text: "text-orange-300",   glow: "shadow-orange-500/40" },
-  f: { bg: "from-rose-500/30 to-pink-600/20",     ring: "ring-rose-400/60",     text: "text-rose-300",     glow: "shadow-rose-500/40" },
+const TYPE_COLOR: Record<
+  Subshell["type"],
+  { bg: string; ring: string; text: string; glow: string }
+> = {
+  s: {
+    bg: "from-sky-500/30 to-blue-600/20",
+    ring: "ring-sky-400/60",
+    text: "text-sky-300",
+    glow: "shadow-sky-500/40",
+  },
+  p: {
+    bg: "from-violet-500/30 to-purple-600/20",
+    ring: "ring-violet-400/60",
+    text: "text-violet-300",
+    glow: "shadow-violet-500/40",
+  },
+  d: {
+    bg: "from-orange-500/30 to-amber-600/20",
+    ring: "ring-orange-400/60",
+    text: "text-orange-300",
+    glow: "shadow-orange-500/40",
+  },
+  f: {
+    bg: "from-rose-500/30 to-pink-600/20",
+    ring: "ring-rose-400/60",
+    text: "text-rose-300",
+    glow: "shadow-rose-500/40",
+  },
 };
 
 // ─────────── Elements with anomalies ────────────────────────
@@ -64,10 +87,10 @@ type ElementDef = {
 };
 
 const ELEMENTS: ElementDef[] = [
-  { Z: 19, symbol: "K",  name: "Potassium", nameBn: "পটাশিয়াম" },
-  { Z: 21, symbol: "Sc", name: "Scandium",  nameBn: "স্ক্যান্ডিয়াম" },
-  { Z: 24, symbol: "Cr", name: "Chromium",  nameBn: "ক্রোমিয়াম", anomaly: "Cr" },
-  { Z: 29, symbol: "Cu", name: "Copper",    nameBn: "কপার",       anomaly: "Cu" },
+  { Z: 19, symbol: "K", name: "Potassium", nameBn: "পটাশিয়াম" },
+  { Z: 21, symbol: "Sc", name: "Scandium", nameBn: "স্ক্যান্ডিয়াম" },
+  { Z: 24, symbol: "Cr", name: "Chromium", nameBn: "ক্রোমিয়াম", anomaly: "Cr" },
+  { Z: 29, symbol: "Cu", name: "Copper", nameBn: "কপার", anomaly: "Cu" },
 ];
 
 // ─────────── Fill logic (Aufbau + Hund + Pauli) ─────────────
@@ -85,14 +108,23 @@ function fillSubshell(orbitals: number, electrons: number): OrbitalState {
   const arr: OrbitalState = Array(orbitals).fill(0);
   let e = Math.min(electrons, orbitals * 2);
   // Singly first
-  for (let i = 0; i < orbitals && e > 0; i++) { arr[i] = 1; e--; }
+  for (let i = 0; i < orbitals && e > 0; i++) {
+    arr[i] = 1;
+    e--;
+  }
   // Pair up
-  for (let i = 0; i < orbitals && e > 0; i++) { arr[i] = 2; e--; }
+  for (let i = 0; i < orbitals && e > 0; i++) {
+    arr[i] = 2;
+    e--;
+  }
   return arr;
 }
 
 /** Standard Aufbau filling for `totalE` electrons. */
-function aufbauFill(totalE: number): { filling: Filling; subshellElectrons: Record<string, number> } {
+function aufbauFill(totalE: number): {
+  filling: Filling;
+  subshellElectrons: Record<string, number>;
+} {
   const filling = emptyFilling();
   const counts: Record<string, number> = {};
   let remaining = totalE;
@@ -117,14 +149,16 @@ function applyAnomaly(
   if (!anomaly) return { filling, counts, triggered: false };
   if (anomaly === "Cr" && totalE === 24) {
     // 3d⁴ 4s² → 3d⁵ 4s¹
-    counts["3d"] = 5; counts["4s"] = 1;
+    counts["3d"] = 5;
+    counts["4s"] = 1;
     filling["3d"] = fillSubshell(5, 5);
     filling["4s"] = fillSubshell(1, 1);
     return { filling, counts, triggered: true };
   }
   if (anomaly === "Cu" && totalE === 29) {
     // 3d⁹ 4s² → 3d¹⁰ 4s¹
-    counts["3d"] = 10; counts["4s"] = 1;
+    counts["3d"] = 10;
+    counts["4s"] = 1;
     filling["3d"] = fillSubshell(5, 10);
     filling["4s"] = fillSubshell(1, 1);
     return { filling, counts, triggered: true };
@@ -133,15 +167,28 @@ function applyAnomaly(
 }
 
 function configString(counts: Record<string, number>): string {
-  return FILL_ORDER
-    .filter((k) => counts[k] > 0)
+  return FILL_ORDER.filter((k) => counts[k] > 0)
     .map((k) => `${k}${superscript(counts[k])}`)
     .join(" ");
 }
 
 function superscript(n: number): string {
-  const map: Record<string, string> = { "0":"⁰","1":"¹","2":"²","3":"³","4":"⁴","5":"⁵","6":"⁶","7":"⁷","8":"⁸","9":"⁹" };
-  return String(n).split("").map((d) => map[d] ?? d).join("");
+  const map: Record<string, string> = {
+    "0": "⁰",
+    "1": "¹",
+    "2": "²",
+    "3": "³",
+    "4": "⁴",
+    "5": "⁵",
+    "6": "⁶",
+    "7": "⁷",
+    "8": "⁸",
+    "9": "⁹",
+  };
+  return String(n)
+    .split("")
+    .map((d) => map[d] ?? d)
+    .join("");
 }
 
 // ─────────── Insight generator ──────────────────────────────
@@ -150,8 +197,7 @@ function buildInsight(totalE: number, anomalyTriggered: boolean, lastFilled: str
     return {
       title: "ব্যতিক্রম! অর্ধপূর্ণ/পূর্ণ অরবিটালের অধিক স্থায়িত্ব",
       titleEn: "Exceptional Stability of Half/Fully-filled Orbitals",
-      body:
-        "৪s থেকে একটি ইলেকট্রন ৩d-তে স্থানান্তরিত হয়েছে — কারণ অর্ধপূর্ণ (d⁵) বা পূর্ণপূর্ণ (d¹⁰) অরবিটাল অতিরিক্ত প্রতিসাম্য ও বিনিময় শক্তির কারণে বেশি স্থিতিশীল।",
+      body: "৪s থেকে একটি ইলেকট্রন ৩d-তে স্থানান্তরিত হয়েছে — কারণ অর্ধপূর্ণ (d⁵) বা পূর্ণপূর্ণ (d¹⁰) অরবিটাল অতিরিক্ত প্রতিসাম্য ও বিনিময় শক্তির কারণে বেশি স্থিতিশীল।",
       bodyEn:
         "One electron jumps from 4s → 3d because half-filled (d⁵) or fully-filled (d¹⁰) sub-shells gain extra exchange-energy stability.",
     };
@@ -209,8 +255,16 @@ function OrbitalBox({
       } ${glow ? `shadow-lg ${c.glow} animate-pulse` : ""} border-white/10 transition-all`}
     >
       <div className="absolute inset-0 flex items-center justify-center gap-0.5 text-base font-bold leading-none">
-        {state >= 1 && <span className={`${c.text} drop-shadow`} style={{ animation: "fade-in 0.3s ease-out" }}>↑</span>}
-        {state >= 2 && <span className={`${c.text} drop-shadow`} style={{ animation: "fade-in 0.3s ease-out" }}>↓</span>}
+        {state >= 1 && (
+          <span className={`${c.text} drop-shadow`} style={{ animation: "fade-in 0.3s ease-out" }}>
+            ↑
+          </span>
+        )}
+        {state >= 2 && (
+          <span className={`${c.text} drop-shadow`} style={{ animation: "fade-in 0.3s ease-out" }}>
+            ↓
+          </span>
+        )}
       </div>
     </div>
   );
@@ -236,7 +290,11 @@ export default function AufbauLab({ onBack }: Props) {
   const { filling, counts, anomalyTriggered } = useMemo(() => {
     const base = aufbauFill(electrons);
     const applied = applyAnomaly(electrons, element.anomaly, base.filling, base.subshellElectrons);
-    return { filling: applied.filling, counts: applied.counts, anomalyTriggered: applied.triggered };
+    return {
+      filling: applied.filling,
+      counts: applied.counts,
+      anomalyTriggered: applied.triggered,
+    };
   }, [electrons, element.anomaly]);
 
   const configText = configString(counts);
@@ -249,7 +307,10 @@ export default function AufbauLab({ onBack }: Props) {
     const { subshellElectrons } = aufbauFill(next);
     let target: string | null = null;
     for (const k of FILL_ORDER) {
-      if ((subshellElectrons[k] ?? 0) > (counts[k] ?? 0)) { target = k; break; }
+      if ((subshellElectrons[k] ?? 0) > (counts[k] ?? 0)) {
+        target = k;
+        break;
+      }
     }
     setLastFilled(target);
     setElectrons(next);
@@ -278,7 +339,12 @@ export default function AufbauLab({ onBack }: Props) {
       <header className="sticky top-0 z-20 border-b border-white/10 bg-slate-950/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3">
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="sm" onClick={onBack} className="-ml-2 gap-1 text-slate-200 hover:bg-white/10 hover:text-white">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onBack}
+              className="-ml-2 gap-1 text-slate-200 hover:bg-white/10 hover:text-white"
+            >
               <ArrowLeft className="h-4 w-4" /> <span className="hidden sm:inline">Back</span>
             </Button>
             <div className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-sky-500 to-violet-600 text-white shadow-lg shadow-violet-500/30">
@@ -303,7 +369,8 @@ export default function AufbauLab({ onBack }: Props) {
               <SelectContent>
                 {ELEMENTS.map((e) => (
                   <SelectItem key={e.Z} value={String(e.Z)}>
-                    {e.name} ({e.symbol}) — Z={e.Z}{e.anomaly ? " ⚡" : ""}
+                    {e.name} ({e.symbol}) — Z={e.Z}
+                    {e.anomaly ? " ⚡" : ""}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -329,7 +396,9 @@ export default function AufbauLab({ onBack }: Props) {
                 />
               ))}
               {max - electrons > 10 && (
-                <span className="ml-1 text-xs font-mono text-slate-400">+{max - electrons - 10}</span>
+                <span className="ml-1 text-xs font-mono text-slate-400">
+                  +{max - electrons - 10}
+                </span>
               )}
               {max - electrons === 0 && (
                 <span className="text-xs text-emerald-300">✓ পূর্ণ · complete</span>
@@ -341,19 +410,37 @@ export default function AufbauLab({ onBack }: Props) {
               <span className="font-mono text-base font-bold text-emerald-300">{electrons}</span>
               <span className="text-slate-500"> / {max} e⁻</span>
             </span>
-            <Button size="sm" variant="outline" onClick={removeElectron} disabled={electrons === 0}
-              className="border-white/15 bg-white/5 text-slate-100 hover:bg-white/10">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={removeElectron}
+              disabled={electrons === 0}
+              className="border-white/15 bg-white/5 text-slate-100 hover:bg-white/10"
+            >
               <Minus className="h-4 w-4" />
             </Button>
-            <Button size="sm" onClick={addElectron} disabled={electrons === max}
-              className="bg-gradient-to-r from-emerald-500 to-sky-500 text-white hover:from-emerald-400 hover:to-sky-400">
+            <Button
+              size="sm"
+              onClick={addElectron}
+              disabled={electrons === max}
+              className="bg-gradient-to-r from-emerald-500 to-sky-500 text-white hover:from-emerald-400 hover:to-sky-400"
+            >
               <Plus className="h-4 w-4" /> Add Electron
             </Button>
-            <Button size="sm" variant="outline" onClick={fillAll}
-              className="border-white/15 bg-white/5 text-slate-100 hover:bg-white/10">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={fillAll}
+              className="border-white/15 bg-white/5 text-slate-100 hover:bg-white/10"
+            >
               <Zap className="h-4 w-4 mr-1" /> Fill All
             </Button>
-            <Button size="sm" variant="ghost" onClick={reset} className="text-slate-300 hover:bg-white/10">
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={reset}
+              className="text-slate-300 hover:bg-white/10"
+            >
               <RotateCcw className="h-4 w-4" />
             </Button>
           </div>
@@ -383,8 +470,7 @@ export default function AufbauLab({ onBack }: Props) {
                 const state = filling[sub.key] ?? [];
                 const filled = counts[sub.key] ?? 0;
                 const isLast = lastFilled === sub.key;
-                const isAnomalyBox =
-                  anomalyTriggered && (sub.key === "3d" || sub.key === "4s");
+                const isAnomalyBox = anomalyTriggered && (sub.key === "3d" || sub.key === "4s");
                 const c = TYPE_COLOR[sub.type];
                 return (
                   <div
@@ -396,9 +482,7 @@ export default function AufbauLab({ onBack }: Props) {
                     {/* Label */}
                     <div className="w-20 shrink-0">
                       <div className={`text-lg font-extrabold ${c.text}`}>{sub.key}</div>
-                      <div className="text-[10px] font-mono text-slate-500">
-                        n+l = {sub.nl}
-                      </div>
+                      <div className="text-[10px] font-mono text-slate-500">n+l = {sub.nl}</div>
                     </div>
 
                     {/* Boxes */}
@@ -409,14 +493,19 @@ export default function AufbauLab({ onBack }: Props) {
                           state={s}
                           type={sub.type}
                           highlight={isLast}
-                          glow={isAnomalyBox && filled === sub.capacity || (isAnomalyBox && sub.key === "3d" && filled === 5)}
+                          glow={
+                            (isAnomalyBox && filled === sub.capacity) ||
+                            (isAnomalyBox && sub.key === "3d" && filled === 5)
+                          }
                         />
                       ))}
                     </div>
 
                     {/* Count */}
                     <div className="w-16 shrink-0 text-right">
-                      <div className={`font-mono text-sm font-bold ${filled > 0 ? c.text : "text-slate-600"}`}>
+                      <div
+                        className={`font-mono text-sm font-bold ${filled > 0 ? c.text : "text-slate-600"}`}
+                      >
                         {filled}/{sub.capacity}
                       </div>
                       <div className="text-[9px] uppercase text-slate-500">{sub.type}-orbital</div>
@@ -429,9 +518,9 @@ export default function AufbauLab({ onBack }: Props) {
 
           {/* Legend */}
           <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-white/5 pt-3 text-[11px] text-slate-400">
-            <LegendDot c="sky"     label="s-orbital" />
-            <LegendDot c="violet"  label="p-orbital" />
-            <LegendDot c="orange"  label="d-orbital" />
+            <LegendDot c="sky" label="s-orbital" />
+            <LegendDot c="violet" label="p-orbital" />
+            <LegendDot c="orange" label="d-orbital" />
             <span className="ml-auto rounded bg-white/5 px-2 py-0.5 font-mono">
               4s (n+l=4) &lt; 3d (n+l=5)
             </span>
@@ -472,9 +561,16 @@ export default function AufbauLab({ onBack }: Props) {
               নিয়মসমূহ · Rules
             </div>
             <ul className="mt-2 space-y-1.5 text-xs text-slate-300">
-              <li><b className="text-sky-300">Aufbau:</b> সর্বনিম্ন শক্তি আগে পূর্ণ।</li>
-              <li><b className="text-violet-300">Hund:</b> degenerate orbital আগে এককভাবে পূর্ণ, পরে জোড়া।</li>
-              <li><b className="text-orange-300">Pauli:</b> এক অরবিটালে ↑↓ বিপরীত স্পিন।</li>
+              <li>
+                <b className="text-sky-300">Aufbau:</b> সর্বনিম্ন শক্তি আগে পূর্ণ।
+              </li>
+              <li>
+                <b className="text-violet-300">Hund:</b> degenerate orbital আগে এককভাবে পূর্ণ, পরে
+                জোড়া।
+              </li>
+              <li>
+                <b className="text-orange-300">Pauli:</b> এক অরবিটালে ↑↓ বিপরীত স্পিন।
+              </li>
             </ul>
           </Card>
         </div>

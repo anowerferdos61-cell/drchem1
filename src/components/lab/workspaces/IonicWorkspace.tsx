@@ -63,57 +63,62 @@ export default function IonicWorkspace({ placed, activeSubstance, electrolysisT 
           <text x="110" y="0" textAnchor="middle" fontSize="12" fontWeight="700" fill="#1e293b">
             ১. দ্রবণীয়তা · Solubility
           </text>
-          {(["nacl", "sugar", "naphthalene", "cuso4"] as IonicSubstance[]).map(
-            (sub, i) => {
-              const x = i * 55;
-              const result = placed.solubility[sub];
-              const liquid = placed.waterAdded
-                ? result === "dissolved"
-                  ? SUB_COLORS[sub]
-                  : result === "insoluble"
-                    ? "#cbd5e1"
-                    : "#dbeafe"
-                : null;
-              return (
-                <g key={sub} transform={`translate(${x} 14)`}>
+          {(["nacl", "sugar", "naphthalene", "cuso4"] as IonicSubstance[]).map((sub, i) => {
+            const x = i * 55;
+            const result = placed.solubility[sub];
+            const liquid = placed.waterAdded
+              ? result === "dissolved"
+                ? SUB_COLORS[sub]
+                : result === "insoluble"
+                  ? "#cbd5e1"
+                  : "#dbeafe"
+              : null;
+            return (
+              <g key={sub} transform={`translate(${x} 14)`}>
+                <path
+                  d="M5 0 L45 0 L42 70 Q42 76 36 76 L14 76 Q8 76 8 70 Z"
+                  fill="url(#iGlass)"
+                  stroke="#64748b"
+                  strokeWidth="1.5"
+                />
+                {liquid && (
                   <path
-                    d="M5 0 L45 0 L42 70 Q42 76 36 76 L14 76 Q8 76 8 70 Z"
-                    fill="url(#iGlass)"
-                    stroke="#64748b"
-                    strokeWidth="1.5"
+                    d="M9 30 L41 30 L42 70 Q42 76 36 76 L14 76 Q8 76 8 70 Z"
+                    fill={liquid}
+                    opacity={result === "insoluble" ? 0.65 : 0.9}
                   />
-                  {liquid && (
-                    <path
-                      d="M9 30 L41 30 L42 70 Q42 76 36 76 L14 76 Q8 76 8 70 Z"
-                      fill={liquid}
-                      opacity={result === "insoluble" ? 0.65 : 0.9}
-                    />
-                  )}
-                  {result === "insoluble" && (
-                    <g>
-                      <circle cx="18" cy="38" r="2" fill="#475569" />
-                      <circle cx="28" cy="44" r="2.5" fill="#475569" />
-                      <circle cx="35" cy="36" r="2" fill="#475569" />
-                    </g>
-                  )}
-                  <text x="25" y="92" textAnchor="middle" fontSize="8" fill="#1e293b" fontWeight="600">
-                    {LABELS[sub].en}
+                )}
+                {result === "insoluble" && (
+                  <g>
+                    <circle cx="18" cy="38" r="2" fill="#475569" />
+                    <circle cx="28" cy="44" r="2.5" fill="#475569" />
+                    <circle cx="35" cy="36" r="2" fill="#475569" />
+                  </g>
+                )}
+                <text
+                  x="25"
+                  y="92"
+                  textAnchor="middle"
+                  fontSize="8"
+                  fill="#1e293b"
+                  fontWeight="600"
+                >
+                  {LABELS[sub].en}
+                </text>
+                {result && (
+                  <text
+                    x="25"
+                    y="102"
+                    textAnchor="middle"
+                    fontSize="7"
+                    fill={result === "dissolved" ? "#059669" : "#dc2626"}
+                  >
+                    {result === "dissolved" ? "✓ দ্রবীভূত" : "✗ অদ্রবণীয়"}
                   </text>
-                  {result && (
-                    <text
-                      x="25"
-                      y="102"
-                      textAnchor="middle"
-                      fontSize="7"
-                      fill={result === "dissolved" ? "#059669" : "#dc2626"}
-                    >
-                      {result === "dissolved" ? "✓ দ্রবীভূত" : "✗ অদ্রবণীয়"}
-                    </text>
-                  )}
-                </g>
-              );
-            },
-          )}
+                )}
+              </g>
+            );
+          })}
         </g>
 
         {/* ============ STATION 2 — CONDUCTIVITY CIRCUIT ============ */}
@@ -127,23 +132,20 @@ export default function IonicWorkspace({ placed, activeSubstance, electrolysisT 
               <g transform="translate(0 10)">
                 <rect width="60" height="34" rx="4" fill="#1e293b" />
                 <rect x="6" y="6" width="48" height="22" fill="#f59e0b" />
-                <text x="30" y="22" textAnchor="middle" fontSize="10" fontWeight="700" fill="#1e293b">
+                <text
+                  x="30"
+                  y="22"
+                  textAnchor="middle"
+                  fontSize="10"
+                  fontWeight="700"
+                  fill="#1e293b"
+                >
                   9V
                 </text>
               </g>
               {/* Wires */}
-              <path
-                d="M60 27 L100 27 L100 70"
-                stroke="#dc2626"
-                strokeWidth="2.5"
-                fill="none"
-              />
-              <path
-                d="M0 27 L-20 27 L-20 70"
-                stroke="#1e293b"
-                strokeWidth="2.5"
-                fill="none"
-              />
+              <path d="M60 27 L100 27 L100 70" stroke="#dc2626" strokeWidth="2.5" fill="none" />
+              <path d="M0 27 L-20 27 L-20 70" stroke="#1e293b" strokeWidth="2.5" fill="none" />
               {/* Bulb */}
               <g transform="translate(160 10)">
                 <circle
@@ -208,7 +210,14 @@ export default function IonicWorkspace({ placed, activeSubstance, electrolysisT 
                     </path>
                   </g>
                 )}
-                <text x="75" y="60" textAnchor="middle" fontSize="9" fill="#1e293b" fontWeight="600">
+                <text
+                  x="75"
+                  y="60"
+                  textAnchor="middle"
+                  fontSize="9"
+                  fill="#1e293b"
+                  fontWeight="600"
+                >
                   {activeSubstance ? LABELS[activeSubstance].en : "Select substance"}
                 </text>
               </g>
@@ -269,13 +278,27 @@ export default function IonicWorkspace({ placed, activeSubstance, electrolysisT 
                       <ellipse cx="50" cy="34" rx="22" ry="4" fill={SUB_COLORS[activeSubstance]} />
                     ) : placed.meltResult[activeSubstance] === "solid" ? (
                       <g>
-                        <rect x="38" y="26" width="24" height="10" fill={SUB_COLORS[activeSubstance]} stroke="#475569" />
+                        <rect
+                          x="38"
+                          y="26"
+                          width="24"
+                          height="10"
+                          fill={SUB_COLORS[activeSubstance]}
+                          stroke="#475569"
+                        />
                         <text x="50" y="20" textAnchor="middle" fontSize="8" fill="#dc2626">
                           কঠিন
                         </text>
                       </g>
                     ) : (
-                      <rect x="40" y="28" width="20" height="8" fill={SUB_COLORS[activeSubstance]} stroke="#475569" />
+                      <rect
+                        x="40"
+                        y="28"
+                        width="20"
+                        height="8"
+                        fill={SUB_COLORS[activeSubstance]}
+                        stroke="#475569"
+                      />
                     )}
                   </g>
                 )}
@@ -318,11 +341,34 @@ export default function IonicWorkspace({ placed, activeSubstance, electrolysisT 
               <g transform="translate(0 20)">
                 <rect width="80" height="44" rx="4" fill="#1e293b" />
                 <rect x="8" y="8" width="64" height="28" fill="#f59e0b" />
-                <text x="40" y="26" textAnchor="middle" fontSize="11" fontWeight="700" fill="#1e293b">
+                <text
+                  x="40"
+                  y="26"
+                  textAnchor="middle"
+                  fontSize="11"
+                  fontWeight="700"
+                  fill="#1e293b"
+                >
                   9V Battery
                 </text>
-                <text x="14" y="-4" fontSize="14" fontWeight="700" fill={placed.polarityCorrect ? "#dc2626" : "#1e293b"}>+</text>
-                <text x="60" y="-4" fontSize="14" fontWeight="700" fill={placed.polarityCorrect ? "#1e293b" : "#dc2626"}>−</text>
+                <text
+                  x="14"
+                  y="-4"
+                  fontSize="14"
+                  fontWeight="700"
+                  fill={placed.polarityCorrect ? "#dc2626" : "#1e293b"}
+                >
+                  +
+                </text>
+                <text
+                  x="60"
+                  y="-4"
+                  fontSize="14"
+                  fontWeight="700"
+                  fill={placed.polarityCorrect ? "#1e293b" : "#dc2626"}
+                >
+                  −
+                </text>
               </g>
               {/* Wires */}
               <path
@@ -353,7 +399,15 @@ export default function IonicWorkspace({ placed, activeSubstance, electrolysisT 
                   />
                 )}
                 {placed.cuso4InCell && (
-                  <text x="220" y="80" textAnchor="middle" fontSize="14" fontWeight="700" fill="#1e3a8a" opacity="0.7">
+                  <text
+                    x="220"
+                    y="80"
+                    textAnchor="middle"
+                    fontSize="14"
+                    fontWeight="700"
+                    fill="#1e3a8a"
+                    opacity="0.7"
+                  >
                     CuSO₄ (aq)
                   </text>
                 )}
@@ -361,14 +415,7 @@ export default function IonicWorkspace({ placed, activeSubstance, electrolysisT 
                 {placed.electrodesPlaced && (
                   <g>
                     {/* Cathode (left) - copper grows */}
-                    <rect
-                      x="115"
-                      y="-20"
-                      width="10"
-                      height="130"
-                      fill="#94a3b8"
-                      stroke="#475569"
-                    />
+                    <rect x="115" y="-20" width="10" height="130" fill="#94a3b8" stroke="#475569" />
                     {placed.electrolysisRun && placed.polarityCorrect && (
                       <rect
                         x={115 - 4 * placed.copperDeposit}
@@ -379,7 +426,14 @@ export default function IonicWorkspace({ placed, activeSubstance, electrolysisT 
                         opacity={0.4 + 0.6 * placed.copperDeposit}
                       />
                     )}
-                    <text x="120" y="-26" textAnchor="middle" fontSize="10" fontWeight="700" fill="#dc2626">
+                    <text
+                      x="120"
+                      y="-26"
+                      textAnchor="middle"
+                      fontSize="10"
+                      fontWeight="700"
+                      fill="#dc2626"
+                    >
                       −
                     </text>
                     <text x="120" y="158" textAnchor="middle" fontSize="9" fill="#1e293b">
@@ -387,15 +441,15 @@ export default function IonicWorkspace({ placed, activeSubstance, electrolysisT 
                     </text>
 
                     {/* Anode (right) */}
-                    <rect
-                      x="315"
-                      y="-20"
-                      width="10"
-                      height="130"
-                      fill="#475569"
-                      stroke="#1e293b"
-                    />
-                    <text x="320" y="-26" textAnchor="middle" fontSize="10" fontWeight="700" fill="#1e293b">
+                    <rect x="315" y="-20" width="10" height="130" fill="#475569" stroke="#1e293b" />
+                    <text
+                      x="320"
+                      y="-26"
+                      textAnchor="middle"
+                      fontSize="10"
+                      fontWeight="700"
+                      fill="#1e293b"
+                    >
                       +
                     </text>
                     <text x="320" y="158" textAnchor="middle" fontSize="9" fill="#1e293b">
@@ -444,7 +498,12 @@ export default function IonicWorkspace({ placed, activeSubstance, electrolysisT 
                             dur="2.5s"
                             repeatCount="indefinite"
                           />
-                          <animate attributeName="y" values="60;65" dur="2.5s" repeatCount="indefinite" />
+                          <animate
+                            attributeName="y"
+                            values="60;65"
+                            dur="2.5s"
+                            repeatCount="indefinite"
+                          />
                           Cu²⁺
                         </text>
                         <text fill="#1e293b" opacity={0.7}>
@@ -454,7 +513,12 @@ export default function IonicWorkspace({ placed, activeSubstance, electrolysisT 
                             dur="2.5s"
                             repeatCount="indefinite"
                           />
-                          <animate attributeName="y" values="70;75" dur="2.5s" repeatCount="indefinite" />
+                          <animate
+                            attributeName="y"
+                            values="70;75"
+                            dur="2.5s"
+                            repeatCount="indefinite"
+                          />
                           SO₄²⁻
                         </text>
                       </g>
@@ -471,16 +535,19 @@ export default function IonicWorkspace({ placed, activeSubstance, electrolysisT 
         </g>
 
         {/* Empty-state hint */}
-        {!placed.beakersReady && !placed.circuitReady && !placed.meltingReady && !placed.cellReady && (
-          <g>
-            <text x="450" y="270" textAnchor="middle" fontSize="14" fill="#94a3b8">
-              বাম দিক থেকে যন্ত্রপাতি টেনে আনুন
-            </text>
-            <text x="450" y="290" textAnchor="middle" fontSize="11" fill="#cbd5e1">
-              Drag equipment to begin each stage
-            </text>
-          </g>
-        )}
+        {!placed.beakersReady &&
+          !placed.circuitReady &&
+          !placed.meltingReady &&
+          !placed.cellReady && (
+            <g>
+              <text x="450" y="270" textAnchor="middle" fontSize="14" fill="#94a3b8">
+                বাম দিক থেকে যন্ত্রপাতি টেনে আনুন
+              </text>
+              <text x="450" y="290" textAnchor="middle" fontSize="11" fill="#cbd5e1">
+                Drag equipment to begin each stage
+              </text>
+            </g>
+          )}
       </svg>
     </div>
   );

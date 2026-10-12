@@ -8,7 +8,6 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function ensureTeacherOrAdmin(supabase: any, userId: string) {
   const [{ data: isTeacher }, { data: isAdmin }] = await Promise.all([
     supabase.rpc("has_role", { _user_id: userId, _role: "teacher" }),

@@ -61,9 +61,7 @@ function ClassesPage() {
         counts.set(m.class_id, (counts.get(m.class_id) ?? 0) + 1);
       }
     }
-    setRows(
-      (classes ?? []).map((c) => ({ ...c, member_count: counts.get(c.id) ?? 0 })),
-    );
+    setRows((classes ?? []).map((c) => ({ ...c, member_count: counts.get(c.id) ?? 0 })));
     setLoading(false);
   }, [user]);
 
@@ -189,7 +187,9 @@ function ClassesPage() {
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Users className="h-4 w-4 text-muted-foreground" />
-                  <span>{c.member_count} student{c.member_count === 1 ? "" : "s"}</span>
+                  <span>
+                    {c.member_count} student{c.member_count === 1 ? "" : "s"}
+                  </span>
                 </div>
                 <div className="mt-auto flex gap-2">
                   <Button asChild size="sm" variant="secondary" className="flex-1">

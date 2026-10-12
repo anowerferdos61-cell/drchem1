@@ -2,14 +2,7 @@
  * Sidebar — RAG toggle + conversation list with rename/delete.
  */
 import { useState } from "react";
-import {
-  BookOpen,
-  MessageSquarePlus,
-  MoreVertical,
-  Pencil,
-  Search,
-  Trash2,
-} from "lucide-react";
+import { BookOpen, MessageSquarePlus, MoreVertical, Pencil, Search, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -57,10 +50,7 @@ export default function ChatSidebar() {
     <aside className="flex h-full w-full flex-col border-r bg-card/30">
       {/* Header */}
       <div className="space-y-3 border-b p-3">
-        <Button
-          className="w-full justify-start gap-2"
-          onClick={() => newConversation()}
-        >
+        <Button className="w-full justify-start gap-2" onClick={() => newConversation()}>
           <MessageSquarePlus className="h-4 w-4" />
           নতুন চ্যাট
         </Button>
@@ -68,18 +58,11 @@ export default function ChatSidebar() {
         <div className="flex items-center justify-between rounded-xl border bg-background p-2.5">
           <div className="flex items-center gap-2">
             <BookOpen
-              className={cn(
-                "h-4 w-4",
-                ragMode ? "text-amber-500" : "text-muted-foreground",
-              )}
+              className={cn("h-4 w-4", ragMode ? "text-amber-500" : "text-muted-foreground")}
             />
             <div>
-              <p className="text-xs font-medium leading-none">
-                বই থেকে উত্তর
-              </p>
-              <p className="mt-0.5 text-[10px] text-muted-foreground">
-                Class 9-10 Chemistry
-              </p>
+              <p className="text-xs font-medium leading-none">বই থেকে উত্তর</p>
+              <p className="mt-0.5 text-[10px] text-muted-foreground">Class 9-10 Chemistry</p>
             </div>
           </div>
           <Switch checked={ragMode} onCheckedChange={setRagMode} />
@@ -100,9 +83,7 @@ export default function ChatSidebar() {
       <div className="flex-1 overflow-y-auto p-2">
         {filtered.length === 0 ? (
           <p className="px-3 py-6 text-center text-xs text-muted-foreground">
-            {conversations.length === 0
-              ? "এখনো কোনো চ্যাট নেই।"
-              : "কিছু পাওয়া যায়নি।"}
+            {conversations.length === 0 ? "এখনো কোনো চ্যাট নেই।" : "কিছু পাওয়া যায়নি।"}
           </p>
         ) : (
           <ul className="space-y-0.5">
@@ -148,9 +129,7 @@ export default function ChatSidebar() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem
-                        onClick={() => startRename(c.id, c.title)}
-                      >
+                      <DropdownMenuItem onClick={() => startRename(c.id, c.title)}>
                         <Pencil className="mr-2 h-3.5 w-3.5" />
                         Rename
                       </DropdownMenuItem>

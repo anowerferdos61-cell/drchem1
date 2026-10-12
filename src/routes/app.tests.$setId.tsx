@@ -11,7 +11,6 @@ export const Route = createFileRoute("/app/tests/$setId")({
   component: TakeTest,
 });
 
-// deno-lint-ignore no-explicit-any
 type Answers = Record<string, number | { ka: string; kha: string; ga: string; gha: string }>;
 
 function TakeTest() {
@@ -19,9 +18,7 @@ function TakeTest() {
   const navigate = useNavigate();
   const load = useServerFn(getTestForStudent);
   const submit = useServerFn(submitAttempt);
-  // deno-lint-ignore no-explicit-any
   const [set, setSet] = useState<any>(null);
-  // deno-lint-ignore no-explicit-any
   const [questions, setQuestions] = useState<any[]>([]);
   const [answers, setAnswers] = useState<Answers>({});
   const [submitted, setSubmitted] = useState(false);
@@ -78,7 +75,10 @@ function TakeTest() {
               <div className="font-medium mb-2">{q.question_text}</div>
               <div className="space-y-1">
                 {(q.options ?? []).map((o: string, oi: number) => (
-                  <label key={oi} className="flex items-center gap-2 rounded p-2 hover:bg-muted/40 cursor-pointer">
+                  <label
+                    key={oi}
+                    className="flex items-center gap-2 rounded p-2 hover:bg-muted/40 cursor-pointer"
+                  >
                     <input
                       type="radio"
                       name={q.id}
@@ -98,12 +98,12 @@ function TakeTest() {
               </div>
               {(["ka", "kha", "ga", "gha"] as const).map((part) => {
                 const p = q.parts?.[part] ?? { q: "", marks: 0 };
-                // deno-lint-ignore no-explicit-any
                 const cur = (answers[q.id] as any) ?? { ka: "", kha: "", ga: "", gha: "" };
                 return (
                   <div key={part}>
                     <label className="text-sm font-semibold">
-                      ({part === "ka" ? "ক" : part === "kha" ? "খ" : part === "ga" ? "গ" : "ঘ"}) {p.q} — {p.marks} mark
+                      ({part === "ka" ? "ক" : part === "kha" ? "খ" : part === "ga" ? "গ" : "ঘ"}){" "}
+                      {p.q} — {p.marks} mark
                     </label>
                     <textarea
                       disabled={submitted}

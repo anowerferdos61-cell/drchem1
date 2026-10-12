@@ -96,7 +96,7 @@ const faqs = [
   },
   {
     q: "শিক্ষক হিসেবে ক্লাসে ব্যবহার করা যাবে?",
-    a: "অবশ্যই। সাইনআপের সময় \"শিক্ষক\" রোল সিলেক্ট করুন। প্রজেক্টরে চালিয়ে সরাসরি ক্লাসে এক্সপেরিমেন্ট দেখাতে পারবেন এবং ছাত্রদের জন্য ভাইভা প্র্যাকটিস সেট করতে পারবেন।",
+    a: 'অবশ্যই। সাইনআপের সময় "শিক্ষক" রোল সিলেক্ট করুন। প্রজেক্টরে চালিয়ে সরাসরি ক্লাসে এক্সপেরিমেন্ট দেখাতে পারবেন এবং ছাত্রদের জন্য ভাইভা প্র্যাকটিস সেট করতে পারবেন।',
   },
   {
     q: "ডেটা কি নিরাপদ?",
@@ -118,9 +118,7 @@ export function FaqSection() {
           <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary mb-4">
             <HelpCircle className="h-3.5 w-3.5" /> Guide & FAQ
           </span>
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight">
-            কীভাবে শুরু করব?
-          </h2>
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight">কীভাবে শুরু করব?</h2>
           <p className="mt-4 text-muted-foreground text-lg">
             মাত্র ৫টি ধাপে Dr. Chem-এর সব ফিচার আনলক করুন — সাথে আছে সাধারণ প্রশ্নের উত্তর।
           </p>
@@ -139,9 +137,7 @@ export function FaqSection() {
                 <step.icon className="h-5 w-5" />
               </div>
               <h3 className="font-semibold text-sm leading-snug">{step.title}</h3>
-              <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
-                {step.desc}
-              </p>
+              <p className="mt-2 text-xs text-muted-foreground leading-relaxed">{step.desc}</p>
               {i < steps.length - 1 && (
                 <ArrowRight className="hidden lg:block absolute -right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-primary/40" />
               )}
@@ -157,9 +153,7 @@ export function FaqSection() {
             </div>
             <div>
               <h3 className="text-2xl font-bold tracking-tight">সাধারণ প্রশ্ন</h3>
-              <p className="text-sm text-muted-foreground">
-                যা জানতে চান — সব একসাথে
-              </p>
+              <p className="text-sm text-muted-foreground">যা জানতে চান — সব একসাথে</p>
             </div>
           </div>
 

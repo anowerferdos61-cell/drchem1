@@ -6,16 +6,7 @@
  * fossil fuels (methane, butane, coal) with green ethanol.
  */
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  Flame,
-  Power,
-  RotateCcw,
-  Leaf,
-  Factory,
-  Gauge,
-  Wind,
-  Cloud,
-} from "lucide-react";
+import { Flame, Power, RotateCcw, Leaf, Factory, Gauge, Wind, Cloud } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -329,14 +320,7 @@ function BurnerScene({
       )}
 
       {/* Fuel label */}
-      <text
-        x="200"
-        y="425"
-        textAnchor="middle"
-        fontSize="12"
-        fontWeight="700"
-        fill="#e2e8f0"
-      >
+      <text x="200" y="425" textAnchor="middle" fontSize="12" fontWeight="700" fill="#e2e8f0">
         {fuel.formula}
       </text>
     </svg>
@@ -496,27 +480,17 @@ export default function FuelCombustionEnvLab({ onBack }: Props) {
           value={Math.min(100, co2)}
           color="from-orange-500 to-red-500"
         />
-        <MeterBar
-          label={t.smoke}
-          value={smoke * 100}
-          color="from-slate-500 to-slate-800"
-        />
+        <MeterBar label={t.smoke} value={smoke * 100} color="from-slate-500 to-slate-800" />
         <MeterBar
           label={t.energy}
           value={Math.min(100, energy)}
           color="from-emerald-500 to-teal-500"
         />
-        <MeterBar
-          label={t.efficiency}
-          value={efficiency}
-          color="from-sky-500 to-indigo-500"
-        />
+        <MeterBar label={t.efficiency} value={efficiency} color="from-sky-500 to-indigo-500" />
 
         {/* Mini CO₂ line chart */}
         <div className="mt-3">
-          <div className="mb-1 text-[10px] uppercase tracking-wider text-slate-400">
-            CO₂ / t
-          </div>
+          <div className="mb-1 text-[10px] uppercase tracking-wider text-slate-400">CO₂ / t</div>
           <svg viewBox="0 0 200 40" className="h-10 w-full">
             <polyline
               fill="none"
@@ -574,9 +548,7 @@ export default function FuelCombustionEnvLab({ onBack }: Props) {
                 }`}
               >
                 <div className="font-bold">{f.formula}</div>
-                <div className="truncate text-[10px] opacity-80">
-                  {lang === "bn" ? f.bn : f.en}
-                </div>
+                <div className="truncate text-[10px] opacity-80">{lang === "bn" ? f.bn : f.en}</div>
               </button>
             );
           })}
@@ -600,7 +572,12 @@ export default function FuelCombustionEnvLab({ onBack }: Props) {
             <Flame className="mr-1 h-3.5 w-3.5" />
             {burning ? t.stop : t.ignite}
           </Button>
-          <Button size="sm" variant="outline" onClick={reset} className="border-slate-700 bg-slate-800 text-slate-100 hover:bg-slate-700">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={reset}
+            className="border-slate-700 bg-slate-800 text-slate-100 hover:bg-slate-700"
+          >
             <RotateCcw className="h-3.5 w-3.5" />
           </Button>
         </div>
@@ -654,15 +631,13 @@ export default function FuelCombustionEnvLab({ onBack }: Props) {
     <div className="space-y-3 text-sm">
       <h3 className="font-bold">জীবাশ্ম জ্বালানি vs সবুজ জ্বালানি</h3>
       <p>
-        মিথেন, বিউটেন ও কয়লার মতো জীবাশ্ম জ্বালানি দহনের ফলে বায়ুমণ্ডলে বিপুল
-        পরিমাণে CO₂ যোগ হয় — যা গ্রিনহাউস প্রভাব বাড়িয়ে <b>বৈশ্বিক উষ্ণতা</b>
-        (Global Warming) ঘটায়। কয়লা অতিরিক্ত <b>সট, SOₓ ও ছাই</b> নিঃসরণ
-        করে বায়ু দূষণ বাড়ায়।
+        মিথেন, বিউটেন ও কয়লার মতো জীবাশ্ম জ্বালানি দহনের ফলে বায়ুমণ্ডলে বিপুল পরিমাণে CO₂ যোগ হয়
+        — যা গ্রিনহাউস প্রভাব বাড়িয়ে <b>বৈশ্বিক উষ্ণতা</b>
+        (Global Warming) ঘটায়। কয়লা অতিরিক্ত <b>সট, SOₓ ও ছাই</b> নিঃসরণ করে বায়ু দূষণ বাড়ায়।
       </p>
       <p>
-        অপরদিকে <b>ইথানল (C₂H₅OH)</b> নবায়নযোগ্য উৎস (আখ, ভুট্টা, বায়োমাস)
-        থেকে তৈরি হয় এবং প্রতি মেগাজুলে অনেক কম CO₂ নিঃসরণ করে। এর দহন সট-
-        মুক্ত এবং কার্বন চক্রে প্রায় নিরপেক্ষ।
+        অপরদিকে <b>ইথানল (C₂H₅OH)</b> নবায়নযোগ্য উৎস (আখ, ভুট্টা, বায়োমাস) থেকে তৈরি হয় এবং প্রতি
+        মেগাজুলে অনেক কম CO₂ নিঃসরণ করে। এর দহন সট- মুক্ত এবং কার্বন চক্রে প্রায় নিরপেক্ষ।
       </p>
       <ul className="list-disc pl-5">
         <li>CH₄ + 2O₂ → CO₂ + 2H₂O + ΔH (নীল শিখা)</li>
@@ -704,15 +679,7 @@ export default function FuelCombustionEnvLab({ onBack }: Props) {
   );
 }
 
-function MeterBar({
-  label,
-  value,
-  color,
-}: {
-  label: string;
-  value: number;
-  color: string;
-}) {
+function MeterBar({ label, value, color }: { label: string; value: number; color: string }) {
   return (
     <div className="mb-2 last:mb-0">
       <div className="mb-0.5 flex justify-between text-[10px] text-slate-400">

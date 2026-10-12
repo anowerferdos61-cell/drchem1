@@ -69,32 +69,57 @@ const MINERALS = [
 ] as const;
 
 const COMPARISON = [
-  { key: "composition", bn: "রাসায়নিক গঠন", en: "Chemical composition",
-    mineralBn: "নির্দিষ্ট ও সমসত্ত্ব", mineralEn: "Definite and uniform",
-    rockBn: "মিশ্র · খনিজ ভেদে ভিন্ন", rockEn: "Mixed · varies with minerals" },
-  { key: "structure", bn: "কণা গঠন", en: "Particle structure",
-    mineralBn: "স্ফটিক (crystalline)", mineralEn: "Crystalline",
-    rockBn: "দানাদার / স্তরিত মিশ্রণ", rockEn: "Grainy / layered aggregate" },
-  { key: "purity", bn: "বিশুদ্ধতা", en: "Purity",
-    mineralBn: "বিশুদ্ধ যৌগ বা মৌল", mineralEn: "Pure compound or element",
-    rockBn: "অবিশুদ্ধ · হেটারোজেনিয়াস", rockEn: "Impure · heterogeneous" },
-  { key: "example", bn: "উদাহরণ", en: "Examples",
-    mineralBn: "কোয়ার্টজ, মাইকা, ফেল্ডস্পার, হেমাটাইট", mineralEn: "Quartz, Mica, Feldspar, Hematite",
-    rockBn: "গ্রানাইট, মার্বেল, ব্যাসল্ট, চুনাপাথর", rockEn: "Granite, Marble, Basalt, Limestone" },
+  {
+    key: "composition",
+    bn: "রাসায়নিক গঠন",
+    en: "Chemical composition",
+    mineralBn: "নির্দিষ্ট ও সমসত্ত্ব",
+    mineralEn: "Definite and uniform",
+    rockBn: "মিশ্র · খনিজ ভেদে ভিন্ন",
+    rockEn: "Mixed · varies with minerals",
+  },
+  {
+    key: "structure",
+    bn: "কণা গঠন",
+    en: "Particle structure",
+    mineralBn: "স্ফটিক (crystalline)",
+    mineralEn: "Crystalline",
+    rockBn: "দানাদার / স্তরিত মিশ্রণ",
+    rockEn: "Grainy / layered aggregate",
+  },
+  {
+    key: "purity",
+    bn: "বিশুদ্ধতা",
+    en: "Purity",
+    mineralBn: "বিশুদ্ধ যৌগ বা মৌল",
+    mineralEn: "Pure compound or element",
+    rockBn: "অবিশুদ্ধ · হেটারোজেনিয়াস",
+    rockEn: "Impure · heterogeneous",
+  },
+  {
+    key: "example",
+    bn: "উদাহরণ",
+    en: "Examples",
+    mineralBn: "কোয়ার্টজ, মাইকা, ফেল্ডস্পার, হেমাটাইট",
+    mineralEn: "Quartz, Mica, Feldspar, Hematite",
+    rockBn: "গ্রানাইট, মার্বেল, ব্যাসল্ট, চুনাপাথর",
+    rockEn: "Granite, Marble, Basalt, Limestone",
+  },
 ] as const;
 
 // Granite grain layout — clickable spots on a schematic slab
-const GRAINS: Array<{ x: number; y: number; r: number; mineral: (typeof MINERALS)[number]["id"] }> = [
-  { x: 60, y: 55, r: 22, mineral: "feldspar" },
-  { x: 140, y: 90, r: 18, mineral: "quartz" },
-  { x: 210, y: 60, r: 20, mineral: "feldspar" },
-  { x: 100, y: 140, r: 14, mineral: "mica" },
-  { x: 175, y: 155, r: 22, mineral: "feldspar" },
-  { x: 255, y: 130, r: 16, mineral: "quartz" },
-  { x: 50, y: 175, r: 12, mineral: "mica" },
-  { x: 230, y: 195, r: 15, mineral: "mica" },
-  { x: 130, y: 200, r: 18, mineral: "quartz" },
-];
+const GRAINS: Array<{ x: number; y: number; r: number; mineral: (typeof MINERALS)[number]["id"] }> =
+  [
+    { x: 60, y: 55, r: 22, mineral: "feldspar" },
+    { x: 140, y: 90, r: 18, mineral: "quartz" },
+    { x: 210, y: 60, r: 20, mineral: "feldspar" },
+    { x: 100, y: 140, r: 14, mineral: "mica" },
+    { x: 175, y: 155, r: 22, mineral: "feldspar" },
+    { x: 255, y: 130, r: 16, mineral: "quartz" },
+    { x: 50, y: 175, r: 12, mineral: "mica" },
+    { x: 230, y: 195, r: 15, mineral: "mica" },
+    { x: 130, y: 200, r: 18, mineral: "quartz" },
+  ];
 
 interface Props {
   onBack: () => void;
@@ -171,11 +196,16 @@ export default function MineralsVsRocksLab({ onBack }: Props) {
             <Card className="overflow-hidden">
               <div className="grid grid-cols-[1.2fr_1fr_1fr] border-b bg-slate-100 text-xs font-semibold uppercase tracking-wide text-slate-600">
                 <div className="p-3">{lang === "bn" ? "বৈশিষ্ট্য" : "Property"}</div>
-                <div className="border-l p-3 text-emerald-700">{lang === "bn" ? "খনিজ" : "Mineral"}</div>
+                <div className="border-l p-3 text-emerald-700">
+                  {lang === "bn" ? "খনিজ" : "Mineral"}
+                </div>
                 <div className="border-l p-3 text-amber-700">{lang === "bn" ? "শিলা" : "Rock"}</div>
               </div>
               {COMPARISON.map((row, i) => (
-                <div key={row.key} className={`grid grid-cols-[1.2fr_1fr_1fr] text-sm ${i % 2 ? "bg-slate-50" : "bg-white"}`}>
+                <div
+                  key={row.key}
+                  className={`grid grid-cols-[1.2fr_1fr_1fr] text-sm ${i % 2 ? "bg-slate-50" : "bg-white"}`}
+                >
                   <div className="border-b p-3 font-medium text-slate-800">
                     {lang === "bn" ? row.bn : row.en}
                   </div>
@@ -216,11 +246,11 @@ export default function MineralsVsRocksLab({ onBack }: Props) {
                       const m = MINERALS.find((x) => x.id === g.mineral)!;
                       const isPicked = picked === g.mineral;
                       return (
-                        <g key={i}
-                           className="cursor-pointer"
-                           onClick={() => setPicked(g.mineral)}>
+                        <g key={i} className="cursor-pointer" onClick={() => setPicked(g.mineral)}>
                           <circle
-                            cx={g.x} cy={g.y} r={g.r}
+                            cx={g.x}
+                            cy={g.y}
+                            r={g.r}
                             fill={m.color}
                             stroke={isPicked ? "#0ea5e9" : "#1e293b"}
                             strokeWidth={isPicked ? 3 : 1}
@@ -237,10 +267,15 @@ export default function MineralsVsRocksLab({ onBack }: Props) {
                       key={m.id}
                       onClick={() => setPicked(m.id)}
                       className={`flex items-center gap-2 rounded-full border px-3 py-1 transition ${
-                        picked === m.id ? "border-sky-500 bg-sky-50" : "border-slate-300 bg-white hover:border-slate-400"
+                        picked === m.id
+                          ? "border-sky-500 bg-sky-50"
+                          : "border-slate-300 bg-white hover:border-slate-400"
                       }`}
                     >
-                      <span className="h-3 w-3 rounded-full border" style={{ background: m.color }} />
+                      <span
+                        className="h-3 w-3 rounded-full border"
+                        style={{ background: m.color }}
+                      />
                       {lang === "bn" ? m.bn : m.en}
                     </button>
                   ))}
@@ -251,12 +286,17 @@ export default function MineralsVsRocksLab({ onBack }: Props) {
                 {pickedMineral ? (
                   <div className="space-y-3">
                     <div className="flex items-center gap-3">
-                      <span className="h-8 w-8 rounded-full border-2 border-slate-300" style={{ background: pickedMineral.color }} />
+                      <span
+                        className="h-8 w-8 rounded-full border-2 border-slate-300"
+                        style={{ background: pickedMineral.color }}
+                      />
                       <div>
                         <div className="text-lg font-bold">
                           {pickedMineral.en} · {pickedMineral.bn}
                         </div>
-                        <div className="font-mono text-xs text-slate-600">{pickedMineral.formula}</div>
+                        <div className="font-mono text-xs text-slate-600">
+                          {pickedMineral.formula}
+                        </div>
                       </div>
                     </div>
                     <p className="text-sm leading-relaxed text-slate-700">

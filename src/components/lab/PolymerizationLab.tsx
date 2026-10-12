@@ -109,18 +109,15 @@ export default function PolymerizationLab({ onBack }: Props) {
 
   const meta = MONOMERS[monomerId];
 
-  const pressureOk =
-    pressure >= meta.pressureMin && pressure <= meta.pressureMax;
-  const tempOk =
-    temperature >= meta.tempMin && temperature <= meta.tempMax;
+  const pressureOk = pressure >= meta.pressureMin && pressure <= meta.pressureMax;
+  const tempOk = temperature >= meta.tempMin && temperature <= meta.tempMax;
   const optimum = pressureOk && tempOk && catalyst;
 
   const statusMessage = useMemo(() => {
     if (phase === "linking") return "বন্ধন ভাঙছে এবং চেইন তৈরি হচ্ছে…";
     if (phase === "done") return `${meta.polymerNameBn} সফলভাবে তৈরি হয়েছে!`;
     if (phase === "running") return "মনোমারগুলো সক্রিয় হচ্ছে…";
-    if (!pressureOk && !tempOk)
-      return "চাপ ও তাপমাত্রা অপর্যাপ্ত — উচ্চতর মান দিন।";
+    if (!pressureOk && !tempOk) return "চাপ ও তাপমাত্রা অপর্যাপ্ত — উচ্চতর মান দিন।";
     if (!pressureOk) return "চাপ বাড়ান (Optimum window এ আনুন)।";
     if (!tempOk) return "তাপমাত্রা সঠিক পরিসরে আনুন।";
     if (!catalyst) return "প্রভাবক যোগ করুন।";
@@ -302,7 +299,8 @@ export default function PolymerizationLab({ onBack }: Props) {
             <div className="mt-3 rounded-lg border border-white/10 bg-black/30 p-3 text-center font-mono text-sm md:text-base">
               <span className="text-slate-300">n</span> ({meta.monomerFormula}){" "}
               <span className="mx-2 text-orange-300">
-                →<span className="ml-1 text-[10px] text-slate-400">তাপ, চাপ, {meta.catalystBn}</span>
+                →
+                <span className="ml-1 text-[10px] text-slate-400">তাপ, চাপ, {meta.catalystBn}</span>
               </span>{" "}
               <span className="text-emerald-300">{meta.polymerFormula}</span>
             </div>
@@ -373,12 +371,7 @@ export default function PolymerizationLab({ onBack }: Props) {
               {/* Catalyst */}
               <div className="mt-4 flex items-center justify-between rounded-lg border border-white/10 bg-slate-950/40 px-3 py-2">
                 <div className="flex items-center gap-2 text-sm">
-                  <Zap
-                    className={cn(
-                      "h-4 w-4",
-                      catalyst ? "text-amber-300" : "text-slate-500",
-                    )}
-                  />
+                  <Zap className={cn("h-4 w-4", catalyst ? "text-amber-300" : "text-slate-500")} />
                   <div>
                     <div className="font-medium">প্রভাবক</div>
                     <div className="text-[10px] text-slate-400">{meta.catalystBn}</div>
@@ -448,11 +441,10 @@ export default function PolymerizationLab({ onBack }: Props) {
           </div>
           <p className="text-sm text-slate-300">
             উচ্চ চাপ, তাপ এবং প্রভাবক (যেমন O₂ / পারঅক্সাইড) মনোমারের{" "}
-            <span className="text-amber-300">π-বন্ড</span> ভেঙে দুইপাশে দুটি
-            "free hand" (free valency) তৈরি করে। একের পর এক মনোমার এই মুক্ত
-            হাতে যুক্ত হয়ে দীর্ঘ পলিমার চেইন{" "}
-            <span className="font-mono text-emerald-300">{meta.polymerFormula}</span>{" "}
-            গঠন করে। কার্বন = গাঢ় ধূসর, হাইড্রোজেন = হালকা, ক্লোরিন = সবুজ।
+            <span className="text-amber-300">π-বন্ড</span> ভেঙে দুইপাশে দুটি "free hand" (free
+            valency) তৈরি করে। একের পর এক মনোমার এই মুক্ত হাতে যুক্ত হয়ে দীর্ঘ পলিমার চেইন{" "}
+            <span className="font-mono text-emerald-300">{meta.polymerFormula}</span> গঠন করে।
+            কার্বন = গাঢ় ধূসর, হাইড্রোজেন = হালকা, ক্লোরিন = সবুজ।
           </p>
         </Card>
       </div>
@@ -505,13 +497,10 @@ export default function PolymerizationLab({ onBack }: Props) {
               </div>
               <h2 className="mt-1 text-2xl font-extrabold">{meta.productBn}</h2>
               <p className="mt-2 text-sm text-slate-300">
-                {meta.polymerNameBn} ({meta.polymerNameEn}) দিয়ে প্রতিদিন ব্যবহৃত{" "}
-                {meta.productBn} তৈরি হয়।
+                {meta.polymerNameBn} ({meta.polymerNameEn}) দিয়ে প্রতিদিন ব্যবহৃত {meta.productBn}{" "}
+                তৈরি হয়।
               </p>
-              <Button
-                onClick={() => setShowProduct(false)}
-                className="mt-4 w-full"
-              >
+              <Button onClick={() => setShowProduct(false)} className="mt-4 w-full">
                 দারুণ! Continue
               </Button>
             </motion.div>
@@ -523,9 +512,9 @@ export default function PolymerizationLab({ onBack }: Props) {
       <DraggableTheoryFab storageKey="polymerization" label="থিওরি ও বিস্তারিত">
         <h3>যুত পলিমারকরণ (Addition Polymerization)</h3>
         <p>
-          অসম্পৃক্ত মনোমারের π-বন্ধন ভেঙে একই ধরনের অসংখ্য মনোমার একে অপরের
-          সাথে যুক্ত হয়ে দীর্ঘ শৃঙ্খল বা <em>পলিমার</em> গঠন করে — এই
-          প্রক্রিয়াকে যুত পলিমারকরণ বলা হয়। কোনো উপজাত (by-product) তৈরি হয় না।
+          অসম্পৃক্ত মনোমারের π-বন্ধন ভেঙে একই ধরনের অসংখ্য মনোমার একে অপরের সাথে যুক্ত হয়ে দীর্ঘ
+          শৃঙ্খল বা <em>পলিমার</em> গঠন করে — এই প্রক্রিয়াকে যুত পলিমারকরণ বলা হয়। কোনো উপজাত
+          (by-product) তৈরি হয় না।
         </p>
 
         <h4>মনোমার ↔ পলিমার</h4>
@@ -567,13 +556,13 @@ export default function PolymerizationLab({ onBack }: Props) {
         </table>
 
         <h4>সাধারণ সমীকরণ</h4>
-        <p style={{ fontFamily: "monospace" }}>
-          n CH₂=CH₂ →[তাপ, চাপ, O₂] [—CH₂—CH₂—]ₙ
-        </p>
+        <p style={{ fontFamily: "monospace" }}>n CH₂=CH₂ →[তাপ, চাপ, O₂] [—CH₂—CH₂—]ₙ</p>
 
         <h4>মূল ধারণা</h4>
         <ul>
-          <li>শুধুমাত্র <strong>অসম্পৃক্ত</strong> যৌগ (π-বন্ধনযুক্ত) যুত পলিমারকরণে অংশ নেয়।</li>
+          <li>
+            শুধুমাত্র <strong>অসম্পৃক্ত</strong> যৌগ (π-বন্ধনযুক্ত) যুত পলিমারকরণে অংশ নেয়।
+          </li>
           <li>উচ্চ চাপ ও তাপমাত্রা মনোমারকে সক্রিয় করে; প্রভাবক শৃঙ্খল শুরু করে।</li>
           <li>কোনো উপজাত তৈরি হয় না — তাই মনোমার + পলিমারের আণবিক ভর সমান।</li>
           <li>দৈনন্দিন প্লাস্টিক দ্রব্য মূলত এভাবে তৈরি হওয়া দীর্ঘ পলিমার শৃঙ্খল।</li>

@@ -106,10 +106,8 @@ function ProgressPage() {
     const done = data.testAttempts.filter((t) => t.submitted_at && (t.mcq_total ?? 0) > 0);
     if (done.length === 0) return null;
     const pct =
-      done.reduce(
-        (s, t) => s + ((t.mcq_score ?? 0) + (t.cq_score ?? 0)) / (t.mcq_total ?? 1),
-        0,
-      ) / done.length;
+      done.reduce((s, t) => s + ((t.mcq_score ?? 0) + (t.cq_score ?? 0)) / (t.mcq_total ?? 1), 0) /
+      done.length;
     return Math.round(pct * 100);
   })();
 

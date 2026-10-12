@@ -246,7 +246,10 @@ export const listPendingPayments = createServerFn({ method: "GET" })
       .select("user_id, email, display_name, phone")
       .in("user_id", userIds);
     const profMap = new Map(
-      (profs ?? []).map((p) => [p.user_id as string, p as { email: string; display_name: string; phone: string }]),
+      (profs ?? []).map((p) => [
+        p.user_id as string,
+        p as { email: string; display_name: string; phone: string },
+      ]),
     );
 
     return (data ?? []).map((r) => ({
@@ -324,7 +327,6 @@ export const approvePayment = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
-
 // ─── ADMIN: rejectPayment ──────────────────────────────────────────────
 export const rejectPayment = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -354,7 +356,6 @@ export const rejectPayment = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
-
 // ─── cancelSubscription ────────────────────────────────────────────────
 export const cancelSubscription = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -381,4 +382,3 @@ export const incrementAiUsage = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { used: data ?? 0 };
   });
-

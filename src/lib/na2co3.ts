@@ -54,7 +54,10 @@ export interface Na2CO3GradeOutput {
 export function gradeNa2CO3(input: Na2CO3GradeInput): Na2CO3GradeOutput {
   const massError = Math.abs(input.actualMassG - TARGET_MASS_G);
   const volumeError = Math.abs(input.actualVolumeMl - TARGET_VOLUME_ML);
-  const finalMolarity = computeMolarity(input.actualMassG, input.actualVolumeMl || TARGET_VOLUME_ML);
+  const finalMolarity = computeMolarity(
+    input.actualMassG,
+    input.actualVolumeMl || TARGET_VOLUME_ML,
+  );
   const molarityErrorPct = Math.abs((finalMolarity - TARGET_MOLARITY) / TARGET_MOLARITY) * 100;
 
   let acc = 100;
@@ -72,8 +75,7 @@ export function gradeNa2CO3(input: Na2CO3GradeInput): Na2CO3GradeOutput {
   acc -= 3 * input.lowMistakes;
   acc = Math.max(0, Math.min(100, acc));
 
-  const grade =
-    acc >= 90 ? "A" : acc >= 80 ? "B" : acc >= 70 ? "C" : acc >= 60 ? "D" : "F";
+  const grade = acc >= 90 ? "A" : acc >= 80 ? "B" : acc >= 70 ? "C" : acc >= 60 ? "D" : "F";
 
   return { accuracy: acc, grade, massError, volumeError, finalMolarity, molarityErrorPct };
 }

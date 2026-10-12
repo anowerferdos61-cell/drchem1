@@ -64,9 +64,7 @@ export const setMyRole = createServerFn({ method: "POST" })
  */
 export const setMyPhone = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
-    z.object({ phone: z.string().trim().min(1) }).parse(input),
-  )
+  .inputValidator((input) => z.object({ phone: z.string().trim().min(1) }).parse(input))
   .handler(async ({ data, context }) => {
     const { userId } = context;
     const normalized = normalizeBdPhone(data.phone);

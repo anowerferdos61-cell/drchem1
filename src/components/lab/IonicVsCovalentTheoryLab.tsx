@@ -125,14 +125,20 @@ export default function IonicVsCovalentTheoryLab({ onBack }: Props) {
   const badge = useMemo(() => {
     if (mode === "melting") {
       return (
-        <Badge variant="secondary" className="gap-1.5 border border-white/10 bg-gradient-to-r from-orange-500 to-rose-600 text-white">
+        <Badge
+          variant="secondary"
+          className="gap-1.5 border border-white/10 bg-gradient-to-r from-orange-500 to-rose-600 text-white"
+        >
           <Flame className="h-3.5 w-3.5" />
           <span className="text-lab-xs font-semibold">Melting Point Test</span>
         </Badge>
       );
     }
     return (
-      <Badge variant="secondary" className="gap-1.5 border border-white/10 bg-gradient-to-r from-sky-500 to-blue-600 text-white">
+      <Badge
+        variant="secondary"
+        className="gap-1.5 border border-white/10 bg-gradient-to-r from-sky-500 to-blue-600 text-white"
+      >
         <Zap className="h-3.5 w-3.5" />
         <span className="text-lab-xs font-semibold">Conductivity Test</span>
       </Badge>
@@ -150,7 +156,6 @@ export default function IonicVsCovalentTheoryLab({ onBack }: Props) {
         </div>
       }
       badge={badge}
-
       /* ── LEFT — concept + live metrics ── */
       info={
         <>
@@ -164,10 +169,9 @@ export default function IonicVsCovalentTheoryLab({ onBack }: Props) {
               </div>
             </div>
             <p className="px-3 py-2 text-lab-sm text-foreground/90">
-              আয়নিক যৌগে (NaCl) শক্তিশালী ল্যাটিস আকর্ষণ থাকায় গলনাঙ্ক অনেক বেশি এবং
-              পানিতে দ্রবীভূত হয়ে আয়নে বিয়োজিত হয়ে তড়িৎ পরিবহন করে।
-              সমযোজী যৌগে (চিনি) দুর্বল আন্তঃআণবিক বল, দ্রুত গলে বা পুড়ে যায় এবং
-              দ্রবণে আয়ন সৃষ্টি করে না।
+              আয়নিক যৌগে (NaCl) শক্তিশালী ল্যাটিস আকর্ষণ থাকায় গলনাঙ্ক অনেক বেশি এবং পানিতে
+              দ্রবীভূত হয়ে আয়নে বিয়োজিত হয়ে তড়িৎ পরিবহন করে। সমযোজী যৌগে (চিনি) দুর্বল
+              আন্তঃআণবিক বল, দ্রুত গলে বা পুড়ে যায় এবং দ্রবণে আয়ন সৃষ্টি করে না।
             </p>
           </Card>
 
@@ -193,7 +197,8 @@ export default function IonicVsCovalentTheoryLab({ onBack }: Props) {
                   icon={Thermometer}
                 />
                 <div className="rounded-md bg-muted/50 px-2 py-1.5 text-lab-xs">
-                  <b>NaCl:</b> {tempNaCl >= NACL_MP ? "গলনাঙ্কে পৌঁছেছে (801°C)" : "কঠিন — উচ্চ ল্যাটিস শক্তি"}
+                  <b>NaCl:</b>{" "}
+                  {tempNaCl >= NACL_MP ? "গলনাঙ্কে পৌঁছেছে (801°C)" : "কঠিন — উচ্চ ল্যাটিস শক্তি"}
                 </div>
                 <div className="rounded-md bg-muted/50 px-2 py-1.5 text-lab-xs">
                   <b>Sugar:</b> {sugarStateLabelBn[sugarState]} · {sugarStateLabelEn[sugarState]}
@@ -205,7 +210,9 @@ export default function IonicVsCovalentTheoryLab({ onBack }: Props) {
                   label="NaCl Bulb"
                   value={bulbNaCl ? "ON" : "OFF"}
                   unit=""
-                  gradient={bulbNaCl ? "from-amber-400 to-orange-500" : "from-slate-500 to-slate-700"}
+                  gradient={
+                    bulbNaCl ? "from-amber-400 to-orange-500" : "from-slate-500 to-slate-700"
+                  }
                   icon={Lightbulb}
                 />
                 <Metric
@@ -232,21 +239,26 @@ export default function IonicVsCovalentTheoryLab({ onBack }: Props) {
             <div className="space-y-1.5 text-lab-sm">
               <div className="flex items-center gap-2">
                 <span className="inline-block h-3 w-3 rounded-full bg-rose-500" />
-                <span><b>Na⁺</b> · Cation</span>
+                <span>
+                  <b>Na⁺</b> · Cation
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="inline-block h-3 w-3 rounded-full bg-emerald-500" />
-                <span><b>Cl⁻</b> · Anion</span>
+                <span>
+                  <b>Cl⁻</b> · Anion
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="inline-block h-3 w-3 rounded-full bg-amber-400" />
-                <span><b>C₁₂H₂₂O₁₁</b> · Sugar molecule</span>
+                <span>
+                  <b>C₁₂H₂₂O₁₁</b> · Sugar molecule
+                </span>
               </div>
             </div>
           </Card>
         </>
       }
-
       /* ── CENTER — split screen visual ── */
       visual={
         <div
@@ -368,7 +380,6 @@ export default function IonicVsCovalentTheoryLab({ onBack }: Props) {
           </div>
         </div>
       }
-
       /* ── RIGHT — mode-aware guidance ── */
       controls={
         <>
@@ -378,17 +389,41 @@ export default function IonicVsCovalentTheoryLab({ onBack }: Props) {
             </div>
             {mode === "melting" ? (
               <ul className="space-y-1.5 text-lab-sm">
-                <li className="flex gap-2"><span className="font-bold text-rose-500">1.</span> দুইটি ওয়াচ-গ্লাসে সমান পরিমাণ NaCl ও চিনি নিন।</li>
-                <li className="flex gap-2"><span className="font-bold text-rose-500">2.</span> নিচের বার্নার জ্বালিয়ে <b>Start Heating</b> চাপুন।</li>
-                <li className="flex gap-2"><span className="font-bold text-rose-500">3.</span> লক্ষ্য করুন — চিনি ~186°C তে গলে, বাদামি হয়, তারপর কালো হয়ে যায়।</li>
-                <li className="flex gap-2"><span className="font-bold text-rose-500">4.</span> NaCl অপরিবর্তিত — 801°C প্রয়োজন হয়।</li>
+                <li className="flex gap-2">
+                  <span className="font-bold text-rose-500">1.</span> দুইটি ওয়াচ-গ্লাসে সমান পরিমাণ
+                  NaCl ও চিনি নিন।
+                </li>
+                <li className="flex gap-2">
+                  <span className="font-bold text-rose-500">2.</span> নিচের বার্নার জ্বালিয়ে{" "}
+                  <b>Start Heating</b> চাপুন।
+                </li>
+                <li className="flex gap-2">
+                  <span className="font-bold text-rose-500">3.</span> লক্ষ্য করুন — চিনি ~186°C তে
+                  গলে, বাদামি হয়, তারপর কালো হয়ে যায়।
+                </li>
+                <li className="flex gap-2">
+                  <span className="font-bold text-rose-500">4.</span> NaCl অপরিবর্তিত — 801°C
+                  প্রয়োজন হয়।
+                </li>
               </ul>
             ) : (
               <ul className="space-y-1.5 text-lab-sm">
-                <li className="flex gap-2"><span className="font-bold text-sky-500">1.</span> <b>Add Water</b> চাপুন — উভয় নমুনা পানিতে দ্রবীভূত হবে।</li>
-                <li className="flex gap-2"><span className="font-bold text-sky-500">2.</span> ব্যাটারি + LED সার্কিট সংযুক্ত — <b>Switch ON</b> চাপুন।</li>
-                <li className="flex gap-2"><span className="font-bold text-sky-500">3.</span> NaCl পাশে Na⁺/Cl⁻ ভাসছে — LED জ্বলছে ✅</li>
-                <li className="flex gap-2"><span className="font-bold text-sky-500">4.</span> চিনি পাশে অক্ষত অণু — LED বন্ধ ❌</li>
+                <li className="flex gap-2">
+                  <span className="font-bold text-sky-500">1.</span> <b>Add Water</b> চাপুন — উভয়
+                  নমুনা পানিতে দ্রবীভূত হবে।
+                </li>
+                <li className="flex gap-2">
+                  <span className="font-bold text-sky-500">2.</span> ব্যাটারি + LED সার্কিট সংযুক্ত
+                  — <b>Switch ON</b> চাপুন।
+                </li>
+                <li className="flex gap-2">
+                  <span className="font-bold text-sky-500">3.</span> NaCl পাশে Na⁺/Cl⁻ ভাসছে — LED
+                  জ্বলছে ✅
+                </li>
+                <li className="flex gap-2">
+                  <span className="font-bold text-sky-500">4.</span> চিনি পাশে অক্ষত অণু — LED বন্ধ
+                  ❌
+                </li>
               </ul>
             )}
           </Card>
@@ -441,7 +476,9 @@ function Metric({
   icon: React.ComponentType<{ className?: string }>;
 }) {
   return (
-    <div className={`flex items-center justify-between rounded-md bg-gradient-to-r ${gradient} px-2.5 py-1.5 text-white shadow-sm`}>
+    <div
+      className={`flex items-center justify-between rounded-md bg-gradient-to-r ${gradient} px-2.5 py-1.5 text-white shadow-sm`}
+    >
       <div className="flex items-center gap-1.5 text-[10px] font-medium opacity-90">
         <Icon className="h-3 w-3" /> {label}
       </div>
@@ -659,14 +696,26 @@ function MeltingScene({
 
       {/* Tabletop (isometric slab) */}
       <g>
-        <polygon points="10,220 210,220 200,238 20,238" fill={`url(#table-${isIonic ? "i" : "c"})`} />
+        <polygon
+          points="10,220 210,220 200,238 20,238"
+          fill={`url(#table-${isIonic ? "i" : "c"})`}
+        />
         <polygon points="10,220 20,238 20,244 10,226" fill="#000" opacity="0.35" />
         <polygon points="210,220 200,238 200,244 210,226" fill="#000" opacity="0.35" />
       </g>
 
       {/* Thermometer (glass tube, floating right) */}
       <g transform="translate(188 20)">
-        <rect x="0" y="0" width="12" height="150" rx="6" fill="rgba(255,255,255,0.55)" stroke="#94a3b8" strokeWidth="0.8" />
+        <rect
+          x="0"
+          y="0"
+          width="12"
+          height="150"
+          rx="6"
+          fill="rgba(255,255,255,0.55)"
+          stroke="#94a3b8"
+          strokeWidth="0.8"
+        />
         <rect
           x="3"
           y={150 - thermFrac * 142}
@@ -688,7 +737,15 @@ function MeltingScene({
           </linearGradient>
         </defs>
         <rect x="-30" y="0" width="26" height="14" rx="3" fill="rgba(15,23,42,0.85)" />
-        <text x="-17" y="10" textAnchor="middle" fontSize="8" fontWeight="800" fill="#fef3c7" fontFamily="ui-monospace, monospace">
+        <text
+          x="-17"
+          y="10"
+          textAnchor="middle"
+          fontSize="8"
+          fontWeight="800"
+          fill="#fef3c7"
+          fontFamily="ui-monospace, monospace"
+        >
           {Math.round(temp)}°C
         </text>
       </g>
@@ -705,15 +762,44 @@ function MeltingScene({
           {/* Tripod legs (perspective) */}
           <line x1="70" y1="140" x2="55" y2="222" stroke="url(#metal)" strokeWidth="3.5" />
           <line x1="150" y1="140" x2="165" y2="222" stroke="url(#metal)" strokeWidth="3.5" />
-          <line x1="110" y1="145" x2="110" y2="222" stroke="url(#metal)" strokeWidth="3.5" opacity="0.55" />
+          <line
+            x1="110"
+            y1="145"
+            x2="110"
+            y2="222"
+            stroke="url(#metal)"
+            strokeWidth="3.5"
+            opacity="0.55"
+          />
           {/* Tripod ring */}
-          <ellipse cx="110" cy="140" rx="46" ry="8" fill="none" stroke="url(#metal)" strokeWidth="3" />
+          <ellipse
+            cx="110"
+            cy="140"
+            rx="46"
+            ry="8"
+            fill="none"
+            stroke="url(#metal)"
+            strokeWidth="3"
+          />
           {/* Clay triangle */}
-          <polygon points="72,138 148,138 110,120" fill="url(#clay)" stroke="#431407" strokeWidth="0.6" />
+          <polygon
+            points="72,138 148,138 110,120"
+            fill="url(#clay)"
+            stroke="#431407"
+            strokeWidth="0.6"
+          />
           <polygon points="78,136 142,136 110,122" fill="#ea580c" opacity="0.55" />
 
           {/* Porcelain crucible */}
-          <ellipse cx="110" cy="238" rx="42" ry="6" fill="#000" opacity="0.35" filter="url(#softShadow)" />
+          <ellipse
+            cx="110"
+            cy="238"
+            rx="42"
+            ry="6"
+            fill="#000"
+            opacity="0.35"
+            filter="url(#softShadow)"
+          />
           <path
             d="M76 100 L144 100 L134 138 Q134 148 110 148 Q86 148 86 138 Z"
             fill="url(#crucible)"
@@ -733,20 +819,48 @@ function MeltingScene({
             </defs>
             {[
               // layer 1 (back)
-              { x: 92, y: 118, s: 9 }, { x: 104, y: 116, s: 10 }, { x: 117, y: 118, s: 9 }, { x: 127, y: 120, s: 8 },
+              { x: 92, y: 118, s: 9 },
+              { x: 104, y: 116, s: 10 },
+              { x: 117, y: 118, s: 9 },
+              { x: 127, y: 120, s: 8 },
               // layer 2
-              { x: 88, y: 126, s: 10 }, { x: 100, y: 124, s: 11 }, { x: 113, y: 125, s: 10 }, { x: 124, y: 128, s: 9 },
+              { x: 88, y: 126, s: 10 },
+              { x: 100, y: 124, s: 11 },
+              { x: 113, y: 125, s: 10 },
+              { x: 124, y: 128, s: 9 },
               // layer 3 (front)
-              { x: 95, y: 134, s: 11 }, { x: 108, y: 133, s: 12 }, { x: 121, y: 135, s: 10 },
+              { x: 95, y: 134, s: 11 },
+              { x: 108, y: 133, s: 12 },
+              { x: 121, y: 135, s: 10 },
             ].map((c, i) => (
               <g key={i} transform={`translate(${c.x} ${c.y})`}>
                 {/* cube: top / left / right faces */}
-                <polygon points={`0,0 ${c.s},-3 ${c.s * 2},0 ${c.s},3`} fill="#f1f5f9" stroke="#94a3b8" strokeWidth="0.4" />
-                <polygon points={`0,0 ${c.s},3 ${c.s},${c.s + 3} 0,${c.s}`} fill="url(#crystal)" stroke="#64748b" strokeWidth="0.4" />
-                <polygon points={`${c.s * 2},0 ${c.s},3 ${c.s},${c.s + 3} ${c.s * 2},${c.s}`} fill="#cbd5e1" stroke="#64748b" strokeWidth="0.4" />
+                <polygon
+                  points={`0,0 ${c.s},-3 ${c.s * 2},0 ${c.s},3`}
+                  fill="#f1f5f9"
+                  stroke="#94a3b8"
+                  strokeWidth="0.4"
+                />
+                <polygon
+                  points={`0,0 ${c.s},3 ${c.s},${c.s + 3} 0,${c.s}`}
+                  fill="url(#crystal)"
+                  stroke="#64748b"
+                  strokeWidth="0.4"
+                />
+                <polygon
+                  points={`${c.s * 2},0 ${c.s},3 ${c.s},${c.s + 3} ${c.s * 2},${c.s}`}
+                  fill="#cbd5e1"
+                  stroke="#64748b"
+                  strokeWidth="0.4"
+                />
                 {/* sparkle */}
                 <circle cx={c.s * 0.5} cy={c.s * 0.35} r="0.7" fill="#fff">
-                  <animate attributeName="opacity" values="0;1;0" dur={`${1.4 + (i % 4) * 0.3}s`} repeatCount="indefinite" />
+                  <animate
+                    attributeName="opacity"
+                    values="0;1;0"
+                    dur={`${1.4 + (i % 4) * 0.3}s`}
+                    repeatCount="indefinite"
+                  />
                 </circle>
               </g>
             ))}
@@ -757,23 +871,62 @@ function MeltingScene({
           {/* Tripod */}
           <line x1="70" y1="170" x2="55" y2="222" stroke="url(#metal)" strokeWidth="3.5" />
           <line x1="150" y1="170" x2="165" y2="222" stroke="url(#metal)" strokeWidth="3.5" />
-          <line x1="110" y1="175" x2="110" y2="222" stroke="url(#metal)" strokeWidth="3.5" opacity="0.55" />
-          <ellipse cx="110" cy="170" rx="46" ry="7" fill="none" stroke="url(#metal)" strokeWidth="3" />
+          <line
+            x1="110"
+            y1="175"
+            x2="110"
+            y2="222"
+            stroke="url(#metal)"
+            strokeWidth="3.5"
+            opacity="0.55"
+          />
+          <ellipse
+            cx="110"
+            cy="170"
+            rx="46"
+            ry="7"
+            fill="none"
+            stroke="url(#metal)"
+            strokeWidth="3"
+          />
           {/* Wire gauze */}
-          <ellipse cx="110" cy="168" rx="42" ry="6" fill="#94a3b8" stroke="#334155" strokeWidth="0.7" />
+          <ellipse
+            cx="110"
+            cy="168"
+            rx="42"
+            ry="6"
+            fill="#94a3b8"
+            stroke="#334155"
+            strokeWidth="0.7"
+          />
           <g stroke="#334155" strokeWidth="0.4" opacity="0.6">
             {[-30, -20, -10, 0, 10, 20, 30].map((dx) => (
               <line key={`v${dx}`} x1={110 + dx} y1={163} x2={110 + dx} y2={173} />
             ))}
             {[-4, -2, 0, 2, 4].map((dy) => (
-              <ellipse key={`h${dy}`} cx="110" cy={168 + dy} rx={42 - Math.abs(dy) * 2} ry="0.4" fill="none" />
+              <ellipse
+                key={`h${dy}`}
+                cx="110"
+                cy={168 + dy}
+                rx={42 - Math.abs(dy) * 2}
+                ry="0.4"
+                fill="none"
+              />
             ))}
           </g>
           {/* Ceramic pad center */}
           <rect x="98" y="164" width="24" height="4" rx="1" fill="#fef3c7" opacity="0.7" />
 
           {/* Glass beaker */}
-          <ellipse cx="110" cy="238" rx="42" ry="5" fill="#000" opacity="0.3" filter="url(#softShadow)" />
+          <ellipse
+            cx="110"
+            cy="238"
+            rx="42"
+            ry="5"
+            fill="#000"
+            opacity="0.3"
+            filter="url(#softShadow)"
+          />
           <path
             d="M78 110 L142 110 L138 158 Q138 168 122 168 L98 168 Q82 168 82 158 Z"
             fill="url(#beakerG)"
@@ -783,7 +936,15 @@ function MeltingScene({
           {/* Beaker highlights */}
           <path d="M85 116 L85 156" stroke="#fff" strokeWidth="1.2" opacity="0.7" />
           <path d="M132 118 L134 150" stroke="#fff" strokeWidth="0.8" opacity="0.4" />
-          <ellipse cx="110" cy="110" rx="32" ry="3.5" fill="none" stroke="#475569" strokeWidth="0.8" />
+          <ellipse
+            cx="110"
+            cy="110"
+            rx="32"
+            ry="3.5"
+            fill="none"
+            stroke="#475569"
+            strokeWidth="0.8"
+          />
 
           {/* Sample contents */}
           <g clipPath="url(#beakerClip)">
@@ -800,13 +961,26 @@ function MeltingScene({
                   const y = 158 - ((i / 8) | 0) * 4;
                   const op = sugarState === "melting" ? 0.55 : 0.9;
                   return (
-                    <circle key={i} cx={x} cy={y} r="2.5" fill="#fef9c3" stroke="#fde68a" strokeWidth="0.4" opacity={op} />
+                    <circle
+                      key={i}
+                      cx={x}
+                      cy={y}
+                      r="2.5"
+                      fill="#fef9c3"
+                      stroke="#fde68a"
+                      strokeWidth="0.4"
+                      opacity={op}
+                    />
                   );
                 })}
               </g>
             ) : sugarState === "molten" ? (
               <g>
-                <path d="M84 148 Q110 142 136 148 L136 166 L84 166 Z" fill="url(#molten)" opacity="0.95" />
+                <path
+                  d="M84 148 Q110 142 136 148 L136 166 L84 166 Z"
+                  fill="url(#molten)"
+                  opacity="0.95"
+                />
                 <ellipse cx="110" cy="148" rx="24" ry="2.5" fill="#fef9c3" opacity="0.7" />
               </g>
             ) : sugarState === "browning" ? (
@@ -815,7 +989,13 @@ function MeltingScene({
                 <ellipse cx="110" cy="146" rx="24" ry="2.5" fill="#b45309" opacity="0.8" />
                 {[0, 1, 2, 3].map((i) => (
                   <circle key={i} cx={92 + i * 12} cy={152 + (i % 2) * 4} r="1.8" fill="#78350f">
-                    <animate attributeName="cy" values={`${152};${148};${152}`} dur="0.9s" begin={`${i * 0.2}s`} repeatCount="indefinite" />
+                    <animate
+                      attributeName="cy"
+                      values={`${152};${148};${152}`}
+                      dur="0.9s"
+                      begin={`${i * 0.2}s`}
+                      repeatCount="indefinite"
+                    />
                   </circle>
                 ))}
               </g>
@@ -823,10 +1003,20 @@ function MeltingScene({
               <g>
                 {/* Charred black carbon */}
                 <path d="M84 144 Q110 138 136 144 L136 166 L84 166 Z" fill="#0c0a09" />
-                <path d="M88 148 Q100 142 112 146 Q124 150 134 145" stroke="#292524" strokeWidth="1.5" fill="none" />
+                <path
+                  d="M88 148 Q100 142 112 146 Q124 150 134 145"
+                  stroke="#292524"
+                  strokeWidth="1.5"
+                  fill="none"
+                />
                 {[0, 1, 2, 3, 4].map((i) => (
                   <circle key={i} cx={90 + i * 11} cy={150} r={1.5 + (i % 2)} fill="#1c1917">
-                    <animate attributeName="cy" values="150;146;150" dur={`${0.7 + i * 0.1}s`} repeatCount="indefinite" />
+                    <animate
+                      attributeName="cy"
+                      values="150;146;150"
+                      dur={`${0.7 + i * 0.1}s`}
+                      repeatCount="indefinite"
+                    />
                   </circle>
                 ))}
               </g>
@@ -838,9 +1028,27 @@ function MeltingScene({
             <g opacity="0.75">
               {[0, 1, 2, 3].map((i) => (
                 <circle key={i} cx={95 + i * 11} cy="105" r={4 + (i % 2)} fill="#57534e">
-                  <animate attributeName="cy" values="105;40" dur="2.6s" begin={`${i * 0.5}s`} repeatCount="indefinite" />
-                  <animate attributeName="opacity" values="0;0.7;0" dur="2.6s" begin={`${i * 0.5}s`} repeatCount="indefinite" />
-                  <animate attributeName="r" values={`${3 + i};${8 + i}`} dur="2.6s" begin={`${i * 0.5}s`} repeatCount="indefinite" />
+                  <animate
+                    attributeName="cy"
+                    values="105;40"
+                    dur="2.6s"
+                    begin={`${i * 0.5}s`}
+                    repeatCount="indefinite"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    values="0;0.7;0"
+                    dur="2.6s"
+                    begin={`${i * 0.5}s`}
+                    repeatCount="indefinite"
+                  />
+                  <animate
+                    attributeName="r"
+                    values={`${3 + i};${8 + i}`}
+                    dur="2.6s"
+                    begin={`${i * 0.5}s`}
+                    repeatCount="indefinite"
+                  />
                 </circle>
               ))}
             </g>
@@ -882,13 +1090,27 @@ function MeltingScene({
             {/* Roaring glow for NaCl */}
             {isIonic && (
               <circle cx="0" cy="-10" r="26" fill="#818cf8" opacity="0.25">
-                <animate attributeName="opacity" values="0.15;0.4;0.15" dur="0.5s" repeatCount="indefinite" />
+                <animate
+                  attributeName="opacity"
+                  values="0.15;0.4;0.15"
+                  dur="0.5s"
+                  repeatCount="indefinite"
+                />
               </circle>
             )}
           </g>
         )}
         {/* Barrel */}
-        <rect x="-5" y="20" width="10" height="26" rx="1" fill="url(#metal)" stroke="#0f172a" strokeWidth="0.5" />
+        <rect
+          x="-5"
+          y="20"
+          width="10"
+          height="26"
+          rx="1"
+          fill="url(#metal)"
+          stroke="#0f172a"
+          strokeWidth="0.5"
+        />
         <rect x="-6" y="18" width="12" height="4" rx="1" fill="#0f172a" />
         {/* Base */}
         <polygon points="-18,46 18,46 14,58 -14,58" fill="#334155" />
@@ -946,7 +1168,9 @@ function ConductivityScene({
       <g transform="translate(10 10)">
         <rect width="40" height="18" rx="3" fill="#1e293b" />
         <rect x="4" y="4" width="32" height="10" fill="#f59e0b" />
-        <text x="20" y="12" textAnchor="middle" fontSize="7" fontWeight="700" fill="#1e293b">9V</text>
+        <text x="20" y="12" textAnchor="middle" fontSize="7" fontWeight="700" fill="#1e293b">
+          9V
+        </text>
       </g>
 
       {/* Bulb */}
@@ -961,7 +1185,12 @@ function ConductivityScene({
         />
         {bulbOn && (
           <circle cx="0" cy="0" r="22" fill="#fde68a" opacity="0.55">
-            <animate attributeName="opacity" values="0.3;0.7;0.3" dur="0.9s" repeatCount="indefinite" />
+            <animate
+              attributeName="opacity"
+              values="0.3;0.7;0.3"
+              dur="0.9s"
+              repeatCount="indefinite"
+            />
           </circle>
         )}
         <rect x="-5" y="12" width="10" height="4" fill="#9ca3af" />
@@ -1057,12 +1286,14 @@ function ConductivityScene({
             {isIonic ? (
               <g fontSize="8" fontWeight="700" textAnchor="middle">
                 {[...Array(6)].map((_, i) => {
-                  const x = 20 + (i * 18) % 100;
+                  const x = 20 + ((i * 18) % 100);
                   const y = 70 + ((i * 27) % 60);
                   return (
                     <g key={`na-${i}`}>
                       <circle cx={x} cy={y} r="6" fill="#f43f5e" opacity="0.85" />
-                      <text x={x} y={y + 3} fill="#fff">Na⁺</text>
+                      <text x={x} y={y + 3} fill="#fff">
+                        Na⁺
+                      </text>
                       {switchOn && (
                         <animate
                           attributeName="opacity"
@@ -1075,12 +1306,14 @@ function ConductivityScene({
                   );
                 })}
                 {[...Array(6)].map((_, i) => {
-                  const x = 30 + (i * 21) % 90;
+                  const x = 30 + ((i * 21) % 90);
                   const y = 88 + ((i * 19) % 50);
                   return (
                     <g key={`cl-${i}`}>
                       <circle cx={x} cy={y} r="7" fill="#10b981" opacity="0.85" />
-                      <text x={x} y={y + 3} fill="#fff">Cl⁻</text>
+                      <text x={x} y={y + 3} fill="#fff">
+                        Cl⁻
+                      </text>
                     </g>
                   );
                 })}
@@ -1088,7 +1321,12 @@ function ConductivityScene({
                 {switchOn && (
                   <g stroke="#3b82f6" strokeWidth="1" fill="none" opacity="0.6">
                     <path d="M30 100 Q70 90 110 100">
-                      <animate attributeName="opacity" values="0;0.9;0" dur="0.7s" repeatCount="indefinite" />
+                      <animate
+                        attributeName="opacity"
+                        values="0;0.9;0"
+                        dur="0.7s"
+                        repeatCount="indefinite"
+                      />
                     </path>
                   </g>
                 )}
@@ -1100,7 +1338,14 @@ function ConductivityScene({
                   const y = 70 + ((i * 23) % 70);
                   return (
                     <g key={i}>
-                      <circle cx={x} cy={y} r="7" fill="#fde68a" stroke="#d97706" strokeWidth="0.8" />
+                      <circle
+                        cx={x}
+                        cy={y}
+                        r="7"
+                        fill="#fde68a"
+                        stroke="#d97706"
+                        strokeWidth="0.8"
+                      />
                       <text
                         x={x}
                         y={y + 2.5}

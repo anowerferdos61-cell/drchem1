@@ -29,7 +29,10 @@ interface Props {
   onBack: () => void;
 }
 
-const REAGENT_COLORS: Record<ReagentId, { active: string; faded: string; name: string; nameBn: string }> = {
+const REAGENT_COLORS: Record<
+  ReagentId,
+  { active: string; faded: string; name: string; nameBn: string }
+> = {
   br2: {
     active: "#B63A1D",
     faded: "rgba(182,58,29,0)",
@@ -45,9 +48,9 @@ const REAGENT_COLORS: Record<ReagentId, { active: string; faded: string; name: s
 };
 
 type TubeState = {
-  drops: number;      // total drops added
+  drops: number; // total drops added
   reagent: ReagentId | null;
-  reacted: boolean;   // decolorized (unsaturated)
+  reacted: boolean; // decolorized (unsaturated)
 };
 
 const INITIAL_TUBE: TubeState = { drops: 0, reagent: null, reacted: false };
@@ -167,9 +170,7 @@ export default function UnsaturationTestLab({ onBack }: Props) {
                       className="inline-block h-4 w-4 rounded-full border border-black/20 shadow-inner"
                       style={{ background: REAGENT_COLORS[r].active }}
                     />
-                    <span className="text-xs font-bold">
-                      {r === "br2" ? "Br₂ / H₂O" : "KMnO₄"}
-                    </span>
+                    <span className="text-xs font-bold">{r === "br2" ? "Br₂ / H₂O" : "KMnO₄"}</span>
                   </div>
                   <div className="mt-1 text-[10px] text-muted-foreground">
                     {r === "br2" ? "ব্রোমিন পানি পরীক্ষা" : "বেয়ার পরীক্ষা"}
@@ -219,7 +220,9 @@ export default function UnsaturationTestLab({ onBack }: Props) {
           </Card>
 
           <Card className="p-3">
-            <div className="mb-2 text-xs font-bold uppercase text-muted-foreground">Steps · ধাপ</div>
+            <div className="mb-2 text-xs font-bold uppercase text-muted-foreground">
+              Steps · ধাপ
+            </div>
             <ul className="space-y-1.5">
               {steps.map((s) => (
                 <li key={s.id} className="flex items-start gap-2 text-xs">
@@ -308,18 +311,18 @@ export default function UnsaturationTestLab({ onBack }: Props) {
                 </span>
               ) : zoomTube === "hexane" ? (
                 <>
-                  <b>Hexane (C₆H₁₄)</b> এ শুধুমাত্র <b>σ</b>-বন্ড আছে; π-বন্ড না থাকায়
-                  Br₂ বা KMnO₄ কোনটির সাথেই বিক্রিয়া করে না → রঙ অপরিবর্তিত।
+                  <b>Hexane (C₆H₁₄)</b> এ শুধুমাত্র <b>σ</b>-বন্ড আছে; π-বন্ড না থাকায় Br₂ বা KMnO₄
+                  কোনটির সাথেই বিক্রিয়া করে না → রঙ অপরিবর্তিত।
                 </>
               ) : reagent === "br2" ? (
                 <>
-                  <b>C₂H₄ + Br₂ → CH₂Br–CH₂Br</b> — π-বন্ড ভেঙে দুই কার্বনে Br যুক্ত
-                  হয়, ব্রোমিনের বাদামী রঙ বর্ণহীন হয়ে যায়।
+                  <b>C₂H₄ + Br₂ → CH₂Br–CH₂Br</b> — π-বন্ড ভেঙে দুই কার্বনে Br যুক্ত হয়, ব্রোমিনের
+                  বাদামী রঙ বর্ণহীন হয়ে যায়।
                 </>
               ) : (
                 <>
-                  <b>3 C₂H₄ + 2 KMnO₄ + 4 H₂O → 3 CH₂(OH)–CH₂(OH) + 2 MnO₂ + 2 KOH</b>
-                  — বেগুনি রঙ হালকা গোলাপি/বর্ণহীন হয়ে যায়।
+                  <b>3 C₂H₄ + 2 KMnO₄ + 4 H₂O → 3 CH₂(OH)–CH₂(OH) + 2 MnO₂ + 2 KOH</b>— বেগুনি রঙ
+                  হালকা গোলাপি/বর্ণহীন হয়ে যায়।
                 </>
               )}
             </div>
@@ -466,7 +469,9 @@ function ObsRow({
             অসম্পৃক্ত
           </Badge>
         ) : (
-          <Badge variant="secondary" className="text-[10px]">সম্পৃক্ত</Badge>
+          <Badge variant="secondary" className="text-[10px]">
+            সম্পৃক্ত
+          </Badge>
         )}
       </td>
     </tr>
@@ -520,7 +525,14 @@ function MechanismView({
               </g>
             );
           })}
-          <text x={160} y={40} textAnchor="middle" fontSize={12} fill="currentColor" fontWeight={700}>
+          <text
+            x={160}
+            y={40}
+            textAnchor="middle"
+            fontSize={12}
+            fill="currentColor"
+            fontWeight={700}
+          >
             Hexane · সব σ-বন্ড
           </text>
           <text x={160} y={140} textAnchor="middle" fontSize={10} fill="#64748b">
@@ -542,7 +554,9 @@ function MechanismView({
           transition={{ duration: 0.8 }}
         >
           <circle cx="120" cy="100" r="18" fill="#1e293b" />
-          <text x="120" y="105" textAnchor="middle" fill="white" fontWeight={700}>C</text>
+          <text x="120" y="105" textAnchor="middle" fill="white" fontWeight={700}>
+            C
+          </text>
         </motion.g>
         <motion.g
           initial={{ x: 0 }}
@@ -550,7 +564,9 @@ function MechanismView({
           transition={{ duration: 0.8 }}
         >
           <circle cx="200" cy="100" r="18" fill="#1e293b" />
-          <text x="200" y="105" textAnchor="middle" fill="white" fontWeight={700}>C</text>
+          <text x="200" y="105" textAnchor="middle" fill="white" fontWeight={700}>
+            C
+          </text>
         </motion.g>
         {/* σ-bond */}
         <line x1="138" y1="100" x2="182" y2="100" stroke="#334155" strokeWidth={3} />
@@ -575,9 +591,18 @@ function MechanismView({
           [225, 130],
         ].map(([x, y], i) => (
           <g key={i}>
-            <line x1={120 + (i > 1 ? 80 : 0)} y1="100" x2={x} y2={y} stroke="#94a3b8" strokeWidth={1.5} />
+            <line
+              x1={120 + (i > 1 ? 80 : 0)}
+              y1="100"
+              x2={x}
+              y2={y}
+              stroke="#94a3b8"
+              strokeWidth={1.5}
+            />
             <circle cx={x} cy={y} r="9" fill="#e2e8f0" stroke="#94a3b8" />
-            <text x={x} y={y + 3} textAnchor="middle" fontSize={9} fontWeight={700}>H</text>
+            <text x={x} y={y + 3} textAnchor="middle" fontSize={9} fontWeight={700}>
+              H
+            </text>
           </g>
         ))}
         {/* Incoming reagent atoms (Br or OH) */}
@@ -605,7 +630,14 @@ function MechanismView({
             </motion.g>
           </>
         )}
-        <text x="160" y="180" textAnchor="middle" fontSize={11} fontWeight={700} fill="currentColor">
+        <text
+          x="160"
+          y="180"
+          textAnchor="middle"
+          fontSize={11}
+          fontWeight={700}
+          fill="currentColor"
+        >
           {reacted
             ? reagent === "br2"
               ? "CH₂Br–CH₂Br (বর্ণহীন)"
@@ -625,39 +657,32 @@ function TheoryContent() {
       <section>
         <h3 className="text-base font-bold">অসম্পৃক্ততা পরীক্ষা কী?</h3>
         <p className="mt-1 text-muted-foreground">
-          হাইড্রোকার্বনে দ্বি-বন্ধন (C=C) বা ত্রি-বন্ধন (C≡C) অর্থাৎ π-বন্ধন
-          আছে কিনা তা জানার জন্য ব্রোমিন পানি (Br₂/H₂O) ও বেয়ার বিকারক (Baeyer's,
-          ক্ষারীয় KMnO₄) ব্যবহার করা হয়।
+          হাইড্রোকার্বনে দ্বি-বন্ধন (C=C) বা ত্রি-বন্ধন (C≡C) অর্থাৎ π-বন্ধন আছে কিনা তা জানার জন্য
+          ব্রোমিন পানি (Br₂/H₂O) ও বেয়ার বিকারক (Baeyer's, ক্ষারীয় KMnO₄) ব্যবহার করা হয়।
         </p>
       </section>
 
       <section>
         <h4 className="font-semibold">১. ব্রোমিন পানি পরীক্ষা (Bromine Water Test)</h4>
         <pre className="mt-1 whitespace-pre-wrap rounded bg-muted p-2 text-xs">
-CH₂=CH₂ + Br₂ → CH₂Br–CH₂Br  (বর্ণহীন)
-CH≡CH + 2 Br₂ → CHBr₂–CHBr₂
-
-Alkane (হেক্সেন):  C₆H₁₄ + Br₂ →  কোনো বিক্রিয়া নেই (রঙ অপরিবর্তিত)
+          CH₂=CH₂ + Br₂ → CH₂Br–CH₂Br (বর্ণহীন) CH≡CH + 2 Br₂ → CHBr₂–CHBr₂ Alkane (হেক্সেন): C₆H₁₄
+          + Br₂ → কোনো বিক্রিয়া নেই (রঙ অপরিবর্তিত)
         </pre>
       </section>
 
       <section>
         <h4 className="font-semibold">২. বেয়ার পরীক্ষা (Baeyer's Test)</h4>
         <pre className="mt-1 whitespace-pre-wrap rounded bg-muted p-2 text-xs">
-3 CH₂=CH₂ + 2 KMnO₄ + 4 H₂O →
-      3 CH₂(OH)–CH₂(OH) + 2 MnO₂ + 2 KOH
-
-বেগুনি KMnO₄ → হালকা গোলাপি / বর্ণহীন (অসম্পৃক্ত)
-Hexane এ কোনো পরিবর্তন নেই।
+          3 CH₂=CH₂ + 2 KMnO₄ + 4 H₂O → 3 CH₂(OH)–CH₂(OH) + 2 MnO₂ + 2 KOH বেগুনি KMnO₄ → হালকা
+          গোলাপি / বর্ণহীন (অসম্পৃক্ত) Hexane এ কোনো পরিবর্তন নেই।
         </pre>
       </section>
 
       <section>
         <h4 className="font-semibold">কেন Alkane বিক্রিয়া করে না?</h4>
         <p className="mt-1 text-muted-foreground">
-          Alkane (সম্পৃক্ত) এ শুধুমাত্র শক্তিশালী σ-বন্ধন আছে। এই বন্ধন
-          সাধারণ তাপমাত্রায় Br₂ বা KMnO₄ দ্বারা ভাঙা যায় না, তাই কোনো রঙ
-          পরিবর্তন হয় না।
+          Alkane (সম্পৃক্ত) এ শুধুমাত্র শক্তিশালী σ-বন্ধন আছে। এই বন্ধন সাধারণ তাপমাত্রায় Br₂ বা
+          KMnO₄ দ্বারা ভাঙা যায় না, তাই কোনো রঙ পরিবর্তন হয় না।
         </p>
       </section>
 
@@ -674,13 +699,19 @@ Hexane এ কোনো পরিবর্তন নেই।
             </thead>
             <tbody>
               <tr className="border-b">
-                <td className="p-1">π-বন্ড</td><td className="p-1">নেই</td><td className="p-1">আছে</td>
+                <td className="p-1">π-বন্ড</td>
+                <td className="p-1">নেই</td>
+                <td className="p-1">আছে</td>
               </tr>
               <tr className="border-b">
-                <td className="p-1">Br₂/H₂O</td><td className="p-1">অপরিবর্তিত</td><td className="p-1">বর্ণহীন</td>
+                <td className="p-1">Br₂/H₂O</td>
+                <td className="p-1">অপরিবর্তিত</td>
+                <td className="p-1">বর্ণহীন</td>
               </tr>
               <tr>
-                <td className="p-1">KMnO₄</td><td className="p-1">অপরিবর্তিত</td><td className="p-1">হালকা গোলাপি</td>
+                <td className="p-1">KMnO₄</td>
+                <td className="p-1">অপরিবর্তিত</td>
+                <td className="p-1">হালকা গোলাপি</td>
               </tr>
             </tbody>
           </table>

@@ -44,11 +44,7 @@ function NormalScene({
   const glow = connected ? Math.min(1, voltage / 1.1) : 0;
 
   return (
-    <svg
-      viewBox="0 0 640 440"
-      className="h-full w-full"
-      preserveAspectRatio="xMidYMid meet"
-    >
+    <svg viewBox="0 0 640 440" className="h-full w-full" preserveAspectRatio="xMidYMid meet">
       <defs>
         <linearGradient id="benchGrad" x1="0" x2="0" y1="0" y2="1">
           <stop offset="0" stopColor="#1e293b" />
@@ -174,7 +170,16 @@ function NormalScene({
         {/* solution surface highlight */}
         <ellipse cx="175" cy="240" rx="80" ry="4" fill="#f8fafc" opacity="0.4" />
         {/* Zinc electrode */}
-        <rect x="165" y="150" width="20" height="180" fill="url(#zincMetal)" stroke="#475569" strokeWidth="1" rx="2" />
+        <rect
+          x="165"
+          y="150"
+          width="20"
+          height="180"
+          fill="url(#zincMetal)"
+          stroke="#475569"
+          strokeWidth="1"
+          rx="2"
+        />
         <rect x="163" y="150" width="24" height="6" fill="#64748b" rx="1" />
         <text x="175" y="380" textAnchor="middle" fontSize="12" fontWeight="700" fill="#e2e8f0">
           Anode (Zn)
@@ -201,7 +206,16 @@ function NormalScene({
         />
         <ellipse cx="465" cy="240" rx="80" ry="4" fill="#dbeafe" opacity="0.5" />
         {/* Copper electrode */}
-        <rect x="455" y="150" width="20" height="180" fill="url(#copperMetal)" stroke="#78350f" strokeWidth="1" rx="2" />
+        <rect
+          x="455"
+          y="150"
+          width="20"
+          height="180"
+          fill="url(#copperMetal)"
+          stroke="#78350f"
+          strokeWidth="1"
+          rx="2"
+        />
         <rect x="453" y="150" width="24" height="6" fill="#78350f" rx="1" />
         <text x="465" y="380" textAnchor="middle" fontSize="12" fontWeight="700" fill="#e2e8f0">
           Cathode (Cu)
@@ -225,20 +239,46 @@ function NormalScene({
             strokeWidth="3"
             strokeLinecap="round"
           />
-          <text x="45" y="45" fontSize="10" fill="#94a3b8">Wire</text>
+          <text x="45" y="45" fontSize="10" fill="#94a3b8">
+            Wire
+          </text>
           {/* Disconnected bulb sitting up top */}
           <g transform="translate(300 40)">
             <circle cx="20" cy="20" r="16" fill="#1e293b" stroke="#475569" strokeWidth="2" />
-            <path d="M 15 14 L 15 24 M 20 12 L 20 26 M 25 14 L 25 24" stroke="#475569" strokeWidth="1.5" fill="none" />
+            <path
+              d="M 15 14 L 15 24 M 20 12 L 20 26 M 25 14 L 25 24"
+              stroke="#475569"
+              strokeWidth="1.5"
+              fill="none"
+            />
             <text x="20" y="60" textAnchor="middle" fontSize="10" fill="#94a3b8">
               Bulb (off)
             </text>
           </g>
           {/* Voltmeter idle */}
           <g transform="translate(500 30)">
-            <rect x="0" y="0" width="90" height="55" rx="6" fill="#0f172a" stroke="#334155" strokeWidth="1.5" />
-            <text x="45" y="18" textAnchor="middle" fontSize="9" fill="#64748b">VOLTMETER</text>
-            <text x="45" y="40" textAnchor="middle" fontSize="16" fontFamily="ui-monospace,monospace" fill="#475569" fontWeight="700">
+            <rect
+              x="0"
+              y="0"
+              width="90"
+              height="55"
+              rx="6"
+              fill="#0f172a"
+              stroke="#334155"
+              strokeWidth="1.5"
+            />
+            <text x="45" y="18" textAnchor="middle" fontSize="9" fill="#64748b">
+              VOLTMETER
+            </text>
+            <text
+              x="45"
+              y="40"
+              textAnchor="middle"
+              fontSize="16"
+              fontFamily="ui-monospace,monospace"
+              fill="#475569"
+              fontWeight="700"
+            >
               -- V
             </text>
           </g>
@@ -256,7 +296,13 @@ function NormalScene({
             strokeWidth="3.5"
             strokeLinecap="round"
           >
-            <animate attributeName="stroke-dasharray" from="0 400" to="400 0" dur="0.6s" fill="freeze" />
+            <animate
+              attributeName="stroke-dasharray"
+              from="0 400"
+              to="400 0"
+              dur="0.6s"
+              fill="freeze"
+            />
           </path>
           {/* Right segment: from bulb to Cu */}
           <path
@@ -266,7 +312,13 @@ function NormalScene({
             strokeWidth="3.5"
             strokeLinecap="round"
           >
-            <animate attributeName="stroke-dasharray" from="0 400" to="400 0" dur="0.6s" fill="freeze" />
+            <animate
+              attributeName="stroke-dasharray"
+              from="0 400"
+              to="400 0"
+              dur="0.6s"
+              fill="freeze"
+            />
           </path>
 
           {/* Direction arrows on wire (e- flow Zn → Cu, i.e. left → right along top) */}
@@ -323,9 +375,28 @@ function NormalScene({
 
           {/* Voltmeter — live */}
           <g transform="translate(500 30)">
-            <rect x="0" y="0" width="90" height="55" rx="6" fill="#022c22" stroke="#10b981" strokeWidth="1.5" />
-            <text x="45" y="18" textAnchor="middle" fontSize="9" fill="#6ee7b7">VOLTMETER</text>
-            <text x="45" y="42" textAnchor="middle" fontSize="18" fontFamily="ui-monospace,monospace" fill="#34d399" fontWeight="800">
+            <rect
+              x="0"
+              y="0"
+              width="90"
+              height="55"
+              rx="6"
+              fill="#022c22"
+              stroke="#10b981"
+              strokeWidth="1.5"
+            />
+            <text x="45" y="18" textAnchor="middle" fontSize="9" fill="#6ee7b7">
+              VOLTMETER
+            </text>
+            <text
+              x="45"
+              y="42"
+              textAnchor="middle"
+              fontSize="18"
+              fontFamily="ui-monospace,monospace"
+              fill="#34d399"
+              fontWeight="800"
+            >
               {voltage.toFixed(2)} V
             </text>
           </g>
@@ -374,7 +445,14 @@ function MicroScene({ depositThick }: { depositThick: number }) {
         <text x="160" y="26" textAnchor="middle" fontSize="13" fontWeight="800" fill="#e2e8f0">
           Zinc Anode · Oxidation
         </text>
-        <text x="160" y="42" textAnchor="middle" fontSize="10" fill="#7dd3fc" fontFamily="ui-monospace,monospace">
+        <text
+          x="160"
+          y="42"
+          textAnchor="middle"
+          fontSize="10"
+          fill="#7dd3fc"
+          fontFamily="ui-monospace,monospace"
+        >
           Zn → Zn²⁺ + 2e⁻
         </text>
 
@@ -386,7 +464,9 @@ function MicroScene({ depositThick }: { depositThick: number }) {
 
         {/* Solution area */}
         <rect x="150" y="60" width="160" height="360" fill="#1e293b" opacity="0.4" />
-        <text x="230" y="80" textAnchor="middle" fontSize="10" fill="#94a3b8">ZnSO₄ solution</text>
+        <text x="230" y="80" textAnchor="middle" fontSize="10" fill="#94a3b8">
+          ZnSO₄ solution
+        </text>
 
         {/* Zn atoms dissolving — cycle 3 atoms with delayed animation */}
         {[0, 1.3, 2.6].map((delay, i) => (
@@ -470,8 +550,16 @@ function MicroScene({ depositThick }: { depositThick: number }) {
         ))}
 
         {/* wire out — top */}
-        <path d="M 90 60 L 90 20 L 320 20" stroke="#f97316" strokeWidth="3" fill="none" strokeLinecap="round" />
-        <text x="60" y="55" fontSize="9" fill="#fdba74">to wire →</text>
+        <path
+          d="M 90 60 L 90 20 L 320 20"
+          stroke="#f97316"
+          strokeWidth="3"
+          fill="none"
+          strokeLinecap="round"
+        />
+        <text x="60" y="55" fontSize="9" fill="#fdba74">
+          to wire →
+        </text>
       </g>
 
       {/* ── RIGHT: Cu reduction ── */}
@@ -479,17 +567,34 @@ function MicroScene({ depositThick }: { depositThick: number }) {
         <text x="480" y="26" textAnchor="middle" fontSize="13" fontWeight="800" fill="#e2e8f0">
           Copper Cathode · Reduction
         </text>
-        <text x="480" y="42" textAnchor="middle" fontSize="10" fill="#fbbf24" fontFamily="ui-monospace,monospace">
+        <text
+          x="480"
+          y="42"
+          textAnchor="middle"
+          fontSize="10"
+          fill="#fbbf24"
+          fontFamily="ui-monospace,monospace"
+        >
           Cu²⁺ + 2e⁻ → Cu
         </text>
 
         {/* wire in - top */}
-        <path d="M 320 20 L 550 20 L 550 60" stroke="#f97316" strokeWidth="3" fill="none" strokeLinecap="round" />
-        <text x="570" y="55" fontSize="9" fill="#fdba74">← wire</text>
+        <path
+          d="M 320 20 L 550 20 L 550 60"
+          stroke="#f97316"
+          strokeWidth="3"
+          fill="none"
+          strokeLinecap="round"
+        />
+        <text x="570" y="55" fontSize="9" fill="#fdba74">
+          ← wire
+        </text>
 
         {/* Solution */}
         <rect x="330" y="60" width="160" height="360" fill="#1e3a8a" opacity="0.45" />
-        <text x="410" y="80" textAnchor="middle" fontSize="10" fill="#bfdbfe">CuSO₄ solution</text>
+        <text x="410" y="80" textAnchor="middle" fontSize="10" fill="#bfdbfe">
+          CuSO₄ solution
+        </text>
 
         {/* Copper slab — grows with deposit */}
         <rect
@@ -672,7 +777,6 @@ export default function DanielCellLab({ onBack }: Props) {
           </span>
         </Badge>
       }
-
       /* ── LEFT — theory + legend ── */
       info={
         <>
@@ -686,8 +790,8 @@ export default function DanielCellLab({ onBack }: Props) {
               </div>
             </div>
             <p className="px-3 py-2 text-lab-sm text-foreground/90">
-              জিংক ইলেকট্রোড ইলেকট্রন দান করে (অক্সিডেশন), কপার ইলেকট্রোড ইলেকট্রন গ্রহণ
-              করে (রিডাকশন)। ফলে বহিরাগত তারে e⁻ প্রবাহ = <b>বিদ্যুৎ</b>।
+              জিংক ইলেকট্রোড ইলেকট্রন দান করে (অক্সিডেশন), কপার ইলেকট্রোড ইলেকট্রন গ্রহণ করে
+              (রিডাকশন)। ফলে বহিরাগত তারে e⁻ প্রবাহ = <b>বিদ্যুৎ</b>।
             </p>
           </Card>
 
@@ -708,7 +812,9 @@ export default function DanielCellLab({ onBack }: Props) {
               </div>
             </div>
             <div className="rounded-md border-2 border-amber-400/60 bg-amber-50 p-2 dark:bg-amber-950/30">
-              <div className="text-[10px] font-semibold text-amber-700 dark:text-amber-400">Net</div>
+              <div className="text-[10px] font-semibold text-amber-700 dark:text-amber-400">
+                Net
+              </div>
               <div className="font-mono text-lab-sm font-bold text-amber-700 dark:text-amber-300">
                 Zn + Cu²⁺ → Zn²⁺ + Cu
               </div>
@@ -723,7 +829,10 @@ export default function DanielCellLab({ onBack }: Props) {
               <Info className="h-3 w-3" /> Legend · সংকেত
             </div>
             <div className="space-y-1.5 text-lab-sm">
-              <LegendDot color="bg-sky-400 shadow-[0_0_6px_2px_rgba(56,189,248,0.6)]" label="e⁻ · ইলেকট্রন" />
+              <LegendDot
+                color="bg-sky-400 shadow-[0_0_6px_2px_rgba(56,189,248,0.6)]"
+                label="e⁻ · ইলেকট্রন"
+              />
               <LegendDot color="bg-slate-300" label="Zn / Zn²⁺" />
               <LegendDot color="bg-blue-600" label="Cu²⁺ (aq)" />
               <LegendDot color="bg-amber-500" label="Cu (s) — deposit" />
@@ -733,7 +842,6 @@ export default function DanielCellLab({ onBack }: Props) {
           </Card>
         </>
       }
-
       /* ── CENTER — scene ── */
       visual={
         <div
@@ -752,7 +860,6 @@ export default function DanielCellLab({ onBack }: Props) {
           </div>
         </div>
       }
-
       /* ── RIGHT — controls ── */
       controls={
         <>
@@ -818,41 +925,58 @@ export default function DanielCellLab({ onBack }: Props) {
             />
           </Card>
 
-          <Button variant="outline" size="sm" onClick={reset} className="h-8 w-full gap-1.5 text-lab-sm">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={reset}
+            className="h-8 w-full gap-1.5 text-lab-sm"
+          >
             <RotateCcw className="h-3.5 w-3.5" /> Reset Cell
           </Button>
         </>
       }
-
       /* ── Theory drawer ── */
       theory={
         <div className="space-y-3">
           <p>
-            <b>ড্যানিয়েল সেল (Daniel Cell):</b> ১৮৩৬ সালে ব্রিটিশ রসায়নবিদ
-            John Frederic Daniell তৈরি করেন এই গ্যালভানিক সেল, যা রাসায়নিক
-            শক্তিকে বৈদ্যুতিক শক্তিতে রূপান্তর করে।
+            <b>ড্যানিয়েল সেল (Daniel Cell):</b> ১৮৩৬ সালে ব্রিটিশ রসায়নবিদ John Frederic Daniell
+            তৈরি করেন এই গ্যালভানিক সেল, যা রাসায়নিক শক্তিকে বৈদ্যুতিক শক্তিতে রূপান্তর করে।
           </p>
-          <p><b>গঠন:</b></p>
+          <p>
+            <b>গঠন:</b>
+          </p>
           <ul>
-            <li>• <b>অ্যানোড:</b> ZnSO₄ দ্রবণে জিংক দণ্ড (ঋণাত্মক প্রান্ত)</li>
-            <li>• <b>ক্যাথোড:</b> CuSO₄ দ্রবণে কপার দণ্ড (ধনাত্মক প্রান্ত)</li>
-            <li>• <b>লবণ সেতু:</b> KCl জেলে ভরা U-নল — আয়ন প্রবাহ দিয়ে সার্কিট পূর্ণ করে</li>
-            <li>• <b>বহিরাগত তার:</b> ইলেকট্রন প্রবাহের পথ (Zn → Cu)</li>
+            <li>
+              • <b>অ্যানোড:</b> ZnSO₄ দ্রবণে জিংক দণ্ড (ঋণাত্মক প্রান্ত)
+            </li>
+            <li>
+              • <b>ক্যাথোড:</b> CuSO₄ দ্রবণে কপার দণ্ড (ধনাত্মক প্রান্ত)
+            </li>
+            <li>
+              • <b>লবণ সেতু:</b> KCl জেলে ভরা U-নল — আয়ন প্রবাহ দিয়ে সার্কিট পূর্ণ করে
+            </li>
+            <li>
+              • <b>বহিরাগত তার:</b> ইলেকট্রন প্রবাহের পথ (Zn → Cu)
+            </li>
           </ul>
-          <p><b>কার্যপ্রণালী:</b></p>
+          <p>
+            <b>কার্যপ্রণালী:</b>
+          </p>
           <ol>
             <li>1. Zn দণ্ড থেকে e⁻ মুক্ত হয়ে তারের মধ্য দিয়ে Cu দণ্ডে যায়।</li>
             <li>2. Zn²⁺ আয়ন ZnSO₄ দ্রবণে চলে যায় — Zn দণ্ড ক্ষয়প্রাপ্ত হয়।</li>
             <li>3. Cu²⁺ আয়ন Cu দণ্ডে e⁻ গ্রহণ করে Cu ধাতু হিসেবে জমা হয়।</li>
-            <li>4. লবণ সেতুর K⁺ ক্যাথোড দিকে, Cl⁻ অ্যানোড দিকে গিয়ে বৈদ্যুতিক নিরপেক্ষতা রক্ষা করে।</li>
+            <li>
+              4. লবণ সেতুর K⁺ ক্যাথোড দিকে, Cl⁻ অ্যানোড দিকে গিয়ে বৈদ্যুতিক নিরপেক্ষতা রক্ষা করে।
+            </li>
           </ol>
           <p>
             <b>EMF (তড়িৎচালক বল):</b> E°<sub>cell</sub> = E°<sub>cathode</sub> − E°<sub>anode</sub>
             = 0.34 − (−0.76) = <b>+1.10 V</b>
           </p>
           <p>
-            <b>প্রয়োগ:</b> ব্যাটারি, ইলেকট্রোপ্লেটিং, ধাতু নিষ্কাশন — সব
-            আধুনিক বৈদ্যুতিক শক্তির ভিত্তি এই সরল সেল।
+            <b>প্রয়োগ:</b> ব্যাটারি, ইলেকট্রোপ্লেটিং, ধাতু নিষ্কাশন — সব আধুনিক বৈদ্যুতিক শক্তির
+            ভিত্তি এই সরল সেল।
           </p>
         </div>
       }
@@ -870,15 +994,24 @@ function LegendDot({ color, label }: { color: string; label: string }) {
 }
 
 function Metric({
-  label, value, unit, gradient, icon: Icon,
+  label,
+  value,
+  unit,
+  gradient,
+  icon: Icon,
 }: {
-  label: string; value: string; unit: string; gradient: string;
+  label: string;
+  value: string;
+  unit: string;
+  gradient: string;
   icon: typeof Zap;
 }) {
   return (
     <div className="flex items-center justify-between rounded-md border bg-card p-2">
       <div className="flex items-center gap-2">
-        <div className={`grid h-6 w-6 place-items-center rounded bg-gradient-to-br ${gradient} text-white shadow-sm`}>
+        <div
+          className={`grid h-6 w-6 place-items-center rounded bg-gradient-to-br ${gradient} text-white shadow-sm`}
+        >
           <Icon className="h-3 w-3" />
         </div>
         <div>

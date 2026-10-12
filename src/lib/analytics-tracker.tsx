@@ -42,7 +42,10 @@ async function send(payload: Parameters<typeof trackEvent>[0]["data"]) {
   }
 }
 
-export function trackFeature(featureKey: string, metadata: Record<string, string | number | boolean | null> = {}) {
+export function trackFeature(
+  featureKey: string,
+  metadata: Record<string, string | number | boolean | null> = {},
+) {
   if (typeof window === "undefined") return;
   const anonId = getAnonId();
   void supabase.auth.getUser().then(({ data }) => {

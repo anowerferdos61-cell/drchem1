@@ -11,36 +11,29 @@ import { CheckCircle2, FlaskConical, Loader2, ShieldCheck, XCircle } from "lucid
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/lib/auth-store";
-import {
-  approvePayment,
-  listPendingPayments,
-  rejectPayment,
-} from "@/lib/subscription.functions";
+import { approvePayment, listPendingPayments, rejectPayment } from "@/lib/subscription.functions";
 import UserMenu from "@/components/auth/UserMenu";
 
 export const Route = createFileRoute("/admin/payments")({
   component: AdminPayments,
   head: () => ({
-    meta: [
-      { title: "Admin · Payments" },
-      { name: "robots", content: "noindex,nofollow" },
-    ],
+    meta: [{ title: "Admin · Payments" }, { name: "robots", content: "noindex,nofollow" }],
   }),
 });
 
 function AdminPayments() {
-  const { isAuthenticated, loading, roles } = useAuth();
+  const { isAuthenticated, loading, roles, rolesLoaded } = useAuth();
   const navigate = useNavigate();
   const isAdmin = roles.includes("admin");
 
   useEffect(() => {
-    if (loading) return;
+    if (loading || !rolesLoaded) return;
     if (!isAuthenticated) {
       void navigate({ to: "/login", search: { redirect: "/admin/payments" }, replace: true });
     } else if (!isAdmin) {
       void navigate({ to: "/app", replace: true });
     }
-  }, [loading, isAuthenticated, isAdmin, navigate]);
+  }, [loading, rolesLoaded, isAuthenticated, isAdmin, navigate]);
 
   const qc = useQueryClient();
   const listFn = useServerFn(listPendingPayments);

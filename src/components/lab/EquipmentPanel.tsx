@@ -154,7 +154,11 @@ export const NA2CO3_ITEMS: EquipmentItem[] = [
   { id: "watch_glass", label: "Watch Glass · ওয়াচ গ্লাস", icon: Circle },
   { id: "spatula", label: "Spatula · স্প্যাচুলা", icon: Minus },
   { id: "na2co3_solid", label: "Na₂CO₃ · সোডিয়াম কার্বনেট", icon: Sparkles },
-  { id: "volumetric_flask_250", label: "250 mL Volumetric Flask · আয়তনিক ফ্লাস্ক", icon: FlaskConical },
+  {
+    id: "volumetric_flask_250",
+    label: "250 mL Volumetric Flask · আয়তনিক ফ্লাস্ক",
+    icon: FlaskConical,
+  },
   { id: "funnel", label: "Funnel · ফানেল", icon: Filter },
   { id: "wash_bottle", label: "Wash Bottle (H₂O) · ওয়াশ বটল", icon: Droplet },
   { id: "stopper", label: "Stopper · ছিপি", icon: Box },
@@ -171,4 +175,3 @@ export const CUSO4_ITEMS: EquipmentItem[] = [
   { id: "desiccator", label: "Desiccator · ডেসিকেটর", icon: Circle },
   { id: "tongs", label: "Crucible Tongs · চিমটা", icon: Hammer },
 ];
-

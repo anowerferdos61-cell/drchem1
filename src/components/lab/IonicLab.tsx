@@ -127,8 +127,7 @@ export default function IonicLab({ onBack }: Props) {
       mistakesMade: mistakes.map((m) => m.message),
       currentChemicals: ["NaCl", "Sugar", "Naphthalene", "CuSO₄", "H₂O"],
       currentEquipment: equipment,
-      goal:
-        "Distinguish ionic vs covalent compounds via solubility, conductivity, melting point, and demonstrate electrolysis of CuSO₄.",
+      goal: "Distinguish ionic vs covalent compounds via solubility, conductivity, melting point, and demonstrate electrolysis of CuSO₄.",
     });
   }, [mode, steps, placed, mistakes]);
 
@@ -421,8 +420,7 @@ export default function IonicLab({ onBack }: Props) {
     if (!placed.meltingReady) return "Stage 3: Spatula + Bunsen burner বসাও.";
     if (SUB_LIST.some((s) => placed.meltResult[s] === null))
       return "প্রতিটি পদার্থকে তাপ দাও — কোনটি দ্রুত গলে?";
-    if (!placed.cellReady)
-      return "Stage 4: Electrolysis cell বসাও এবং CuSO₄ ঢালো.";
+    if (!placed.cellReady) return "Stage 4: Electrolysis cell বসাও এবং CuSO₄ ঢালো.";
     if (!placed.cuso4InCell) return "Cell-এ CuSO₄ দ্রবণ যোগ করো.";
     if (!placed.electrodesPlaced) return "Cu electrodes (cathode/anode) যোগ করো.";
     if (!placed.electrolysisRun) return "▶ Run electrolysis চাপ দাও — Cu²⁺ → Cu at cathode.";
@@ -615,10 +613,20 @@ export default function IonicLab({ onBack }: Props) {
                 </Button>
               </div>
               <div className="flex items-center gap-1 border-l pl-2">
-                <Button size="sm" variant="outline" onClick={reset} className="h-7 px-2 text-[10px]">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={reset}
+                  className="h-7 px-2 text-[10px]"
+                >
                   <RotateCcw className="mr-1 h-3 w-3" /> Reset
                 </Button>
-                <Button size="sm" onClick={submit} disabled={submitted} className="h-7 px-2 text-[10px]">
+                <Button
+                  size="sm"
+                  onClick={submit}
+                  disabled={submitted}
+                  className="h-7 px-2 text-[10px]"
+                >
                   <Trophy className="mr-1 h-3 w-3" /> Submit
                 </Button>
               </div>
@@ -693,7 +701,7 @@ function ModeToggle({ mode, setMode }: { mode: Mode; setMode: (m: Mode) => void 
 }
 
 function StatusCard({ placed }: { placed: IonicPlaced }) {
-  const sub = (["nacl", "sugar", "naphthalene", "cuso4"] as IonicSubstance[]);
+  const sub = ["nacl", "sugar", "naphthalene", "cuso4"] as IonicSubstance[];
   const solDone = sub.filter((s) => placed.solubility[s] !== null).length;
   const conDone = sub.filter((s) => placed.conductivityTested[s] !== null).length;
   const meltDone = sub.filter((s) => placed.meltResult[s] !== null).length;

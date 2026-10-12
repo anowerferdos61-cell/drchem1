@@ -12,7 +12,12 @@ const attemptInput = z.object({
   mode: z.string().max(24).default("student"),
   accuracy: z.number().min(0).max(100).default(0),
   grade: z.string().max(2).default("F"),
-  duration_sec: z.number().int().min(0).max(60 * 60 * 12).default(0),
+  duration_sec: z
+    .number()
+    .int()
+    .min(0)
+    .max(60 * 60 * 12)
+    .default(0),
   mistakes_count: z.number().int().min(0).max(9999).default(0),
   steps_completed: z.number().int().min(0).max(9999).default(0),
   steps_total: z.number().int().min(0).max(9999).default(0),
@@ -74,12 +79,25 @@ export const getMyStreak = createServerFn({ method: "GET" })
     );
   });
 
-function summarize(attempts: Array<{ experiment_id: string; accuracy: number; grade: string; created_at: string; duration_sec: number }>) {
+function summarize(
+  attempts: Array<{
+    experiment_id: string;
+    accuracy: number;
+    grade: string;
+    created_at: string;
+    duration_sec: number;
+  }>,
+) {
   const byExp = new Map<string, { count: number; best: number; bestGrade: string; last: string }>();
   for (const a of attempts) {
     const cur = byExp.get(a.experiment_id);
     if (!cur) {
-      byExp.set(a.experiment_id, { count: 1, best: a.accuracy, bestGrade: a.grade, last: a.created_at });
+      byExp.set(a.experiment_id, {
+        count: 1,
+        best: a.accuracy,
+        bestGrade: a.grade,
+        last: a.created_at,
+      });
     } else {
       cur.count += 1;
       if (a.accuracy > cur.best) {
@@ -94,9 +112,7 @@ function summarize(attempts: Array<{ experiment_id: string; accuracy: number; gr
   const avgAccuracy = totalAttempts
     ? Math.round(attempts.reduce((s, a) => s + Number(a.accuracy || 0), 0) / totalAttempts)
     : 0;
-  const totalMinutes = Math.round(
-    attempts.reduce((s, a) => s + (a.duration_sec || 0), 0) / 60,
-  );
+  const totalMinutes = Math.round(attempts.reduce((s, a) => s + (a.duration_sec || 0), 0) / 60);
   return {
     totalAttempts,
     uniqueLabs,
@@ -178,10 +194,7 @@ export const getClassProgress = createServerFn({ method: "POST" })
     }
 
     const [profilesRes, attemptsRes, streaksRes, testsRes] = await Promise.all([
-      supabase
-        .from("profiles")
-        .select("user_id, display_name, email")
-        .in("user_id", studentIds),
+      supabase.from("profiles").select("user_id, display_name, email").in("user_id", studentIds),
       supabase
         .from("lab_attempts")
         .select("student_id, experiment_id, accuracy, grade, created_at, duration_sec")
@@ -198,13 +211,16 @@ export const getClassProgress = createServerFn({ method: "POST" })
         .in("student_id", studentIds),
     ]);
 
-    const profiles = new Map(
-      (profilesRes.data ?? []).map((p) => [p.user_id, p]),
-    );
-    const streaks = new Map(
-      (streaksRes.data ?? []).map((s) => [s.user_id, s]),
-    );
-    type AttemptRow = { student_id: string; experiment_id: string; accuracy: number; grade: string; created_at: string; duration_sec: number };
+    const profiles = new Map((profilesRes.data ?? []).map((p) => [p.user_id, p]));
+    const streaks = new Map((streaksRes.data ?? []).map((s) => [s.user_id, s]));
+    type AttemptRow = {
+      student_id: string;
+      experiment_id: string;
+      accuracy: number;
+      grade: string;
+      created_at: string;
+      duration_sec: number;
+    };
     const attemptsBy = new Map<string, AttemptRow[]>();
     for (const a of (attemptsRes.data ?? []) as AttemptRow[]) {
       const arr = attemptsBy.get(a.student_id) ?? [];
@@ -212,7 +228,10 @@ export const getClassProgress = createServerFn({ method: "POST" })
       attemptsBy.set(a.student_id, arr);
     }
 
-    const testsBy = new Map<string, Array<{ mcq_score: number | null; mcq_total: number | null; cq_score: number | null }>>();
+    const testsBy = new Map<
+      string,
+      Array<{ mcq_score: number | null; mcq_total: number | null; cq_score: number | null }>
+    >();
     for (const t of testsRes.data ?? []) {
       const arr = testsBy.get(t.student_id) ?? [];
       arr.push(t);
@@ -223,10 +242,7 @@ export const getClassProgress = createServerFn({ method: "POST" })
       const attempts = attemptsBy.get(sid) ?? [];
       const uniqueLabs = new Set(attempts.map((a) => a.experiment_id)).size;
       const avgAccuracy = attempts.length
-        ? Math.round(
-            attempts.reduce((s, a) => s + Number(a.accuracy || 0), 0) /
-              attempts.length,
-          )
+        ? Math.round(attempts.reduce((s, a) => s + Number(a.accuracy || 0), 0) / attempts.length)
         : 0;
       const tests = testsBy.get(sid) ?? [];
       const testsDone = tests.length;

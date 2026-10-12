@@ -33,8 +33,7 @@ const SUGGESTIONS = [
 
 export default function ChatWindow() {
   const { conversations, activeId, ragMode } = useTutorState();
-  const active: TutorConversation | null =
-    conversations.find((c) => c.id === activeId) ?? null;
+  const active: TutorConversation | null = conversations.find((c) => c.id === activeId) ?? null;
 
   const [streaming, setStreaming] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
@@ -134,9 +133,7 @@ export default function ChatWindow() {
                 });
                 continue;
               }
-              const delta = parsed.choices?.[0]?.delta?.content as
-                | string
-                | undefined;
+              const delta = parsed.choices?.[0]?.delta?.content as string | undefined;
               if (delta) appendToMessage(convoId, assistant.id, delta);
             } catch {
               buf = line + "\n" + buf;
@@ -176,7 +173,9 @@ export default function ChatWindow() {
             </h1>
 
             <p className="mt-0.5 text-[10px] text-muted-foreground">
-              {ragMode ? "📚 বই থেকে উত্তর · Class 9-10" : "Chemistry Tutor · Class 9-10 · bilingual"}
+              {ragMode
+                ? "📚 বই থেকে উত্তর · Class 9-10"
+                : "Chemistry Tutor · Class 9-10 · bilingual"}
             </p>
           </div>
         </div>
@@ -185,7 +184,10 @@ export default function ChatWindow() {
             <span className="rounded-full bg-amber-500/15 px-2 py-1 font-semibold text-amber-700 dark:text-amber-400">
               আজ বাকি: {Number.isFinite(aiMessagesRemaining) ? aiMessagesRemaining : "∞"} / 5
             </span>
-            <Link to="/pricing" className="rounded-full bg-primary px-2 py-1 font-bold text-primary-foreground hover:opacity-90">
+            <Link
+              to="/pricing"
+              className="rounded-full bg-primary px-2 py-1 font-bold text-primary-foreground hover:opacity-90"
+            >
               Pro
             </Link>
           </div>
@@ -200,8 +202,7 @@ export default function ChatWindow() {
             </div>
             <h2 className="text-xl font-bold">Dr. Chem-কে জিজ্ঞেস করুন</h2>
             <p className="mt-2 max-w-md text-sm text-muted-foreground">
-              Class 9-10 ও HSC chemistry concept, equation, experiment — সব
-              ব্যাখ্যা পাবেন বাংলায়।
+              Class 9-10 ও HSC chemistry concept, equation, experiment — সব ব্যাখ্যা পাবেন বাংলায়।
             </p>
             <div className="mt-6 grid w-full max-w-xl grid-cols-1 gap-2 sm:grid-cols-2">
               {SUGGESTIONS.map((s) => (
@@ -225,12 +226,7 @@ export default function ChatWindow() {
         )}
       </div>
 
-      <Composer
-        onSend={send}
-        onStop={stop}
-        isStreaming={streaming}
-        ragMode={ragMode}
-      />
+      <Composer onSend={send} onStop={stop} isStreaming={streaming} ragMode={ragMode} />
     </div>
   );
 }

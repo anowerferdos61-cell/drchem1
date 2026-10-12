@@ -81,8 +81,7 @@ export default function SolubilityLab({ onBack }: Props) {
   }, [placement, data.examples]);
 
   const unplaced = data.examples.filter((e) => placement[e.id] === null);
-  const inBin = (bin: SolubilityStatus) =>
-    data.examples.filter((e) => placement[e.id] === bin);
+  const inBin = (bin: SolubilityStatus) => data.examples.filter((e) => placement[e.id] === bin);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
@@ -94,9 +93,7 @@ export default function SolubilityLab({ onBack }: Props) {
           </Button>
           <FlaskConical className="h-5 w-5 text-primary" />
           <div>
-            <h1 className="text-base font-bold leading-tight">
-              Solubility Rules · দ্রাব্যতা নীতি
-            </h1>
+            <h1 className="text-base font-bold leading-tight">Solubility Rules · দ্রাব্যতা নীতি</h1>
             <p className="text-[11px] text-muted-foreground">
               Drag salts into the correct beaker — Class 9-10 NCTB
             </p>
@@ -207,9 +204,7 @@ export default function SolubilityLab({ onBack }: Props) {
                 expected="Soluble"
                 isHover={hoverBin === "Soluble"}
                 canPlace={!!selectedCardId}
-                onClickPlace={() =>
-                  selectedCardId && place(selectedCardId, "Soluble")
-                }
+                onClickPlace={() => selectedCardId && place(selectedCardId, "Soluble")}
                 onDragOver={(e) => {
                   if (!dragId) return;
                   e.preventDefault();
@@ -232,9 +227,7 @@ export default function SolubilityLab({ onBack }: Props) {
                 expected="Insoluble"
                 isHover={hoverBin === "Insoluble"}
                 canPlace={!!selectedCardId}
-                onClickPlace={() =>
-                  selectedCardId && place(selectedCardId, "Insoluble")
-                }
+                onClickPlace={() => selectedCardId && place(selectedCardId, "Insoluble")}
                 onDragOver={(e) => {
                   if (!dragId) return;
                   e.preventDefault();
@@ -261,10 +254,7 @@ export default function SolubilityLab({ onBack }: Props) {
                   {data.examples.map((ex) => {
                     const ok = placement[ex.id] === ex.status;
                     return (
-                      <li
-                        key={ex.id}
-                        className="flex items-start gap-2 text-[11px]"
-                      >
+                      <li key={ex.id} className="flex items-start gap-2 text-[11px]">
                         {ok ? (
                           <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-600" />
                         ) : (
@@ -294,9 +284,7 @@ export default function SolubilityLab({ onBack }: Props) {
                   key={r.id}
                   className={`rounded-lg border p-2.5 text-xs leading-relaxed ${r.bg_color}`}
                 >
-                  <div className="prose prose-sm max-w-none text-xs">
-                    {md(r.statement)}
-                  </div>
+                  <div className="prose prose-sm max-w-none text-xs">{md(r.statement)}</div>
                 </div>
               ))}
             </div>
@@ -309,9 +297,7 @@ export default function SolubilityLab({ onBack }: Props) {
             <div className="space-y-2">
               {data.exceptions.map((ex, i) => (
                 <div key={i} className="rounded-md bg-white/60 p-2">
-                  <div className="text-[11px] font-semibold text-amber-900">
-                    {ex.ion}
-                  </div>
+                  <div className="text-[11px] font-semibold text-amber-900">{ex.ion}</div>
                   <div className="prose prose-sm max-w-none text-[11px] leading-relaxed text-amber-950">
                     {md(ex.rule)}
                   </div>
@@ -324,9 +310,7 @@ export default function SolubilityLab({ onBack }: Props) {
             <h3 className="mb-2 flex items-center gap-2 text-sm font-semibold text-purple-900">
               <Lightbulb className="h-4 w-4" /> Mnemonic · মনে রাখার সূত্র
             </h3>
-            <p className="text-[11px] leading-relaxed text-purple-950">
-              {data.mnemonic}
-            </p>
+            <p className="text-[11px] leading-relaxed text-purple-950">{data.mnemonic}</p>
           </Card>
         </div>
       </div>
@@ -384,9 +368,7 @@ function DropBin({
             : "border-slate-200 bg-white"
       }`}
     >
-      <span
-        className={`mb-1 rounded-full px-2 py-0.5 text-[10px] font-bold text-white ${accent}`}
-      >
+      <span className={`mb-1 rounded-full px-2 py-0.5 text-[10px] font-bold text-white ${accent}`}>
         {label_en}
       </span>
 
@@ -400,24 +382,12 @@ function DropBin({
           </linearGradient>
         </defs>
         {/* Liquid */}
-        <path
-          d="M28 70 L132 70 L132 160 Q132 172 120 172 L40 172 Q28 172 28 160 Z"
-          fill={liquid}
-        />
+        <path d="M28 70 L132 70 L132 160 Q132 172 120 172 L40 172 Q28 172 28 160 Z" fill={liquid} />
         {/* Dissolved (soluble) — small dots distributed in liquid */}
         {Array.from({ length: dissolvedParticles }).map((_, i) => {
           const x = 38 + ((i * 13) % 84);
           const y = 80 + ((i * 19) % 80);
-          return (
-            <circle
-              key={`d-${i}`}
-              cx={x}
-              cy={y}
-              r="1.6"
-              fill="#0369a1"
-              opacity="0.55"
-            />
-          );
+          return <circle key={`d-${i}`} cx={x} cy={y} r="1.6" fill="#0369a1" opacity="0.55" />;
         })}
         {/* Sediment (insoluble) — chunks piled at the bottom */}
         {Array.from({ length: sedimentParticles }).map((_, i) => (
@@ -441,12 +411,7 @@ function DropBin({
           strokeWidth="2"
         />
         {/* Spout */}
-        <path
-          d="M22 40 L10 32 L10 36 L21 44"
-          fill="none"
-          stroke="#475569"
-          strokeWidth="2"
-        />
+        <path d="M22 40 L10 32 L10 36 L21 44" fill="none" stroke="#475569" strokeWidth="2" />
         {/* Tick marks */}
         <g stroke="#64748b" strokeWidth="1">
           <line x1="28" y1="90" x2="40" y2="90" />
@@ -454,21 +419,12 @@ function DropBin({
           <line x1="28" y1="150" x2="40" y2="150" />
         </g>
         {/* Label */}
-        <text
-          x="80"
-          y="62"
-          textAnchor="middle"
-          fontSize="11"
-          fill="#0f172a"
-          fontWeight="700"
-        >
+        <text x="80" y="62" textAnchor="middle" fontSize="11" fill="#0f172a" fontWeight="700">
           {expected}
         </text>
       </svg>
 
-      <div className="text-center text-[11px] font-semibold leading-tight">
-        {label_bn}
-      </div>
+      <div className="text-center text-[11px] font-semibold leading-tight">{label_bn}</div>
 
       {/* Item chips */}
       <div className="mt-2 flex min-h-[28px] flex-wrap justify-center gap-1">
@@ -568,28 +524,14 @@ function SaltTexture({ visual }: { visual: TextureVisual }) {
           // soft fuzzy blobs (curdy precipitate)
           const r = (1.2 + rand(i, 3) * 1.4) * sizeScale;
           return (
-            <circle
-              key={i}
-              cx={cx}
-              cy={cy}
-              r={r}
-              fill={color}
-              opacity={0.45 + rand(i, 5) * 0.35}
-            />
+            <circle key={i} cx={cx} cy={cy} r={r} fill={color} opacity={0.45 + rand(i, 5) * 0.35} />
           );
         }
 
         // powder — many tiny dots
         const r = (0.4 + rand(i, 3) * 0.5) * sizeScale;
         return (
-          <circle
-            key={i}
-            cx={cx}
-            cy={cy}
-            r={r}
-            fill={color}
-            opacity={0.6 + rand(i, 5) * 0.3}
-          />
+          <circle key={i} cx={cx} cy={cy} r={r} fill={color} opacity={0.6 + rand(i, 5) * 0.3} />
         );
       })}
     </svg>

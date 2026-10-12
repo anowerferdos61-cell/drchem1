@@ -8,7 +8,12 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import "katex/dist/katex.min.css";
 import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
@@ -32,7 +37,11 @@ const INDICATOR_STOPS: Array<{ pH: number; color: string; name: string }> = [
 
 function hexToRgb(h: string) {
   const v = h.replace("#", "");
-  return { r: parseInt(v.slice(0, 2), 16), g: parseInt(v.slice(2, 4), 16), b: parseInt(v.slice(4, 6), 16) };
+  return {
+    r: parseInt(v.slice(0, 2), 16),
+    g: parseInt(v.slice(2, 4), 16),
+    b: parseInt(v.slice(4, 6), 16),
+  };
 }
 const lerp = (a: number, b: number, t: number) => Math.round(a + (b - a) * t);
 function indicatorColor(pH: number): string {
@@ -87,7 +96,7 @@ export default function PHScaleLab({ onBack }: Props) {
 
   const closestExample = useMemo(
     () => [...EXAMPLES].sort((a, b) => Math.abs(a.pH - pH) - Math.abs(b.pH - pH))[0],
-    [pH]
+    [pH],
   );
 
   return (
@@ -99,9 +108,7 @@ export default function PHScaleLab({ onBack }: Props) {
             <ArrowLeft className="mr-1 h-4 w-4" /> <span className="text-sm">Back</span>
           </Button>
           <FlaskConical className="h-5 w-5 shrink-0 text-primary" />
-          <h1 className="truncate text-base font-bold sm:text-lg">
-            pH Scale · pH স্কেল
-          </h1>
+          <h1 className="truncate text-base font-bold sm:text-lg">pH Scale · pH স্কেল</h1>
         </div>
         <span
           className="shrink-0 rounded-full px-3 py-1 text-sm font-semibold text-white"
@@ -122,7 +129,11 @@ export default function PHScaleLab({ onBack }: Props) {
                 background: `linear-gradient(180deg, ${color}22 0%, ${color}aa 60%, ${color} 100%)`,
               }}
             />
-            <svg viewBox="0 0 400 280" preserveAspectRatio="xMidYMid meet" className="relative h-full w-full">
+            <svg
+              viewBox="0 0 400 280"
+              preserveAspectRatio="xMidYMid meet"
+              className="relative h-full w-full"
+            >
               <defs>
                 <linearGradient id="glassPh" x1="0" x2="1">
                   <stop offset="0" stopColor="#ffffff" stopOpacity="0.6" />
@@ -147,7 +158,14 @@ export default function PHScaleLab({ onBack }: Props) {
                 return (
                   <g key={`h-${i}`}>
                     <circle cx={x} cy={y} r="7" fill="#fecaca" stroke="#b91c1c" />
-                    <text x={x} y={y + 3} textAnchor="middle" fontSize="8" fill="#7f1d1d" fontWeight="bold">
+                    <text
+                      x={x}
+                      y={y + 3}
+                      textAnchor="middle"
+                      fontSize="8"
+                      fill="#7f1d1d"
+                      fontWeight="bold"
+                    >
                       H⁺
                     </text>
                   </g>
@@ -159,7 +177,14 @@ export default function PHScaleLab({ onBack }: Props) {
                 return (
                   <g key={`oh-${i}`}>
                     <circle cx={x} cy={y} r="8" fill="#bfdbfe" stroke="#1d4ed8" />
-                    <text x={x} y={y + 3} textAnchor="middle" fontSize="7" fill="#1e3a8a" fontWeight="bold">
+                    <text
+                      x={x}
+                      y={y + 3}
+                      textAnchor="middle"
+                      fontSize="7"
+                      fill="#1e3a8a"
+                      fontWeight="bold"
+                    >
                       OH⁻
                     </text>
                   </g>
@@ -197,7 +222,8 @@ export default function PHScaleLab({ onBack }: Props) {
             <div className="flex items-center justify-between text-xs sm:text-sm">
               <span className="font-semibold text-rose-600">0 · Acid</span>
               <span className="text-muted-foreground">
-                Closest: <span className="font-semibold">{closestExample.name}</span> (pH {closestExample.pH})
+                Closest: <span className="font-semibold">{closestExample.name}</span> (pH{" "}
+                {closestExample.pH})
               </span>
               <span className="font-semibold text-indigo-600">14 · Base</span>
             </div>
@@ -214,7 +240,9 @@ export default function PHScaleLab({ onBack }: Props) {
                 </h3>
                 <div className="prose prose-sm max-w-none text-sm leading-relaxed sm:text-base">
                   <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
-                    {"হাইড্রোজেন আয়নের ($H^+$) মোলার ঘনমাত্রার ঋণাত্মক লগারিদমকে pH বলে।\n\n$$pH = -\\log[H^+]$$\n\n$$pH + pOH = 14$$"}
+                    {
+                      "হাইড্রোজেন আয়নের ($H^+$) মোলার ঘনমাত্রার ঋণাত্মক লগারিদমকে pH বলে।\n\n$$pH = -\\log[H^+]$$\n\n$$pH + pOH = 14$$"
+                    }
                   </ReactMarkdown>
                 </div>
               </Card>
@@ -251,9 +279,24 @@ export default function PHScaleLab({ onBack }: Props) {
                   <Droplets className="h-4 w-4 text-primary" /> ক্যাটাগরি
                 </h3>
                 <div className="space-y-1.5">
-                  <Row color="#EF4444" type="Acidic · অম্লীয়" range="0 – 6.9" desc="pH < 7। মান যত কম, অ্যাসিড তত শক্তিশালী।" />
-                  <Row color="#10B981" type="Neutral · নিরপেক্ষ" range="= 7" desc="বিশুদ্ধ পানি, [H⁺]=[OH⁻]=10⁻⁷ M।" />
-                  <Row color="#3B82F6" type="Basic · ক্ষারীয়" range="7.1 – 14" desc="pH > 7। মান যত বেশি, ক্ষার তত শক্তিশালী।" />
+                  <Row
+                    color="#EF4444"
+                    type="Acidic · অম্লীয়"
+                    range="0 – 6.9"
+                    desc="pH < 7। মান যত কম, অ্যাসিড তত শক্তিশালী।"
+                  />
+                  <Row
+                    color="#10B981"
+                    type="Neutral · নিরপেক্ষ"
+                    range="= 7"
+                    desc="বিশুদ্ধ পানি, [H⁺]=[OH⁻]=10⁻⁷ M।"
+                  />
+                  <Row
+                    color="#3B82F6"
+                    type="Basic · ক্ষারীয়"
+                    range="7.1 – 14"
+                    desc="pH > 7। মান যত বেশি, ক্ষার তত শক্তিশালী।"
+                  />
                 </div>
               </Card>
 
@@ -282,7 +325,10 @@ export default function PHScaleLab({ onBack }: Props) {
                   <AccordionContent>
                     <ul className="space-y-1.5 text-sm">
                       {MISTAKES.map((m, i) => (
-                        <li key={i} className="prose prose-sm max-w-none rounded border-l-2 border-rose-400 bg-rose-50 p-2 text-sm">
+                        <li
+                          key={i}
+                          className="prose prose-sm max-w-none rounded border-l-2 border-rose-400 bg-rose-50 p-2 text-sm"
+                        >
                           <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
                             {m}
                           </ReactMarkdown>
@@ -304,14 +350,26 @@ export default function PHScaleLab({ onBack }: Props) {
   );
 }
 
-function Row({ color, type, range, desc }: { color: string; type: string; range: string; desc: string }) {
+function Row({
+  color,
+  type,
+  range,
+  desc,
+}: {
+  color: string;
+  type: string;
+  range: string;
+  desc: string;
+}) {
   return (
     <div className="flex items-start gap-2 rounded-md border p-1.5">
       <span className="mt-1 h-3 w-3 shrink-0 rounded-full" style={{ background: color }} />
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between gap-2">
           <span className="truncate text-sm font-semibold">{type}</span>
-          <span className="shrink-0 font-mono text-[10px] text-muted-foreground sm:text-xs">{range}</span>
+          <span className="shrink-0 font-mono text-[10px] text-muted-foreground sm:text-xs">
+            {range}
+          </span>
         </div>
         <p className="text-xs text-muted-foreground sm:text-sm">{desc}</p>
       </div>

@@ -27,14 +27,7 @@ import LabReport from "./LabReport";
 import OxygenWorkspace from "./workspaces/OxygenWorkspace";
 import TeacherViva, { type VivaQuestion } from "@/components/viva/TeacherViva";
 import StudentViva from "@/components/viva/StudentViva";
-import type {
-  EquipmentId,
-  Mistake,
-  Mode,
-  OxygenPlaced,
-  Report,
-  Step,
-} from "./types";
+import type { EquipmentId, Mistake, Mode, OxygenPlaced, Report, Step } from "./types";
 import { setAIContext } from "@/lib/ai-context-store";
 
 import {
@@ -373,9 +366,7 @@ export default function OxygenLab({ onBack }: Props) {
               <h1 className="text-lg font-bold leading-tight">
                 Preparation of Oxygen · অক্সিজেন প্রস্তুতি
               </h1>
-              <p className="text-xs text-muted-foreground">
-                2 H₂O₂ →[MnO₂] 2 H₂O + O₂
-              </p>
+              <p className="text-xs text-muted-foreground">2 H₂O₂ →[MnO₂] 2 H₂O + O₂</p>
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -567,8 +558,8 @@ function OxygenConfigPanel({
         onChange={(mno2MassG) => setDraft({ ...draft, mno2MassG })}
       />
       <div className="text-xs text-muted-foreground">
-        Theoretical O₂ ={" "}
-        <span className="font-mono">{maxOxygenVolumeMl(draft).toFixed(0)}</span> mL at STP
+        Theoretical O₂ = <span className="font-mono">{maxOxygenVolumeMl(draft).toFixed(0)}</span> mL
+        at STP
       </div>
       <Button onClick={apply} size="sm" className="w-full">
         Apply · প্রয়োগ

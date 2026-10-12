@@ -187,19 +187,19 @@ export const Route = createFileRoute("/api/tutor/stream")({
       POST: async ({ request }) => {
         const key = process.env.GEMINI_API_KEY;
         if (!key) {
-          return new Response(
-            JSON.stringify({ error: "AI service not configured" }),
-            { status: 500, headers: { "Content-Type": "application/json" } },
-          );
+          return new Response(JSON.stringify({ error: "AI service not configured" }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          });
         }
 
         // ─── Auth + Quota (Free tier = 5/day, Pro = unlimited) ────
         const userId = await getUserIdFromRequest(request);
         if (!userId) {
-          return new Response(
-            JSON.stringify({ error: "Unauthorized — sign in to use AI Tutor" }),
-            { status: 401, headers: { "Content-Type": "application/json" } },
-          );
+          return new Response(JSON.stringify({ error: "Unauthorized — sign in to use AI Tutor" }), {
+            status: 401,
+            headers: { "Content-Type": "application/json" },
+          });
         }
         const quota = await checkAndConsumeQuota(userId);
         if (!quota.ok) {

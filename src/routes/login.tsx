@@ -133,10 +133,7 @@ function LoginPage() {
           <div>
             <div className="flex justify-between">
               <Label htmlFor="password">পাসওয়ার্ড</Label>
-              <Link
-                to="/reset-password"
-                className="text-xs text-primary hover:underline"
-              >
+              <Link to="/reset-password" className="text-xs text-primary hover:underline">
                 ভুলে গেছেন?
               </Link>
             </div>
@@ -167,7 +164,8 @@ function LoginPage() {
         </form>
 
         <p className="text-xs text-muted-foreground text-center mt-3">
-          পাসওয়ার্ড রিসেট শুধু ইমেইলে সম্ভব। ফোন-অনলি অ্যাকাউন্টের জন্য অ্যাডমিনের সাথে যোগাযোগ করুন।
+          পাসওয়ার্ড রিসেট শুধু ইমেইলে সম্ভব। ফোন-অনলি অ্যাকাউন্টের জন্য অ্যাডমিনের সাথে যোগাযোগ
+          করুন।
         </p>
 
         <p className="text-sm text-center mt-6 text-muted-foreground">

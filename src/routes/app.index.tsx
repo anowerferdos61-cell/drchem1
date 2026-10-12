@@ -5,7 +5,20 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth-store";
 import { usePresenceTracker } from "@/hooks/usePresence";
-import { Component, Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type ErrorInfo, type LazyExoticComponent, type ReactNode } from "react";
+import {
+  Component,
+  Suspense,
+  lazy,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ComponentType,
+  type ErrorInfo,
+  type LazyExoticComponent,
+  type ReactNode,
+} from "react";
 import { Toaster, toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -40,9 +53,7 @@ import Dashboard from "@/components/lab/Dashboard";
 import LabAIAssistant from "@/components/lab/LabAIAssistant";
 import LandscapeWrapper from "@/components/lab/LandscapeGate";
 
-
 import { setAIContext, useAIContext } from "@/lib/ai-context-store";
-
 
 import { ArrowLeft } from "lucide-react";
 
@@ -109,7 +120,12 @@ function LabLoadingFallback({ onBack }: { onBack: () => void }) {
       <div className="text-center">
         <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-2 border-emerald-400 border-t-transparent" />
         <p className="text-sm text-slate-300">ল্যাব প্রস্তুত হচ্ছে…</p>
-        <Button variant="outline" size="sm" onClick={onBack} className="mt-4 border-slate-700 bg-slate-900 text-slate-100 hover:bg-slate-800">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onBack}
+          className="mt-4 border-slate-700 bg-slate-900 text-slate-100 hover:bg-slate-800"
+        >
           ড্যাশবোর্ডে ফিরুন
         </Button>
       </div>
@@ -173,7 +189,6 @@ export const Route = createFileRoute("/app/")({
     links: [{ rel: "canonical", href: "https://drchemedu.com/app" }],
   }),
 });
-
 
 const DEFAULT_CONFIG: TitrationConfig = { Ma: 0.1, Va: 25, Mb: 0.1 };
 
@@ -249,6 +264,7 @@ function Index() {
       void navigate({ to: "/login", search: { redirect: "/app" }, replace: true });
       return;
     }
+    if (!rolesReady) return;
     // Admins go straight to admin dashboard
     if (isAdmin) {
       void navigate({ to: "/admin", replace: true });
@@ -258,8 +274,7 @@ function Index() {
     if (profile && !profile.role_selected) {
       void navigate({ to: "/onboarding", replace: true });
     }
-  }, [loading, isAuthenticated, isAdmin, profile, navigate]);
-
+  }, [loading, isAuthenticated, rolesReady, isAdmin, profile, navigate]);
 
   const [activeExperiment, setActiveExperiment] = useState<ExperimentId | null>(null);
   const [showExperiments, setShowExperiments] = useState(false);
@@ -291,10 +306,7 @@ function Index() {
   let content: React.ReactNode;
   if (activeExperiment === null && !showExperiments) {
     content = (
-      <Dashboard
-        onEnterExperiments={() => setShowExperiments(true)}
-        onPickExperiment={pick}
-      />
+      <Dashboard onEnterExperiments={() => setShowExperiments(true)} onPickExperiment={pick} />
     );
   } else if (activeExperiment === null && showExperiments) {
     content = <ExperimentPicker onPick={pick} />;
@@ -310,7 +322,6 @@ function Index() {
   } else {
     content = <TitrationLab onBack={back} />;
   }
-
 
   // Reset assistant context when on dashboard
   useEffect(() => {
@@ -329,9 +340,18 @@ function Index() {
   // Floating AI assistant: ONLY inside an active experiment (not on dashboard / picker).
   // AI assistant only in hands-on experiment labs, not in theory/chapter labs.
   const EXPERIMENT_LAB_IDS: ReadonlySet<string> = new Set([
-    "titration", "oxygen_prep", "co2_prep", "nacl_crystal", "ionic_covalent",
-    "na2co3_standard", "cuso4_water", "ph_scale", "indicator_compare",
-    "solubility_rules", "electrochemical_series", "bonding_basics",
+    "titration",
+    "oxygen_prep",
+    "co2_prep",
+    "nacl_crystal",
+    "ionic_covalent",
+    "na2co3_standard",
+    "cuso4_water",
+    "ph_scale",
+    "indicator_compare",
+    "solubility_rules",
+    "electrochemical_series",
+    "bonding_basics",
   ]);
   const showFloatingAI = activeExperiment !== null && EXPERIMENT_LAB_IDS.has(activeExperiment);
   // Block any render until we're sure the user isn't an admin (avoids
@@ -373,11 +393,6 @@ function Index() {
   );
 }
 
-
-
-
-
-
 function TitrationLab({ onBack }: { onBack: () => void }) {
   // ── Core state ──────────────────────────────────────────────
   const [mode, setMode] = useState<Mode>("guide");
@@ -418,7 +433,6 @@ function TitrationLab({ onBack }: { onBack: () => void }) {
       goal: "Acid-base titration of HCl with NaOH to find the endpoint",
     });
   }, [mode, steps, placed, mistakes]);
-
 
   // Hydrate config from localStorage on mount
   useEffect(() => {
@@ -609,8 +623,7 @@ function TitrationLab({ onBack }: { onBack: () => void }) {
     }
     setStopcockOpen(false);
     setStirring(false);
-    const accuracy =
-      Ve > 0 ? Math.max(0, 100 - (Math.abs(Vb - Ve) / Ve) * 100) : 0;
+    const accuracy = Ve > 0 ? Math.max(0, 100 - (Math.abs(Vb - Ve) / Ve) * 100) : 0;
     const r: Report = {
       experiment: "titration",
       Vb_final: Vb,
@@ -634,7 +647,7 @@ function TitrationLab({ onBack }: { onBack: () => void }) {
     setMistakes([]);
     setSteps(buildSteps());
     setStartedAt(null);
-    
+
     setSubmitted(false);
     setReport(null);
   };
@@ -673,7 +686,12 @@ function TitrationLab({ onBack }: { onBack: () => void }) {
         {/* ── Top bar (compact, always visible) ─────────────── */}
         <header className="flex shrink-0 items-center justify-between gap-1.5 border-b bg-card/80 px-2 py-1.5 backdrop-blur md:px-4 md:py-2.5">
           <div className="flex min-w-0 items-center gap-1.5">
-            <Button variant="ghost" size="sm" onClick={onBack} className="h-7 shrink-0 px-1.5 md:h-8 md:px-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onBack}
+              className="h-7 shrink-0 px-1.5 md:h-8 md:px-2"
+            >
               <ArrowLeft className="h-3.5 w-3.5 md:mr-1" />
               <span className="hidden md:inline">Experiments</span>
             </Button>
@@ -738,7 +756,6 @@ function TitrationLab({ onBack }: { onBack: () => void }) {
             </aside>
           )}
 
-
           {/* Center: workspace */}
           <section
             className={[
@@ -747,7 +764,6 @@ function TitrationLab({ onBack }: { onBack: () => void }) {
               "md:!flex md:rounded-2xl",
               "touch-none select-none", // avoid accidental page scroll on touch
             ].join(" ")}
-
             onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => {
               const id = e.dataTransfer.getData("text/equipment") as EquipmentSelectId;
@@ -792,7 +808,11 @@ function TitrationLab({ onBack }: { onBack: () => void }) {
                 disabled={submitted}
                 className="h-7 px-2 text-[11px] md:h-8 md:px-3 md:text-sm"
               >
-                {stopcockOpen ? <Pause className="h-3.5 w-3.5 md:mr-1" /> : <Play className="h-3.5 w-3.5 md:mr-1" />}
+                {stopcockOpen ? (
+                  <Pause className="h-3.5 w-3.5 md:mr-1" />
+                ) : (
+                  <Play className="h-3.5 w-3.5 md:mr-1" />
+                )}
                 <span className="hidden md:inline">{stopcockOpen ? "Close" : "Open"} stopcock</span>
                 <span className="ml-1 md:hidden">{stopcockOpen ? "Close" : "Open"}</span>
               </Button>
@@ -837,15 +857,7 @@ function TitrationLab({ onBack }: { onBack: () => void }) {
                 "[&_h3]:text-[11px] md:[&_h3]:text-sm",
               ].join(" ")}
             >
-
-              <StatusPanel
-                Vb={Vb}
-                Ve={Ve}
-                pH={pH}
-                Ma={config.Ma}
-                Va={config.Va}
-                Mb={config.Mb}
-              />
+              <StatusPanel Vb={Vb} Ve={Ve} pH={pH} Ma={config.Ma} Va={config.Va} Mb={config.Mb} />
               {mode !== "student" && (
                 <StepsPanel
                   steps={steps}
@@ -865,11 +877,13 @@ function TitrationLab({ onBack }: { onBack: () => void }) {
           aria-label="Lab sections"
         >
           <div className="grid grid-cols-3">
-            {([
-              { id: "equipment", label: "Equipment", emoji: "🛠️" },
-              { id: "lab", label: "Lab", emoji: "🧪" },
-              { id: "data", label: "Data", emoji: "📊" },
-            ] as const).map((t) => {
+            {(
+              [
+                { id: "equipment", label: "Equipment", emoji: "🛠️" },
+                { id: "lab", label: "Lab", emoji: "🧪" },
+                { id: "data", label: "Data", emoji: "📊" },
+              ] as const
+            ).map((t) => {
               const active = mobileTab === t.id;
               return (
                 <button
@@ -892,7 +906,6 @@ function TitrationLab({ onBack }: { onBack: () => void }) {
           </div>
         </nav>
 
-
         {/* Report overlay */}
         {report && (
           <div className="absolute inset-0 z-20 overflow-auto bg-background/95 p-4 backdrop-blur">
@@ -913,7 +926,8 @@ function TitrationLab({ onBack }: { onBack: () => void }) {
               <StudentViva />
               {vivaQuestions.length === 0 && (
                 <p className="col-span-full text-center text-xs text-muted-foreground">
-                  Teacher generates and publishes questions. Students answer them and get AI grading.
+                  Teacher generates and publishes questions. Students answer them and get AI
+                  grading.
                 </p>
               )}
             </div>

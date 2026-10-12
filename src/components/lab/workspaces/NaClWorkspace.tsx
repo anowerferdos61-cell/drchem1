@@ -14,18 +14,12 @@ interface Props {
   crystalGrowth: number;
 }
 
-export default function NaClWorkspace({
-  placed,
-  volumeFrac,
-  tempC,
-  crystalGrowth,
-}: Props) {
+export default function NaClWorkspace({ placed, volumeFrac, tempC, crystalGrowth }: Props) {
   const b1Liquid = placed.water ? (placed.salt ? "#e2eaf5" : "#cfe4ff") : null;
   const dishLiquidH = Math.max(2, 36 * volumeFrac);
   const flameOn = placed.burning;
   const showSteam = flameOn && tempC > 60 && volumeFrac > 0.1;
-  const dishLiquidColor =
-    crystalGrowth > 0.6 ? "#f8fafc" : tempC > 70 ? "#dbe7fa" : "#c8d8ee";
+  const dishLiquidColor = crystalGrowth > 0.6 ? "#f8fafc" : tempC > 70 ? "#dbe7fa" : "#c8d8ee";
 
   return (
     <div className="relative h-full w-full overflow-hidden rounded-2xl bg-gradient-to-b from-sky-50 to-slate-100">
@@ -82,7 +76,14 @@ export default function NaClWorkspace({
                   <circle cx="32" cy="128" r="2" fill="#94a3b8" />
                 </g>
               )}
-              <text x="55" y="100" textAnchor="middle" fontSize="9" fill="#475569" fontFamily="ui-monospace,monospace">
+              <text
+                x="55"
+                y="100"
+                textAnchor="middle"
+                fontSize="9"
+                fill="#475569"
+                fontFamily="ui-monospace,monospace"
+              >
                 100 mL H₂O
               </text>
             </g>
@@ -124,11 +125,31 @@ export default function NaClWorkspace({
                 opacity="0.85"
               />
               {/* Funnel stem */}
-              <rect x="71" y="95" width="8" height="45" fill="url(#naclGlass)" stroke="#64748b" strokeWidth="1" />
+              <rect
+                x="71"
+                y="95"
+                width="8"
+                height="45"
+                fill="url(#naclGlass)"
+                stroke="#64748b"
+                strokeWidth="1"
+              />
               {placed.dissolved && !placed.filtered && (
                 <circle cx="75" cy="145" r="3" fill="#a5c4ed">
-                  <animate attributeName="cy" from="145" to="190" dur="0.8s" repeatCount="indefinite" />
-                  <animate attributeName="opacity" from="1" to="0" dur="0.8s" repeatCount="indefinite" />
+                  <animate
+                    attributeName="cy"
+                    from="145"
+                    to="190"
+                    dur="0.8s"
+                    repeatCount="indefinite"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    from="1"
+                    to="0"
+                    dur="0.8s"
+                    repeatCount="indefinite"
+                  />
                 </circle>
               )}
             </g>
@@ -149,7 +170,14 @@ export default function NaClWorkspace({
                   opacity="0.95"
                 />
               )}
-              <text x="70" y="90" textAnchor="middle" fontSize="9" fill="#475569" fontFamily="ui-monospace,monospace">
+              <text
+                x="70"
+                y="90"
+                textAnchor="middle"
+                fontSize="9"
+                fill="#475569"
+                fontFamily="ui-monospace,monospace"
+              >
                 {placed.filtered ? "পরিশ্রুত দ্রবণ" : "Beaker-2"}
               </text>
             </g>
@@ -190,11 +218,35 @@ export default function NaClWorkspace({
               {/* Tripod legs */}
               <line x1="35" y1="80" x2="20" y2="160" stroke="url(#naclMetal)" strokeWidth="4" />
               <line x1="125" y1="80" x2="140" y2="160" stroke="url(#naclMetal)" strokeWidth="4" />
-              <line x1="80" y1="80" x2="80" y2="160" stroke="url(#naclMetal)" strokeWidth="4" opacity="0.3" />
+              <line
+                x1="80"
+                y1="80"
+                x2="80"
+                y2="160"
+                stroke="url(#naclMetal)"
+                strokeWidth="4"
+                opacity="0.3"
+              />
               {/* Tripod ring */}
-              <ellipse cx="80" cy="80" rx="60" ry="6" fill="none" stroke="url(#naclMetal)" strokeWidth="4" />
+              <ellipse
+                cx="80"
+                cy="80"
+                rx="60"
+                ry="6"
+                fill="none"
+                stroke="url(#naclMetal)"
+                strokeWidth="4"
+              />
               {/* Wire gauze */}
-              <rect x="22" y="73" width="116" height="6" fill="#a8a29e" stroke="#57534e" strokeWidth="0.5" />
+              <rect
+                x="22"
+                y="73"
+                width="116"
+                height="6"
+                fill="#a8a29e"
+                stroke="#57534e"
+                strokeWidth="0.5"
+              />
               <g stroke="#57534e" strokeWidth="0.4">
                 {Array.from({ length: 12 }).map((_, i) => (
                   <line key={i} x1={22 + i * 10} y1="73" x2={22 + i * 10} y2="79" />
@@ -258,7 +310,14 @@ export default function NaClWorkspace({
                   )}
                 </g>
               )}
-              <text x="60" y="55" textAnchor="middle" fontSize="9" fill="#475569" fontFamily="ui-monospace,monospace">
+              <text
+                x="60"
+                y="55"
+                textAnchor="middle"
+                fontSize="9"
+                fill="#475569"
+                fontFamily="ui-monospace,monospace"
+              >
                 বাষ্পীভবন পাত্র · {tempC.toFixed(0)}°C
               </text>
             </g>
@@ -268,14 +327,7 @@ export default function NaClWorkspace({
           {showSteam && (
             <g opacity="0.7">
               {[0, 1, 2].map((i) => (
-                <circle
-                  key={i}
-                  cx={70 + i * 14}
-                  cy={40}
-                  r="6"
-                  fill="#ffffff"
-                  opacity="0.65"
-                >
+                <circle key={i} cx={70 + i * 14} cy={40} r="6" fill="#ffffff" opacity="0.65">
                   <animate
                     attributeName="cy"
                     from={40}
@@ -300,16 +352,19 @@ export default function NaClWorkspace({
           {placed.heat_setup && placed.filtered && (
             <g transform="translate(160 50)">
               <rect width="8" height="40" fill="#e5e7eb" stroke="#94a3b8" />
-              <rect
-                y={40 - 40 * volumeFrac}
-                width="8"
-                height={40 * volumeFrac}
-                fill="#3b82f6"
-              />
+              <rect y={40 - 40 * volumeFrac} width="8" height={40 * volumeFrac} fill="#3b82f6" />
               <text x="14" y="8" fontSize="9" fill="#475569">
                 Volume {(volumeFrac * 100).toFixed(0)}%
               </text>
-              <line x1="0" y1="20" x2="8" y2="20" stroke="#dc2626" strokeWidth="1.2" strokeDasharray="2 2" />
+              <line
+                x1="0"
+                y1="20"
+                x2="8"
+                y2="20"
+                stroke="#dc2626"
+                strokeWidth="1.2"
+                strokeDasharray="2 2"
+              />
               <text x="14" y="24" fontSize="8" fill="#dc2626">
                 সম্পৃক্ত 50%
               </text>
