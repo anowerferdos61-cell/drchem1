@@ -81,10 +81,23 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Dr. Chem is an AI-powered virtual chemistry lab for Class 9-10 students and teachers — safe interactive experiments, an AI tutor, and viva practice in Bangla and English.",
+          "Dr. Chem is an AI-powered virtual chemistry lab for Class 9-10 students and teachers — safe interactive experiments, an AI tutor, and viva practice for the NCTB curriculum in Bangladesh.",
+      },
+      {
+        name: "keywords",
+        content:
+          "Dr Chem, ডক্টর কেম, ভার্চুয়াল কেমিস্ট্রি ল্যাব, SSC রসায়ন প্র্যাকটিক্যাল, ৯ম ১০ম শ্রেণি রসায়ন, NCTB Chemistry Virtual Lab, SSC Chemistry Viva, অনলাইন রসায়ন ল্যাব বাংলাদেশ, Class 9-10 Chemistry Lab, EdTech Bangladesh",
       },
       { name: "author", content: "Dr. Chem" },
+      // Geographic / GEO-Targeting tags for Bangladesh
+      { name: "geo.region", content: "BD" },
+      { name: "geo.placename", content: "Dhaka, Bangladesh" },
+      { name: "geo.position", content: "23.8103;90.4125" },
+      { name: "ICBM", content: "23.8103, 90.4125" },
+      // Open Graph (Facebook, Messenger, WhatsApp)
       { property: "og:site_name", content: "Dr. Chem" },
+      { property: "og:locale", content: "bn_BD" },
+      { property: "og:locale:alternate", content: "en_US" },
       {
         property: "og:title",
         content: "Dr. Chem — AI-Powered Virtual Chemistry Lab for Class 9-10",
@@ -92,9 +105,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         property: "og:description",
         content:
-          "Safe, visual, AI-guided chemistry experiments for Class 9-10 — titration, pH scale, oxygen prep, bonding and more.",
+          "Safe, visual, AI-guided chemistry experiments for Class 9-10 — titration, pH scale, oxygen prep, bonding, and more for NCTB syllabus.",
       },
       { property: "og:type", content: "website" },
+      {
+        property: "og:image",
+        content:
+          "https://storage.googleapis.com/gpt-engineer-file-uploads/BNbspVP1QLgQXV1xmKzQ4H5W7yJ2/social-images/social-1780481523006-Gemini_Generated_Image_2no3022no3022no3.webp",
+      },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      {
+        property: "og:image:alt",
+        content: "Dr. Chem — AI-Powered Virtual Chemistry Lab for Class 9-10",
+      },
+      // Twitter / X Cards
       { name: "twitter:card", content: "summary_large_image" },
       {
         name: "twitter:title",
@@ -103,27 +128,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "twitter:description",
         content:
-          "Safe, visual, AI-guided chemistry experiments for Class 9-10 students and teachers.",
-      },
-      {
-        name: "description",
-        content:
-          "Perform chemistry experiments safely, learn visually, and get instant help from the Dr. Chem AI tutor. Built for Bangladeshi Class 9-10 students and teachers.",
-      },
-      {
-        property: "og:description",
-        content:
-          "Perform chemistry experiments safely, learn visually, and get instant help from the Dr. Chem AI tutor. Built for Bangladeshi Class 9-10 students and teachers.",
-      },
-      {
-        name: "twitter:description",
-        content:
-          "Perform chemistry experiments safely, learn visually, and get instant help from the Dr. Chem AI tutor. Built for Bangladeshi Class 9-10 students and teachers.",
-      },
-      {
-        property: "og:image",
-        content:
-          "https://storage.googleapis.com/gpt-engineer-file-uploads/BNbspVP1QLgQXV1xmKzQ4H5W7yJ2/social-images/social-1780481523006-Gemini_Generated_Image_2no3022no3022no3.webp",
+          "Safe, visual, AI-guided chemistry experiments for Class 9-10 students and teachers in Bangladesh.",
       },
       {
         name: "twitter:image",
@@ -142,10 +147,42 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
-          "@type": "Organization",
+          "@type": "EducationalOrganization",
           name: "Dr. Chem",
+          alternateName: ["ডক্টর কেম", "Dr. Chem Bangladesh"],
           url: "https://drchemedu.com",
-          description: "AI-powered virtual chemistry lab for Class 9-10 students and teachers.",
+          logo: "https://drchemedu.com/favicon.ico",
+          description:
+            "AI-powered virtual chemistry lab for Class 9-10 students and teachers based on NCTB Bangladesh curriculum.",
+          telephone: "+8801581553923",
+          email: "drchemhelp247@gmail.com",
+          address: {
+            "@type": "PostalAddress",
+            addressCountry: "BD",
+            addressLocality: "Dhaka",
+          },
+          areaServed: {
+            "@type": "Country",
+            name: "Bangladesh",
+          },
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          name: "Dr. Chem Virtual Chemistry Lab",
+          url: "https://drchemedu.com",
+          applicationCategory: "EducationalApplication",
+          operatingSystem: "All Web Browsers (Chrome, Safari, Firefox, Edge)",
+          description:
+            "Interactive virtual chemistry experiments, AI tutor, and viva practice for SSC Class 9-10 students in Bangladesh.",
+          offers: {
+            "@type": "Offer",
+            price: "0",
+            priceCurrency: "BDT",
+          },
         }),
       },
       {
@@ -168,7 +205,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="bn">
       <head>
         <HeadContent />
       </head>

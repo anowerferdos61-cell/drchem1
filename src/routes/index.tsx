@@ -28,29 +28,70 @@ import { useAuth } from "@/lib/auth-store";
 import { useState } from "react";
 import { DemoVideoSection } from "@/components/landing/DemoVideoSection";
 import { VideoModal } from "@/components/landing/VideoModal";
-import { FaqSection, GuideFaqButton } from "@/components/landing/FaqSection";
+import { FaqSection, GuideFaqButton, faqs } from "@/components/landing/FaqSection";
 import heroImg from "@/assets/landing-hero.jpg";
 
 export const Route = createFileRoute("/")({
   component: Landing,
   head: () => ({
     meta: [
-      { title: "Dr. Chem — AI-Powered Virtual Chemistry Lab for Class 9-10" },
+      { title: "Dr. Chem — AI-Powered Virtual Chemistry Lab for Class 9-10 (NCTB)" },
       {
         name: "description",
         content:
           "Perform chemistry experiments safely, learn visually, and get instant help from the Dr. Chem AI tutor. Built for Bangladeshi Class 9-10 students and teachers.",
       },
+      {
+        name: "keywords",
+        content:
+          "Dr Chem, ভার্চুয়াল কেমিস্ট্রি ল্যাব, SSC রসায়ন প্র্যাকটিক্যাল, ৯ম ১০ম শ্রেণি রসায়ন, NCTB রসায়ন ল্যাব, ডক্টর কেম, Class 9-10 Chemistry Virtual Lab, AI Tutor Bangladesh",
+      },
+      { property: "og:site_name", content: "Dr. Chem" },
+      { property: "og:locale", content: "bn_BD" },
       { property: "og:title", content: "Dr. Chem — AI Virtual Chemistry Lab" },
       {
         property: "og:description",
         content:
-          "Safe, visual, AI-guided chemistry experiments for Class 9-10 — pH scale, titration, oxygen prep, bonding, and more.",
+          "Safe, visual, AI-guided chemistry experiments for Class 9-10 — pH scale, titration, oxygen prep, bonding, and more for NCTB syllabus.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://drchemedu.com/" },
+      {
+        property: "og:image",
+        content:
+          "https://storage.googleapis.com/gpt-engineer-file-uploads/BNbspVP1QLgQXV1xmKzQ4H5W7yJ2/social-images/social-1780481523006-Gemini_Generated_Image_2no3022no3022no3.webp",
+      },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { name: "twitter:card", content: "summary_large_image" },
+      {
+        name: "twitter:title",
+        content: "Dr. Chem — AI-Powered Virtual Chemistry Lab for Class 9-10",
+      },
+      {
+        name: "twitter:description",
+        content:
+          "Perform chemistry experiments safely, learn visually, and get instant help from the Dr. Chem AI tutor.",
+      },
     ],
     links: [{ rel: "canonical", href: "https://drchemedu.com/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faqs.map((f) => ({
+            "@type": "Question",
+            name: f.q,
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: f.a,
+            },
+          })),
+        }),
+      },
+    ],
   }),
 });
 
@@ -87,18 +128,27 @@ function Nav() {
           <span className="font-bold text-lg tracking-tight">Dr. Chem</span>
         </Link>
         <nav className="hidden md:flex items-center gap-6 text-sm">
+          <Link
+            to="/chapters"
+            className="text-muted-foreground hover:text-foreground flex items-center gap-1.5 transition-colors font-medium"
+          >
+            <BookOpen className="h-4 w-4 text-primary" /> অধ্যায় গাইড
+          </Link>
+          <Link
+            to="/labs"
+            className="text-primary font-semibold hover:underline flex items-center gap-1.5 transition-colors"
+          >
+            <FlaskConical className="h-4 w-4" /> ল্যাব লাইব্রেরি
+          </Link>
           <a href="#solution" className="text-muted-foreground hover:text-foreground">
             Features
           </a>
           <a href="#experiments" className="text-muted-foreground hover:text-foreground">
             Experiments
           </a>
-          <a href="#teachers" className="text-muted-foreground hover:text-foreground">
-            Teachers
-          </a>
-          <a href="#testimonials" className="text-muted-foreground hover:text-foreground">
-            Reviews
-          </a>
+          <Link to="/pricing" className="text-muted-foreground hover:text-foreground">
+            Pricing
+          </Link>
           <a href="#faq" className="text-muted-foreground hover:text-foreground">
             Guide & FAQ
           </a>
@@ -607,6 +657,18 @@ function Footer() {
           {/* Quick Links */}
           <div className="flex flex-col gap-4 animate-fade-in" style={{ animationDelay: "200ms" }}>
             <h3 className="font-bold text-xl text-foreground">দ্রুত লিংক</h3>
+            <Link
+              to="/chapters"
+              className="text-base text-muted-foreground hover:text-primary transition-colors story-link w-fit font-medium"
+            >
+              📖 SSC Chemistry Chapters (১-১২ অধ্যায়)
+            </Link>
+            <Link
+              to="/labs"
+              className="text-base text-muted-foreground hover:text-primary transition-colors story-link w-fit font-medium"
+            >
+              📚 Virtual Lab & Theory Library
+            </Link>
             <Link
               to="/app"
               className="text-base text-muted-foreground hover:text-primary transition-colors story-link w-fit font-medium"

@@ -614,7 +614,11 @@ function AdminDashboard() {
                             </span>
                           )}
                         </div>
-                        <div className="text-xs text-muted-foreground">{u.email}</div>
+                        <div className="text-xs text-muted-foreground">
+                          {u.email && !u.email.endsWith("@phone.drchem.local")
+                            ? u.email
+                            : "ইমেইল নেই"}
+                        </div>
                         {(u.school || u.class) && (
                           <div className="text-[11px] text-muted-foreground/90 flex items-center gap-1 mt-0.5">
                             {u.school && <span>🏫 {u.school}</span>}

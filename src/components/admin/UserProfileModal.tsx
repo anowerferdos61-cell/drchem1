@@ -168,7 +168,11 @@ export function UserProfileModal({
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
                   <div className="flex items-center gap-1.5">
                     <Mail className="h-3.5 w-3.5 text-primary" />
-                    <span>{profile.email ?? "ইমেইল নেই"}</span>
+                    <span>
+                      {profile.email && !profile.email.endsWith("@phone.drchem.local")
+                        ? profile.email
+                        : "ইমেইল যুক্ত নেই"}
+                    </span>
                   </div>
                   <div className="flex items-center gap-1.5 font-mono">
                     <Phone className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />

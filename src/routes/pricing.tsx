@@ -52,7 +52,7 @@ const STUDENT: PlanCard = {
   monthlyPrice: 99,
   yearlyPrice: 999,
   features: [
-    "সব ১২টি interactive lab unlock",
+    "সব ৪০+ interactive lab unlock",
     "Unlimited AI Tutor (RAG সহ)",
     "NCTB বই থেকে সরাসরি উত্তর",
     "Smart Notes লেখা ও শেয়ার",

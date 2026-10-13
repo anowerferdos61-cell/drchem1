@@ -1,5 +1,12 @@
 User-agent: *
 Allow: /
+Allow: /pricing
+Allow: /signup
+Allow: /login
+Disallow: /admin
+Disallow: /teacher
+Disallow: /app
+Disallow: /onboarding
 Disallow: /reset-password
 Disallow: /api/
 
