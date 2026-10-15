@@ -1,6 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, Menu, X } from "lucide-react";
-import { useState } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { ArrowLeft, Menu, X, Lock } from "lucide-react";
+import { useState, useEffect } from "react";
 
 import ChatSidebar from "@/components/tutor/ChatSidebar";
 import ChatWindow from "@/components/tutor/ChatWindow";
@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { usePresenceTracker } from "@/hooks/usePresence";
 import UserMenu from "@/components/auth/UserMenu";
+import { useAuth } from "@/lib/auth-store";
 
 export const Route = createFileRoute("/tutor")({
   component: TutorPage,
@@ -31,7 +32,38 @@ export const Route = createFileRoute("/tutor")({
 
 function TutorPage() {
   usePresenceTracker("tutor");
+  const { isAuthenticated, loading } = useAuth();
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      void navigate({ to: "/login", search: { redirect: "/tutor" } });
+    }
+  }, [loading, isAuthenticated, navigate]);
+
+  if (loading || !isAuthenticated) {
+    return (
+      <div className="flex h-svh w-full flex-col items-center justify-center bg-background px-4">
+        <div className="flex flex-col items-center gap-4 text-center max-w-sm p-6 rounded-2xl border border-border/70 bg-card shadow-lg">
+          <div className="h-12 w-12 rounded-2xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center">
+            <Lock className="h-6 w-6" />
+          </div>
+          <div>
+            <h2 className="text-lg font-bold text-foreground">AI টিউটর ব্যবহারে লগইন প্রয়োজন</h2>
+            <p className="text-xs text-muted-foreground mt-1">
+              ডক্টর কেম AI টিউটরের সাথে চ্যাট করতে এবং হিস্ট্রি সংরক্ষণ করতে অনুগ্রহ করে লগইন করুন।
+            </p>
+          </div>
+          <Button asChild className="w-full">
+            <Link to="/login" search={{ redirect: "/tutor" }}>
+              লগইন পেজে যান
+            </Link>
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-svh w-full overflow-hidden bg-background">

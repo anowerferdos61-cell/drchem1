@@ -13,9 +13,11 @@ import {
 } from "lucide-react";
 import { DrChemLogo } from "@/components/brand/DrChemLogo";
 import UserMenu from "@/components/auth/UserMenu";
+import { useAuth } from "@/lib/auth-store";
 import { cn } from "@/lib/utils";
 
 export function LandingNav() {
+  const { isAuthenticated } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -70,7 +72,8 @@ export function LandingNav() {
             </Link>
 
             <Link
-              to="/tutor"
+              to={isAuthenticated ? "/tutor" : "/login"}
+              search={isAuthenticated ? undefined : { redirect: "/tutor" }}
               className="group flex items-center gap-1.5 px-3 py-1.5 rounded-full font-medium text-muted-foreground hover:text-foreground hover:bg-muted/70 transition-all duration-200"
             >
               <Bot className="h-3.5 w-3.5 text-cyan-500 group-hover:scale-110 transition-transform" />
@@ -129,14 +132,15 @@ export function LandingNav() {
             </Link>
 
             <Link
-              to="/tutor"
+              to={isAuthenticated ? "/tutor" : "/login"}
+              search={isAuthenticated ? undefined : { redirect: "/tutor" }}
               onClick={() => setMobileOpen(false)}
               className="flex flex-col gap-1 rounded-2xl border border-cyan-500/25 bg-cyan-500/10 p-3 transition-colors hover:bg-cyan-500/15"
             >
               <div className="flex items-center gap-1.5 text-xs font-bold text-cyan-600 dark:text-cyan-400">
                 <Bot className="h-4 w-4" />
                 AI টিউটর
-                <span className="rounded bg-cyan-500 px-1 text-[8px] font-bold text-white">PRO</span>
+                <span className="rounded bg-cyan-500 px-1 text-[8px] font-bold text-white">AI</span>
               </div>
               <span className="text-[10px] text-muted-foreground">২৪/৭ কেমিস্ট্রি সাহায্য</span>
             </Link>
