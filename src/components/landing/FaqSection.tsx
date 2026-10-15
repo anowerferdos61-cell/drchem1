@@ -72,7 +72,7 @@ export const faqs = [
   },
   {
     q: "পেমেন্টের পর কতক্ষণে Pro চালু হয়?",
-    a: "সাধারণত ১-৬ ঘণ্টার মধ্যে। যদি বেশি সময় লাগে, drchemhelp247@gmail.com বা 01581-553923-এ যোগাযোগ করুন।",
+    a: "সাধারণত ১-৬ ঘণ্টার মধ্যে। যদি বেশি সময় লাগে, drchem.edu@gmail.com বা 01581-553923-এ যোগাযোগ করুন।",
   },
   {
     q: "মোবাইলে চলবে?",
@@ -88,7 +88,7 @@ export const faqs = [
   },
   {
     q: "পেমেন্ট ফেল হলে বা ভুল নাম্বার দিলে কী করব?",
-    a: "চিন্তা নেই — 01581-553923 নাম্বারে যোগাযোগ করুন অথবা drchemhelp247@gmail.com-এ ইমেইল করুন। TrxID ও পেমেন্ট নাম্বার জানালেই আমরা ঠিক করে দেব।",
+    a: "চিন্তা নেই — 01581-553923 নাম্বারে যোগাযোগ করুন অথবা drchem.edu@gmail.com-এ ইমেইল করুন। TrxID ও পেমেন্ট নাম্বার জানালেই আমরা ঠিক করে দেব।",
   },
   {
     q: "টাকা রিফান্ড পাওয়া যাবে?",
@@ -176,10 +176,10 @@ export function FaqSection() {
               <p className="text-sm">
                 <strong>আরও প্রশ্ন?</strong> ইমেইল করুন{" "}
                 <a
-                  href="mailto:drchemhelp247@gmail.com"
+                  href="mailto:drchem.edu@gmail.com"
                   className="text-primary underline underline-offset-2"
                 >
-                  drchemhelp247@gmail.com
+                  drchem.edu@gmail.com
                 </a>{" "}
                 বা কল করুন <strong>01581-553923</strong>
               </p>

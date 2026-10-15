@@ -4,6 +4,7 @@
  */
 import { useState, useMemo, useCallback } from "react";
 import { useNavigate } from "@tanstack/react-router";
+import { DrChemLogo } from "@/components/brand/DrChemLogo";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -772,15 +773,7 @@ export default function Dashboard({ onPickExperiment }: DashboardProps) {
                 <ChevronLeft className="h-4 w-4" /> <span className="hidden sm:inline">Back</span>
               </Button>
             )}
-            <div className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg shadow-emerald-500/20">
-              <FlaskConical className="h-5 w-5 text-white" />
-            </div>
-            <div className="leading-tight">
-              <div className="text-base font-extrabold tracking-tight md:text-lg">Dr. Chem</div>
-              <div className="text-[10px] text-muted-foreground md:text-xs">
-                Virtual Chemistry Lab
-              </div>
-            </div>
+            <DrChemLogo size="md" showText subtitle="Virtual Chemistry Lab" />
           </div>
           <div className="flex items-center gap-2">
             <Badge
@@ -956,7 +949,15 @@ export default function Dashboard({ onPickExperiment }: DashboardProps) {
       <PaywallModal open={paywallOpen} onOpenChange={setPaywallOpen} featureName={paywallLab} />
 
       <footer className="mx-auto max-w-7xl px-4 pb-10 text-center text-xs text-muted-foreground md:px-6">
-        Built for Bangladeshi students · NCTB Curriculum · Made with AI
+        Built for Bangladeshi students · NCTB Curriculum · Made by{" "}
+        <a
+          href="https://anowerferdos2nd.netlify.app/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-medium text-foreground hover:text-primary hover:underline transition-colors"
+        >
+          ANOWER FERDOS
+        </a>
       </footer>
     </div>
   );

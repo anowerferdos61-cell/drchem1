@@ -12,7 +12,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { streakCheckin } from "@/lib/progress.functions";
 import { useAuth } from "@/lib/auth-store";
 import type { ExperimentId } from "./types";
-import welcomeHero from "@/assets/welcome-hero.png.asset.json";
+import welcomeHero from "@/assets/welcome-hero.png";
 
 const LAST_LAB_KEY = "drchem:last_lab";
 const CHALLENGE_KEY = "drchem:challenge_v1"; // { days: number, lastDate: 'YYYY-MM-DD', startDate: 'YYYY-MM-DD' }
@@ -216,7 +216,7 @@ export function PersonalHero({
               style={{ animation: "haloPulse 2.2s ease-in-out infinite" }}
             />
             <img
-              src={welcomeHero.url}
+              src={welcomeHero}
               alt="Welcome"
               width={220}
               height={220}

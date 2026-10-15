@@ -138,6 +138,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       {
+        rel: "icon",
+        href: "/favicon.ico",
+        sizes: "any",
+      },
+      {
+        rel: "icon",
+        type: "image/png",
+        href: "/favicon.png",
+      },
+      {
+        rel: "apple-touch-icon",
+        href: "/apple-touch-icon.png",
+      },
+      {
         rel: "stylesheet",
         href: appCss,
       },
@@ -155,7 +169,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           description:
             "AI-powered virtual chemistry lab for Class 9-10 students and teachers based on NCTB Bangladesh curriculum.",
           telephone: "+8801581553923",
-          email: "drchemhelp247@gmail.com",
+          email: "drchem.edu@gmail.com",
           address: {
             "@type": "PostalAddress",
             addressCountry: "BD",

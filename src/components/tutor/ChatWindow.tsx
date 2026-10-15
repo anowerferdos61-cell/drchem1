@@ -4,6 +4,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { Bot, Sparkles } from "lucide-react";
+import { DrChemLogo } from "@/components/brand/DrChemLogo";
 import { toast } from "sonner";
 
 import {
@@ -197,8 +198,8 @@ export default function ChatWindow() {
       <div ref={scrollRef} className="flex-1 overflow-y-auto">
         {!active || active.messages.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center px-6 text-center">
-            <div className="mb-4 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 p-4">
-              <Sparkles className="h-8 w-8 text-primary" />
+            <div className="mb-4">
+              <DrChemLogo size="xl" variant="badge" />
             </div>
             <h2 className="text-xl font-bold">Dr. Chem-কে জিজ্ঞেস করুন</h2>
             <p className="mt-2 max-w-md text-sm text-muted-foreground">

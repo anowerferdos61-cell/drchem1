@@ -18,6 +18,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { CHAPTER_TOPICS } from "@/lib/chapter-topics";
 import { LAB_TOPICS } from "@/lib/lab-topics";
+import { DrChemLogo } from "@/components/brand/DrChemLogo";
+import UserMenu from "@/components/auth/UserMenu";
 
 export const Route = createFileRoute("/chapters/")({
   component: ChaptersIndexPage,
@@ -102,10 +104,7 @@ function ChaptersIndexPage() {
       <header className="border-b bg-card/80 backdrop-blur sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5">
-            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-primary-foreground shadow-sm">
-              <FlaskConical className="h-5 w-5" />
-            </div>
-            <span className="text-xl font-bold tracking-tight">Dr. Chem</span>
+            <DrChemLogo size="sm" showText />
           </Link>
           <div className="flex items-center gap-2 md:gap-3">
             <Link to="/labs">
@@ -119,9 +118,7 @@ function ChaptersIndexPage() {
                 প্রাইসিং
               </Button>
             </Link>
-            <Link to="/signup">
-              <Button size="sm">ফ্রি সাইনআপ</Button>
-            </Link>
+            <UserMenu />
           </div>
         </div>
       </header>
@@ -309,7 +306,17 @@ function ChaptersIndexPage() {
       {/* Footer */}
       <footer className="border-t bg-card py-8 text-center text-xs text-muted-foreground mt-12">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p>© {new Date().getFullYear()} Dr. Chem · NCTB এসএসসি রসায়ন অধ্যায় ও ভার্চুয়াল ল্যাব গাইড।</p>
+          <p>
+            © {new Date().getFullYear()} Dr. Chem · Made by{" "}
+            <a
+              href="https://anowerferdos2nd.netlify.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-foreground hover:text-primary hover:underline transition-colors"
+            >
+              ANOWER FERDOS
+            </a>
+          </p>
           <div className="flex items-center gap-4">
             <Link to="/" className="hover:underline">হোম</Link>
             <Link to="/chapters" className="hover:underline font-semibold text-primary">অধ্যায়সমূহ</Link>

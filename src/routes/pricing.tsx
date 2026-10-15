@@ -4,10 +4,12 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Check, FlaskConical, Sparkles, Crown, GraduationCap, ArrowRight } from "lucide-react";
+import { DrChemLogo } from "@/components/brand/DrChemLogo";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/auth-store";
 import UserMenu from "@/components/auth/UserMenu";
+import { LandingNav } from "@/components/landing/LandingNav";
 
 export const Route = createFileRoute("/pricing")({
   component: PricingPage,
@@ -118,18 +120,7 @@ function PricingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-primary/5">
-      {/* Nav */}
-      <header className="sticky top-0 z-40 backdrop-blur-md bg-background/80 border-b">
-        <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
-              <FlaskConical className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <span className="font-bold text-lg">Dr. Chem</span>
-          </Link>
-          <UserMenu />
-        </div>
-      </header>
+      <LandingNav />
 
       <div className="max-w-6xl mx-auto px-4 py-16">
         <div className="text-center mb-12">

@@ -35,24 +35,21 @@ export default function UserMenu() {
   useEffect(() => setHydrated(true), []);
 
   if (!hydrated || loading) {
-    return <div className="h-9 w-32 rounded-md bg-muted animate-pulse" />;
+    return <div className="h-8 w-16 rounded-full bg-muted/60 animate-pulse" />;
   }
 
   if (!isAuthenticated) {
     return (
-      <div className="flex items-center gap-2">
-        <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
-          <Link to="/pricing">Pricing</Link>
-        </Button>
-        <Button asChild variant="ghost" size="sm">
-          <Link to="/login">লগইন</Link>
-        </Button>
-        <Button asChild size="sm">
-          <Link to="/signup">
-            <Sparkles className="h-3.5 w-3.5" /> সাইনআপ
-          </Link>
-        </Button>
-      </div>
+      <Button
+        asChild
+        size="sm"
+        className="rounded-full bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white font-semibold shadow-sm px-4 h-8 text-xs transition-all hover:scale-105 active:scale-95"
+      >
+        <Link to="/login" className="flex items-center gap-1.5">
+          <LogIn className="h-3.5 w-3.5" />
+          লগইন
+        </Link>
+      </Button>
     );
   }
 

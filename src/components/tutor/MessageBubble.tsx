@@ -13,6 +13,7 @@ import "katex/dist/katex.min.css";
 import { cn } from "@/lib/utils";
 import type { TutorMessage } from "@/lib/tutor-store";
 import { Button } from "@/components/ui/button";
+import { DrChemLogo } from "@/components/brand/DrChemLogo";
 
 interface Props {
   message: TutorMessage;
@@ -30,14 +31,13 @@ function MessageBubbleImpl({ message }: Props) {
     <div
       className={cn("group flex w-full gap-3 px-4 py-5", isUser ? "bg-transparent" : "bg-muted/30")}
     >
-      <div
-        className={cn(
-          "flex h-8 w-8 shrink-0 items-center justify-center rounded-full",
-          isUser ? "bg-primary text-primary-foreground" : "bg-accent text-accent-foreground",
-        )}
-      >
-        {isUser ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
-      </div>
+      {isUser ? (
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
+          <User className="h-4 w-4" />
+        </div>
+      ) : (
+        <DrChemLogo size="sm" variant="badge" iconClassName="h-8 w-8 rounded-full" />
+      )}
       <div className="min-w-0 flex-1">
         <div className="mb-1 flex items-center justify-between">
           <span className="text-xs font-semibold text-muted-foreground">

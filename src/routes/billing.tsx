@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { DrChemLogo } from "@/components/brand/DrChemLogo";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/lib/auth-store";
@@ -100,8 +101,7 @@ function BillingPage() {
       <header className="sticky top-0 z-40 backdrop-blur-md bg-background/80 border-b">
         <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
           <Link to="/app" className="flex items-center gap-2">
-            <FlaskConical className="h-5 w-5 text-primary" />
-            <span className="font-bold">Dr. Chem</span>
+            <DrChemLogo size="sm" showText />
           </Link>
           <UserMenu />
         </div>

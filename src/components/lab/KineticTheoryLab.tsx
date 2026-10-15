@@ -207,7 +207,7 @@ export default function KineticTheoryLab({ onBack }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [substanceId]);
 
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [canvasEl, setCanvasEl] = useState<HTMLCanvasElement | null>(null);
   const particlesRef = useRef<Particle[]>([]);
   const rafRef = useRef<number | null>(null);
   const tempRef = useRef(temp);
@@ -225,33 +225,32 @@ export default function KineticTheoryLab({ onBack }: Props) {
   const attraction = Math.round(Math.max(2, 100 - norm * 98));
 
   useEffect(() => {
-    const W = 360,
-      H = 420;
-    const cols = 10,
-      rows = 9,
-      spacingX = 26,
-      spacingY = 26;
-    const startX = (W - (cols - 1) * spacingX) / 2;
-    const startY = H - 30 - (rows - 1) * spacingY;
-    const arr: Particle[] = [];
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        if (arr.length >= PARTICLE_COUNT) break;
-        const ax = startX + c * spacingX;
-        const ay = startY + r * spacingY;
-        arr.push({ x: ax, y: ay, vx: 0, vy: 0, ax, ay });
-      }
-    }
-    particlesRef.current = arr;
-  }, []);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
+    if (!canvasEl) return;
+    const ctx = canvasEl.getContext("2d");
     if (!ctx) return;
-    const W = canvas.width,
-      H = canvas.height;
+
+    if (particlesRef.current.length === 0) {
+      const W = 360,
+        H = 420;
+      const cols = 10,
+        rows = 9,
+        spacingX = 26,
+        spacingY = 26;
+      const startX = (W - (cols - 1) * spacingX) / 2;
+      const startY = H - 30 - (rows - 1) * spacingY;
+      const arr: Particle[] = [];
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          if (arr.length >= PARTICLE_COUNT) break;
+          const ax = startX + c * spacingX;
+          const ay = startY + r * spacingY;
+          arr.push({ x: ax, y: ay, vx: 0, vy: 0, ax, ay });
+        }
+      }
+      particlesRef.current = arr;
+    }
+    const W = canvasEl.width,
+      H = canvasEl.height;
     const beaker = { left: 30, right: W - 30, top: 60, bottom: H - 30 };
     let last = performance.now();
 
@@ -392,7 +391,7 @@ export default function KineticTheoryLab({ onBack }: Props) {
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, []);
+  }, [canvasEl]);
 
   const reset = () => {
     setTemp(Math.round(substance.melt - (substance.boil - substance.melt) * 0.3));
@@ -475,7 +474,7 @@ export default function KineticTheoryLab({ onBack }: Props) {
           }}
         >
           <canvas
-            ref={canvasRef}
+            ref={setCanvasEl}
             width={360}
             height={420}
             className="absolute inset-0 h-full w-full"

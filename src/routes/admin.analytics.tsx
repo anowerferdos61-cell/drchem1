@@ -3,6 +3,7 @@
  * and per-session timeline drill-down.
  */
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { DrChemLogo } from "@/components/brand/DrChemLogo";
 import { useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
 import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
@@ -139,8 +140,7 @@ function AdminAnalytics() {
         <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link to="/admin" className="flex items-center gap-2">
-              <FlaskConical className="h-5 w-5 text-primary" />
-              <span className="font-bold">Dr. Chem</span>
+              <DrChemLogo size="sm" showText />
             </Link>
             <span className="text-xs px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-700 dark:text-rose-400 font-semibold flex items-center gap-1">
               <ShieldCheck className="h-3 w-3" /> ADMIN

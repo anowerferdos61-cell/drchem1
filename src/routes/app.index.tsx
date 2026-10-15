@@ -49,6 +49,7 @@ import {
 import type { ExperimentId, Mistake, Mode, Placed, Report, Step } from "@/components/lab/types";
 import ExperimentPicker from "@/components/lab/ExperimentPicker";
 import Dashboard from "@/components/lab/Dashboard";
+import { DrChemLogo } from "@/components/brand/DrChemLogo";
 
 import LabAIAssistant from "@/components/lab/LabAIAssistant";
 import LandscapeWrapper from "@/components/lab/LandscapeGate";
@@ -276,8 +277,25 @@ function Index() {
     }
   }, [loading, isAuthenticated, rolesReady, isAdmin, profile, navigate]);
 
-  const [activeExperiment, setActiveExperiment] = useState<ExperimentId | null>(null);
+  const [activeExperiment, setActiveExperiment] = useState<ExperimentId | null>(() => {
+    if (typeof window !== "undefined") {
+      const urlLab = new URLSearchParams(window.location.search).get("lab");
+      if (urlLab && (urlLab in LAB_COMPONENTS || urlLab === "titration")) {
+        return urlLab as ExperimentId;
+      }
+    }
+    return null;
+  });
   const [showExperiments, setShowExperiments] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const urlLab = new URLSearchParams(window.location.search).get("lab");
+      if (urlLab && (urlLab in LAB_COMPONENTS || urlLab === "titration")) {
+        setActiveExperiment(urlLab as ExperimentId);
+      }
+    }
+  }, []);
 
   // Do not auto-restore a previous lab. A stale saved lab state can trap the
   // user in the lab/loading screen after auth refreshes or a failed attempt.
@@ -682,7 +700,7 @@ function TitrationLab({ onBack }: { onBack: () => void }) {
   return (
     <>
       <Toaster position="top-center" richColors />
-      <div className="flex min-h-[100dvh] flex-col overflow-x-hidden bg-gradient-to-br from-slate-50 via-white to-sky-50 md:h-[100dvh] md:overflow-hidden">
+      <div className="flex h-[100dvh] flex-col overflow-hidden bg-gradient-to-br from-slate-50 via-white to-sky-50 select-none">
         {/* ── Top bar (compact, always visible) ─────────────── */}
         <header className="flex shrink-0 items-center justify-between gap-1.5 border-b bg-card/80 px-2 py-1.5 backdrop-blur md:px-4 md:py-2.5">
           <div className="flex min-w-0 items-center gap-1.5">
@@ -695,7 +713,7 @@ function TitrationLab({ onBack }: { onBack: () => void }) {
               <ArrowLeft className="h-3.5 w-3.5 md:mr-1" />
               <span className="hidden md:inline">Experiments</span>
             </Button>
-            <FlaskConical className="h-4 w-4 shrink-0 text-primary md:h-6 md:w-6" />
+            <DrChemLogo size="sm" variant="badge" iconClassName="h-7 w-7 rounded-md md:h-8 md:w-8 md:rounded-lg shrink-0" />
             <div className="min-w-0">
               <h1 className="truncate text-[11px] font-bold leading-tight md:text-lg">
                 <span className="md:hidden">Virtual Lab · ভার্চুয়াল ল্যাব</span>

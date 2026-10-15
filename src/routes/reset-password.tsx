@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
 import { toast, Toaster } from "sonner";
 import { AlertCircle, CheckCircle2, Eye, EyeOff, FlaskConical, Loader2, Lock, Mail } from "lucide-react";
+import { DrChemLogo } from "@/components/brand/DrChemLogo";
 
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -120,10 +121,7 @@ function ResetPasswordPage() {
       <Toaster richColors position="top-center" />
       <div className="w-full max-w-md bg-card border border-border rounded-2xl shadow-xl p-8">
         <Link to="/" className="flex items-center gap-2 justify-center mb-6">
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shadow-sm">
-            <FlaskConical className="h-6 w-6 text-primary-foreground" />
-          </div>
-          <span className="text-xl font-bold">Dr. Chem</span>
+          <DrChemLogo size="md" showText />
         </Link>
         <h1 className="text-2xl font-bold text-center mb-1">
           {mode === "request" ? "পাসওয়ার্ড রিসেট" : "নতুন পাসওয়ার্ড সেট করুন"}

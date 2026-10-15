@@ -16,6 +16,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { LAB_TOPICS } from "@/lib/lab-topics";
+import { DrChemLogo } from "@/components/brand/DrChemLogo";
+import UserMenu from "@/components/auth/UserMenu";
 
 export const Route = createFileRoute("/labs/")({
   component: LabsIndexPage,
@@ -111,10 +113,7 @@ function LabsIndexPage() {
       <header className="border-b bg-card/80 backdrop-blur sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5">
-            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-primary-foreground shadow-sm">
-              <FlaskConical className="h-5 w-5" />
-            </div>
-            <span className="text-xl font-bold tracking-tight">Dr. Chem</span>
+            <DrChemLogo size="sm" showText />
           </Link>
           <div className="flex items-center gap-2 md:gap-3">
             <Link to="/chapters">
@@ -128,9 +127,7 @@ function LabsIndexPage() {
                 প্রাইসিং
               </Button>
             </Link>
-            <Link to="/signup">
-              <Button size="sm" className="text-xs sm:text-sm">ফ্রি সাইনআপ</Button>
-            </Link>
+            <UserMenu />
           </div>
         </div>
       </header>

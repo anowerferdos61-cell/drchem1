@@ -18,7 +18,20 @@ import {
   Flame,
   Sparkles,
   GraduationCap,
+  BookOpen,
+  Sliders,
+  BarChart3,
+  CheckSquare,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerClose,
+} from "@/components/ui/drawer";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import TeacherViva, { type VivaQuestion } from "@/components/viva/TeacherViva";
 import StudentViva from "@/components/viva/StudentViva";
 
@@ -27,6 +40,7 @@ import StepsPanel from "./StepsPanel";
 import LabReport from "./LabReport";
 import NaClWorkspace from "./workspaces/NaClWorkspace";
 import type { EquipmentId, Mistake, Mode, NaClPlaced, Report, Step } from "./types";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { setAIContext } from "@/lib/ai-context-store";
 import {
   BOIL_TEMP,
@@ -100,6 +114,7 @@ interface Props {
 }
 
 export default function NaClLab({ onBack }: Props) {
+  const isMobile = useIsMobile();
   const [mode, setMode] = useState<Mode>("guide");
   const [placed, setPlaced] = useState<NaClPlaced>(INITIAL);
   const [volumeFrac, setVolumeFrac] = useState(1);
@@ -112,6 +127,8 @@ export default function NaClLab({ onBack }: Props) {
   const [showPanels, setShowPanels] = useState(true);
   const [vivaQuestions, setVivaQuestions] = useState<VivaQuestion[]>([]);
   const [showViva, setShowViva] = useState(false);
+  const [mobileTab, setMobileTab] = useState<"equipment" | "controls" | "info" | "guide">("equipment");
+  const [showTheory, setShowTheory] = useState(false);
 
   const startedAtRef = useRef<number | null>(null);
 
@@ -467,55 +484,73 @@ export default function NaClLab({ onBack }: Props) {
   return (
     <>
       <Toaster position="top-center" richColors />
-      <div className="min-h-screen p-3 md:p-6">
-        <header className="mb-4 flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" onClick={onBack}>
-              <ArrowLeft className="mr-1 h-4 w-4" /> Experiments
-            </Button>
-            <Sparkles className="h-6 w-6 text-blue-500" />
-            <div>
-              <h1 className="text-lg font-bold leading-tight">
-                NaCl Crystallisation · সোডিয়াম ক্লোরাইডের কেলাস প্রস্তুতি
-              </h1>
-              <p className="text-xs text-muted-foreground">
-                Impure NaCl → পরিশ্রবণ → সম্পৃক্ত দ্রবণ → ঠান্ডা → ঘনকীয় কেলাস
-              </p>
+      <div className="relative flex h-[100dvh] max-h-[100dvh] w-full flex-col overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-sky-950 text-slate-100 select-none">
+        {/* ── Compact Header (46px) ── */}
+        <header className="z-20 h-11 shrink-0 border-b border-slate-800/80 bg-slate-950/90 px-3 backdrop-blur-xl">
+          <div className="flex h-full items-center justify-between gap-2">
+            <div className="flex min-w-0 items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onBack}
+                className="-ml-1 h-8 shrink-0 gap-1 px-2 text-slate-300 hover:bg-slate-800 hover:text-white"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                <span className="hidden text-xs font-semibold sm:inline">Experiments</span>
+              </Button>
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-sky-500/10 text-sky-400">
+                <Sparkles className="h-4 w-4" />
+              </div>
+              <div className="min-w-0 leading-tight">
+                <div className="truncate text-xs font-black tracking-tight sm:text-sm text-slate-100">
+                  NaCl Crystallisation · NaCl কেলাস প্রস্তুতি
+                </div>
+                <div className="hidden truncate text-[10px] text-sky-400/80 sm:block font-mono">
+                  Impure NaCl → দ্রবীভূত → পরিশ্রবণ → সম্পৃক্ত দ্রবণ → কেলাসন
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <ModeToggle mode={mode} setMode={setMode} />
-            <Button variant="outline" size="sm" onClick={() => setShowPanels((v) => !v)}>
-              {showPanels ? <EyeOff className="mr-1 h-4 w-4" /> : <Eye className="mr-1 h-4 w-4" />}
-              {showPanels ? "Hide" : "Show"} panels
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => setShowViva((v) => !v)}>
-              <GraduationCap className="mr-1 h-4 w-4" />
-              {showViva ? "Hide Viva" : "AI Viva"}
-            </Button>
+
+            <div className="flex shrink-0 items-center gap-1.5">
+              <ModeToggle mode={mode} setMode={setMode} />
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowTheory(true)}
+                className="hidden h-7 gap-1 border-sky-500/30 bg-sky-500/10 px-2 text-[11px] font-semibold text-sky-300 hover:bg-sky-500/20 sm:flex"
+              >
+                <BookOpen className="h-3 w-3" />
+                <span>অধ্যায় ৫ থিওরি</span>
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowViva((v) => !v)}
+                className="h-7 gap-1 border-slate-700 bg-slate-900/60 px-2 text-[11px] text-slate-300 hover:bg-slate-800"
+              >
+                <GraduationCap className="h-3 w-3" />
+                <span className="hidden sm:inline">{showViva ? "Hide Viva" : "AI Viva"}</span>
+              </Button>
+            </div>
           </div>
         </header>
 
-        <div
-          className={[
-            "grid gap-4",
-            showPanels ? "lg:grid-cols-[260px_1fr_280px]" : "grid-cols-1",
-          ].join(" ")}
-        >
-          {showPanels && (
-            <div className="space-y-3">
-              <EquipmentPanel
-                items={NACL_ITEMS}
-                onSelect={handleSelect}
-                highlight={guide ? nextHighlight : null}
-                disabled={() => submitted}
-              />
-            </div>
-          )}
+        {/* ── Desktop Layout: 3-Column Fixed 100dvh (Zero outer scrollbar) ── */}
+        {!isMobile ? (
+          <main className="flex-1 min-h-0 overflow-hidden p-2.5 grid md:grid-cols-[minmax(250px,270px)_minmax(0,1fr)_minmax(270px,300px)] lg:grid-cols-[minmax(270px,290px)_minmax(0,1fr)_minmax(290px,320px)] md:gap-2.5">
+          {/* LEFT: Equipment */}
+          <aside className="lab-scroll flex h-full min-h-0 flex-col gap-2.5 overflow-y-auto pr-1">
+            <EquipmentPanel
+              items={NACL_ITEMS}
+              onSelect={handleSelect}
+              highlight={guide ? nextHighlight : null}
+              disabled={() => submitted}
+            />
+          </aside>
 
+          {/* CENTER: Workspace & Action Bar */}
           <section
-            className="relative rounded-2xl border bg-card/60 shadow-xl backdrop-blur"
-            style={{ minHeight: 480 }}
+            className="relative flex h-full min-h-0 min-w-0 items-center justify-center overflow-hidden rounded-2xl border border-slate-800 bg-slate-950/60 shadow-inner"
             onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => {
               const id = e.dataTransfer.getData("text/equipment") as EquipmentId;
@@ -531,7 +566,8 @@ export default function NaClLab({ onBack }: Props) {
               />
             </div>
 
-            <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 flex-wrap justify-center gap-2 rounded-full border bg-background/90 p-1.5 shadow-lg backdrop-blur">
+            {/* Desktop Action Pill Bar */}
+            <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 flex-wrap items-center justify-center gap-1.5 rounded-full border border-slate-700/80 bg-slate-900/90 p-1.5 shadow-xl backdrop-blur">
               {!placed.burning ? (
                 <Button
                   size="sm"
@@ -542,12 +578,13 @@ export default function NaClLab({ onBack }: Props) {
                     submitted ||
                     placed.crystallized
                   }
+                  className="h-7 text-xs bg-amber-600 hover:bg-amber-500 text-white font-semibold"
                 >
-                  <Flame className="mr-1 h-4 w-4" /> বার্নার চালু
+                  <Flame className="mr-1 h-3.5 w-3.5" /> বার্নার চালু
                 </Button>
               ) : (
-                <Button size="sm" variant="destructive" onClick={stopBurner}>
-                  <Pause className="mr-1 h-4 w-4" /> বার্নার বন্ধ
+                <Button size="sm" variant="destructive" onClick={stopBurner} className="h-7 text-xs font-semibold">
+                  <Pause className="mr-1 h-3.5 w-3.5" /> বার্নার বন্ধ
                 </Button>
               )}
               <Button
@@ -556,59 +593,280 @@ export default function NaClLab({ onBack }: Props) {
                 onClick={fastCool}
                 disabled={!placed.cooling || submitted}
                 title="Forces rapid cooling (mistake)"
+                className="h-7 text-xs border-sky-500/30 bg-sky-500/10 text-sky-300 hover:bg-sky-500/20"
               >
-                <Snowflake className="mr-1 h-4 w-4" /> Fast cool
+                <Snowflake className="mr-1 h-3.5 w-3.5" /> Fast cool
               </Button>
-              <Button size="sm" variant="outline" onClick={reset}>
-                <RotateCcw className="mr-1 h-4 w-4" /> Reset
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={reset}
+                className="h-7 text-xs border-slate-700 bg-slate-800/80 text-slate-300 hover:bg-slate-700"
+              >
+                <RotateCcw className="mr-1 h-3.5 w-3.5" /> Reset
               </Button>
-              <Button size="sm" onClick={submit} disabled={submitted}>
-                <Trophy className="mr-1 h-4 w-4" /> Submit
+              <Button
+                size="sm"
+                onClick={submit}
+                disabled={submitted}
+                className="h-7 text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-semibold"
+              >
+                <Trophy className="mr-1 h-3.5 w-3.5" /> Submit
               </Button>
             </div>
           </section>
 
-          {showPanels && (
-            <div className="space-y-3">
-              <StatusCard
-                tempC={tempC}
-                volumeFrac={volumeFrac}
-                crystalGrowth={crystalGrowth}
-                seeded={placed.seeded}
+          {/* RIGHT: Status & Checklist */}
+          <aside className="lab-scroll flex h-full min-h-0 flex-col gap-2.5 overflow-y-auto pl-1">
+            <StatusCard
+              tempC={tempC}
+              volumeFrac={volumeFrac}
+              crystalGrowth={crystalGrowth}
+              seeded={placed.seeded}
+            />
+            {mode !== "student" && (
+              <StepsPanel
+                steps={steps}
+                mistakes={mistakes}
+                guideMode={guide}
+                nextHint={guide ? nextHint : undefined}
               />
-              {mode !== "student" && (
-                <StepsPanel
-                  steps={steps}
-                  mistakes={mistakes}
-                  guideMode={guide}
-                  nextHint={guide ? nextHint : undefined}
+            )}
+          </aside>
+        </main>
+        ) : (
+        /* ── Mobile Split View (< md) ── */
+        <div className="flex flex-1 flex-col min-h-0 overflow-hidden">
+          {/* Top 46%: Pinned Visual Workspace */}
+          <div className="relative h-[46dvh] shrink-0 border-b border-slate-800/80 bg-slate-950/70 p-1 flex items-center justify-center overflow-hidden">
+            <NaClWorkspace
+              placed={placed}
+              volumeFrac={volumeFrac}
+              tempC={tempC}
+              crystalGrowth={crystalGrowth}
+            />
+          </div>
+
+          {/* Bottom 54%: Interactive Tabbed Tray */}
+          <div className="flex flex-1 flex-col min-h-0 bg-slate-900/95 backdrop-blur">
+            {/* Tab Selection */}
+            <div className="grid grid-cols-4 border-b border-slate-800 bg-slate-950/60 p-1 text-[11px] font-semibold gap-1">
+              <button
+                type="button"
+                onClick={() => setMobileTab("equipment")}
+                className={cn(
+                  "flex items-center justify-center gap-1 rounded-md py-1.5 transition",
+                  mobileTab === "equipment"
+                    ? "bg-slate-800 text-sky-400 shadow-sm font-bold"
+                    : "text-slate-400 hover:text-slate-200"
+                )}
+              >
+                <Sliders className="h-3 w-3" />
+                <span>যন্ত্রপাতি</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setMobileTab("controls")}
+                className={cn(
+                  "flex items-center justify-center gap-1 rounded-md py-1.5 transition",
+                  mobileTab === "controls"
+                    ? "bg-slate-800 text-sky-400 shadow-sm font-bold"
+                    : "text-slate-400 hover:text-slate-200"
+                )}
+              >
+                <Flame className="h-3 w-3" />
+                <span>কন্ট্রোলস</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setMobileTab("info")}
+                className={cn(
+                  "flex items-center justify-center gap-1 rounded-md py-1.5 transition",
+                  mobileTab === "info"
+                    ? "bg-slate-800 text-sky-400 shadow-sm font-bold"
+                    : "text-slate-400 hover:text-slate-200"
+                )}
+              >
+                <BarChart3 className="h-3 w-3" />
+                <span>তথ্য ও গ্রোথ</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setMobileTab("guide")}
+                className={cn(
+                  "flex items-center justify-center gap-1 rounded-md py-1.5 transition",
+                  mobileTab === "guide"
+                    ? "bg-slate-800 text-sky-400 shadow-sm font-bold"
+                    : "text-slate-400 hover:text-slate-200"
+                )}
+              >
+                <CheckSquare className="h-3 w-3" />
+                <span>গাইড</span>
+              </button>
+            </div>
+
+            {/* Tab Panel Content */}
+            <div className="lab-scroll flex-1 min-h-0 overflow-y-auto p-2.5">
+              {mobileTab === "equipment" && (
+                <div className="space-y-2.5">
+                  <EquipmentPanel
+                    items={NACL_ITEMS}
+                    onSelect={handleSelect}
+                    highlight={guide ? nextHighlight : null}
+                    disabled={() => submitted}
+                  />
+                </div>
+              )}
+
+              {mobileTab === "controls" && (
+                <div className="space-y-3">
+                  <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3 space-y-2">
+                    <div className="text-xs font-bold text-slate-200">তাপ ও শীতলীকরণ কন্ট্রোল</div>
+                    <div className="grid grid-cols-2 gap-2">
+                      {!placed.burning ? (
+                        <Button
+                          size="sm"
+                          onClick={lightBurner}
+                          disabled={
+                            !placed.heat_setup ||
+                            !placed.evaporating_dish ||
+                            submitted ||
+                            placed.crystallized
+                          }
+                          className="h-9 text-xs bg-amber-600 hover:bg-amber-500 text-white font-semibold"
+                        >
+                          <Flame className="mr-1.5 h-4 w-4" /> বার্নার চালু
+                        </Button>
+                      ) : (
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={stopBurner}
+                          className="h-9 text-xs font-semibold"
+                        >
+                          <Pause className="mr-1.5 h-4 w-4" /> বার্নার বন্ধ
+                        </Button>
+                      )}
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={fastCool}
+                        disabled={!placed.cooling || submitted}
+                        className="h-9 text-xs border-sky-500/30 bg-sky-500/10 text-sky-300"
+                      >
+                        <Snowflake className="mr-1.5 h-4 w-4 text-sky-400" /> Fast cool (ভুল)
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 pt-1">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={reset}
+                      className="h-9 text-xs border-slate-700 bg-slate-800 text-slate-300"
+                    >
+                      <RotateCcw className="mr-1.5 h-4 w-4" /> রিসেট
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={submit}
+                      disabled={submitted}
+                      className="h-9 text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold"
+                    >
+                      <Trophy className="mr-1.5 h-4 w-4" /> রিপোর্ট জমা
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {mobileTab === "info" && (
+                <StatusCard
+                  tempC={tempC}
+                  volumeFrac={volumeFrac}
+                  crystalGrowth={crystalGrowth}
+                  seeded={placed.seeded}
                 />
               )}
+
+              {mobileTab === "guide" && (
+                <div className="space-y-3">
+                  <StepsPanel
+                    steps={steps}
+                    mistakes={mistakes}
+                    guideMode={guide}
+                    nextHint={guide ? nextHint : undefined}
+                  />
+                  {showViva && (
+                    <div className="space-y-3 pt-2">
+                      <TeacherViva
+                        onPublish={setVivaQuestions}
+                        experiment="nacl_crystal"
+                        defaultTopic="অবিশুদ্ধ লবণ থেকে বিশুদ্ধ NaCl কেলাস প্রস্তুতি · Crystallisation of pure NaCl"
+                      />
+                      <StudentViva />
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
+        )}
 
+        {/* ── Report Modal Overlay ── */}
         {report && (
-          <div className="mt-6">
-            <LabReport report={report} onReset={reset} />
+          <div className="absolute inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm">
+            <div className="max-h-[90dvh] w-full max-w-xl overflow-y-auto rounded-2xl border border-slate-800 bg-slate-900 p-4 shadow-2xl">
+              <LabReport report={report} onReset={reset} />
+            </div>
           </div>
         )}
 
-        {showViva && (
-          <div className="mt-6 grid gap-4 lg:grid-cols-2">
-            <TeacherViva
-              onPublish={setVivaQuestions}
-              experiment="nacl_crystal"
-              defaultTopic="অবিশুদ্ধ লবণ থেকে বিশুদ্ধ NaCl কেলাস প্রস্তুতি · Crystallisation of pure NaCl"
-            />
-            <StudentViva />
-            {vivaQuestions.length === 0 && (
-              <p className="col-span-full text-center text-xs text-muted-foreground">
-                শিক্ষক প্রশ্ন তৈরি করে Publish করবেন · ছাত্র উত্তর দিলে AI গ্রেড করবে।
-              </p>
-            )}
-          </div>
-        )}
+        {/* ── Chapter 5 Theory Drawer ── */}
+        <Drawer open={showTheory} onOpenChange={setShowTheory}>
+          <DrawerContent className="max-h-[85dvh] bg-slate-900 text-slate-100 border-slate-800">
+            <DrawerHeader className="pb-2 border-b border-slate-800">
+              <DrawerTitle className="text-base font-bold flex items-center gap-2 text-sky-400">
+                <BookOpen className="h-4 w-4" /> অধ্যায় ৫: সোডিয়াম ক্লোরাইড কেলাসন ও কেলাস কাঠামো
+              </DrawerTitle>
+            </DrawerHeader>
+            <ScrollArea className="px-4 py-4 max-h-[70dvh]">
+              <div className="prose prose-invert prose-sm max-w-none space-y-4 text-slate-300">
+                <div>
+                  <h4 className="text-sky-400 font-bold mb-1">১. মূল নীতি (Principle of Crystallisation)</h4>
+                  <p className="text-xs text-slate-400">
+                    কেলাসন হলো কঠিন পদার্থ বিশুদ্ধ করার অন্যতম প্রধান ভৌত পদ্ধতি। অবিশুদ্ধ খাদ্য লবণে সাধারণত বালি, কাদা এবং অন্যান্য অদ্রবণীয় অপদ্রব্য মিশ্রিত থাকে। পানিতে দ্রবীভূত করে পরিশ্রাবণ করলে অদ্রবণীয় অপদ্রব্য ফিল্টার পেপারে অবশেষ হিসেবে থেকে যায়।
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="text-sky-400 font-bold mb-1">২. বাষ্পীভবন ও সম্পৃক্তকরণ (Evaporation to Saturation)</h4>
+                  <p className="text-xs text-slate-400">
+                    পরিশ্রুত দ্রবণকে বাষ্পীভবন পাত্রে নিয়ে উত্তপ্ত করে আয়তন প্রায় ৫০% এ কমিয়ে আনা হয়। একটি কাচদণ্ড দ্রবণে ডুবিয়ে ফুঁ দিলে যদি দণ্ডের মাথায় সূক্ষ্ম কেলাস দেখা যায়, তবে বুঝতে হবে দ্রবণটি কেলাসন বিন্দুতে পৌঁছেছে (সম্পৃক্ত হয়েছে)। অতিরিক্ত বাষ্পীভবন করলে লবণ শুকিয়ে পুড়ে যাবে।
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="text-sky-400 font-bold mb-1">৩. ধীর শীতলীকরণ ও বীজ কেলাস (Slow Cooling & Seeding)</h4>
+                  <ul className="text-xs space-y-1.5 list-disc pl-4 text-slate-300">
+                    <li><strong className="text-slate-100">ধীর শীতলীকরণ:</strong> দ্রবণটিকে না নাড়িয়ে ধীরে ধীরে স্বাভাবিক তাপমাত্রায় ঠান্ডা হতে দিলে সুনির্দিষ্ট আকারের বড় ও নিখুঁত কেলাস তৈরি হয়। দ্রুত ঠান্ডা করলে সূক্ষ্ম ও অনিয়মিত কেলাস গঠিত হয়।</li>
+                    <li><strong className="text-slate-100">বীজ কেলাস (Seed Crystal):</strong> প্রায় ৫৫°C এর নিচে একটি ছোট বিশুদ্ধ কেলাস সুতা দিয়ে ঝুলিয়ে দিলে তা নিউক্লিয়েশন কেন্দ্র হিসেবে কাজ করে দ্রুত ও চমৎকার ঘনকীয় কেলাস বৃদ্ধি নিশ্চিত করে।</li>
+                    <li><strong className="text-slate-100">ঘনকীয় ল্যাটিস:</strong> NaCl এর কেলাস কাঠামো ফেস-সেন্টার্ড কিউবিক (FCC), যেখানে প্রতিটি Na⁺ আয়ন ৬টি Cl⁻ আয়ন দ্বারা এবং প্রতিটি Cl⁻ আয়ন ৬টি Na⁺ আয়ন দ্বারা পরিবেষ্টিত থাকে (সমন্বয় সংখ্যা ৬:৬)।</li>
+                  </ul>
+                </div>
+              </div>
+            </ScrollArea>
+            <DrawerClose asChild>
+              <Button variant="outline" size="sm" className="mx-4 mb-3 border-slate-700 bg-slate-800 text-slate-200">
+                বন্ধ করুন
+              </Button>
+            </DrawerClose>
+          </DrawerContent>
+        </Drawer>
       </div>
     </>
   );

@@ -166,7 +166,7 @@ function LabTopicDetailPage() {
               {copied ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Share2 className="h-3.5 w-3.5" />}
               {copied ? "কপি হয়েছে" : "শেয়ার"}
             </Button>
-            <Link to="/app">
+            <Link to="/app" search={{ lab: topic.id }}>
               <Button size="sm" className="h-8 text-xs font-semibold gap-1">
                 <Sparkles className="h-3.5 w-3.5" /> ল্যাব শুরু করো
               </Button>
@@ -231,7 +231,7 @@ function LabTopicDetailPage() {
           </p>
 
           <div className="pt-2 flex items-center gap-3 flex-wrap">
-            <Link to="/app">
+            <Link to="/app" search={{ lab: topic.id }}>
               <Button size="lg" className="rounded-xl font-bold shadow-md gap-2">
                 <FlaskConical className="h-5 w-5" />
                 সরাসরি ভার্চুয়াল ল্যাবে পরীক্ষাটি করো
