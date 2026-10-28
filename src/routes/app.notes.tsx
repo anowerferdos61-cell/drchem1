@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Bot, FileText, Lock, NotebookPen } from "lucide-react";
 import { LibraryShell, PremiumLockCard, useLibraryRows } from "@/components/library/LibraryLayout";
 import { useEntitlements } from "@/hooks/useEntitlements";
+import { ALL_FREE_ACCESS_MODE } from "@/lib/subscription.functions";
 
 interface NoteRow {
   id: string;
@@ -60,7 +61,7 @@ function NotesPage() {
   );
 
   const selected = chapterNotes.find((n) => n.id === selectedId) ?? chapterNotes[0] ?? null;
-  const locked = !!selected && selected.is_premium && !isPro;
+  const locked = !ALL_FREE_ACCESS_MODE && !!selected && selected.is_premium && !isPro;
 
   const askTutor = () => {
     if (!selected) return;
@@ -109,7 +110,7 @@ function NotesPage() {
             </div>
             {chapterNotes.map((n) => {
               const isActive = selected?.id === n.id;
-              const nLocked = n.is_premium && !isPro;
+              const nLocked = !ALL_FREE_ACCESS_MODE && n.is_premium && !isPro;
               return (
                 <button
                   key={n.id}
@@ -137,7 +138,7 @@ function NotesPage() {
                   <Badge variant="outline" className="font-mono text-[10px]">
                     CH {String(selected.chapter_number).padStart(2, "0")}
                   </Badge>
-                  {selected.is_premium && (
+                  {selected.is_premium && !ALL_FREE_ACCESS_MODE && (
                     <Badge className="bg-amber-500/10 text-amber-700 dark:text-amber-300">
                       Pro
                     </Badge>

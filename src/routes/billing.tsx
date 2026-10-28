@@ -78,7 +78,8 @@ function BillingPage() {
     }
   }, [loading, isAuthenticated, navigate]);
 
-  const { entitlements, isPro, isTrialing, trialDaysLeft, refetch } = useEntitlements();
+  const { entitlements, isPro, isAllFreeMode, isTrialing, trialDaysLeft, refetch } =
+    useEntitlements();
   const qc = useQueryClient();
   const listMine = useServerFn(listMyPayments);
   const { data: payments } = useQuery({
@@ -129,18 +130,32 @@ function BillingPage() {
                   Current Plan
                 </div>
                 <h2 className="text-xl font-bold">
-                  {entitlements?.tier === "teacher"
-                    ? "Teacher Pro"
-                    : entitlements?.tier === "student"
-                      ? "Student Pro"
-                      : "Free"}
+                  {isAllFreeMode
+                    ? "Full Access (ফ্রি ক্যাম্পেইন)"
+                    : entitlements?.tier === "teacher"
+                      ? "Teacher Pro"
+                      : entitlements?.tier === "student"
+                        ? "Student Pro"
+                        : "Free"}
                 </h2>
               </div>
             </div>
             <StatusBadge entitlements={entitlements} />
           </div>
 
-          {isTrialing && (
+          {isAllFreeMode && (
+            <div className="rounded-xl bg-emerald-500/10 border border-emerald-500/30 p-4 text-sm mb-4">
+              <div className="flex items-center gap-2 font-bold text-emerald-700 dark:text-emerald-400">
+                <Sparkles className="h-4 w-4" /> গ্র্যান্ড ক্যাম্পেইন সক্রিয় · সম্পূর্ণ ফ্রি এক্সেস
+              </div>
+              <p className="text-emerald-700/90 dark:text-emerald-300/90 mt-1">
+                বর্তমানে Dr. Chem-এর সব ৪০+ ল্যাব, AI টিউটর এবং স্মার্ট নোটস সবার জন্য উন্মুক্ত ও
+                সম্পূর্ণ ফ্রি রাখা হয়েছে। কোনো পেমেন্টের প্রয়োজন নেই।
+              </p>
+            </div>
+          )}
+
+          {isTrialing && !isAllFreeMode && (
             <div className="rounded-lg bg-amber-500/10 border border-amber-500/30 p-3 text-sm mb-3">
               <div className="flex items-center gap-2 font-medium text-amber-700 dark:text-amber-400">
                 <Sparkles className="h-4 w-4" /> Free Trial চলছে
@@ -304,10 +319,7 @@ function PaymentForm({
       await submitFn({
         data: {
           planCode: plan as
-            | "student_monthly"
-            | "student_yearly"
-            | "teacher_monthly"
-            | "teacher_yearly",
+            "student_monthly" | "student_yearly" | "teacher_monthly" | "teacher_yearly",
           senderPhone,
         },
       });

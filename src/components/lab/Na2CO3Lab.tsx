@@ -115,7 +115,9 @@ export default function Na2CO3Lab({ onBack }: Props) {
   const [showPanels, setShowPanels] = useState(true);
   const [vivaQuestions, setVivaQuestions] = useState<VivaQuestion[]>([]);
   const [showViva, setShowViva] = useState(false);
-  const [mobileTab, setMobileTab] = useState<"equipment" | "controls" | "info" | "guide">("equipment");
+  const [mobileTab, setMobileTab] = useState<"equipment" | "controls" | "info" | "guide">(
+    "equipment",
+  );
   const [showTheory, setShowTheory] = useState(false);
 
   const startedAtRef = useRef<number | null>(null);
@@ -504,348 +506,354 @@ export default function Na2CO3Lab({ onBack }: Props) {
         {/* ── Desktop Layout: 3-Column Fixed 100dvh (Zero outer scrollbar) ── */}
         {!isMobile ? (
           <main className="flex-1 min-h-0 overflow-hidden p-2.5 grid md:grid-cols-[minmax(250px,270px)_minmax(0,1fr)_minmax(270px,300px)] lg:grid-cols-[minmax(270px,290px)_minmax(0,1fr)_minmax(290px,320px)] md:gap-2.5">
-          {/* LEFT: Equipment */}
-          <aside className="lab-scroll flex h-full min-h-0 flex-col gap-2.5 overflow-y-auto pr-1">
-            <EquipmentPanel
-              items={NA2CO3_ITEMS}
-              onSelect={handleSelect}
-              highlight={guide ? nextHighlight : null}
-              disabled={() => submitted}
-            />
-          </aside>
+            {/* LEFT: Equipment */}
+            <aside className="lab-scroll flex h-full min-h-0 flex-col gap-2.5 overflow-y-auto pr-1">
+              <EquipmentPanel
+                items={NA2CO3_ITEMS}
+                onSelect={handleSelect}
+                highlight={guide ? nextHighlight : null}
+                disabled={() => submitted}
+              />
+            </aside>
 
-          {/* CENTER: Workspace & Action Bar */}
-          <section
-            className="relative flex h-full min-h-0 min-w-0 items-center justify-center overflow-hidden rounded-2xl border border-slate-800 bg-slate-950/60 shadow-inner"
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={(e) => {
-              const id = e.dataTransfer.getData("text/equipment") as EquipmentId;
-              if (id) handleSelect(id);
-            }}
-          >
-            <div className="absolute inset-0 overflow-hidden rounded-2xl">
+            {/* CENTER: Workspace & Action Bar */}
+            <section
+              className="relative flex h-full min-h-0 min-w-0 items-center justify-center overflow-hidden rounded-2xl border border-slate-800 bg-slate-950/60 shadow-inner"
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => {
+                const id = e.dataTransfer.getData("text/equipment") as EquipmentId;
+                if (id) handleSelect(id);
+              }}
+            >
+              <div className="absolute inset-0 overflow-hidden rounded-2xl">
+                <Na2CO3Workspace placed={placed} />
+              </div>
+
+              {/* Desktop Action Pill Bar */}
+              <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 flex-wrap items-center justify-center gap-1.5 rounded-full border border-slate-700/80 bg-slate-900/90 p-1.5 shadow-xl backdrop-blur">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={pressTare}
+                  disabled={submitted || !placed.watchGlassOnBalance || placed.tared}
+                  className="h-7 px-2 text-xs border-slate-700 bg-slate-800/80 text-slate-200 hover:bg-slate-700"
+                >
+                  <Sparkles className="mr-1 h-3 w-3 text-sky-400" /> Tare
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={finishWeighing}
+                  disabled={submitted || placed.actualAddedMass < 0.1}
+                  className="h-7 px-2 text-xs border-slate-700 bg-slate-800/80 text-slate-200 hover:bg-slate-700"
+                >
+                  Record mass
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={transferSolute}
+                  disabled={submitted || placed.soluteTransferred || placed.actualAddedMass < 0.1}
+                  className="h-7 px-2 text-xs border-slate-700 bg-slate-800/80 text-slate-200 hover:bg-slate-700"
+                >
+                  ↓ ফ্লাস্কে ঢালো
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={washDown}
+                  disabled={submitted || placed.washedDown || !placed.soluteTransferred}
+                  className="h-7 px-2 text-xs border-sky-500/30 bg-sky-500/10 text-sky-300 hover:bg-sky-500/20"
+                >
+                  <Droplet className="mr-1 h-3 w-3" /> ধৌত করো
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => addWater(25)}
+                  disabled={submitted || !placed.flaskReady || placed.addedWaterVolume >= 250}
+                  className="h-7 px-2 text-xs border-slate-700 bg-slate-800/80 text-slate-200 hover:bg-slate-700"
+                >
+                  +২৫ mL পানি
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={checkMeniscus}
+                  disabled={submitted || placed.addedWaterVolume < 240}
+                  className="h-7 px-2 text-xs border-emerald-500/30 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20"
+                >
+                  Meniscus দাগ
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={shakeFlask}
+                  disabled={submitted || !placed.stoppered}
+                  className="h-7 px-2 text-xs border-slate-700 bg-slate-800/80 text-slate-200 hover:bg-slate-700"
+                >
+                  Shake
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={reset}
+                  className="h-7 px-2 text-xs border-slate-700 bg-slate-800/80 text-slate-300 hover:bg-slate-700"
+                >
+                  <RotateCcw className="mr-1 h-3 w-3" /> Reset
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={submit}
+                  disabled={submitted}
+                  className="h-7 px-2 text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-semibold"
+                >
+                  <Trophy className="mr-1 h-3 w-3" /> Submit
+                </Button>
+              </div>
+            </section>
+
+            {/* RIGHT: Status & Checklist */}
+            <aside className="lab-scroll flex h-full min-h-0 flex-col gap-2.5 overflow-y-auto pl-1">
+              <StatusCard placed={placed} targetDelta={targetDelta} />
+              {mode !== "student" && (
+                <StepsPanel
+                  steps={steps}
+                  mistakes={mistakes}
+                  guideMode={guide}
+                  nextHint={guide ? nextHint : undefined}
+                />
+              )}
+            </aside>
+          </main>
+        ) : (
+          /* ── Mobile Split View (< md) ── */
+          <div className="flex flex-1 flex-col min-h-0 overflow-hidden">
+            {/* Top 46%: Pinned Visual Workspace */}
+            <div className="relative h-[46dvh] shrink-0 border-b border-slate-800/80 bg-slate-950/70 p-1 flex items-center justify-center overflow-hidden">
               <Na2CO3Workspace placed={placed} />
             </div>
 
-            {/* Desktop Action Pill Bar */}
-            <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 flex-wrap items-center justify-center gap-1.5 rounded-full border border-slate-700/80 bg-slate-900/90 p-1.5 shadow-xl backdrop-blur">
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={pressTare}
-                disabled={submitted || !placed.watchGlassOnBalance || placed.tared}
-                className="h-7 px-2 text-xs border-slate-700 bg-slate-800/80 text-slate-200 hover:bg-slate-700"
-              >
-                <Sparkles className="mr-1 h-3 w-3 text-sky-400" /> Tare
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={finishWeighing}
-                disabled={submitted || placed.actualAddedMass < 0.1}
-                className="h-7 px-2 text-xs border-slate-700 bg-slate-800/80 text-slate-200 hover:bg-slate-700"
-              >
-                Record mass
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={transferSolute}
-                disabled={submitted || placed.soluteTransferred || placed.actualAddedMass < 0.1}
-                className="h-7 px-2 text-xs border-slate-700 bg-slate-800/80 text-slate-200 hover:bg-slate-700"
-              >
-                ↓ ফ্লাস্কে ঢালো
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={washDown}
-                disabled={submitted || placed.washedDown || !placed.soluteTransferred}
-                className="h-7 px-2 text-xs border-sky-500/30 bg-sky-500/10 text-sky-300 hover:bg-sky-500/20"
-              >
-                <Droplet className="mr-1 h-3 w-3" /> ধৌত করো
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => addWater(25)}
-                disabled={submitted || !placed.flaskReady || placed.addedWaterVolume >= 250}
-                className="h-7 px-2 text-xs border-slate-700 bg-slate-800/80 text-slate-200 hover:bg-slate-700"
-              >
-                +২৫ mL পানি
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={checkMeniscus}
-                disabled={submitted || placed.addedWaterVolume < 240}
-                className="h-7 px-2 text-xs border-emerald-500/30 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20"
-              >
-                Meniscus দাগ
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={shakeFlask}
-                disabled={submitted || !placed.stoppered}
-                className="h-7 px-2 text-xs border-slate-700 bg-slate-800/80 text-slate-200 hover:bg-slate-700"
-              >
-                Shake
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={reset}
-                className="h-7 px-2 text-xs border-slate-700 bg-slate-800/80 text-slate-300 hover:bg-slate-700"
-              >
-                <RotateCcw className="mr-1 h-3 w-3" /> Reset
-              </Button>
-              <Button
-                size="sm"
-                onClick={submit}
-                disabled={submitted}
-                className="h-7 px-2 text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-semibold"
-              >
-                <Trophy className="mr-1 h-3 w-3" /> Submit
-              </Button>
-            </div>
-          </section>
+            {/* Bottom 54%: Interactive Tabbed Tray */}
+            <div className="flex flex-1 flex-col min-h-0 bg-slate-900/95 backdrop-blur">
+              {/* Tab Selection */}
+              <div className="grid grid-cols-4 border-b border-slate-800 bg-slate-950/60 p-1 text-[11px] font-semibold gap-1">
+                <button
+                  type="button"
+                  onClick={() => setMobileTab("equipment")}
+                  className={cn(
+                    "flex items-center justify-center gap-1 rounded-md py-1.5 transition",
+                    mobileTab === "equipment"
+                      ? "bg-slate-800 text-emerald-400 shadow-sm font-bold"
+                      : "text-slate-400 hover:text-slate-200",
+                  )}
+                >
+                  <Sliders className="h-3 w-3" />
+                  <span>যন্ত্রপাতি</span>
+                </button>
 
-          {/* RIGHT: Status & Checklist */}
-          <aside className="lab-scroll flex h-full min-h-0 flex-col gap-2.5 overflow-y-auto pl-1">
-            <StatusCard placed={placed} targetDelta={targetDelta} />
-            {mode !== "student" && (
-              <StepsPanel
-                steps={steps}
-                mistakes={mistakes}
-                guideMode={guide}
-                nextHint={guide ? nextHint : undefined}
-              />
-            )}
-          </aside>
-        </main>
-        ) : (
-        /* ── Mobile Split View (< md) ── */
-        <div className="flex flex-1 flex-col min-h-0 overflow-hidden">
-          {/* Top 46%: Pinned Visual Workspace */}
-          <div className="relative h-[46dvh] shrink-0 border-b border-slate-800/80 bg-slate-950/70 p-1 flex items-center justify-center overflow-hidden">
-            <Na2CO3Workspace placed={placed} />
-          </div>
+                <button
+                  type="button"
+                  onClick={() => setMobileTab("controls")}
+                  className={cn(
+                    "flex items-center justify-center gap-1 rounded-md py-1.5 transition",
+                    mobileTab === "controls"
+                      ? "bg-slate-800 text-emerald-400 shadow-sm font-bold"
+                      : "text-slate-400 hover:text-slate-200",
+                  )}
+                >
+                  <Plus className="h-3 w-3" />
+                  <span>কন্ট্রোলস</span>
+                </button>
 
-          {/* Bottom 54%: Interactive Tabbed Tray */}
-          <div className="flex flex-1 flex-col min-h-0 bg-slate-900/95 backdrop-blur">
-            {/* Tab Selection */}
-            <div className="grid grid-cols-4 border-b border-slate-800 bg-slate-950/60 p-1 text-[11px] font-semibold gap-1">
-              <button
-                type="button"
-                onClick={() => setMobileTab("equipment")}
-                className={cn(
-                  "flex items-center justify-center gap-1 rounded-md py-1.5 transition",
-                  mobileTab === "equipment"
-                    ? "bg-slate-800 text-emerald-400 shadow-sm font-bold"
-                    : "text-slate-400 hover:text-slate-200"
-                )}
-              >
-                <Sliders className="h-3 w-3" />
-                <span>যন্ত্রপাতি</span>
-              </button>
+                <button
+                  type="button"
+                  onClick={() => setMobileTab("info")}
+                  className={cn(
+                    "flex items-center justify-center gap-1 rounded-md py-1.5 transition",
+                    mobileTab === "info"
+                      ? "bg-slate-800 text-emerald-400 shadow-sm font-bold"
+                      : "text-slate-400 hover:text-slate-200",
+                  )}
+                >
+                  <BarChart3 className="h-3 w-3" />
+                  <span>ঘনমাত্রা ও ভর</span>
+                </button>
 
-              <button
-                type="button"
-                onClick={() => setMobileTab("controls")}
-                className={cn(
-                  "flex items-center justify-center gap-1 rounded-md py-1.5 transition",
-                  mobileTab === "controls"
-                    ? "bg-slate-800 text-emerald-400 shadow-sm font-bold"
-                    : "text-slate-400 hover:text-slate-200"
-                )}
-              >
-                <Plus className="h-3 w-3" />
-                <span>কন্ট্রোলস</span>
-              </button>
+                <button
+                  type="button"
+                  onClick={() => setMobileTab("guide")}
+                  className={cn(
+                    "flex items-center justify-center gap-1 rounded-md py-1.5 transition",
+                    mobileTab === "guide"
+                      ? "bg-slate-800 text-emerald-400 shadow-sm font-bold"
+                      : "text-slate-400 hover:text-slate-200",
+                  )}
+                >
+                  <CheckSquare className="h-3 w-3" />
+                  <span>গাইড</span>
+                </button>
+              </div>
 
-              <button
-                type="button"
-                onClick={() => setMobileTab("info")}
-                className={cn(
-                  "flex items-center justify-center gap-1 rounded-md py-1.5 transition",
-                  mobileTab === "info"
-                    ? "bg-slate-800 text-emerald-400 shadow-sm font-bold"
-                    : "text-slate-400 hover:text-slate-200"
-                )}
-              >
-                <BarChart3 className="h-3 w-3" />
-                <span>ঘনমাত্রা ও ভর</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setMobileTab("guide")}
-                className={cn(
-                  "flex items-center justify-center gap-1 rounded-md py-1.5 transition",
-                  mobileTab === "guide"
-                    ? "bg-slate-800 text-emerald-400 shadow-sm font-bold"
-                    : "text-slate-400 hover:text-slate-200"
-                )}
-              >
-                <CheckSquare className="h-3 w-3" />
-                <span>গাইড</span>
-              </button>
-            </div>
-
-            {/* Tab Panel Content */}
-            <div className="lab-scroll flex-1 min-h-0 overflow-y-auto p-2.5">
-              {mobileTab === "equipment" && (
-                <div className="space-y-2.5">
-                  <EquipmentPanel
-                    items={NA2CO3_ITEMS}
-                    onSelect={handleSelect}
-                    highlight={guide ? nextHighlight : null}
-                    disabled={() => submitted}
-                  />
-                </div>
-              )}
-
-              {mobileTab === "controls" && (
-                <div className="space-y-3">
-                  {/* Phase 1: Tare & Mass */}
-                  <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3 space-y-2">
-                    <div className="text-xs font-bold text-slate-200">১. ব্যালান্স ও ওজন (Weighing)</div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={pressTare}
-                        disabled={submitted || !placed.watchGlassOnBalance || placed.tared}
-                        className="h-9 text-xs border-slate-700 bg-slate-800 text-slate-200"
-                      >
-                        <Sparkles className="mr-1.5 h-3.5 w-3.5 text-sky-400" /> Tare (শূন্য করো)
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={finishWeighing}
-                        disabled={submitted || placed.actualAddedMass < 0.1}
-                        className="h-9 text-xs border-slate-700 bg-slate-800 text-slate-200"
-                      >
-                        ভর রেকর্ড করো
-                      </Button>
-                    </div>
+              {/* Tab Panel Content */}
+              <div className="lab-scroll flex-1 min-h-0 overflow-y-auto p-2.5">
+                {mobileTab === "equipment" && (
+                  <div className="space-y-2.5">
+                    <EquipmentPanel
+                      items={NA2CO3_ITEMS}
+                      onSelect={handleSelect}
+                      highlight={guide ? nextHighlight : null}
+                      disabled={() => submitted}
+                    />
                   </div>
+                )}
 
-                  {/* Phase 2: Transfer & Washing */}
-                  <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3 space-y-2">
-                    <div className="text-xs font-bold text-slate-200">২. ফ্লাস্কে দ্রবণ তৈরি</div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={transferSolute}
-                        disabled={submitted || placed.soluteTransferred || placed.actualAddedMass < 0.1}
-                        className="h-9 text-xs border-slate-700 bg-slate-800 text-slate-200"
-                      >
-                        ↓ দ্রাব স্থানান্তর
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={washDown}
-                        disabled={submitted || placed.washedDown || !placed.soluteTransferred}
-                        className="h-9 text-xs border-sky-500/30 bg-sky-500/10 text-sky-300"
-                      >
-                        <Droplet className="mr-1.5 h-3.5 w-3.5 text-sky-400" /> ফানেল ধৌত করো
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* Phase 3: Water addition */}
-                  <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3 space-y-2">
-                    <div className="text-xs font-bold text-slate-200">৩. ২৫০ mL দাগ পর্যন্ত পানি যোগ</div>
-                    <div className="grid grid-cols-4 gap-1.5">
-                      {[50, 25, 5, 1].map((v) => (
+                {mobileTab === "controls" && (
+                  <div className="space-y-3">
+                    {/* Phase 1: Tare & Mass */}
+                    <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3 space-y-2">
+                      <div className="text-xs font-bold text-slate-200">
+                        ১. ব্যালান্স ও ওজন (Weighing)
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
                         <Button
-                          key={v}
                           size="sm"
                           variant="outline"
-                          onClick={() => addWater(v)}
-                          disabled={submitted || !placed.flaskReady || placed.addedWaterVolume >= 260}
-                          className="h-8 text-xs border-slate-700 bg-slate-800 text-slate-200"
+                          onClick={pressTare}
+                          disabled={submitted || !placed.watchGlassOnBalance || placed.tared}
+                          className="h-9 text-xs border-slate-700 bg-slate-800 text-slate-200"
                         >
-                          +{v} mL
+                          <Sparkles className="mr-1.5 h-3.5 w-3.5 text-sky-400" /> Tare (শূন্য করো)
                         </Button>
-                      ))}
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={finishWeighing}
+                          disabled={submitted || placed.actualAddedMass < 0.1}
+                          className="h-9 text-xs border-slate-700 bg-slate-800 text-slate-200"
+                        >
+                          ভর রেকর্ড করো
+                        </Button>
+                      </div>
                     </div>
+
+                    {/* Phase 2: Transfer & Washing */}
+                    <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3 space-y-2">
+                      <div className="text-xs font-bold text-slate-200">২. ফ্লাস্কে দ্রবণ তৈরি</div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={transferSolute}
+                          disabled={
+                            submitted || placed.soluteTransferred || placed.actualAddedMass < 0.1
+                          }
+                          className="h-9 text-xs border-slate-700 bg-slate-800 text-slate-200"
+                        >
+                          ↓ দ্রাব স্থানান্তর
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={washDown}
+                          disabled={submitted || placed.washedDown || !placed.soluteTransferred}
+                          className="h-9 text-xs border-sky-500/30 bg-sky-500/10 text-sky-300"
+                        >
+                          <Droplet className="mr-1.5 h-3.5 w-3.5 text-sky-400" /> ফানেল ধৌত করো
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Phase 3: Water addition */}
+                    <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3 space-y-2">
+                      <div className="text-xs font-bold text-slate-200">
+                        ৩. ২৫০ mL দাগ পর্যন্ত পানি যোগ
+                      </div>
+                      <div className="grid grid-cols-4 gap-1.5">
+                        {[50, 25, 5, 1].map((v) => (
+                          <Button
+                            key={v}
+                            size="sm"
+                            variant="outline"
+                            onClick={() => addWater(v)}
+                            disabled={
+                              submitted || !placed.flaskReady || placed.addedWaterVolume >= 260
+                            }
+                            className="h-8 text-xs border-slate-700 bg-slate-800 text-slate-200"
+                          >
+                            +{v} mL
+                          </Button>
+                        ))}
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 pt-1">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={checkMeniscus}
+                          disabled={submitted || placed.addedWaterVolume < 240}
+                          className="h-9 text-xs border-emerald-500/30 bg-emerald-500/10 text-emerald-300"
+                        >
+                          Meniscus দাগ যাচাই
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={shakeFlask}
+                          disabled={submitted || !placed.stoppered}
+                          className="h-9 text-xs border-slate-700 bg-slate-800 text-slate-200"
+                        >
+                          ছিপি লাগিয়ে ঝাঁকাও
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Submission */}
                     <div className="grid grid-cols-2 gap-2 pt-1">
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={checkMeniscus}
-                        disabled={submitted || placed.addedWaterVolume < 240}
-                        className="h-9 text-xs border-emerald-500/30 bg-emerald-500/10 text-emerald-300"
+                        onClick={reset}
+                        className="h-9 text-xs border-slate-700 bg-slate-800 text-slate-300"
                       >
-                        Meniscus দাগ যাচাই
+                        <RotateCcw className="mr-1.5 h-4 w-4" /> রিসেট
                       </Button>
                       <Button
                         size="sm"
-                        variant="outline"
-                        onClick={shakeFlask}
-                        disabled={submitted || !placed.stoppered}
-                        className="h-9 text-xs border-slate-700 bg-slate-800 text-slate-200"
+                        onClick={submit}
+                        disabled={submitted}
+                        className="h-9 text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold"
                       >
-                        ছিপি লাগিয়ে ঝাঁকাও
+                        <Trophy className="mr-1.5 h-4 w-4" /> রিপোর্ট জমা
                       </Button>
                     </div>
                   </div>
+                )}
 
-                  {/* Submission */}
-                  <div className="grid grid-cols-2 gap-2 pt-1">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={reset}
-                      className="h-9 text-xs border-slate-700 bg-slate-800 text-slate-300"
-                    >
-                      <RotateCcw className="mr-1.5 h-4 w-4" /> রিসেট
-                    </Button>
-                    <Button
-                      size="sm"
-                      onClick={submit}
-                      disabled={submitted}
-                      className="h-9 text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold"
-                    >
-                      <Trophy className="mr-1.5 h-4 w-4" /> রিপোর্ট জমা
-                    </Button>
+                {mobileTab === "info" && <StatusCard placed={placed} targetDelta={targetDelta} />}
+
+                {mobileTab === "guide" && (
+                  <div className="space-y-3">
+                    <StepsPanel
+                      steps={steps}
+                      mistakes={mistakes}
+                      guideMode={guide}
+                      nextHint={guide ? nextHint : undefined}
+                    />
+                    {showViva && (
+                      <div className="space-y-3 pt-2">
+                        <TeacherViva
+                          onPublish={setVivaQuestions}
+                          experiment="na2co3_standard"
+                          defaultTopic="0.1 M Na₂CO₃ প্রমাণ দ্রবণ প্রস্তুতি ও primary standard substance"
+                        />
+                        <StudentViva />
+                      </div>
+                    )}
                   </div>
-                </div>
-              )}
-
-              {mobileTab === "info" && (
-                <StatusCard placed={placed} targetDelta={targetDelta} />
-              )}
-
-              {mobileTab === "guide" && (
-                <div className="space-y-3">
-                  <StepsPanel
-                    steps={steps}
-                    mistakes={mistakes}
-                    guideMode={guide}
-                    nextHint={guide ? nextHint : undefined}
-                  />
-                  {showViva && (
-                    <div className="space-y-3 pt-2">
-                      <TeacherViva
-                        onPublish={setVivaQuestions}
-                        experiment="na2co3_standard"
-                        defaultTopic="0.1 M Na₂CO₃ প্রমাণ দ্রবণ প্রস্তুতি ও primary standard substance"
-                      />
-                      <StudentViva />
-                    </div>
-                  )}
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
-        </div>
         )}
 
         {/* ── Report Modal Overlay ── */}
@@ -868,14 +876,22 @@ export default function Na2CO3Lab({ onBack }: Props) {
             <ScrollArea className="px-4 py-4 max-h-[70dvh]">
               <div className="prose prose-invert prose-sm max-w-none space-y-4 text-slate-300">
                 <div>
-                  <h4 className="text-emerald-400 font-bold mb-1">১. প্রমাণ দ্রবণ ও প্রাথমিক স্ট্যান্ডার্ড (Primary Standard)</h4>
+                  <h4 className="text-emerald-400 font-bold mb-1">
+                    ১. প্রমাণ দ্রবণ ও প্রাথমিক স্ট্যান্ডার্ড (Primary Standard)
+                  </h4>
                   <p className="text-xs text-slate-400">
-                    যে দ্রবণের ঘনমাত্রা সঠিকভাবে জানা থাকে তাকে <strong>প্রমাণ দ্রবণ (Standard Solution)</strong> বলে। সোডিয়াম কার্বনেট (Na₂CO₃) একটি প্রাইমারি স্ট্যান্ডার্ড পদার্থ কারণ এটি বিশুদ্ব অবস্থায় পাওয়া যায়, বায়ুমণ্ডলের জলীয় বাষ্প বা অক্সিজেন দ্বারা সহজে পরিবর্তিত হয় না এবং এর প্রস্তুতকৃত দ্রবণের ঘনমাত্রা দীর্ঘকাল অপরিবর্তিত থাকে।
+                    যে দ্রবণের ঘনমাত্রা সঠিকভাবে জানা থাকে তাকে{" "}
+                    <strong>প্রমাণ দ্রবণ (Standard Solution)</strong> বলে। সোডিয়াম কার্বনেট
+                    (Na₂CO₃) একটি প্রাইমারি স্ট্যান্ডার্ড পদার্থ কারণ এটি বিশুদ্ব অবস্থায় পাওয়া
+                    যায়, বায়ুমণ্ডলের জলীয় বাষ্প বা অক্সিজেন দ্বারা সহজে পরিবর্তিত হয় না এবং এর
+                    প্রস্তুতকৃত দ্রবণের ঘনমাত্রা দীর্ঘকাল অপরিবর্তিত থাকে।
                   </p>
                 </div>
 
                 <div>
-                  <h4 className="text-emerald-400 font-bold mb-1">২. প্রয়োজনীয় ভরের গণনা (Stoichiometry)</h4>
+                  <h4 className="text-emerald-400 font-bold mb-1">
+                    ২. প্রয়োজনীয় ভরের গণনা (Stoichiometry)
+                  </h4>
                   <p className="font-mono bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-emerald-300 text-xs my-2">
                     W = (S × M × V) / ১০০০ গ্রাম
                   </p>
@@ -883,22 +899,43 @@ export default function Na2CO3Lab({ onBack }: Props) {
                     <li>কাঙ্ক্ষিত মোলারিটি (S) = ০.১ M (mol/L)</li>
                     <li>Na₂CO₃ এর মোলার ভর (M) = (২৩ × ২) + ১২ + (১৬ × ৩) = ১০৬ g/mol</li>
                     <li>আয়তনমিতিক ফ্লাস্কের আয়তন (V) = ২৫০ mL</li>
-                    <li>প্রয়োজনীয় ভর W = (০.১ × ১০৬ × ২৫০) / ১০০০ = <span className="font-bold text-emerald-300">২.৬৫০ গ্রাম</span></li>
+                    <li>
+                      প্রয়োজনীয় ভর W = (০.১ × ১০৬ × ২৫০) / ১০০০ ={" "}
+                      <span className="font-bold text-emerald-300">২.৬৫০ গ্রাম</span>
+                    </li>
                   </ul>
                 </div>
 
                 <div>
-                  <h4 className="text-emerald-400 font-bold mb-1">৩. মেনিসকাস ও সমসত্ত্বকরণ (Meniscus & Homogenization)</h4>
+                  <h4 className="text-emerald-400 font-bold mb-1">
+                    ৩. মেনিসকাস ও সমসত্ত্বকরণ (Meniscus & Homogenization)
+                  </h4>
                   <ul className="text-xs space-y-1.5 list-disc pl-4 text-slate-300">
-                    <li><strong className="text-slate-100">নিম্ন মেনিসকাস:</strong> বর্ণহীন দ্রবণের ক্ষেত্রে অবতল মেনিসকাসের নিম্নতল (Lower Meniscus) ২৫০ mL এর রিং-চিহ্নের সমান্তরাল হতে হবে।</li>
-                    <li><strong className="text-slate-100">ওয়াশ বোতল দিয়ে ধৌতকরণ:</strong> ফানেল ও ওয়াচ গ্লাসে লেগে থাকা দ্রাব ওয়াশ বোতলের পাতিত পানি দিয়ে সম্পূর্ণরূপে ফ্লাস্কে নামাতে হবে।</li>
-                    <li><strong className="text-slate-100">উলট-পালট করে ঝাঁকানো:</strong> ছিপি ভালো করে এঁটে ফ্লাস্কটিকে উল্টে-পাল্টে কয়েকবার ঝাঁকাতে হবে যাতে সম্পূর্ণ দ্রবণ সুষম ও সমসত্ত্ব হয়।</li>
+                    <li>
+                      <strong className="text-slate-100">নিম্ন মেনিসকাস:</strong> বর্ণহীন দ্রবণের
+                      ক্ষেত্রে অবতল মেনিসকাসের নিম্নতল (Lower Meniscus) ২৫০ mL এর রিং-চিহ্নের
+                      সমান্তরাল হতে হবে।
+                    </li>
+                    <li>
+                      <strong className="text-slate-100">ওয়াশ বোতল দিয়ে ধৌতকরণ:</strong> ফানেল ও
+                      ওয়াচ গ্লাসে লেগে থাকা দ্রাব ওয়াশ বোতলের পাতিত পানি দিয়ে সম্পূর্ণরূপে
+                      ফ্লাস্কে নামাতে হবে।
+                    </li>
+                    <li>
+                      <strong className="text-slate-100">উলট-পালট করে ঝাঁকানো:</strong> ছিপি ভালো
+                      করে এঁটে ফ্লাস্কটিকে উল্টে-পাল্টে কয়েকবার ঝাঁকাতে হবে যাতে সম্পূর্ণ দ্রবণ
+                      সুষম ও সমসত্ত্ব হয়।
+                    </li>
                   </ul>
                 </div>
               </div>
             </ScrollArea>
             <DrawerClose asChild>
-              <Button variant="outline" size="sm" className="mx-4 mb-3 border-slate-700 bg-slate-800 text-slate-200">
+              <Button
+                variant="outline"
+                size="sm"
+                className="mx-4 mb-3 border-slate-700 bg-slate-800 text-slate-200"
+              >
                 বন্ধ করুন
               </Button>
             </DrawerClose>

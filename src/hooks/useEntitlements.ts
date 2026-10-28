@@ -4,7 +4,12 @@
  */
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { getEntitlements, FREE_TIER_LABS, type Entitlements } from "@/lib/subscription.functions";
+import {
+  getEntitlements,
+  FREE_TIER_LABS,
+  ALL_FREE_ACCESS_MODE,
+  type Entitlements,
+} from "@/lib/subscription.functions";
 import { useAuth } from "@/lib/auth-store";
 
 export function useEntitlements() {
@@ -21,18 +26,21 @@ export function useEntitlements() {
   const ent: Entitlements | undefined = query.data;
 
   const isPro =
-    !!ent && (ent.status === "trialing" || ent.status === "active") && ent.tier !== "free";
+    ALL_FREE_ACCESS_MODE ||
+    (!!ent && (ent.status === "trialing" || ent.status === "active") && ent.tier !== "free");
 
   const canAccessLab = (labId: string): boolean => {
-    if (isPro) return true;
+    if (ALL_FREE_ACCESS_MODE || isPro) return true;
     return (FREE_TIER_LABS as readonly string[]).includes(labId);
   };
 
-  const aiMessagesRemaining = ent
-    ? ent.aiMessagesPerDay === -1
-      ? Infinity
-      : Math.max(0, ent.aiMessagesPerDay - ent.aiMessagesUsedToday)
-    : 0;
+  const aiMessagesRemaining = ALL_FREE_ACCESS_MODE
+    ? Infinity
+    : ent
+      ? ent.aiMessagesPerDay === -1
+        ? Infinity
+        : Math.max(0, ent.aiMessagesPerDay - ent.aiMessagesUsedToday)
+      : 0;
 
   const trialDaysLeft = ent?.trialEndsAt
     ? Math.max(
@@ -45,6 +53,7 @@ export function useEntitlements() {
     entitlements: ent,
     loading: query.isLoading,
     isPro,
+    isAllFreeMode: ALL_FREE_ACCESS_MODE,
     isTrialing: ent?.status === "trialing",
     trialDaysLeft,
     canAccessLab,

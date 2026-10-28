@@ -560,432 +560,438 @@ export default function IonicLab({ onBack }: Props) {
         {/* DESKTOP 3-COLUMN VIEWPORT (100dvh Locked) */}
         {!isMobile ? (
           <div className="grid md:grid-cols-[280px_1fr_290px] flex-1 min-h-0 gap-3 p-3 overflow-hidden">
-          {/* LEFT COLUMN: Equipment & Quick Setup */}
-          <div className="flex flex-col h-full min-h-0 gap-3">
-            <Card className="flex flex-col h-full min-h-0 p-3 shadow-sm overflow-hidden">
-              <div className="flex items-center justify-between pb-2 border-b">
-                <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
-                  🛠️ যন্ত্রপাতি ও নমুনা
-                </span>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={setupAllStations}
-                  className="h-6 text-[10px] px-2 gap-1 border-emerald-500/30 text-emerald-600 hover:bg-emerald-500/10"
-                >
-                  <Sparkles className="h-3 w-3" />
-                  ১-ক্লিকে সাজাও
-                </Button>
-              </div>
-              <ScrollArea className="flex-1 pr-2 pt-2">
-                <EquipmentPanel
-                  items={IONIC_ITEMS}
-                  onSelect={handleSelect}
-                  highlight={guide ? nextHighlight : null}
-                  disabled={() => submitted}
-                />
-              </ScrollArea>
-            </Card>
-          </div>
-
-          {/* CENTER COLUMN: SVG Workspace + Docked Stage Action Tray */}
-          <section
-            className="relative flex flex-col h-full min-h-0 rounded-xl border bg-card/60 shadow-inner overflow-hidden"
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={(e) => {
-              const id = e.dataTransfer.getData("text/equipment") as EquipmentId;
-              if (id) handleSelect(id);
-            }}
-          >
-            <div className="relative flex-1 min-h-0 w-full overflow-hidden">
-              <IonicWorkspace
-                placed={placed}
-                activeSubstance={activeSubstance}
-                electrolysisT={electrolysisT}
-              />
-            </div>
-
-            {/* DOCKED STAGE ACTION TRAY */}
-            <div className="shrink-0 border-t bg-background/95 p-2 shadow-lg backdrop-blur flex flex-wrap items-center justify-between gap-2">
-              {/* Solubility Stage */}
-              <div className="flex items-center gap-1 border-r pr-2">
-                <span className="text-[10px] font-bold text-sky-600 flex items-center gap-0.5 mr-1">
-                  <BeakerIcon className="h-3 w-3" /> দ্রবণ:
-                </span>
-                {SUB_LIST.map((s) => (
-                  <Button
-                    key={`sol-${s}`}
-                    size="sm"
-                    variant={placed.solubility[s] !== null ? "secondary" : "outline"}
-                    disabled={!stageActive("sol") || submitted}
-                    onClick={() => testSolubility(s)}
-                    className="h-6 px-1.5 text-[10px]"
-                  >
-                    {LABELS[s].en}
-                  </Button>
-                ))}
-              </div>
-
-              {/* Conductivity Stage */}
-              <div className="flex items-center gap-1 border-r pr-2">
-                <span className="text-[10px] font-bold text-amber-600 flex items-center gap-0.5 mr-1">
-                  <Zap className="h-3 w-3" /> পরিবাহিতা:
-                </span>
-                {SUB_LIST.map((s) => (
-                  <Button
-                    key={`con-${s}`}
-                    size="sm"
-                    variant={placed.conductivityTested[s] !== null ? "secondary" : "outline"}
-                    disabled={!stageActive("cond") || submitted}
-                    onClick={() => testConductivity(s, true)}
-                    className="h-6 px-1.5 text-[10px]"
-                  >
-                    {LABELS[s].en}
-                  </Button>
-                ))}
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  disabled={!stageActive("cond") || submitted}
-                  onClick={() => testConductivity("nacl", false)}
-                  className="h-6 px-1 text-[10px] text-destructive hover:bg-destructive/10"
-                  title="Test solid NaCl (mistake test)"
-                >
-                  Solid?
-                </Button>
-              </div>
-
-              {/* Melting Stage */}
-              <div className="flex items-center gap-1 border-r pr-2">
-                <span className="text-[10px] font-bold text-orange-600 flex items-center gap-0.5 mr-1">
-                  <Flame className="h-3 w-3" /> গলনাঙ্ক:
-                </span>
-                {SUB_LIST.map((s) => (
-                  <Button
-                    key={`melt-${s}`}
-                    size="sm"
-                    variant={placed.meltResult[s] !== null ? "secondary" : "outline"}
-                    disabled={!stageActive("melt") || submitted}
-                    onClick={() => testMelting(s)}
-                    className="h-6 px-1.5 text-[10px]"
-                  >
-                    {LABELS[s].en}
-                  </Button>
-                ))}
-              </div>
-
-              {/* Electrolysis Stage */}
-              <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-bold text-indigo-600 flex items-center gap-0.5 mr-0.5">
-                  <Zap className="h-3 w-3" /> তড়িৎ বিশ্লেষণ:
-                </span>
-                {!placed.electrolysisRun ? (
+            {/* LEFT COLUMN: Equipment & Quick Setup */}
+            <div className="flex flex-col h-full min-h-0 gap-3">
+              <Card className="flex flex-col h-full min-h-0 p-3 shadow-sm overflow-hidden">
+                <div className="flex items-center justify-between pb-2 border-b">
+                  <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+                    🛠️ যন্ত্রপাতি ও নমুনা
+                  </span>
                   <Button
                     size="sm"
-                    onClick={runElectrolysis}
-                    disabled={
-                      !placed.cellReady ||
-                      !placed.cuso4InCell ||
-                      !placed.electrodesPlaced ||
-                      submitted
-                    }
-                    className="h-6 px-2 text-[10px] bg-indigo-600 hover:bg-indigo-700 text-white"
+                    variant="outline"
+                    onClick={setupAllStations}
+                    className="h-6 text-[10px] px-2 gap-1 border-emerald-500/30 text-emerald-600 hover:bg-emerald-500/10"
                   >
-                    ▶ Run
+                    <Sparkles className="h-3 w-3" />
+                    ১-ক্লিকে সাজাও
                   </Button>
-                ) : (
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    onClick={stopElectrolysis}
-                    className="h-6 px-2 text-[10px]"
-                  >
-                    <Pause className="mr-1 h-3 w-3" /> Stop
-                  </Button>
-                )}
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={togglePolarity}
-                  disabled={!placed.cellReady || submitted}
-                  className="h-6 px-1.5 text-[10px]"
-                  title="Reverse anode/cathode"
-                >
-                  ± Flip
-                </Button>
-              </div>
-            </div>
-          </section>
-
-          {/* RIGHT COLUMN: Status & Steps */}
-          <div className="flex flex-col h-full min-h-0 gap-3 overflow-hidden">
-            <StatusCard placed={placed} />
-            <div className="flex-1 min-h-0 overflow-y-auto">
-              <StepsPanel
-                steps={steps}
-                mistakes={mistakes}
-                guideMode={guide}
-                nextHint={guide ? nextHint : undefined}
-              />
-            </div>
-          </div>
-        </div>
-        ) : (
-        /* MOBILE SPLIT VIEW (Top 46% Live SVG + Bottom 54% 4-Tab Tray) */
-        <div className="flex flex-1 min-h-0 flex-col overflow-hidden">
-          {/* TOP 46%: Pinned Live Reaction Workspace */}
-          <div className="h-[46%] min-h-[200px] relative border-b bg-card/60 shrink-0 overflow-hidden">
-            <IonicWorkspace
-              placed={placed}
-              activeSubstance={activeSubstance}
-              electrolysisT={electrolysisT}
-            />
-            {/* Overlay indicators on mobile */}
-            <div className="absolute top-1.5 left-2 z-10 flex items-center gap-1 bg-background/85 px-2 py-0.5 rounded-full border text-[9px] shadow-sm backdrop-blur">
-              <span className="font-semibold text-muted-foreground">Cu Deposit:</span>
-              <span className="font-mono text-primary font-bold">
-                {Math.round(placed.copperDeposit * 100)}%
-              </span>
-              <span className="mx-0.5 text-muted-foreground/40">|</span>
-              <span
-                className={
-                  placed.polarityCorrect ? "text-emerald-600 font-bold" : "text-destructive font-bold"
-                }
-              >
-                {placed.polarityCorrect ? "Polarity OK" : "Reversed"}
-              </span>
-            </div>
-          </div>
-
-          {/* BOTTOM 54%: Tabbed Control Tray */}
-          <div className="flex-1 min-h-0 flex flex-col bg-background/95">
-            {/* Mobile Tab Bar */}
-            <div className="grid grid-cols-4 border-b bg-muted/40 p-1 gap-1 shrink-0">
-              <button
-                onClick={() => setMobileTab("controls")}
-                className={cn(
-                  "py-1.5 text-[11px] font-semibold rounded flex items-center justify-center gap-1 transition",
-                  mobileTab === "controls"
-                    ? "bg-background text-primary shadow-sm"
-                    : "text-muted-foreground hover:text-foreground",
-                )}
-              >
-                <Sliders className="h-3 w-3" />
-                <span>টেস্ট ও ধাপ</span>
-              </button>
-              <button
-                onClick={() => setMobileTab("tools")}
-                className={cn(
-                  "py-1.5 text-[11px] font-semibold rounded flex items-center justify-center gap-1 transition",
-                  mobileTab === "tools"
-                    ? "bg-background text-primary shadow-sm"
-                    : "text-muted-foreground hover:text-foreground",
-                )}
-              >
-                <Sparkles className="h-3 w-3" />
-                <span>যন্ত্রপাতি</span>
-              </button>
-              <button
-                onClick={() => setMobileTab("data")}
-                className={cn(
-                  "py-1.5 text-[11px] font-semibold rounded flex items-center justify-center gap-1 transition",
-                  mobileTab === "data"
-                    ? "bg-background text-primary shadow-sm"
-                    : "text-muted-foreground hover:text-foreground",
-                )}
-              >
-                <BarChart3 className="h-3 w-3" />
-                <span>তথ্য ও প্রগ্রেস</span>
-              </button>
-              <button
-                onClick={() => setMobileTab("guide")}
-                className={cn(
-                  "py-1.5 text-[11px] font-semibold rounded flex items-center justify-center gap-1 transition",
-                  mobileTab === "guide"
-                    ? "bg-background text-primary shadow-sm"
-                    : "text-muted-foreground hover:text-foreground",
-                )}
-              >
-                <CheckSquare className="h-3 w-3" />
-                <span>গাইড</span>
-              </button>
-            </div>
-
-            {/* Tab Contents */}
-            <div className="flex-1 min-h-0 p-2.5 overflow-y-auto">
-              {mobileTab === "controls" && (
-                <div className="space-y-3">
-                  {/* Solubility */}
-                  <div className="rounded-lg border p-2.5 bg-card/40 space-y-1.5">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-sky-600 flex items-center gap-1">
-                        <BeakerIcon className="h-3.5 w-3.5" /> ১. দ্রবণীয়তা পরীক্ষা
-                      </span>
-                      <span className="text-[10px] text-muted-foreground">বিকার ও পানিতে পরীক্ষা</span>
-                    </div>
-                    <div className="grid grid-cols-4 gap-1.5">
-                      {SUB_LIST.map((s) => (
-                        <Button
-                          key={`m-sol-${s}`}
-                          size="sm"
-                          variant={placed.solubility[s] !== null ? "secondary" : "outline"}
-                          disabled={!stageActive("sol") || submitted}
-                          onClick={() => testSolubility(s)}
-                          className="h-8 text-[11px] font-medium"
-                        >
-                          {LABELS[s].en}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Conductivity */}
-                  <div className="rounded-lg border p-2.5 bg-card/40 space-y-1.5">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-amber-600 flex items-center gap-1">
-                        <Zap className="h-3.5 w-3.5" /> ২. তড়িৎ পরিবাহিতা পরীক্ষা
-                      </span>
-                      <span className="text-[10px] text-muted-foreground">বাল্ব জ্বলে কি না</span>
-                    </div>
-                    <div className="grid grid-cols-4 gap-1.5">
-                      {SUB_LIST.map((s) => (
-                        <Button
-                          key={`m-con-${s}`}
-                          size="sm"
-                          variant={placed.conductivityTested[s] !== null ? "secondary" : "outline"}
-                          disabled={!stageActive("cond") || submitted}
-                          onClick={() => testConductivity(s, true)}
-                          className="h-8 text-[11px] font-medium"
-                        >
-                          {LABELS[s].en}
-                        </Button>
-                      ))}
-                    </div>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      disabled={!stageActive("cond") || submitted}
-                      onClick={() => testConductivity("nacl", false)}
-                      className="w-full h-7 text-[10px] text-destructive hover:bg-destructive/10"
-                    >
-                      কঠিন NaCl দিয়ে ভুল পরীক্ষা করো (Solid Test)
-                    </Button>
-                  </div>
-
-                  {/* Melting */}
-                  <div className="rounded-lg border p-2.5 bg-card/40 space-y-1.5">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-orange-600 flex items-center gap-1">
-                        <Flame className="h-3.5 w-3.5" /> ৩. গলনাঙ্ক পরীক্ষা
-                      </span>
-                      <span className="text-[10px] text-muted-foreground">Spatula ও তাপ</span>
-                    </div>
-                    <div className="grid grid-cols-4 gap-1.5">
-                      {SUB_LIST.map((s) => (
-                        <Button
-                          key={`m-melt-${s}`}
-                          size="sm"
-                          variant={placed.meltResult[s] !== null ? "secondary" : "outline"}
-                          disabled={!stageActive("melt") || submitted}
-                          onClick={() => testMelting(s)}
-                          className="h-8 text-[11px] font-medium"
-                        >
-                          {LABELS[s].en}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Electrolysis */}
-                  <div className="rounded-lg border p-2.5 bg-card/40 space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-indigo-600 flex items-center gap-1">
-                        <Zap className="h-3.5 w-3.5" /> ৪. CuSO₄ তড়িৎ বিশ্লেষণ
-                      </span>
-                      <span className="text-[10px] font-mono text-primary font-bold">
-                        Deposit: {Math.round(placed.copperDeposit * 100)}%
-                      </span>
-                    </div>
-                    <div className="flex gap-2">
-                      {!placed.electrolysisRun ? (
-                        <Button
-                          size="sm"
-                          onClick={runElectrolysis}
-                          disabled={
-                            !placed.cellReady ||
-                            !placed.cuso4InCell ||
-                            !placed.electrodesPlaced ||
-                            submitted
-                          }
-                          className="flex-1 h-8 text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white"
-                        >
-                          ▶ Run Electrolysis
-                        </Button>
-                      ) : (
-                        <Button
-                          size="sm"
-                          variant="destructive"
-                          onClick={stopElectrolysis}
-                          className="flex-1 h-8 text-xs font-semibold"
-                        >
-                          <Pause className="mr-1 h-3.5 w-3.5" /> Stop
-                        </Button>
-                      )}
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={togglePolarity}
-                        disabled={!placed.cellReady || submitted}
-                        className="h-8 px-3 text-xs"
-                      >
-                        ± Flip
-                      </Button>
-                    </div>
-                  </div>
                 </div>
-              )}
-
-              {mobileTab === "tools" && (
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between bg-muted/40 p-2 rounded-lg border">
-                    <span className="text-xs font-medium">ঝটপট সব প্রস্তুত করতে চাও?</span>
-                    <Button
-                      size="sm"
-                      onClick={setupAllStations}
-                      className="h-7 text-xs bg-emerald-600 hover:bg-emerald-700 text-white gap-1"
-                    >
-                      <Sparkles className="h-3 w-3" />
-                      সব সাজাও
-                    </Button>
-                  </div>
+                <ScrollArea className="flex-1 pr-2 pt-2">
                   <EquipmentPanel
                     items={IONIC_ITEMS}
                     onSelect={handleSelect}
                     highlight={guide ? nextHighlight : null}
                     disabled={() => submitted}
                   />
-                </div>
-              )}
+                </ScrollArea>
+              </Card>
+            </div>
 
-              {mobileTab === "data" && (
-                <div className="space-y-3">
-                  <StatusCard placed={placed} />
-                </div>
-              )}
+            {/* CENTER COLUMN: SVG Workspace + Docked Stage Action Tray */}
+            <section
+              className="relative flex flex-col h-full min-h-0 rounded-xl border bg-card/60 shadow-inner overflow-hidden"
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => {
+                const id = e.dataTransfer.getData("text/equipment") as EquipmentId;
+                if (id) handleSelect(id);
+              }}
+            >
+              <div className="relative flex-1 min-h-0 w-full overflow-hidden">
+                <IonicWorkspace
+                  placed={placed}
+                  activeSubstance={activeSubstance}
+                  electrolysisT={electrolysisT}
+                />
+              </div>
 
-              {mobileTab === "guide" && (
-                <div className="space-y-3">
-                  <StepsPanel
-                    steps={steps}
-                    mistakes={mistakes}
-                    guideMode={guide}
-                    nextHint={guide ? nextHint : undefined}
-                  />
+              {/* DOCKED STAGE ACTION TRAY */}
+              <div className="shrink-0 border-t bg-background/95 p-2 shadow-lg backdrop-blur flex flex-wrap items-center justify-between gap-2">
+                {/* Solubility Stage */}
+                <div className="flex items-center gap-1 border-r pr-2">
+                  <span className="text-[10px] font-bold text-sky-600 flex items-center gap-0.5 mr-1">
+                    <BeakerIcon className="h-3 w-3" /> দ্রবণ:
+                  </span>
+                  {SUB_LIST.map((s) => (
+                    <Button
+                      key={`sol-${s}`}
+                      size="sm"
+                      variant={placed.solubility[s] !== null ? "secondary" : "outline"}
+                      disabled={!stageActive("sol") || submitted}
+                      onClick={() => testSolubility(s)}
+                      className="h-6 px-1.5 text-[10px]"
+                    >
+                      {LABELS[s].en}
+                    </Button>
+                  ))}
                 </div>
-              )}
+
+                {/* Conductivity Stage */}
+                <div className="flex items-center gap-1 border-r pr-2">
+                  <span className="text-[10px] font-bold text-amber-600 flex items-center gap-0.5 mr-1">
+                    <Zap className="h-3 w-3" /> পরিবাহিতা:
+                  </span>
+                  {SUB_LIST.map((s) => (
+                    <Button
+                      key={`con-${s}`}
+                      size="sm"
+                      variant={placed.conductivityTested[s] !== null ? "secondary" : "outline"}
+                      disabled={!stageActive("cond") || submitted}
+                      onClick={() => testConductivity(s, true)}
+                      className="h-6 px-1.5 text-[10px]"
+                    >
+                      {LABELS[s].en}
+                    </Button>
+                  ))}
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    disabled={!stageActive("cond") || submitted}
+                    onClick={() => testConductivity("nacl", false)}
+                    className="h-6 px-1 text-[10px] text-destructive hover:bg-destructive/10"
+                    title="Test solid NaCl (mistake test)"
+                  >
+                    Solid?
+                  </Button>
+                </div>
+
+                {/* Melting Stage */}
+                <div className="flex items-center gap-1 border-r pr-2">
+                  <span className="text-[10px] font-bold text-orange-600 flex items-center gap-0.5 mr-1">
+                    <Flame className="h-3 w-3" /> গলনাঙ্ক:
+                  </span>
+                  {SUB_LIST.map((s) => (
+                    <Button
+                      key={`melt-${s}`}
+                      size="sm"
+                      variant={placed.meltResult[s] !== null ? "secondary" : "outline"}
+                      disabled={!stageActive("melt") || submitted}
+                      onClick={() => testMelting(s)}
+                      className="h-6 px-1.5 text-[10px]"
+                    >
+                      {LABELS[s].en}
+                    </Button>
+                  ))}
+                </div>
+
+                {/* Electrolysis Stage */}
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] font-bold text-indigo-600 flex items-center gap-0.5 mr-0.5">
+                    <Zap className="h-3 w-3" /> তড়িৎ বিশ্লেষণ:
+                  </span>
+                  {!placed.electrolysisRun ? (
+                    <Button
+                      size="sm"
+                      onClick={runElectrolysis}
+                      disabled={
+                        !placed.cellReady ||
+                        !placed.cuso4InCell ||
+                        !placed.electrodesPlaced ||
+                        submitted
+                      }
+                      className="h-6 px-2 text-[10px] bg-indigo-600 hover:bg-indigo-700 text-white"
+                    >
+                      ▶ Run
+                    </Button>
+                  ) : (
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={stopElectrolysis}
+                      className="h-6 px-2 text-[10px]"
+                    >
+                      <Pause className="mr-1 h-3 w-3" /> Stop
+                    </Button>
+                  )}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={togglePolarity}
+                    disabled={!placed.cellReady || submitted}
+                    className="h-6 px-1.5 text-[10px]"
+                    title="Reverse anode/cathode"
+                  >
+                    ± Flip
+                  </Button>
+                </div>
+              </div>
+            </section>
+
+            {/* RIGHT COLUMN: Status & Steps */}
+            <div className="flex flex-col h-full min-h-0 gap-3 overflow-hidden">
+              <StatusCard placed={placed} />
+              <div className="flex-1 min-h-0 overflow-y-auto">
+                <StepsPanel
+                  steps={steps}
+                  mistakes={mistakes}
+                  guideMode={guide}
+                  nextHint={guide ? nextHint : undefined}
+                />
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          /* MOBILE SPLIT VIEW (Top 46% Live SVG + Bottom 54% 4-Tab Tray) */
+          <div className="flex flex-1 min-h-0 flex-col overflow-hidden">
+            {/* TOP 46%: Pinned Live Reaction Workspace */}
+            <div className="h-[46%] min-h-[200px] relative border-b bg-card/60 shrink-0 overflow-hidden">
+              <IonicWorkspace
+                placed={placed}
+                activeSubstance={activeSubstance}
+                electrolysisT={electrolysisT}
+              />
+              {/* Overlay indicators on mobile */}
+              <div className="absolute top-1.5 left-2 z-10 flex items-center gap-1 bg-background/85 px-2 py-0.5 rounded-full border text-[9px] shadow-sm backdrop-blur">
+                <span className="font-semibold text-muted-foreground">Cu Deposit:</span>
+                <span className="font-mono text-primary font-bold">
+                  {Math.round(placed.copperDeposit * 100)}%
+                </span>
+                <span className="mx-0.5 text-muted-foreground/40">|</span>
+                <span
+                  className={
+                    placed.polarityCorrect
+                      ? "text-emerald-600 font-bold"
+                      : "text-destructive font-bold"
+                  }
+                >
+                  {placed.polarityCorrect ? "Polarity OK" : "Reversed"}
+                </span>
+              </div>
+            </div>
+
+            {/* BOTTOM 54%: Tabbed Control Tray */}
+            <div className="flex-1 min-h-0 flex flex-col bg-background/95">
+              {/* Mobile Tab Bar */}
+              <div className="grid grid-cols-4 border-b bg-muted/40 p-1 gap-1 shrink-0">
+                <button
+                  onClick={() => setMobileTab("controls")}
+                  className={cn(
+                    "py-1.5 text-[11px] font-semibold rounded flex items-center justify-center gap-1 transition",
+                    mobileTab === "controls"
+                      ? "bg-background text-primary shadow-sm"
+                      : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  <Sliders className="h-3 w-3" />
+                  <span>টেস্ট ও ধাপ</span>
+                </button>
+                <button
+                  onClick={() => setMobileTab("tools")}
+                  className={cn(
+                    "py-1.5 text-[11px] font-semibold rounded flex items-center justify-center gap-1 transition",
+                    mobileTab === "tools"
+                      ? "bg-background text-primary shadow-sm"
+                      : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  <Sparkles className="h-3 w-3" />
+                  <span>যন্ত্রপাতি</span>
+                </button>
+                <button
+                  onClick={() => setMobileTab("data")}
+                  className={cn(
+                    "py-1.5 text-[11px] font-semibold rounded flex items-center justify-center gap-1 transition",
+                    mobileTab === "data"
+                      ? "bg-background text-primary shadow-sm"
+                      : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  <BarChart3 className="h-3 w-3" />
+                  <span>তথ্য ও প্রগ্রেস</span>
+                </button>
+                <button
+                  onClick={() => setMobileTab("guide")}
+                  className={cn(
+                    "py-1.5 text-[11px] font-semibold rounded flex items-center justify-center gap-1 transition",
+                    mobileTab === "guide"
+                      ? "bg-background text-primary shadow-sm"
+                      : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  <CheckSquare className="h-3 w-3" />
+                  <span>গাইড</span>
+                </button>
+              </div>
+
+              {/* Tab Contents */}
+              <div className="flex-1 min-h-0 p-2.5 overflow-y-auto">
+                {mobileTab === "controls" && (
+                  <div className="space-y-3">
+                    {/* Solubility */}
+                    <div className="rounded-lg border p-2.5 bg-card/40 space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-sky-600 flex items-center gap-1">
+                          <BeakerIcon className="h-3.5 w-3.5" /> ১. দ্রবণীয়তা পরীক্ষা
+                        </span>
+                        <span className="text-[10px] text-muted-foreground">
+                          বিকার ও পানিতে পরীক্ষা
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-4 gap-1.5">
+                        {SUB_LIST.map((s) => (
+                          <Button
+                            key={`m-sol-${s}`}
+                            size="sm"
+                            variant={placed.solubility[s] !== null ? "secondary" : "outline"}
+                            disabled={!stageActive("sol") || submitted}
+                            onClick={() => testSolubility(s)}
+                            className="h-8 text-[11px] font-medium"
+                          >
+                            {LABELS[s].en}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Conductivity */}
+                    <div className="rounded-lg border p-2.5 bg-card/40 space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-amber-600 flex items-center gap-1">
+                          <Zap className="h-3.5 w-3.5" /> ২. তড়িৎ পরিবাহিতা পরীক্ষা
+                        </span>
+                        <span className="text-[10px] text-muted-foreground">বাল্ব জ্বলে কি না</span>
+                      </div>
+                      <div className="grid grid-cols-4 gap-1.5">
+                        {SUB_LIST.map((s) => (
+                          <Button
+                            key={`m-con-${s}`}
+                            size="sm"
+                            variant={
+                              placed.conductivityTested[s] !== null ? "secondary" : "outline"
+                            }
+                            disabled={!stageActive("cond") || submitted}
+                            onClick={() => testConductivity(s, true)}
+                            className="h-8 text-[11px] font-medium"
+                          >
+                            {LABELS[s].en}
+                          </Button>
+                        ))}
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        disabled={!stageActive("cond") || submitted}
+                        onClick={() => testConductivity("nacl", false)}
+                        className="w-full h-7 text-[10px] text-destructive hover:bg-destructive/10"
+                      >
+                        কঠিন NaCl দিয়ে ভুল পরীক্ষা করো (Solid Test)
+                      </Button>
+                    </div>
+
+                    {/* Melting */}
+                    <div className="rounded-lg border p-2.5 bg-card/40 space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-orange-600 flex items-center gap-1">
+                          <Flame className="h-3.5 w-3.5" /> ৩. গলনাঙ্ক পরীক্ষা
+                        </span>
+                        <span className="text-[10px] text-muted-foreground">Spatula ও তাপ</span>
+                      </div>
+                      <div className="grid grid-cols-4 gap-1.5">
+                        {SUB_LIST.map((s) => (
+                          <Button
+                            key={`m-melt-${s}`}
+                            size="sm"
+                            variant={placed.meltResult[s] !== null ? "secondary" : "outline"}
+                            disabled={!stageActive("melt") || submitted}
+                            onClick={() => testMelting(s)}
+                            className="h-8 text-[11px] font-medium"
+                          >
+                            {LABELS[s].en}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Electrolysis */}
+                    <div className="rounded-lg border p-2.5 bg-card/40 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-indigo-600 flex items-center gap-1">
+                          <Zap className="h-3.5 w-3.5" /> ৪. CuSO₄ তড়িৎ বিশ্লেষণ
+                        </span>
+                        <span className="text-[10px] font-mono text-primary font-bold">
+                          Deposit: {Math.round(placed.copperDeposit * 100)}%
+                        </span>
+                      </div>
+                      <div className="flex gap-2">
+                        {!placed.electrolysisRun ? (
+                          <Button
+                            size="sm"
+                            onClick={runElectrolysis}
+                            disabled={
+                              !placed.cellReady ||
+                              !placed.cuso4InCell ||
+                              !placed.electrodesPlaced ||
+                              submitted
+                            }
+                            className="flex-1 h-8 text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white"
+                          >
+                            ▶ Run Electrolysis
+                          </Button>
+                        ) : (
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={stopElectrolysis}
+                            className="flex-1 h-8 text-xs font-semibold"
+                          >
+                            <Pause className="mr-1 h-3.5 w-3.5" /> Stop
+                          </Button>
+                        )}
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={togglePolarity}
+                          disabled={!placed.cellReady || submitted}
+                          className="h-8 px-3 text-xs"
+                        >
+                          ± Flip
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {mobileTab === "tools" && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between bg-muted/40 p-2 rounded-lg border">
+                      <span className="text-xs font-medium">ঝটপট সব প্রস্তুত করতে চাও?</span>
+                      <Button
+                        size="sm"
+                        onClick={setupAllStations}
+                        className="h-7 text-xs bg-emerald-600 hover:bg-emerald-700 text-white gap-1"
+                      >
+                        <Sparkles className="h-3 w-3" />
+                        সব সাজাও
+                      </Button>
+                    </div>
+                    <EquipmentPanel
+                      items={IONIC_ITEMS}
+                      onSelect={handleSelect}
+                      highlight={guide ? nextHighlight : null}
+                      disabled={() => submitted}
+                    />
+                  </div>
+                )}
+
+                {mobileTab === "data" && (
+                  <div className="space-y-3">
+                    <StatusCard placed={placed} />
+                  </div>
+                )}
+
+                {mobileTab === "guide" && (
+                  <div className="space-y-3">
+                    <StepsPanel
+                      steps={steps}
+                      mistakes={mistakes}
+                      guideMode={guide}
+                      nextHint={guide ? nextHint : undefined}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
         )}
 
         {/* MODAL LAB REPORT OVERLAY */}
@@ -1042,7 +1048,9 @@ export default function IonicLab({ onBack }: Props) {
                   🧪 মূল মূলনীতি (Core Principles)
                 </h4>
                 <p className="text-muted-foreground">
-                  ধাতু ও অধাতুর মধ্যে ইলেকট্রন আদান-প্রদানের মাধ্যমে গঠিত হয় <b>আয়নিক বন্ধন</b> এবং অধাতু-অধাতু পরমাণুর মধ্যে ইলেকট্রন শেয়ারের মাধ্যমে গঠিত হয় <b>সমযোজী বন্ধন</b>।
+                  ধাতু ও অধাতুর মধ্যে ইলেকট্রন আদান-প্রদানের মাধ্যমে গঠিত হয় <b>আয়নিক বন্ধন</b>{" "}
+                  এবং অধাতু-অধাতু পরমাণুর মধ্যে ইলেকট্রন শেয়ারের মাধ্যমে গঠিত হয়{" "}
+                  <b>সমযোজী বন্ধন</b>।
                 </p>
               </div>
 
@@ -1050,29 +1058,47 @@ export default function IonicLab({ onBack }: Props) {
                 <div className="rounded-lg border p-2.5 bg-card/60">
                   <h5 className="font-bold text-sky-600 mb-1">১. দ্রবণীয়তা (Solubility):</h5>
                   <p className="text-muted-foreground text-[11px]">
-                    পোলার দ্রাবক হিসেবে পানি আয়নিক যৌগকে (NaCl, CuSO₄) সহজে দ্রবীভূত করে, কারণ পানির ধনাত্মক ও ঋণাত্মক প্রান্ত ল্যাটিসের বিপরীত আধানযুক্ত আয়নগুলোকে ঘিরে ফেলে হাইড্রেটেড করে। সমযোজী চিনিতে পোলার -OH মূলক থাকায় দ্রবীভূত হয়, কিন্তু সম্পূর্ণ অপোলার ন্যাপথালিন পানিতে অদ্রবণীয় থাকে।
+                    পোলার দ্রাবক হিসেবে পানি আয়নিক যৌগকে (NaCl, CuSO₄) সহজে দ্রবীভূত করে, কারণ
+                    পানির ধনাত্মক ও ঋণাত্মক প্রান্ত ল্যাটিসের বিপরীত আধানযুক্ত আয়নগুলোকে ঘিরে ফেলে
+                    হাইড্রেটেড করে। সমযোজী চিনিতে পোলার -OH মূলক থাকায় দ্রবীভূত হয়, কিন্তু
+                    সম্পূর্ণ অপোলার ন্যাপথালিন পানিতে অদ্রবণীয় থাকে।
                   </p>
                 </div>
 
                 <div className="rounded-lg border p-2.5 bg-card/60">
-                  <h5 className="font-bold text-amber-600 mb-1">২. তড়িৎ পরিবাহিতা (Conductivity):</h5>
+                  <h5 className="font-bold text-amber-600 mb-1">
+                    ২. তড়িৎ পরিবাহিতা (Conductivity):
+                  </h5>
                   <p className="text-muted-foreground text-[11px]">
-                    বিদ্যুৎ পরিবহনের জন্য মুক্ত সঞ্চারণশীল আয়ন বা ইলেকট্রন থাকা আবশ্যক। কঠিন লবণে আয়নগুলি কেলাস জ্বালকে (Crystal Lattice) স্থিরভাবে আবদ্ধ থাকে বলে বিদ্যুৎ পরিবহন করতে পারে না। কিন্তু জলীয় দ্রবণে বা গলিত অবস্থায় আয়নগুলি মুক্ত হয়ে বিদ্যুৎ পরিবহন করে এবং বাল্ব জ্বলে ওঠে। সমযোজী চিনি বা ন্যাপথালিন কোনো মুক্ত আয়ন সৃষ্টি করে না, তাই বাল্ব জ্বলে না।
+                    বিদ্যুৎ পরিবহনের জন্য মুক্ত সঞ্চারণশীল আয়ন বা ইলেকট্রন থাকা আবশ্যক। কঠিন লবণে
+                    আয়নগুলি কেলাস জ্বালকে (Crystal Lattice) স্থিরভাবে আবদ্ধ থাকে বলে বিদ্যুৎ পরিবহন
+                    করতে পারে না। কিন্তু জলীয় দ্রবণে বা গলিত অবস্থায় আয়নগুলি মুক্ত হয়ে বিদ্যুৎ
+                    পরিবহন করে এবং বাল্ব জ্বলে ওঠে। সমযোজী চিনি বা ন্যাপথালিন কোনো মুক্ত আয়ন সৃষ্টি
+                    করে না, তাই বাল্ব জ্বলে না।
                   </p>
                 </div>
 
                 <div className="rounded-lg border p-2.5 bg-card/60">
-                  <h5 className="font-bold text-orange-600 mb-1">৩. গলনাঙ্ক ও উদ্বায়ী ধর্ম (Melting Point & Volatility):</h5>
+                  <h5 className="font-bold text-orange-600 mb-1">
+                    ৩. গলনাঙ্ক ও উদ্বায়ী ধর্ম (Melting Point & Volatility):
+                  </h5>
                   <p className="text-muted-foreground text-[11px]">
-                    আয়নিক যৌগে শক্তিশালী স্থির-বৈদ্যুতিক আকর্ষণ বল বিদ্যমান থাকায় এদের গলনাঙ্ক ও স্ফুটনাঙ্ক অনেক বেশি (যেমন NaCl এর গলনাঙ্ক ৮০১°C)। বিপরীতে সমযোজী অণুগুলোর মাঝে দুর্বল ভ্যান ডার ওয়ালস বল থাকায় কম তাপে গলে যায়। ন্যাপথালিন উদ্বায়ী হওয়ায় তাপ দিলে তা সরাসরি বাষ্পীভূত (Sublimation) হয়।
+                    আয়নিক যৌগে শক্তিশালী স্থির-বৈদ্যুতিক আকর্ষণ বল বিদ্যমান থাকায় এদের গলনাঙ্ক ও
+                    স্ফুটনাঙ্ক অনেক বেশি (যেমন NaCl এর গলনাঙ্ক ৮০১°C)। বিপরীতে সমযোজী অণুগুলোর মাঝে
+                    দুর্বল ভ্যান ডার ওয়ালস বল থাকায় কম তাপে গলে যায়। ন্যাপথালিন উদ্বায়ী হওয়ায়
+                    তাপ দিলে তা সরাসরি বাষ্পীভূত (Sublimation) হয়।
                   </p>
                 </div>
 
                 <div className="rounded-lg border p-2.5 bg-card/60">
-                  <h5 className="font-bold text-indigo-600 mb-1">৪. কপার সালফেটের তড়িৎ বিশ্লেষণ (Electrolysis of CuSO₄):</h5>
+                  <h5 className="font-bold text-indigo-600 mb-1">
+                    ৪. কপার সালফেটের তড়িৎ বিশ্লেষণ (Electrolysis of CuSO₄):
+                  </h5>
                   <p className="text-muted-foreground text-[11px]">
-                    ক্যাথোডে বিজারণ: Cu²⁺ + 2e⁻ → Cu (ধাতব কপার জমা হয়)।<br />
-                    অ্যানোডে কপার ইলেক্ট্রোড ব্যবহৃত হলে জারণ: Cu → Cu²⁺ + 2e⁻ (অ্যানোড ক্ষয়প্রাপ্ত হয়)।
+                    ক্যাথোডে বিজারণ: Cu²⁺ + 2e⁻ → Cu (ধাতব কপার জমা হয়)।
+                    <br />
+                    অ্যানোডে কপার ইলেক্ট্রোড ব্যবহৃত হলে জারণ: Cu → Cu²⁺ + 2e⁻ (অ্যানোড ক্ষয়প্রাপ্ত
+                    হয়)।
                   </p>
                 </div>
               </div>
@@ -1099,7 +1125,9 @@ function ModeToggle({ mode, setMode }: { mode: Mode; setMode: (m: Mode) => void 
             onClick={() => setMode(o.id)}
             className={cn(
               "rounded px-2 py-0.5 text-[11px] transition font-medium",
-              active ? "bg-background font-semibold shadow-sm text-foreground" : "text-muted-foreground",
+              active
+                ? "bg-background font-semibold shadow-sm text-foreground"
+                : "text-muted-foreground",
             )}
           >
             {o.label}
@@ -1153,7 +1181,10 @@ function ProgressRow({ label, value, pct }: { label: string; value: string; pct:
         <span className="font-mono font-medium">{value}</span>
       </div>
       <div className="h-1.5 overflow-hidden rounded bg-muted">
-        <div className="h-full bg-primary transition-all duration-300" style={{ width: `${pct}%` }} />
+        <div
+          className="h-full bg-primary transition-all duration-300"
+          style={{ width: `${pct}%` }}
+        />
       </div>
     </div>
   );

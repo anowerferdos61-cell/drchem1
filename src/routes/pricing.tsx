@@ -11,21 +11,23 @@ import { useAuth } from "@/lib/auth-store";
 import UserMenu from "@/components/auth/UserMenu";
 import { LandingNav } from "@/components/landing/LandingNav";
 
+import { ALL_FREE_ACCESS_MODE } from "@/lib/subscription.functions";
+
 export const Route = createFileRoute("/pricing")({
   component: PricingPage,
   head: () => ({
     meta: [
-      { title: "প্রাইসিং · Dr. Chem — মাত্র ৳৯৯/মাস" },
+      { title: "প্রাইসিং · Dr. Chem — বর্তমানে সম্পূর্ণ ফ্রি!" },
       {
         name: "description",
         content:
-          "Dr. Chem Pro: ৳99/month or ৳999/year. 12 interactive chemistry labs, unlimited AI tutor, full notes. 7-day free trial for new students.",
+          "Dr. Chem Pro এখন সবার জন্য সম্পূর্ণ ফ্রি! ৪০+ interactive chemistry labs, unlimited AI tutor, full notes. কোনো ফি বা পেমেন্ট লাগবে না।",
       },
-      { property: "og:title", content: "Dr. Chem Pricing — Affordable Virtual Chemistry Lab" },
+      { property: "og:title", content: "Dr. Chem Pricing — এখন সবার জন্য সম্পূর্ণ ফ্রি!" },
       {
         property: "og:description",
         content:
-          "Start with a 7-day free trial. Pay with bKash from ৳99/month for full access to all labs, AI tutor and notes.",
+          "লঞ্চ ক্যাম্পেইন: সব ল্যাব, AI tutor এবং সম্পূর্ণ নোটস এখন ১০০% ফ্রি। সরাসরি ব্যবহার শুরু করুন।",
       },
       { property: "og:url", content: "https://drchemedu.com/pricing" },
     ],
@@ -57,12 +59,12 @@ const STUDENT: PlanCard = {
     "সব ৪০+ interactive lab unlock",
     "Unlimited AI Tutor (RAG সহ)",
     "NCTB বই থেকে সরাসরি উত্তর",
-    "Smart Notes লেখা ও শেয়ার",
+    "Smart Notes লেখা ও পড়া",
     "Viva practice + grading",
     "Bangla + English support",
   ],
   highlight: true,
-  cta: "৭ দিন ফ্রি ট্রায়াল শুরু",
+  cta: ALL_FREE_ACCESS_MODE ? "ফ্রি-তে শুরু করুন" : "৭ দিন ফ্রি ট্রায়াল শুরু",
   icon: GraduationCap,
 };
 
@@ -80,23 +82,23 @@ const TEACHER: PlanCard = {
     "Bulk viva grading",
     "Priority support",
   ],
-  cta: "Teacher হিসেবে শুরু",
+  cta: ALL_FREE_ACCESS_MODE ? "ফ্রি-তে শুরু করুন" : "Teacher হিসেবে শুরু",
   icon: Crown,
 };
 
 const FREE: PlanCard = {
   code: "free",
-  name: "Free",
-  tagline: "শুরু করার জন্য",
+  name: "Free Access",
+  tagline: "সবার জন্য উন্মুক্ত",
   monthlyPrice: 0,
   yearlyPrice: 0,
   features: [
-    "২টি intro lab (pH Scale + Indicators)",
-    "AI Tutor — দিনে ৫টি প্রশ্ন",
-    "Notes পড়া যাবে",
-    "Curriculum Hub browse",
+    "সব ৪০+ interactive lab",
+    "Unlimited AI Tutor",
+    "সকল অধ্যায়ের Smart Notes",
+    "Curriculum Hub & Guides",
   ],
-  cta: "Free এ শুরু",
+  cta: "সরাসরি ল্যাবে যান",
   icon: FlaskConical,
 };
 
@@ -110,7 +112,7 @@ function PricingPage() {
       void navigate({ to: "/signup" });
       return;
     }
-    if (planCode === "free") {
+    if (ALL_FREE_ACCESS_MODE || planCode === "free") {
       void navigate({ to: "/app" });
       return;
     }
@@ -124,45 +126,58 @@ function PricingPage() {
 
       <div className="max-w-6xl mx-auto px-4 py-16">
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium mb-4">
-            <Sparkles className="h-3.5 w-3.5" /> ৭ দিন ফ্রি ট্রায়াল · কোন কার্ড লাগবে না
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-3">
-            সবার জন্য সাশ্রয়ী Pro Plan
+          {ALL_FREE_ACCESS_MODE ? (
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-700 dark:text-emerald-400 text-xs font-bold mb-4 shadow-sm animate-pulse">
+              <Sparkles className="h-4 w-4" /> গ্র্যান্ড ক্যাম্পেইন অফার · আগামী কয়েকমাস সম্পূর্ণ
+              ফ্রি!
+            </div>
+          ) : (
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium mb-4">
+              <Sparkles className="h-3.5 w-3.5" /> ৭ দিন ফ্রি ট্রায়াল · কোন কার্ড লাগবে না
+            </div>
+          )}
+
+          <h1 className="text-3xl md:text-5xl font-black tracking-tight mb-4">
+            {ALL_FREE_ACCESS_MODE
+              ? "সবার জন্য রসায়ন উন্মুক্ত — এখন সবকিছু সম্পূর্ণ ফ্রি!"
+              : "সবার জন্য সাশ্রয়ী Pro Plan"}
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            শুরু করুন মাত্র <strong className="text-foreground">৳৯৯/মাস</strong> এ। bKash দিয়ে
-            payment। যেকোনো সময় cancel করতে পারবেন।
+          <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            {ALL_FREE_ACCESS_MODE
+              ? "শিক্ষার্থী ও শিক্ষকদের রসায়ন প্র্যাকটিক্যাল সহজ করতে ডক্টর কেমের ৪০+ ভার্চুয়াল ল্যাব, AI টিউটর এবং সকল অধ্যায়ের স্মার্ট নোটস ১০০% ফ্রি রাখা হয়েছে। কোনো ফি বা বিকাশ পেমেন্ট লাগবে না।"
+              : "শুরু করুন মাত্র ৳৯৯/মাস এ। bKash দিয়ে payment। যেকোনো সময় cancel করতে পারবেন।"}
           </p>
 
-          {/* Cycle toggle */}
-          <div className="inline-flex bg-muted p-1 rounded-full mt-8">
-            <button
-              onClick={() => setCycle("monthly")}
-              className={cn(
-                "px-5 py-2 rounded-full text-sm font-medium transition-colors",
-                cycle === "monthly"
-                  ? "bg-background shadow text-foreground"
-                  : "text-muted-foreground",
-              )}
-            >
-              মাসিক
-            </button>
-            <button
-              onClick={() => setCycle("yearly")}
-              className={cn(
-                "px-5 py-2 rounded-full text-sm font-medium transition-colors flex items-center gap-2",
-                cycle === "yearly"
-                  ? "bg-background shadow text-foreground"
-                  : "text-muted-foreground",
-              )}
-            >
-              বার্ষিক
-              <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-400">
-                Save 16%
-              </span>
-            </button>
-          </div>
+          {/* Cycle toggle (shown only if not free mode) */}
+          {!ALL_FREE_ACCESS_MODE && (
+            <div className="inline-flex bg-muted p-1 rounded-full mt-8">
+              <button
+                onClick={() => setCycle("monthly")}
+                className={cn(
+                  "px-5 py-2 rounded-full text-sm font-medium transition-colors",
+                  cycle === "monthly"
+                    ? "bg-background shadow text-foreground"
+                    : "text-muted-foreground",
+                )}
+              >
+                মাসিক
+              </button>
+              <button
+                onClick={() => setCycle("yearly")}
+                className={cn(
+                  "px-5 py-2 rounded-full text-sm font-medium transition-colors flex items-center gap-2",
+                  cycle === "yearly"
+                    ? "bg-background shadow text-foreground"
+                    : "text-muted-foreground",
+                )}
+              >
+                বার্ষিক
+                <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-400">
+                  Save 16%
+                </span>
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Plan cards */}
@@ -205,7 +220,26 @@ function PricingPage() {
                 </div>
 
                 <div className="mb-5">
-                  {price === 0 ? (
+                  {ALL_FREE_ACCESS_MODE ? (
+                    <div>
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-4xl font-extrabold text-emerald-600 dark:text-emerald-400">
+                          ৳০
+                        </span>
+                        {price > 0 && (
+                          <span className="text-sm line-through text-muted-foreground font-semibold">
+                            ৳{price}/{cycle === "yearly" ? "বছর" : "মাস"}
+                          </span>
+                        )}
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 font-bold">
+                          ১০০% ফ্রি
+                        </span>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        গ্র্যান্ড লঞ্চ ক্যাম্পেইন — সম্পূর্ণ ফ্রি
+                      </p>
+                    </div>
+                  ) : price === 0 ? (
                     <div className="text-4xl font-bold">ফ্রি</div>
                   ) : (
                     <>

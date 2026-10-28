@@ -96,8 +96,7 @@ export const listAllUsers = createServerFn({ method: "GET" })
           (meta?.phone as string | null) ||
           ((
             (u as unknown as Record<string, unknown>).raw_user_meta_data as
-              | Record<string, unknown>
-              | undefined
+              Record<string, unknown> | undefined
           )?.phone as string | null) ||
           null;
         if (!ph && u.email && u.email.endsWith("@phone.drchem.local")) {
@@ -630,8 +629,7 @@ export const getUserProfileDetail = createServerFn({ method: "POST" })
           (meta?.phone as string | null) ||
           ((
             (authUser.user as unknown as Record<string, unknown>).raw_user_meta_data as
-              | Record<string, unknown>
-              | undefined
+              Record<string, unknown> | undefined
           )?.phone as string | null) ||
           null;
       }

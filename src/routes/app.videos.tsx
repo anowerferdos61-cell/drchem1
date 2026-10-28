@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Lock, PlayCircle, Video as VideoIcon } from "lucide-react";
 import { LibraryShell, PremiumLockCard, useLibraryRows } from "@/components/library/LibraryLayout";
 import { useEntitlements } from "@/hooks/useEntitlements";
+import { ALL_FREE_ACCESS_MODE } from "@/lib/subscription.functions";
 
 interface VideoRow {
   id: string;
@@ -58,7 +59,7 @@ function VideosPage() {
   );
 
   const selected = chapterVideos.find((v) => v.id === selectedId) ?? chapterVideos[0] ?? null;
-  const locked = !!selected && selected.is_premium && !isPro;
+  const locked = !ALL_FREE_ACCESS_MODE && !!selected && selected.is_premium && !isPro;
 
   return (
     <LibraryShell
@@ -113,7 +114,7 @@ function VideosPage() {
                         Chapter {selected.chapter_number}
                       </p>
                     </div>
-                    {selected.is_premium && (
+                    {selected.is_premium && !ALL_FREE_ACCESS_MODE && (
                       <Badge className="bg-amber-500/10 text-amber-700 dark:text-amber-300">
                         Pro
                       </Badge>
@@ -131,7 +132,7 @@ function VideosPage() {
             </div>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {chapterVideos.map((v) => {
-                const vLocked = v.is_premium && !isPro;
+                const vLocked = !ALL_FREE_ACCESS_MODE && v.is_premium && !isPro;
                 const isActive = selected?.id === v.id;
                 return (
                   <Card

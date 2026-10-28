@@ -89,16 +89,18 @@ function SignupPage() {
   }, [loading, isAuthenticated, navigate]);
 
   // Validation function
-  const validate = (fieldValues = {
-    role,
-    displayName,
-    school,
-    klass,
-    phone,
-    email,
-    password,
-    confirmPassword,
-  }): FormErrors => {
+  const validate = (
+    fieldValues = {
+      role,
+      displayName,
+      school,
+      klass,
+      phone,
+      email,
+      password,
+      confirmPassword,
+    },
+  ): FormErrors => {
     const errs: FormErrors = {};
 
     // 1. Role validation
@@ -333,7 +335,10 @@ function SignupPage() {
             >
               <div className="flex items-center gap-1.5">
                 <GraduationCap
-                  className={cn("h-5 w-5", role === "student" ? "text-primary" : "text-muted-foreground")}
+                  className={cn(
+                    "h-5 w-5",
+                    role === "student" ? "text-primary" : "text-muted-foreground",
+                  )}
                 />
                 <span className="text-sm font-semibold">শিক্ষার্থী</span>
               </div>
@@ -354,7 +359,10 @@ function SignupPage() {
             >
               <div className="flex items-center gap-1.5">
                 <UserCog
-                  className={cn("h-5 w-5", role === "teacher" ? "text-primary" : "text-muted-foreground")}
+                  className={cn(
+                    "h-5 w-5",
+                    role === "teacher" ? "text-primary" : "text-muted-foreground",
+                  )}
                 />
                 <span className="text-sm font-semibold">শিক্ষক</span>
               </div>
@@ -398,7 +406,9 @@ function SignupPage() {
               onBlur={() => handleBlur("displayName")}
               placeholder="যেমন: অনিক আহমেদ"
               className={cn(
-                touched.displayName && errors.displayName && "border-destructive focus-visible:ring-destructive",
+                touched.displayName &&
+                  errors.displayName &&
+                  "border-destructive focus-visible:ring-destructive",
               )}
             />
             {touched.displayName && errors.displayName && (
@@ -412,7 +422,10 @@ function SignupPage() {
           {/* School & Class */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <Label htmlFor="school" className="flex items-center gap-1.5 text-xs font-semibold mb-1">
+              <Label
+                htmlFor="school"
+                className="flex items-center gap-1.5 text-xs font-semibold mb-1"
+              >
                 <School className="h-3.5 w-3.5 text-primary" />
                 {role === "teacher" ? "প্রতিষ্ঠান" : "স্কুল / কলেজ"}{" "}
                 {role === "teacher" && <span className="text-destructive">*</span>}
@@ -433,7 +446,9 @@ function SignupPage() {
                 onBlur={() => handleBlur("school")}
                 placeholder={role === "teacher" ? "প্রতিষ্ঠানের নাম" : "স্কুলের নাম (ঐচ্ছিক)"}
                 className={cn(
-                  touched.school && errors.school && "border-destructive focus-visible:ring-destructive",
+                  touched.school &&
+                    errors.school &&
+                    "border-destructive focus-visible:ring-destructive",
                 )}
               />
               {touched.school && errors.school && (
@@ -445,7 +460,10 @@ function SignupPage() {
             </div>
 
             <div>
-              <Label htmlFor="class" className="flex items-center gap-1.5 text-xs font-semibold mb-1">
+              <Label
+                htmlFor="class"
+                className="flex items-center gap-1.5 text-xs font-semibold mb-1"
+              >
                 <GraduationCap className="h-3.5 w-3.5 text-primary" />
                 {role === "teacher" ? "যে শ্রেণি পড়ান" : "শ্রেণি / ক্লাস"}{" "}
                 {role === "student" && <span className="text-destructive">*</span>}
@@ -466,7 +484,9 @@ function SignupPage() {
                 onBlur={() => handleBlur("klass")}
                 placeholder={role === "teacher" ? "যেমন: ৯-১০" : "যেমন: ৯ বা ১০"}
                 className={cn(
-                  touched.klass && errors.klass && "border-destructive focus-visible:ring-destructive",
+                  touched.klass &&
+                    errors.klass &&
+                    "border-destructive focus-visible:ring-destructive",
                 )}
               />
               {touched.klass && errors.klass && (
@@ -507,7 +527,9 @@ function SignupPage() {
               placeholder="01XXXXXXXXX"
               autoComplete="tel"
               className={cn(
-                touched.phone && errors.phone && "border-destructive focus-visible:ring-destructive",
+                touched.phone &&
+                  errors.phone &&
+                  "border-destructive focus-visible:ring-destructive",
               )}
             />
             {touched.phone && errors.phone ? (
@@ -550,7 +572,9 @@ function SignupPage() {
               placeholder="yourname@gmail.com"
               autoComplete="email"
               className={cn(
-                touched.email && errors.email && "border-destructive focus-visible:ring-destructive",
+                touched.email &&
+                  errors.email &&
+                  "border-destructive focus-visible:ring-destructive",
               )}
             />
             {touched.email && errors.email ? (
@@ -568,7 +592,10 @@ function SignupPage() {
           {/* Password & Confirm Password */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <Label htmlFor="password" className="flex items-center gap-1.5 text-xs font-semibold mb-1">
+              <Label
+                htmlFor="password"
+                className="flex items-center gap-1.5 text-xs font-semibold mb-1"
+              >
                 <Lock className="h-3.5 w-3.5 text-primary" />
                 পাসওয়ার্ড <span className="text-destructive">*</span>
               </Label>
@@ -594,7 +621,9 @@ function SignupPage() {
                   autoComplete="new-password"
                   className={cn(
                     "pr-10",
-                    touched.password && errors.password && "border-destructive focus-visible:ring-destructive",
+                    touched.password &&
+                      errors.password &&
+                      "border-destructive focus-visible:ring-destructive",
                   )}
                 />
                 <button
@@ -655,7 +684,11 @@ function SignupPage() {
                   aria-label={showConfirmPassword ? "পাসওয়ার্ড লুকান" : "পাসওয়ার্ড দেখুন"}
                   className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground cursor-pointer"
                 >
-                  {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {showConfirmPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
                 </button>
               </div>
               {touched.confirmPassword && errors.confirmPassword && (

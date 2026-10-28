@@ -8,11 +8,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 // ─── Types ──────────────────────────────────────────────────────────────
 export type PlanCode =
-  | "free"
-  | "student_monthly"
-  | "student_yearly"
-  | "teacher_monthly"
-  | "teacher_yearly";
+  "free" | "student_monthly" | "student_yearly" | "teacher_monthly" | "teacher_yearly";
 
 export type Tier = "free" | "student" | "teacher";
 
@@ -28,7 +24,15 @@ export interface Entitlements {
   canWriteNotes: boolean;
 }
 
-// Labs that are FREE for the Free tier:
+/**
+ * 🌟 ALL_FREE_ACCESS_MODE
+ * When true, unlocks EVERYTHING (all 40+ labs, notes, videos, unlimited AI tutor)
+ * across the entire app for all users.
+ * When you're ready to charge users, simply switch this to false!
+ */
+export const ALL_FREE_ACCESS_MODE = true;
+
+// Labs that are FREE for the Free tier (when ALL_FREE_ACCESS_MODE is false):
 // - First 2 practical labs (Titration, Oxygen Preparation)
 // - Chapter 10 labs (pH Scale, Indicator Comparison)
 export const FREE_TIER_LABS = [
@@ -51,6 +55,28 @@ export const getEntitlements = createServerFn({ method: "GET" })
   .handler(async ({ context }): Promise<Entitlements> => {
     const { supabase, userId } = context;
 
+    const today = todayDhaka();
+    const { data: usage } = await supabase
+      .from("usage_counters")
+      .select("ai_messages_used")
+      .eq("user_id", userId)
+      .eq("usage_date", today)
+      .maybeSingle();
+
+    if (ALL_FREE_ACCESS_MODE) {
+      return {
+        tier: "student",
+        planCode: "free",
+        status: "active",
+        trialEndsAt: null,
+        periodEndsAt: null,
+        aiMessagesUsedToday: usage?.ai_messages_used ?? 0,
+        aiMessagesPerDay: -1, // unlimited
+        labsAllowed: -1, // all 40+ labs unlocked
+        canWriteNotes: true,
+      };
+    }
+
     const { data: sub } = await supabase
       .from("subscriptions")
       .select("plan_code, status, trial_ends_at, current_period_end")
@@ -70,14 +96,6 @@ export const getEntitlements = createServerFn({ method: "GET" })
 
     const features = (plan?.features as Record<string, unknown>) ?? {};
     const tier = (plan?.tier as Tier) ?? "free";
-
-    const today = todayDhaka();
-    const { data: usage } = await supabase
-      .from("usage_counters")
-      .select("ai_messages_used")
-      .eq("user_id", userId)
-      .eq("usage_date", today)
-      .maybeSingle();
 
     return {
       tier,

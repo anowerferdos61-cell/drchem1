@@ -27,9 +27,7 @@ import { LAB_TOPICS, type LabTopic } from "@/lib/lab-topics";
 
 export const Route = createFileRoute("/labs/$labId")({
   loader: ({ params }) => {
-    const topic = LAB_TOPICS.find(
-      (t) => t.slug === params.labId || t.id === params.labId,
-    );
+    const topic = LAB_TOPICS.find((t) => t.slug === params.labId || t.id === params.labId);
     if (!topic) {
       throw notFound();
     }
@@ -158,12 +156,24 @@ function LabTopicDetailPage() {
       {/* Header */}
       <header className="border-b bg-card/80 backdrop-blur sticky top-0 z-40">
         <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link to="/labs" className="flex items-center gap-2 text-sm font-semibold hover:text-primary transition-colors">
+          <Link
+            to="/labs"
+            className="flex items-center gap-2 text-sm font-semibold hover:text-primary transition-colors"
+          >
             <ArrowLeft className="h-4 w-4" /> ল্যাব তালিকায় ফেরত
           </Link>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={handleShare} className="gap-1.5 h-8 text-xs cursor-pointer">
-              {copied ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Share2 className="h-3.5 w-3.5" />}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleShare}
+              className="gap-1.5 h-8 text-xs cursor-pointer"
+            >
+              {copied ? (
+                <Check className="h-3.5 w-3.5 text-emerald-500" />
+              ) : (
+                <Share2 className="h-3.5 w-3.5" />
+              )}
               {copied ? "কপি হয়েছে" : "শেয়ার"}
             </Button>
             <Link to="/app" search={{ lab: topic.id }}>
@@ -210,7 +220,10 @@ function LabTopicDetailPage() {
               params={{ chapterNumber: String(topic.chapterNumber) }}
               className="hover:opacity-85 transition-opacity"
             >
-              <Badge variant="outline" className="text-xs font-semibold px-3 py-1 bg-primary/10 text-primary border-primary/20 cursor-pointer">
+              <Badge
+                variant="outline"
+                className="text-xs font-semibold px-3 py-1 bg-primary/10 text-primary border-primary/20 cursor-pointer"
+              >
                 অধ্যায় {topic.chapterNumber}: {topic.chapterNameBn} (নোট দেখুন ↗)
               </Badge>
             </Link>
@@ -222,9 +235,7 @@ function LabTopicDetailPage() {
           <h1 className="text-2xl md:text-4xl font-black tracking-tight leading-snug">
             {topic.titleBn}
           </h1>
-          <p className="text-sm md:text-base text-muted-foreground font-mono">
-            {topic.titleEn}
-          </p>
+          <p className="text-sm md:text-base text-muted-foreground font-mono">{topic.titleEn}</p>
 
           <p className="text-sm md:text-base text-muted-foreground leading-relaxed pt-1">
             {topic.objectiveBn}
@@ -253,7 +264,12 @@ function LabTopicDetailPage() {
               <Sparkles className="h-3.5 w-3.5" /> মূল রাসায়নিক সমীকরণ (Reaction Equation)
             </div>
             <div className="text-base md:text-lg font-mono font-bold text-center py-2 text-foreground overflow-x-auto">
-              <code>{topic.equationKaTeX.replace(/\\\\rightarrow/g, "→").replace(/\\\\xrightarrow/g, "→").replace(/\\\\uparrow/g, "↑")}</code>
+              <code>
+                {topic.equationKaTeX
+                  .replace(/\\\\rightarrow/g, "→")
+                  .replace(/\\\\xrightarrow/g, "→")
+                  .replace(/\\\\uparrow/g, "↑")}
+              </code>
             </div>
           </Card>
         )}
@@ -318,9 +334,7 @@ function LabTopicDetailPage() {
                 <div className="h-7 w-7 rounded-full bg-primary/10 text-primary font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
                   {idx + 1}
                 </div>
-                <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-                  {step}
-                </p>
+                <p className="text-sm md:text-base text-muted-foreground leading-relaxed">{step}</p>
               </div>
             ))}
           </div>
@@ -411,7 +425,8 @@ function LabTopicDetailPage() {
       <aside className="border-t bg-card py-10 px-4 mt-16 text-center space-y-4">
         <h3 className="text-2xl font-black">নিজে সরাসরি বিক্রিয়াটি ঘটাতে চাও?</h3>
         <p className="text-sm text-muted-foreground max-w-md mx-auto">
-          ডাঃ কেম ভার্চুয়াল ল্যাবে যেকোনো দুর্ঘটনা ছাড়াই বিকারে কেমিক্যাল মিশিয়ে পরীক্ষা করে দেখো।
+          ডাঃ কেম ভার্চুয়াল ল্যাবে যেকোনো দুর্ঘটনা ছাড়াই বিকারে কেমিক্যাল মিশিয়ে পরীক্ষা করে
+          দেখো।
         </p>
         <Link to="/app">
           <Button size="lg" className="rounded-xl px-8 font-bold shadow-lg gap-2">

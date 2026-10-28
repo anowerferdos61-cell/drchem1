@@ -400,7 +400,7 @@ function AssignmentsTab({ classId, label }: { classId: string; label: string }) 
       setAttempts(r.attempts as OverviewAttempt[]);
       setLoading(false);
     })();
-  }, [classId]);
+  }, [classId, load]);
 
   if (loading) return <Card className="p-6 text-sm text-muted-foreground">Loading…</Card>;
   if (sets.length === 0) {

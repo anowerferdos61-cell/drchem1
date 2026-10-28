@@ -1,7 +1,7 @@
 /**
  * OxygenWorkspace.tsx — Hyper-realistic 2D SVG Laboratory Workspace
  * Experiment: Preparation of Oxygen (2 H₂O₂ → 2 H₂O + O₂ via MnO₂)
- * 
+ *
  * Splint Architecture:
  * - 100% SVG-native wooden splint (No HTML overlay, zero layout drift/overflow)
  * - Rests realistically on porcelain watch glass on the bench when ready
@@ -43,7 +43,7 @@ export default function OxygenWorkspace({
   const TUBE_BOTTOM_Y = 360; // mouth submerged in water trough
   const TUBE_INNER_HEIGHT = TUBE_BOTTOM_Y - TUBE_TOP_Y; // 250px
   const fillFrac = Math.min(1, Math.max(0, collectedMl / tubeCapacityMl));
-  
+
   // Gas accumulates at the dome top, pushing water downwards
   const gasHeight = TUBE_INNER_HEIGHT * fillFrac;
   const waterTopY = TUBE_TOP_Y + gasHeight;
@@ -245,10 +245,26 @@ export default function OxygenWorkspace({
         {/* Subtle Wall Grid Tiles */}
         <g opacity="0.08">
           {[60, 120, 180, 240, 300, 360, 420].map((y) => (
-            <line key={`grid-h-${y}`} x1="0" y1={y} x2="640" y2={y} stroke="#cbd5e1" strokeWidth="1" />
+            <line
+              key={`grid-h-${y}`}
+              x1="0"
+              y1={y}
+              x2="640"
+              y2={y}
+              stroke="#cbd5e1"
+              strokeWidth="1"
+            />
           ))}
           {[80, 160, 240, 320, 400, 480, 560].map((x) => (
-            <line key={`grid-v-${x}`} x1={x} y1="0" x2={x} y2="440" stroke="#cbd5e1" strokeWidth="1" />
+            <line
+              key={`grid-v-${x}`}
+              x1={x}
+              y1="0"
+              x2={x}
+              y2="440"
+              stroke="#cbd5e1"
+              strokeWidth="1"
+            />
           ))}
         </g>
 
@@ -265,13 +281,40 @@ export default function OxygenWorkspace({
         {placed.reaction_tube && (
           <g className="transition-opacity duration-300">
             <ellipse cx="105" cy="450" rx="60" ry="10" fill="#020617" opacity="0.7" />
-            <rect x="50" y="436" width="110" height="15" rx="3" fill="url(#stand-base)" stroke="#334155" strokeWidth="1" />
+            <rect
+              x="50"
+              y="436"
+              width="110"
+              height="15"
+              rx="3"
+              fill="url(#stand-base)"
+              stroke="#334155"
+              strokeWidth="1"
+            />
             <rect x="52" y="437" width="106" height="2" fill="#94a3b8" opacity="0.5" />
 
-            <rect x="98" y="100" width="12" height="340" rx="3" fill="url(#stand-metal)" stroke="#1e293b" strokeWidth="1" />
+            <rect
+              x="98"
+              y="100"
+              width="12"
+              height="340"
+              rx="3"
+              fill="url(#stand-metal)"
+              stroke="#1e293b"
+              strokeWidth="1"
+            />
 
             {/* Bosshead & Clamp Arm */}
-            <rect x="92" y="212" width="24" height="22" rx="3" fill="#1e293b" stroke="#475569" strokeWidth="1" />
+            <rect
+              x="92"
+              y="212"
+              width="24"
+              height="22"
+              rx="3"
+              fill="#1e293b"
+              stroke="#475569"
+              strokeWidth="1"
+            />
             <circle cx="104" cy="223" r="5" fill="#334155" />
             <rect x="85" y="220" width="8" height="6" rx="1.5" fill="#94a3b8" />
 
@@ -318,11 +361,17 @@ export default function OxygenWorkspace({
               {/* Volumetric Marks */}
               <g stroke="#ffffff" strokeWidth="1" opacity="0.6">
                 <line x1="130" y1="390" x2="148" y2="390" />
-                <text x="152" y="393" fill="#cbd5e1" fontSize="8" fontFamily="ui-monospace">50mL</text>
+                <text x="152" y="393" fill="#cbd5e1" fontSize="8" fontFamily="ui-monospace">
+                  50mL
+                </text>
                 <line x1="136" y1="355" x2="152" y2="355" />
-                <text x="156" y="358" fill="#cbd5e1" fontSize="8" fontFamily="ui-monospace">100mL</text>
+                <text x="156" y="358" fill="#cbd5e1" fontSize="8" fontFamily="ui-monospace">
+                  100mL
+                </text>
                 <line x1="142" y1="320" x2="156" y2="320" />
-                <text x="160" y="323" fill="#cbd5e1" fontSize="8" fontFamily="ui-monospace">150mL</text>
+                <text x="160" y="323" fill="#cbd5e1" fontSize="8" fontFamily="ui-monospace">
+                  150mL
+                </text>
               </g>
 
               {/* MnO₂ Catalyst Powder Bed */}
@@ -337,13 +386,35 @@ export default function OxygenWorkspace({
                     fill="#0f172a"
                   />
                   {[
-                    [120, 424], [130, 420], [142, 426], [155, 418],
-                    [168, 424], [180, 419], [192, 427], [200, 423],
-                    [135, 428], [150, 427], [165, 429], [175, 426]
+                    [120, 424],
+                    [130, 420],
+                    [142, 426],
+                    [155, 418],
+                    [168, 424],
+                    [180, 419],
+                    [192, 427],
+                    [200, 423],
+                    [135, 428],
+                    [150, 427],
+                    [165, 429],
+                    [175, 426],
                   ].map(([gx, gy], idx) => (
-                    <circle key={`cat-${idx}`} cx={gx} cy={gy} r={idx % 2 === 0 ? 1.4 : 1.8} fill="#334155" />
+                    <circle
+                      key={`cat-${idx}`}
+                      cx={gx}
+                      cy={gy}
+                      r={idx % 2 === 0 ? 1.4 : 1.8}
+                      fill="#334155"
+                    />
                   ))}
-                  <text x="160" y="446" textAnchor="middle" fill="#94a3b8" fontSize="9" fontWeight="600">
+                  <text
+                    x="160"
+                    y="446"
+                    textAnchor="middle"
+                    fill="#94a3b8"
+                    fontSize="9"
+                    fontWeight="600"
+                  >
                     MnO₂ (প্রভাবক)
                   </text>
                 </g>
@@ -392,7 +463,15 @@ export default function OxygenWorkspace({
                       />
                     </circle>
                   ))}
-                  <text x="160" y="300" textAnchor="middle" fill="#a5f3fc" fontSize="11" fontWeight="700" opacity="0.8">
+                  <text
+                    x="160"
+                    y="300"
+                    textAnchor="middle"
+                    fill="#a5f3fc"
+                    fontSize="11"
+                    fontWeight="700"
+                    opacity="0.8"
+                  >
                     O₂ ↑
                   </text>
                 </g>
@@ -417,7 +496,15 @@ export default function OxygenWorkspace({
                   stroke="#7c2d12"
                   strokeWidth="1.2"
                 />
-                <line x1="144" y1="165" x2="176" y2="165" stroke="#fdba74" strokeWidth="1.5" opacity="0.6" />
+                <line
+                  x1="144"
+                  y1="165"
+                  x2="176"
+                  y2="165"
+                  stroke="#fdba74"
+                  strokeWidth="1.5"
+                  opacity="0.6"
+                />
               </g>
             )}
           </g>
@@ -429,18 +516,25 @@ export default function OxygenWorkspace({
         {placed.delivery_tube && placed.reaction_tube && (
           <g>
             <use href="#delivery-path" stroke="#475569" strokeWidth="8" fill="none" opacity="0.8" />
-            <use href="#delivery-path" stroke="url(#glass-tube-gloss)" strokeWidth="5.5" fill="none" />
-            <use href="#delivery-path" stroke="#ffffff" strokeWidth="1.8" fill="none" opacity="0.75" />
+            <use
+              href="#delivery-path"
+              stroke="url(#glass-tube-gloss)"
+              strokeWidth="5.5"
+              fill="none"
+            />
+            <use
+              href="#delivery-path"
+              stroke="#ffffff"
+              strokeWidth="1.8"
+              fill="none"
+              opacity="0.75"
+            />
 
             {reacting && (
               <>
                 {[0, 1, 2, 3].map((idx) => (
                   <circle key={`dt-bubble-${idx}`} r="2.8" fill="#e0f2fe" opacity="0.95">
-                    <animateMotion
-                      dur="1.8s"
-                      repeatCount="indefinite"
-                      begin={`${idx * 0.45}s`}
-                    >
+                    <animateMotion dur="1.8s" repeatCount="indefinite" begin={`${idx * 0.45}s`}>
                       <mpath href="#delivery-path" />
                     </animateMotion>
                   </circle>
@@ -541,7 +635,13 @@ export default function OxygenWorkspace({
                   { id: 2, cx: COLLECTION_X + 8, dur: 0.7, delay: 0.25 },
                   { id: 3, cx: COLLECTION_X - 1, dur: 0.85, delay: 0.5 },
                 ].map((bub) => (
-                  <circle key={`tube-bub-${bub.id}`} cx={bub.cx} cy={TUBE_BOTTOM_Y - 5} r="3" fill="#ffffff">
+                  <circle
+                    key={`tube-bub-${bub.id}`}
+                    cx={bub.cx}
+                    cy={TUBE_BOTTOM_Y - 5}
+                    r="3"
+                    fill="#ffffff"
+                  >
                     <animate
                       attributeName="cy"
                       values={`${TUBE_BOTTOM_Y - 5};${Math.max(TUBE_TOP_Y + 15, waterTopY)}`}
@@ -648,15 +748,7 @@ export default function OxygenWorkspace({
             onPointerUp={handleSplintPointerUp}
           >
             {/* Ambient drop shadow under splint stick */}
-            <rect
-              x="-4"
-              y="2"
-              width="90"
-              height="7"
-              rx="2.5"
-              fill="#020617"
-              opacity="0.5"
-            />
+            <rect x="-4" y="2" width="90" height="7" rx="2.5" fill="#020617" opacity="0.5" />
 
             {/* Wooden Stick Body */}
             <rect
@@ -671,23 +763,10 @@ export default function OxygenWorkspace({
             />
 
             {/* Charred wood near ember tip */}
-            <rect
-              x="0"
-              y="0"
-              width="14"
-              height="6.5"
-              rx="1.5"
-              fill="#18181b"
-            />
+            <rect x="0" y="0" width="14" height="6.5" rx="1.5" fill="#18181b" />
 
             {/* Glowing Red/Orange Ember Tip */}
-            <circle
-              cx="0"
-              cy="3.25"
-              r="4.2"
-              fill="url(#splint-ember)"
-              filter="url(#ember-glow)"
-            >
+            <circle cx="0" cy="3.25" r="4.2" fill="url(#splint-ember)" filter="url(#ember-glow)">
               <animate attributeName="r" values="3.8;4.8;3.8" dur="0.8s" repeatCount="indefinite" />
             </circle>
 
@@ -698,9 +777,24 @@ export default function OxygenWorkspace({
             {splintResult !== "pass" && (
               <g opacity="0.5">
                 <circle cx="-3" cy="1" r="2" fill="#94a3b8">
-                  <animate attributeName="cy" values="1;-10;-20" dur="1.2s" repeatCount="indefinite" />
-                  <animate attributeName="cx" values="-3;-5;-8" dur="1.2s" repeatCount="indefinite" />
-                  <animate attributeName="opacity" values="0.6;0.3;0" dur="1.2s" repeatCount="indefinite" />
+                  <animate
+                    attributeName="cy"
+                    values="1;-10;-20"
+                    dur="1.2s"
+                    repeatCount="indefinite"
+                  />
+                  <animate
+                    attributeName="cx"
+                    values="-3;-5;-8"
+                    dur="1.2s"
+                    repeatCount="indefinite"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    values="0.6;0.3;0"
+                    dur="1.2s"
+                    repeatCount="indefinite"
+                  />
                 </circle>
               </g>
             )}
@@ -710,7 +804,12 @@ export default function OxygenWorkspace({
               <g transform="translate(0, 3.25) rotate(45)" filter="url(#flame-glow)">
                 {/* Corona Glow */}
                 <circle cx="0" cy="-18" r="38" fill="#f97316" opacity="0.3">
-                  <animate attributeName="r" values="34;42;34" dur="0.25s" repeatCount="indefinite" />
+                  <animate
+                    attributeName="r"
+                    values="34;42;34"
+                    dur="0.25s"
+                    repeatCount="indefinite"
+                  />
                 </circle>
 
                 {/* Flame Body */}
@@ -735,7 +834,12 @@ export default function OxygenWorkspace({
 
                 {/* White-hot Inner Core */}
                 <ellipse cx="0" cy="-15" rx="8" ry="22" fill="#ffffff" opacity="0.95">
-                  <animate attributeName="ry" values="20;25;20" dur="0.25s" repeatCount="indefinite" />
+                  <animate
+                    attributeName="ry"
+                    values="20;25;20"
+                    dur="0.25s"
+                    repeatCount="indefinite"
+                  />
                 </ellipse>
 
                 {/* Sparks */}
@@ -745,7 +849,12 @@ export default function OxygenWorkspace({
                   { id: 3, cx: -12, cy: -35, dur: "0.3s" },
                 ].map((sp) => (
                   <circle key={sp.id} cx={sp.cx} cy={sp.cy} r="1.5" fill="#fef08a">
-                    <animate attributeName="opacity" values="1;0;1" dur={sp.dur} repeatCount="indefinite" />
+                    <animate
+                      attributeName="opacity"
+                      values="1;0;1"
+                      dur={sp.dur}
+                      repeatCount="indefinite"
+                    />
                   </circle>
                 ))}
               </g>
@@ -755,7 +864,16 @@ export default function OxygenWorkspace({
             {!isDragging && !isTestingSplint && splintResult !== "pass" && (
               <g transform="translate(25, 12)">
                 <rect x="-35" y="-5" width="70" height="6" rx="2" fill="#475569" opacity="0.5" />
-                <rect x="-33" y="-7" width="66" height="4" rx="1.5" fill="#e2e8f0" stroke="#cbd5e1" strokeWidth="0.5" />
+                <rect
+                  x="-33"
+                  y="-7"
+                  width="66"
+                  height="4"
+                  rx="1.5"
+                  fill="#e2e8f0"
+                  stroke="#cbd5e1"
+                  strokeWidth="0.5"
+                />
                 <text x="0" y="14" textAnchor="middle" fill="#f59e0b" fontSize="8" fontWeight="700">
                   আধা-জ্বলা কাঠি
                 </text>
@@ -767,7 +885,17 @@ export default function OxygenWorkspace({
         {/* Success Banner when confirmed */}
         {splintResult === "pass" && (
           <g transform={`translate(${COLLECTION_X} 75)`}>
-            <rect x="-95" y="-14" width="190" height="28" rx="14" fill="#0f172a" stroke="#22c55e" strokeWidth="2" filter="url(#drop-soft)" />
+            <rect
+              x="-95"
+              y="-14"
+              width="190"
+              height="28"
+              rx="14"
+              fill="#0f172a"
+              stroke="#22c55e"
+              strokeWidth="2"
+              filter="url(#drop-soft)"
+            />
             <text x="0" y="4" textAnchor="middle" fill="#4ade80" fontSize="11.5" fontWeight="800">
               ✨ অক্সিজেন নিশ্চিত! (O₂ Confirmed)
             </text>
@@ -777,7 +905,17 @@ export default function OxygenWorkspace({
         {/* Empty State Helpful Hint */}
         {!placed.reaction_tube && (
           <g>
-            <rect x="180" y="200" width="280" height="70" rx="12" fill="#0f172a" opacity="0.85" stroke="#334155" strokeWidth="1.5" />
+            <rect
+              x="180"
+              y="200"
+              width="280"
+              height="70"
+              rx="12"
+              fill="#0f172a"
+              opacity="0.85"
+              stroke="#334155"
+              strokeWidth="1.5"
+            />
             <text x="320" y="228" textAnchor="middle" fontSize="13" fontWeight="700" fill="#f8fafc">
               ল্যাব শুরু করতে যন্ত্রপাতি যুক্ত করুন
             </text>

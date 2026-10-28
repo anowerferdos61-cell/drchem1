@@ -33,9 +33,7 @@ import { LAB_TOPICS } from "@/lib/lab-topics";
 export const Route = createFileRoute("/chapters/$chapterNumber")({
   loader: ({ params }) => {
     const chapter = CHAPTER_TOPICS.find(
-      (c) =>
-        String(c.chapterNumber) === params.chapterNumber ||
-        c.slug === params.chapterNumber,
+      (c) => String(c.chapterNumber) === params.chapterNumber || c.slug === params.chapterNumber,
     );
     if (!chapter) {
       throw notFound();
@@ -164,9 +162,7 @@ function ChapterDetailPage() {
     }
   };
 
-  const relatedLabs = LAB_TOPICS.filter((t) =>
-    chapter.relatedLabSlugs.includes(t.slug),
-  );
+  const relatedLabs = LAB_TOPICS.filter((t) => chapter.relatedLabSlugs.includes(t.slug));
 
   const prevChapter =
     chapter.chapterNumber > 1
@@ -225,10 +221,7 @@ function ChapterDetailPage() {
       <section className="bg-gradient-to-b from-primary/10 via-background to-background border-b py-12 px-4">
         <div className="max-w-4xl mx-auto space-y-4">
           <div className="flex flex-wrap items-center gap-2">
-            <Badge
-              variant="secondary"
-              className="font-bold text-xs px-2.5 py-1 rounded-md"
-            >
+            <Badge variant="secondary" className="font-bold text-xs px-2.5 py-1 rounded-md">
               NCTB ৯ম-১০ম শ্রেণি (SSC)
             </Badge>
             <Badge
@@ -242,9 +235,7 @@ function ChapterDetailPage() {
           <h1 className="text-3xl md:text-5xl font-black tracking-tight leading-tight">
             {chapter.titleBn}
           </h1>
-          <p className="text-lg md:text-xl font-medium text-muted-foreground">
-            {chapter.titleEn}
-          </p>
+          <p className="text-lg md:text-xl font-medium text-muted-foreground">{chapter.titleEn}</p>
           <p className="text-base text-muted-foreground leading-relaxed pt-2">
             {chapter.subtitleBn}
           </p>
@@ -317,7 +308,8 @@ function ChapterDetailPage() {
               মূল বিষয়বস্তু ও গুরুত্বপূর্ণ আলোচনা
             </h2>
             <p className="text-sm text-muted-foreground">
-              অধ্যায় {chapter.chapterNumber}-এর সবচেয়ে গুরুত্বপূর্ণ টপিক ও পরীক্ষার জন্য জরুরি তথ্যাবলী
+              অধ্যায় {chapter.chapterNumber}-এর সবচেয়ে গুরুত্বপূর্ণ টপিক ও পরীক্ষার জন্য জরুরি
+              তথ্যাবলী
             </p>
           </div>
 
@@ -332,9 +324,7 @@ function ChapterDetailPage() {
                     <span className="h-6 w-6 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center shrink-0">
                       {index + 1}
                     </span>
-                    <h3 className="text-lg md:text-xl font-bold">
-                      {topic.titleBn}
-                    </h3>
+                    <h3 className="text-lg md:text-xl font-bold">{topic.titleBn}</h3>
                   </div>
                   <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line pl-8">
                     {topic.descriptionBn}
@@ -347,9 +337,7 @@ function ChapterDetailPage() {
                     <span className="font-bold text-amber-600 dark:text-amber-400">
                       বোর্ড পরীক্ষার ফোকাস:{" "}
                     </span>
-                    <span className="text-muted-foreground">
-                      {topic.keyExamPointBn}
-                    </span>
+                    <span className="text-muted-foreground">{topic.keyExamPointBn}</span>
                   </div>
                 </div>
               </Card>
@@ -371,14 +359,9 @@ function ChapterDetailPage() {
 
           <div className="grid grid-cols-1 gap-4">
             {chapter.importantFormulasOrRules.map((item, index) => (
-              <Card
-                key={index}
-                className="p-6 space-y-3 border border-border/80 bg-card/50"
-              >
+              <Card key={index} className="p-6 space-y-3 border border-border/80 bg-card/50">
                 <div className="flex items-center justify-between">
-                  <h3 className="font-bold text-base md:text-lg text-primary">
-                    {item.titleBn}
-                  </h3>
+                  <h3 className="font-bold text-base md:text-lg text-primary">{item.titleBn}</h3>
                   <Badge variant="outline" className="text-[11px] font-mono">
                     নিয়ম / সূত্র
                   </Badge>
@@ -389,7 +372,8 @@ function ChapterDetailPage() {
                 </div>
 
                 <p className="text-xs md:text-sm text-muted-foreground">
-                  💡 <span className="font-semibold text-foreground">ব্যাখ্যা:</span> {item.explanationBn}
+                  💡 <span className="font-semibold text-foreground">ব্যাখ্যা:</span>{" "}
+                  {item.explanationBn}
                 </p>
               </Card>
             ))}
@@ -434,9 +418,7 @@ function ChapterDetailPage() {
                     <h3 className="text-lg font-bold group-hover:text-primary transition-colors">
                       {lab.titleBn}
                     </h3>
-                    <p className="text-xs text-muted-foreground font-medium">
-                      {lab.titleEn}
-                    </p>
+                    <p className="text-xs text-muted-foreground font-medium">{lab.titleEn}</p>
                     <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
                       {lab.objectiveBn}
                     </p>
@@ -447,7 +429,11 @@ function ChapterDetailPage() {
                       সমীকরণ, যন্ত্রপাতি ও ভাইভা
                     </span>
                     <Link to="/labs/$labId" params={{ labId: lab.slug }}>
-                      <Button size="sm" variant="outline" className="gap-1 text-xs h-8 group-hover:bg-primary group-hover:text-primary-foreground">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="gap-1 text-xs h-8 group-hover:bg-primary group-hover:text-primary-foreground"
+                      >
                         ল্যাব দেখুন
                         <ArrowRight className="h-3.5 w-3.5" />
                       </Button>
@@ -513,7 +499,10 @@ function ChapterDetailPage() {
         </section>
 
         {/* Next / Previous Chapter Navigation */}
-        <nav aria-label="Chapter navigation" className="border-t pt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <nav
+          aria-label="Chapter navigation"
+          className="border-t pt-8 grid grid-cols-1 sm:grid-cols-2 gap-4"
+        >
           {prevChapter ? (
             <Link
               to="/chapters/$chapterNumber"
@@ -564,7 +553,8 @@ function ChapterDetailPage() {
             মুখস্থ না করে নিজে পরীক্ষা করে রসায়ন শিখুন Dr. Chem-এ!
           </h2>
           <p className="text-sm md:text-base text-muted-foreground max-w-xl mx-auto leading-relaxed">
-            বিনামূল্যে সাইনআপ করে ভার্চুয়াল ল্যাবে এক্সপেরিমেন্ট সম্পন্ন করুন এবং বোর্ড পরীক্ষার প্রস্তুতিতে এগিয়ে থাকুন।
+            বিনামূল্যে সাইনআপ করে ভার্চুয়াল ল্যাবে এক্সপেরিমেন্ট সম্পন্ন করুন এবং বোর্ড পরীক্ষার
+            প্রস্তুতিতে এগিয়ে থাকুন।
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
             <Link to="/signup">
@@ -586,10 +576,18 @@ function ChapterDetailPage() {
         <div className="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p>© {new Date().getFullYear()} Dr. Chem · NCTB এসএসসি রসায়ন অধ্যায় গাইড।</p>
           <div className="flex items-center gap-4">
-            <Link to="/" className="hover:underline">হোম</Link>
-            <Link to="/chapters" className="hover:underline font-semibold text-primary">সকল অধ্যায়</Link>
-            <Link to="/labs" className="hover:underline">ল্যাব লাইব্রেরি</Link>
-            <Link to="/pricing" className="hover:underline">প্রাইসিং</Link>
+            <Link to="/" className="hover:underline">
+              হোম
+            </Link>
+            <Link to="/chapters" className="hover:underline font-semibold text-primary">
+              সকল অধ্যায়
+            </Link>
+            <Link to="/labs" className="hover:underline">
+              ল্যাব লাইব্রেরি
+            </Link>
+            <Link to="/pricing" className="hover:underline">
+              প্রাইসিং
+            </Link>
           </div>
         </div>
       </footer>

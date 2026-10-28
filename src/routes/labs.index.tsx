@@ -135,15 +135,18 @@ function LabsIndexPage() {
       {/* Hero Banner */}
       <section className="bg-gradient-to-b from-primary/10 via-background to-background py-12 px-4 border-b">
         <div className="max-w-4xl mx-auto text-center space-y-4">
-          <Badge variant="outline" className="px-3 py-1 bg-primary/10 text-primary border-primary/20">
+          <Badge
+            variant="outline"
+            className="px-3 py-1 bg-primary/10 text-primary border-primary/20"
+          >
             🧪 NCTB ৯ম-১০ম শ্রেণি (SSC) রসায়ন কারিকুলাম
           </Badge>
           <h1 className="text-3xl md:text-5xl font-black tracking-tight leading-tight">
             ভার্চুয়াল কেমিস্ট্রি ল্যাব ও থিওরি লাইব্রেরি
           </h1>
           <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-            পরীক্ষার জন্য প্রয়োজনীয় সকল প্র্যাকটিক্যাল ল্যাব, মূল তত্ত্ব, রাসায়নিক সমীকরণ ও ভাইভা প্রশ্নোত্তর
-            এক জায়গায় শিখুন এবং সরাসরি ব্রাউজারে ল্যাব পরীক্ষাটি সম্পন্ন করুন।
+            পরীক্ষার জন্য প্রয়োজনীয় সকল প্র্যাকটিক্যাল ল্যাব, মূল তত্ত্ব, রাসায়নিক সমীকরণ ও ভাইভা
+            প্রশ্নোত্তর এক জায়গায় শিখুন এবং সরাসরি ব্রাউজারে ল্যাব পরীক্ষাটি সম্পন্ন করুন।
           </p>
 
           {/* Search bar */}
@@ -187,9 +190,7 @@ function LabsIndexPage() {
 
         {/* Results Counter */}
         <div className="flex items-center justify-between text-sm text-muted-foreground border-b pb-3">
-          <span>
-            {filteredTopics.length} টি ল্যাব এক্সপেরিমেন্ট ও থিওরি টপিক পাওয়া গেছে
-          </span>
+          <span>{filteredTopics.length} টি ল্যাব এক্সপেরিমেন্ট ও থিওরি টপিক পাওয়া গেছে</span>
           {search && (
             <Button variant="ghost" size="sm" onClick={() => setSearch("")} className="h-7 text-xs">
               সার্চ মুছুন
@@ -226,9 +227,7 @@ function LabsIndexPage() {
                       {topic.titleBn}
                     </h2>
                   </Link>
-                  <p className="text-xs text-muted-foreground font-mono mt-0.5">
-                    {topic.titleEn}
-                  </p>
+                  <p className="text-xs text-muted-foreground font-mono mt-0.5">{topic.titleEn}</p>
 
                   <p className="text-sm text-muted-foreground mt-3 line-clamp-3 leading-relaxed">
                     {topic.objectiveBn}
@@ -237,7 +236,11 @@ function LabsIndexPage() {
 
                 {topic.equationKaTeX && (
                   <div className="bg-muted/40 p-2.5 rounded-lg border text-xs font-mono text-center text-primary/90 truncate">
-                    <code>{topic.equationKaTeX.replace(/\\\\rightarrow/g, "→").replace(/\\\\uparrow/g, "↑")}</code>
+                    <code>
+                      {topic.equationKaTeX
+                        .replace(/\\\\rightarrow/g, "→")
+                        .replace(/\\\\uparrow/g, "↑")}
+                    </code>
                   </div>
                 )}
               </div>
@@ -283,9 +286,12 @@ function LabsIndexPage() {
 
       {/* Footer CTA */}
       <footer className="border-t bg-muted/30 py-12 px-4 mt-16 text-center space-y-4">
-        <h3 className="text-xl font-bold">অনলাইনে কেমিস্ট্রি প্র্যাকটিক্যাল ল্যাব প্র্যাকটিস করুন</h3>
+        <h3 className="text-xl font-bold">
+          অনলাইনে কেমিস্ট্রি প্র্যাকটিক্যাল ল্যাব প্র্যাকটিস করুন
+        </h3>
         <p className="text-sm text-muted-foreground max-w-lg mx-auto">
-          ডাঃ কেম প্ল্যাটফর্মে যুক্ত হয়ে আজই ভার্চুয়াল বিকারে বিক্রিয়া পরীক্ষা ও ভাইভা প্র্যাকটিস শুরু করুন।
+          ডাঃ কেম প্ল্যাটফর্মে যুক্ত হয়ে আজই ভার্চুয়াল বিকারে বিক্রিয়া পরীক্ষা ও ভাইভা প্র্যাকটিস
+          শুরু করুন।
         </p>
         <Link to="/signup">
           <Button size="lg" className="rounded-xl px-8 font-semibold shadow-md">

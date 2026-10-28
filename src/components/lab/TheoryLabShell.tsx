@@ -111,9 +111,7 @@ export default function TheoryLabShell({
 
           {/* CENTER — Interactive Simulation Visual */}
           <section className="relative flex h-full min-h-0 min-w-0 items-center justify-center overflow-hidden rounded-2xl border border-border/70 bg-card/60 p-2 shadow-sm backdrop-blur">
-            <div className="flex h-full w-full items-center justify-center">
-              {visual}
-            </div>
+            <div className="flex h-full w-full items-center justify-center">{visual}</div>
           </section>
 
           {/* RIGHT — Controls & Parameters */}
@@ -126,9 +124,7 @@ export default function TheoryLabShell({
         <div className="flex flex-1 flex-col min-h-0 overflow-hidden">
           {/* TOP: Compact Pinned Visual Viewport */}
           <div className="relative h-[36dvh] min-h-[170px] max-h-[220px] shrink-0 border-b border-border/70 bg-slate-950/5 dark:bg-black/30 p-1.5 flex items-center justify-center overflow-hidden">
-            <div className="flex h-full w-full items-center justify-center">
-              {visual}
-            </div>
+            <div className="flex h-full w-full items-center justify-center">{visual}</div>
           </div>
 
           {/* BOTTOM: Interactive Workbench */}
@@ -142,7 +138,7 @@ export default function TheoryLabShell({
                   "flex items-center justify-center gap-1.5 rounded-lg py-1.5 transition-all",
                   mobileTab === "lab"
                     ? "bg-background text-primary shadow-sm font-bold"
-                    : "text-muted-foreground hover:text-foreground"
+                    : "text-muted-foreground hover:text-foreground",
                 )}
               >
                 <Sliders className="h-3.5 w-3.5" />
@@ -156,7 +152,7 @@ export default function TheoryLabShell({
                   "flex items-center justify-center gap-1.5 rounded-lg py-1.5 transition-all",
                   mobileTab === "theory"
                     ? "bg-background text-primary shadow-sm font-bold"
-                    : "text-muted-foreground hover:text-foreground"
+                    : "text-muted-foreground hover:text-foreground",
                 )}
               >
                 <BookOpen className="h-3.5 w-3.5" />

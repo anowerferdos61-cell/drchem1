@@ -114,7 +114,9 @@ export default function CopperSulfateLab({ onBack }: Props) {
   const [showPanels, setShowPanels] = useState(true);
   const [vivaQuestions, setVivaQuestions] = useState<VivaQuestion[]>([]);
   const [showViva, setShowViva] = useState(false);
-  const [mobileTab, setMobileTab] = useState<"equipment" | "controls" | "info" | "guide">("equipment");
+  const [mobileTab, setMobileTab] = useState<"equipment" | "controls" | "info" | "guide">(
+    "equipment",
+  );
   const [showTheory, setShowTheory] = useState(false);
 
   const startedAtRef = useRef<number | null>(null);
@@ -549,360 +551,370 @@ export default function CopperSulfateLab({ onBack }: Props) {
         {/* ── Desktop Layout: 3-Column Fixed 100dvh (Zero outer scrollbar) ── */}
         {!isMobile ? (
           <main className="flex-1 min-h-0 overflow-hidden p-2.5 grid md:grid-cols-[minmax(250px,270px)_minmax(0,1fr)_minmax(270px,300px)] lg:grid-cols-[minmax(270px,290px)_minmax(0,1fr)_minmax(290px,320px)] md:gap-2.5">
-          {/* LEFT: Equipment */}
-          <aside className="lab-scroll flex h-full min-h-0 flex-col gap-2.5 overflow-y-auto pr-1">
-            <EquipmentPanel
-              items={CUSO4_ITEMS}
-              onSelect={handleSelect}
-              highlight={guide ? nextHighlight : null}
-              disabled={() => submitted}
-            />
-          </aside>
+            {/* LEFT: Equipment */}
+            <aside className="lab-scroll flex h-full min-h-0 flex-col gap-2.5 overflow-y-auto pr-1">
+              <EquipmentPanel
+                items={CUSO4_ITEMS}
+                onSelect={handleSelect}
+                highlight={guide ? nextHighlight : null}
+                disabled={() => submitted}
+              />
+            </aside>
 
-          {/* CENTER: Workspace & Action Bar */}
-          <section
-            className="relative flex h-full min-h-0 min-w-0 items-center justify-center overflow-hidden rounded-2xl border border-slate-800 bg-slate-950/60 shadow-inner"
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={(e) => {
-              const id = e.dataTransfer.getData("text/equipment") as EquipmentId;
-              if (id) handleSelect(id);
-            }}
-          >
-            <div className="absolute inset-0 overflow-hidden rounded-2xl">
+            {/* CENTER: Workspace & Action Bar */}
+            <section
+              className="relative flex h-full min-h-0 min-w-0 items-center justify-center overflow-hidden rounded-2xl border border-slate-800 bg-slate-950/60 shadow-inner"
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => {
+                const id = e.dataTransfer.getData("text/equipment") as EquipmentId;
+                if (id) handleSelect(id);
+              }}
+            >
+              <div className="absolute inset-0 overflow-hidden rounded-2xl">
+                <CopperSulfateWorkspace placed={placed} />
+              </div>
+
+              {/* Desktop Action Pill Bar */}
+              <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 flex-wrap items-center justify-center gap-1.5 rounded-full border border-slate-700/80 bg-slate-900/90 p-1.5 shadow-xl backdrop-blur">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={recordEmpty}
+                  disabled={
+                    submitted ||
+                    !placed.crucibleOnBalance ||
+                    placed.weighedEmpty ||
+                    placed.hydratedSampleMass > 0
+                  }
+                  className="h-7 px-2 text-xs border-slate-700 bg-slate-800/80 text-slate-200 hover:bg-slate-700"
+                >
+                  <Sparkles className="mr-1 h-3 w-3 text-sky-400" /> Record x
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={recordHydrated}
+                  disabled={submitted || placed.weighedHydrated || placed.hydratedSampleMass < 2.5}
+                  className="h-7 px-2 text-xs border-slate-700 bg-slate-800/80 text-slate-200 hover:bg-slate-700"
+                >
+                  Record y
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={moveToTripod}
+                  disabled={
+                    submitted ||
+                    !placed.weighedHydrated ||
+                    placed.crucibleOnTripod ||
+                    placed.inDesiccator
+                  }
+                  className="h-7 px-2 text-xs border-slate-700 bg-slate-800/80 text-slate-200 hover:bg-slate-700"
+                >
+                  → Tripod
+                </Button>
+                <Button
+                  size="sm"
+                  variant={placed.burnerOn ? "destructive" : "default"}
+                  onClick={toggleBurner}
+                  disabled={submitted || !placed.crucibleOnTripod}
+                  className={cn(
+                    "h-7 px-2 text-xs font-semibold",
+                    !placed.burnerOn && "bg-amber-600 hover:bg-amber-500 text-white",
+                  )}
+                >
+                  <Flame className="mr-1 h-3 w-3" />{" "}
+                  {placed.burnerOn ? "বার্নার বন্ধ" : "বার্নার চালু"}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={moveToDesiccator}
+                  disabled={submitted || !placed.crucibleOnTripod || placed.burnerOn}
+                  className="h-7 px-2 text-xs border-sky-500/30 bg-sky-500/10 text-sky-300 hover:bg-sky-500/20"
+                >
+                  <Snowflake className="mr-1 h-3 w-3" /> Desiccator
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => moveBackToBalance(false)}
+                  disabled={submitted || !placed.inDesiccator || placed.weighedAnhydrous}
+                  className="h-7 px-2 text-xs border-slate-700 bg-slate-800/80 text-slate-200 hover:bg-slate-700"
+                >
+                  → Record z
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={reset}
+                  className="h-7 px-2 text-xs border-slate-700 bg-slate-800/80 text-slate-300 hover:bg-slate-700"
+                >
+                  <RotateCcw className="mr-1 h-3 w-3" /> Reset
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={submit}
+                  disabled={submitted || !placed.weighedAnhydrous}
+                  className="h-7 px-2 text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-semibold"
+                >
+                  <Trophy className="mr-1 h-3 w-3" /> Submit
+                </Button>
+              </div>
+            </section>
+
+            {/* RIGHT: Status & Checklist */}
+            <aside className="lab-scroll flex h-full min-h-0 flex-col gap-2.5 overflow-y-auto pl-1">
+              <StatusCard placed={placed} x={x} y={y} z={liveZ} pct={livePct} />
+              {mode !== "student" && (
+                <StepsPanel
+                  steps={steps}
+                  mistakes={mistakes}
+                  guideMode={guide}
+                  nextHint={guide ? nextHint : undefined}
+                />
+              )}
+            </aside>
+          </main>
+        ) : (
+          /* ── Mobile Split View (< md) ── */
+          <div className="flex flex-1 flex-col min-h-0 overflow-hidden">
+            {/* Top 46%: Pinned Visual Workspace */}
+            <div className="relative h-[46dvh] shrink-0 border-b border-slate-800/80 bg-slate-950/70 p-1 flex items-center justify-center overflow-hidden">
               <CopperSulfateWorkspace placed={placed} />
             </div>
 
-            {/* Desktop Action Pill Bar */}
-            <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 flex-wrap items-center justify-center gap-1.5 rounded-full border border-slate-700/80 bg-slate-900/90 p-1.5 shadow-xl backdrop-blur">
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={recordEmpty}
-                disabled={
-                  submitted ||
-                  !placed.crucibleOnBalance ||
-                  placed.weighedEmpty ||
-                  placed.hydratedSampleMass > 0
-                }
-                className="h-7 px-2 text-xs border-slate-700 bg-slate-800/80 text-slate-200 hover:bg-slate-700"
-              >
-                <Sparkles className="mr-1 h-3 w-3 text-sky-400" /> Record x
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={recordHydrated}
-                disabled={submitted || placed.weighedHydrated || placed.hydratedSampleMass < 2.5}
-                className="h-7 px-2 text-xs border-slate-700 bg-slate-800/80 text-slate-200 hover:bg-slate-700"
-              >
-                Record y
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={moveToTripod}
-                disabled={
-                  submitted ||
-                  !placed.weighedHydrated ||
-                  placed.crucibleOnTripod ||
-                  placed.inDesiccator
-                }
-                className="h-7 px-2 text-xs border-slate-700 bg-slate-800/80 text-slate-200 hover:bg-slate-700"
-              >
-                → Tripod
-              </Button>
-              <Button
-                size="sm"
-                variant={placed.burnerOn ? "destructive" : "default"}
-                onClick={toggleBurner}
-                disabled={submitted || !placed.crucibleOnTripod}
-                className={cn(
-                  "h-7 px-2 text-xs font-semibold",
-                  !placed.burnerOn && "bg-amber-600 hover:bg-amber-500 text-white"
-                )}
-              >
-                <Flame className="mr-1 h-3 w-3" /> {placed.burnerOn ? "বার্নার বন্ধ" : "বার্নার চালু"}
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={moveToDesiccator}
-                disabled={submitted || !placed.crucibleOnTripod || placed.burnerOn}
-                className="h-7 px-2 text-xs border-sky-500/30 bg-sky-500/10 text-sky-300 hover:bg-sky-500/20"
-              >
-                <Snowflake className="mr-1 h-3 w-3" /> Desiccator
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => moveBackToBalance(false)}
-                disabled={submitted || !placed.inDesiccator || placed.weighedAnhydrous}
-                className="h-7 px-2 text-xs border-slate-700 bg-slate-800/80 text-slate-200 hover:bg-slate-700"
-              >
-                → Record z
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={reset}
-                className="h-7 px-2 text-xs border-slate-700 bg-slate-800/80 text-slate-300 hover:bg-slate-700"
-              >
-                <RotateCcw className="mr-1 h-3 w-3" /> Reset
-              </Button>
-              <Button
-                size="sm"
-                onClick={submit}
-                disabled={submitted || !placed.weighedAnhydrous}
-                className="h-7 px-2 text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-semibold"
-              >
-                <Trophy className="mr-1 h-3 w-3" /> Submit
-              </Button>
-            </div>
-          </section>
-
-          {/* RIGHT: Status & Checklist */}
-          <aside className="lab-scroll flex h-full min-h-0 flex-col gap-2.5 overflow-y-auto pl-1">
-            <StatusCard placed={placed} x={x} y={y} z={liveZ} pct={livePct} />
-            {mode !== "student" && (
-              <StepsPanel
-                steps={steps}
-                mistakes={mistakes}
-                guideMode={guide}
-                nextHint={guide ? nextHint : undefined}
-              />
-            )}
-          </aside>
-        </main>
-        ) : (
-        /* ── Mobile Split View (< md) ── */
-        <div className="flex flex-1 flex-col min-h-0 overflow-hidden">
-          {/* Top 46%: Pinned Visual Workspace */}
-          <div className="relative h-[46dvh] shrink-0 border-b border-slate-800/80 bg-slate-950/70 p-1 flex items-center justify-center overflow-hidden">
-            <CopperSulfateWorkspace placed={placed} />
-          </div>
-
-          {/* Bottom 54%: Interactive Tabbed Tray */}
-          <div className="flex flex-1 flex-col min-h-0 bg-slate-900/95 backdrop-blur">
-            {/* Tab Selection */}
-            <div className="grid grid-cols-4 border-b border-slate-800 bg-slate-950/60 p-1 text-[11px] font-semibold gap-1">
-              <button
-                type="button"
-                onClick={() => setMobileTab("equipment")}
-                className={cn(
-                  "flex items-center justify-center gap-1 rounded-md py-1.5 transition",
-                  mobileTab === "equipment"
-                    ? "bg-slate-800 text-sky-400 shadow-sm font-bold"
-                    : "text-slate-400 hover:text-slate-200"
-                )}
-              >
-                <Sliders className="h-3 w-3" />
-                <span>যন্ত্রপাতি</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setMobileTab("controls")}
-                className={cn(
-                  "flex items-center justify-center gap-1 rounded-md py-1.5 transition",
-                  mobileTab === "controls"
-                    ? "bg-slate-800 text-sky-400 shadow-sm font-bold"
-                    : "text-slate-400 hover:text-slate-200"
-                )}
-              >
-                <Flame className="h-3 w-3" />
-                <span>কন্ট্রোলস</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setMobileTab("info")}
-                className={cn(
-                  "flex items-center justify-center gap-1 rounded-md py-1.5 transition",
-                  mobileTab === "info"
-                    ? "bg-slate-800 text-sky-400 shadow-sm font-bold"
-                    : "text-slate-400 hover:text-slate-200"
-                )}
-              >
-                <BarChart3 className="h-3 w-3" />
-                <span>ভর ও ফলাফল</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setMobileTab("guide")}
-                className={cn(
-                  "flex items-center justify-center gap-1 rounded-md py-1.5 transition",
-                  mobileTab === "guide"
-                    ? "bg-slate-800 text-sky-400 shadow-sm font-bold"
-                    : "text-slate-400 hover:text-slate-200"
-                )}
-              >
-                <CheckSquare className="h-3 w-3" />
-                <span>গাইড</span>
-              </button>
-            </div>
-
-            {/* Tab Panel Content */}
-            <div className="lab-scroll flex-1 min-h-0 overflow-y-auto p-2.5">
-              {mobileTab === "equipment" && (
-                <div className="space-y-2.5">
-                  <EquipmentPanel
-                    items={CUSO4_ITEMS}
-                    onSelect={handleSelect}
-                    highlight={guide ? nextHighlight : null}
-                    disabled={() => submitted}
-                  />
-                </div>
-              )}
-
-              {mobileTab === "controls" && (
-                <div className="space-y-3">
-                  {/* Phase 1: Weighing */}
-                  <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3 space-y-2">
-                    <div className="text-xs font-bold text-slate-200">১. ভর রেকর্ড (Weighing)</div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={recordEmpty}
-                        disabled={
-                          submitted ||
-                          !placed.crucibleOnBalance ||
-                          placed.weighedEmpty ||
-                          placed.hydratedSampleMass > 0
-                        }
-                        className="h-9 text-xs border-slate-700 bg-slate-800 text-slate-200"
-                      >
-                        <Sparkles className="mr-1.5 h-3.5 w-3.5 text-sky-400" /> Record x (খালি)
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={recordHydrated}
-                        disabled={submitted || placed.weighedHydrated || placed.hydratedSampleMass < 2.5}
-                        className="h-9 text-xs border-slate-700 bg-slate-800 text-slate-200"
-                      >
-                        Record y (লবণসহ)
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* Phase 2: Heating */}
-                  <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3 space-y-2">
-                    <div className="text-xs font-bold text-slate-200">২. তাপ দেওয়া (Heating on Tripod)</div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={moveToTripod}
-                        disabled={
-                          submitted ||
-                          !placed.weighedHydrated ||
-                          placed.crucibleOnTripod ||
-                          placed.inDesiccator
-                        }
-                        className="h-9 text-xs border-slate-700 bg-slate-800 text-slate-200"
-                      >
-                        → ত্রিপদী স্ট্যান্ডে নাও
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant={placed.burnerOn ? "destructive" : "default"}
-                        onClick={toggleBurner}
-                        disabled={submitted || !placed.crucibleOnTripod}
-                        className={cn(
-                          "h-9 text-xs font-semibold",
-                          !placed.burnerOn && "bg-amber-600 hover:bg-amber-500 text-white"
-                        )}
-                      >
-                        <Flame className="mr-1.5 h-3.5 w-3.5" /> {placed.burnerOn ? "বার্নার বন্ধ" : "বার্নার চালু"}
-                      </Button>
-                    </div>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={aggressiveStir}
-                      disabled={submitted || !placed.crucibleOnTripod || placed.spilled}
-                      className="w-full h-8 text-xs text-amber-300 hover:bg-amber-500/10"
-                    >
-                      ! জোরে নাড়াচাড়া (ঝুঁকিপূর্ণ)
-                    </Button>
-                  </div>
-
-                  {/* Phase 3: Desiccator & Final mass */}
-                  <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3 space-y-2">
-                    <div className="text-xs font-bold text-slate-200">৩. শীতলীকরণ ও শুষ্ক ভর (z)</div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={moveToDesiccator}
-                        disabled={submitted || !placed.crucibleOnTripod || placed.burnerOn}
-                        className="h-9 text-xs border-sky-500/30 bg-sky-500/10 text-sky-300"
-                      >
-                        <Snowflake className="mr-1.5 h-3.5 w-3.5 text-sky-400" /> ডেসিকেটরে নাও
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => moveBackToBalance(false)}
-                        disabled={submitted || !placed.inDesiccator || placed.weighedAnhydrous}
-                        className="h-9 text-xs border-slate-700 bg-slate-800 text-slate-200"
-                      >
-                        → ব্যালান্সে নাও (Record z)
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* Submission */}
-                  <div className="grid grid-cols-2 gap-2 pt-1">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={reset}
-                      className="h-9 text-xs border-slate-700 bg-slate-800 text-slate-300"
-                    >
-                      <RotateCcw className="mr-1.5 h-4 w-4" /> রিসেট
-                    </Button>
-                    <Button
-                      size="sm"
-                      onClick={submit}
-                      disabled={submitted || !placed.weighedAnhydrous}
-                      className="h-9 text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold"
-                    >
-                      <Trophy className="mr-1.5 h-4 w-4" /> রিপোর্ট জমা
-                    </Button>
-                  </div>
-                </div>
-              )}
-
-              {mobileTab === "info" && (
-                <StatusCard placed={placed} x={x} y={y} z={liveZ} pct={livePct} />
-              )}
-
-              {mobileTab === "guide" && (
-                <div className="space-y-3">
-                  <StepsPanel
-                    steps={steps}
-                    mistakes={mistakes}
-                    guideMode={guide}
-                    nextHint={guide ? nextHint : undefined}
-                  />
-                  {showViva && (
-                    <div className="space-y-3 pt-2">
-                      <TeacherViva
-                        onPublish={setVivaQuestions}
-                        experiment="cuso4_water"
-                        defaultTopic="CuSO₄·5H₂O এর কেলাস পানি নির্ণয় ও efflorescence"
-                      />
-                      <StudentViva />
-                    </div>
+            {/* Bottom 54%: Interactive Tabbed Tray */}
+            <div className="flex flex-1 flex-col min-h-0 bg-slate-900/95 backdrop-blur">
+              {/* Tab Selection */}
+              <div className="grid grid-cols-4 border-b border-slate-800 bg-slate-950/60 p-1 text-[11px] font-semibold gap-1">
+                <button
+                  type="button"
+                  onClick={() => setMobileTab("equipment")}
+                  className={cn(
+                    "flex items-center justify-center gap-1 rounded-md py-1.5 transition",
+                    mobileTab === "equipment"
+                      ? "bg-slate-800 text-sky-400 shadow-sm font-bold"
+                      : "text-slate-400 hover:text-slate-200",
                   )}
-                </div>
-              )}
+                >
+                  <Sliders className="h-3 w-3" />
+                  <span>যন্ত্রপাতি</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setMobileTab("controls")}
+                  className={cn(
+                    "flex items-center justify-center gap-1 rounded-md py-1.5 transition",
+                    mobileTab === "controls"
+                      ? "bg-slate-800 text-sky-400 shadow-sm font-bold"
+                      : "text-slate-400 hover:text-slate-200",
+                  )}
+                >
+                  <Flame className="h-3 w-3" />
+                  <span>কন্ট্রোলস</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setMobileTab("info")}
+                  className={cn(
+                    "flex items-center justify-center gap-1 rounded-md py-1.5 transition",
+                    mobileTab === "info"
+                      ? "bg-slate-800 text-sky-400 shadow-sm font-bold"
+                      : "text-slate-400 hover:text-slate-200",
+                  )}
+                >
+                  <BarChart3 className="h-3 w-3" />
+                  <span>ভর ও ফলাফল</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setMobileTab("guide")}
+                  className={cn(
+                    "flex items-center justify-center gap-1 rounded-md py-1.5 transition",
+                    mobileTab === "guide"
+                      ? "bg-slate-800 text-sky-400 shadow-sm font-bold"
+                      : "text-slate-400 hover:text-slate-200",
+                  )}
+                >
+                  <CheckSquare className="h-3 w-3" />
+                  <span>গাইড</span>
+                </button>
+              </div>
+
+              {/* Tab Panel Content */}
+              <div className="lab-scroll flex-1 min-h-0 overflow-y-auto p-2.5">
+                {mobileTab === "equipment" && (
+                  <div className="space-y-2.5">
+                    <EquipmentPanel
+                      items={CUSO4_ITEMS}
+                      onSelect={handleSelect}
+                      highlight={guide ? nextHighlight : null}
+                      disabled={() => submitted}
+                    />
+                  </div>
+                )}
+
+                {mobileTab === "controls" && (
+                  <div className="space-y-3">
+                    {/* Phase 1: Weighing */}
+                    <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3 space-y-2">
+                      <div className="text-xs font-bold text-slate-200">
+                        ১. ভর রেকর্ড (Weighing)
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={recordEmpty}
+                          disabled={
+                            submitted ||
+                            !placed.crucibleOnBalance ||
+                            placed.weighedEmpty ||
+                            placed.hydratedSampleMass > 0
+                          }
+                          className="h-9 text-xs border-slate-700 bg-slate-800 text-slate-200"
+                        >
+                          <Sparkles className="mr-1.5 h-3.5 w-3.5 text-sky-400" /> Record x (খালি)
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={recordHydrated}
+                          disabled={
+                            submitted || placed.weighedHydrated || placed.hydratedSampleMass < 2.5
+                          }
+                          className="h-9 text-xs border-slate-700 bg-slate-800 text-slate-200"
+                        >
+                          Record y (লবণসহ)
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Phase 2: Heating */}
+                    <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3 space-y-2">
+                      <div className="text-xs font-bold text-slate-200">
+                        ২. তাপ দেওয়া (Heating on Tripod)
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={moveToTripod}
+                          disabled={
+                            submitted ||
+                            !placed.weighedHydrated ||
+                            placed.crucibleOnTripod ||
+                            placed.inDesiccator
+                          }
+                          className="h-9 text-xs border-slate-700 bg-slate-800 text-slate-200"
+                        >
+                          → ত্রিপদী স্ট্যান্ডে নাও
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant={placed.burnerOn ? "destructive" : "default"}
+                          onClick={toggleBurner}
+                          disabled={submitted || !placed.crucibleOnTripod}
+                          className={cn(
+                            "h-9 text-xs font-semibold",
+                            !placed.burnerOn && "bg-amber-600 hover:bg-amber-500 text-white",
+                          )}
+                        >
+                          <Flame className="mr-1.5 h-3.5 w-3.5" />{" "}
+                          {placed.burnerOn ? "বার্নার বন্ধ" : "বার্নার চালু"}
+                        </Button>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={aggressiveStir}
+                        disabled={submitted || !placed.crucibleOnTripod || placed.spilled}
+                        className="w-full h-8 text-xs text-amber-300 hover:bg-amber-500/10"
+                      >
+                        ! জোরে নাড়াচাড়া (ঝুঁকিপূর্ণ)
+                      </Button>
+                    </div>
+
+                    {/* Phase 3: Desiccator & Final mass */}
+                    <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3 space-y-2">
+                      <div className="text-xs font-bold text-slate-200">
+                        ৩. শীতলীকরণ ও শুষ্ক ভর (z)
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={moveToDesiccator}
+                          disabled={submitted || !placed.crucibleOnTripod || placed.burnerOn}
+                          className="h-9 text-xs border-sky-500/30 bg-sky-500/10 text-sky-300"
+                        >
+                          <Snowflake className="mr-1.5 h-3.5 w-3.5 text-sky-400" /> ডেসিকেটরে নাও
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => moveBackToBalance(false)}
+                          disabled={submitted || !placed.inDesiccator || placed.weighedAnhydrous}
+                          className="h-9 text-xs border-slate-700 bg-slate-800 text-slate-200"
+                        >
+                          → ব্যালান্সে নাও (Record z)
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Submission */}
+                    <div className="grid grid-cols-2 gap-2 pt-1">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={reset}
+                        className="h-9 text-xs border-slate-700 bg-slate-800 text-slate-300"
+                      >
+                        <RotateCcw className="mr-1.5 h-4 w-4" /> রিসেট
+                      </Button>
+                      <Button
+                        size="sm"
+                        onClick={submit}
+                        disabled={submitted || !placed.weighedAnhydrous}
+                        className="h-9 text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold"
+                      >
+                        <Trophy className="mr-1.5 h-4 w-4" /> রিপোর্ট জমা
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {mobileTab === "info" && (
+                  <StatusCard placed={placed} x={x} y={y} z={liveZ} pct={livePct} />
+                )}
+
+                {mobileTab === "guide" && (
+                  <div className="space-y-3">
+                    <StepsPanel
+                      steps={steps}
+                      mistakes={mistakes}
+                      guideMode={guide}
+                      nextHint={guide ? nextHint : undefined}
+                    />
+                    {showViva && (
+                      <div className="space-y-3 pt-2">
+                        <TeacherViva
+                          onPublish={setVivaQuestions}
+                          experiment="cuso4_water"
+                          defaultTopic="CuSO₄·5H₂O এর কেলাস পানি নির্ণয় ও efflorescence"
+                        />
+                        <StudentViva />
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
         )}
 
         {/* ── Report Modal Overlay ── */}
@@ -927,7 +939,8 @@ export default function CopperSulfateLab({ onBack }: Props) {
                 <div>
                   <h4 className="text-sky-400 font-bold mb-1">১. মূল নীতি (Principle)</h4>
                   <p className="text-xs text-slate-400">
-                    নীল বর্ণের তুঁত বা কপার সালফেট পেন্টাহাইড্রেটকে উত্তপ্ত করলে এর কেলাস পানি বাষ্পীভূত হয়ে নির্গত হয় এবং এটি বর্ণহীন/সাদা অনার্দ্র কপার সালফেটে পরিণত হয়:
+                    নীল বর্ণের তুঁত বা কপার সালফেট পেন্টাহাইড্রেটকে উত্তপ্ত করলে এর কেলাস পানি
+                    বাষ্পীভূত হয়ে নির্গত হয় এবং এটি বর্ণহীন/সাদা অনার্দ্র কপার সালফেটে পরিণত হয়:
                   </p>
                   <p className="font-mono bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-sky-300 text-xs my-2">
                     CuSO₄·5H₂O (s) [নীল] → CuSO₄ (s) [সাদা গুঁড়া] + 5 H₂O (g) ↑
@@ -935,33 +948,58 @@ export default function CopperSulfateLab({ onBack }: Props) {
                 </div>
 
                 <div>
-                  <h4 className="text-sky-400 font-bold mb-1">২. গণনার সূত্র (Calculation Formula)</h4>
+                  <h4 className="text-sky-400 font-bold mb-1">
+                    ২. গণনার সূত্র (Calculation Formula)
+                  </h4>
                   <ul className="text-xs space-y-1 list-disc pl-4 text-slate-300">
-                    <li>খালি ক্রুসিবলের ভর = <span className="font-mono text-sky-300">x</span> g</li>
-                    <li>তুঁতসহ ক্রুসিবলের ভর = <span className="font-mono text-sky-300">y</span> g  (নমুনার ভর = y − x)</li>
-                    <li>উত্তপ্ত ও ঠান্ডা করার পর অনার্দ্র লবণের ভর = <span className="font-mono text-sky-300">z</span> g  (কেলাস পানির ভর = y − z)</li>
+                    <li>
+                      খালি ক্রুসিবলের ভর = <span className="font-mono text-sky-300">x</span> g
+                    </li>
+                    <li>
+                      তুঁতসহ ক্রুসিবলের ভর = <span className="font-mono text-sky-300">y</span> g
+                      (নমুনার ভর = y − x)
+                    </li>
+                    <li>
+                      উত্তপ্ত ও ঠান্ডা করার পর অনার্দ্র লবণের ভর ={" "}
+                      <span className="font-mono text-sky-300">z</span> g (কেলাস পানির ভর = y − z)
+                    </li>
                   </ul>
                   <div className="font-mono bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-sky-300 text-xs my-2">
                     কেলাস পানির শতকরা হার = [(y − z) / (y − x)] × ১০০ %
                   </div>
                   <p className="text-xs text-slate-400">
-                    তাত্ত্বিক আণবিক ভর = ৬৩.৫ + ৩২ + ৬৪ + (৫ × ১৮) = ২৪৯.৫ g/mol। ৫ অণু পানির ভর = ৯০ g।
-                    তাত্ত্বিক হার = (৯০ / ২৪৯.৫) × ১০০ = ৩৬.০৭%।
+                    তাত্ত্বিক আণবিক ভর = ৬৩.৫ + ৩২ + ৬৪ + (৫ × ১৮) = ২৪৯.৫ g/mol। ৫ অণু পানির ভর =
+                    ৯০ g। তাত্ত্বিক হার = (৯০ / ২৪৯.৫) × ১০০ = ৩৬.০৭%।
                   </p>
                 </div>
 
                 <div>
                   <h4 className="text-sky-400 font-bold mb-1">৩. সতর্কতাসমূহ (Lab Precautions)</h4>
                   <ul className="text-xs space-y-1.5 list-disc pl-4 text-slate-300">
-                    <li><strong className="text-slate-100">ডেসিকেটরে শীতলীকরণ:</strong> গরম ক্রুসিবল বাতাসে ঠান্ডা করলে বায়ুমণ্ডলের জলীয় বাষ্প দ্রুত শোষণ করে ভরের ত্রুটি ঘটবে। তাই সিলিকা জেলযুক্ত ডেসিকেটরে ঠান্ডা করতে হয়।</li>
-                    <li><strong className="text-slate-100">ধীর ও সুষম উত্তাপন:</strong> তীব্র তাপে লবণ ছিটকে বাইরে পড়ে গেলে (spillage) ভরের মারাত্মক ঘাটতি দেখা দেয়।</li>
-                    <li><strong className="text-slate-100">ধ্রুব ভর নিশ্চিতকরণ:</strong> সম্পূর্ণ সাদা গুঁড়ায় রূপান্তর না হওয়া পর্যন্ত এবং পরপর দুটি পরিমাপে ভর অপরিবর্তিত না থাকা পর্যন্ত উত্তাপন চালিয়ে যেতে হয়।</li>
+                    <li>
+                      <strong className="text-slate-100">ডেসিকেটরে শীতলীকরণ:</strong> গরম ক্রুসিবল
+                      বাতাসে ঠান্ডা করলে বায়ুমণ্ডলের জলীয় বাষ্প দ্রুত শোষণ করে ভরের ত্রুটি ঘটবে।
+                      তাই সিলিকা জেলযুক্ত ডেসিকেটরে ঠান্ডা করতে হয়।
+                    </li>
+                    <li>
+                      <strong className="text-slate-100">ধীর ও সুষম উত্তাপন:</strong> তীব্র তাপে লবণ
+                      ছিটকে বাইরে পড়ে গেলে (spillage) ভরের মারাত্মক ঘাটতি দেখা দেয়।
+                    </li>
+                    <li>
+                      <strong className="text-slate-100">ধ্রুব ভর নিশ্চিতকরণ:</strong> সম্পূর্ণ সাদা
+                      গুঁড়ায় রূপান্তর না হওয়া পর্যন্ত এবং পরপর দুটি পরিমাপে ভর অপরিবর্তিত না থাকা
+                      পর্যন্ত উত্তাপন চালিয়ে যেতে হয়।
+                    </li>
                   </ul>
                 </div>
               </div>
             </ScrollArea>
             <DrawerClose asChild>
-              <Button variant="outline" size="sm" className="mx-4 mb-3 border-slate-700 bg-slate-800 text-slate-200">
+              <Button
+                variant="outline"
+                size="sm"
+                className="mx-4 mb-3 border-slate-700 bg-slate-800 text-slate-200"
+              >
                 বন্ধ করুন
               </Button>
             </DrawerClose>

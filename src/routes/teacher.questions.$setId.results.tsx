@@ -33,7 +33,7 @@ function ResultsPage() {
       setRows(r.rows as Row[]);
       setTitle(r.set?.title ?? "");
     })();
-  }, [setId]);
+  }, [setId, load]);
 
   return (
     <div className="space-y-4">

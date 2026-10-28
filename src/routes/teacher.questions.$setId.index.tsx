@@ -42,7 +42,7 @@ function EditSet() {
       setSelectedClass(r.set?.class_id ?? "");
       setLoading(false);
     })();
-  }, [setId]);
+  }, [setId, get]);
 
   useEffect(() => {
     if (!user) return;

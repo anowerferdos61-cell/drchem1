@@ -220,14 +220,7 @@ function buildSteps(): Step[] {
 }
 
 type EquipmentSelectId =
-  | "flask"
-  | "burette"
-  | "beaker"
-  | "pipette"
-  | "hcl"
-  | "naoh"
-  | "phenolphthalein"
-  | "clamp";
+  "flask" | "burette" | "beaker" | "pipette" | "hcl" | "naoh" | "phenolphthalein" | "clamp";
 
 function Index() {
   // Auth guard — redirect to /login if not signed in
@@ -713,7 +706,11 @@ function TitrationLab({ onBack }: { onBack: () => void }) {
               <ArrowLeft className="h-3.5 w-3.5 md:mr-1" />
               <span className="hidden md:inline">Experiments</span>
             </Button>
-            <DrChemLogo size="sm" variant="badge" iconClassName="h-7 w-7 rounded-md md:h-8 md:w-8 md:rounded-lg shrink-0" />
+            <DrChemLogo
+              size="sm"
+              variant="badge"
+              iconClassName="h-7 w-7 rounded-md md:h-8 md:w-8 md:rounded-lg shrink-0"
+            />
             <div className="min-w-0">
               <h1 className="truncate text-[11px] font-bold leading-tight md:text-lg">
                 <span className="md:hidden">Virtual Lab · ভার্চুয়াল ল্যাব</span>

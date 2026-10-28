@@ -99,10 +99,16 @@ export default function DiffusionLab({ onBack }: { onBack: () => void }) {
         <Tabs defaultValue="gas" className="flex flex-1 flex-col min-h-0 overflow-hidden">
           <div className="shrink-0 flex justify-center pb-2">
             <TabsList className="grid w-full max-w-xs grid-cols-2 bg-slate-900 border border-slate-800 h-8">
-              <TabsTrigger value="gas" className="gap-1.5 text-xs data-[state=active]:bg-cyan-600 data-[state=active]:text-white">
+              <TabsTrigger
+                value="gas"
+                className="gap-1.5 text-xs data-[state=active]:bg-cyan-600 data-[state=active]:text-white"
+              >
                 <Wind className="h-3.5 w-3.5" /> গ্যাস ব্যাপন
               </TabsTrigger>
-              <TabsTrigger value="liquid" className="gap-1.5 text-xs data-[state=active]:bg-cyan-600 data-[state=active]:text-white">
+              <TabsTrigger
+                value="liquid"
+                className="gap-1.5 text-xs data-[state=active]:bg-cyan-600 data-[state=active]:text-white"
+              >
                 <Droplets className="h-3.5 w-3.5" /> তরল ব্যাপন
               </TabsTrigger>
             </TabsList>
@@ -128,9 +134,12 @@ export default function DiffusionLab({ onBack }: { onBack: () => void }) {
           <ScrollArea className="px-4 py-4 max-h-[70dvh]">
             <div className="prose prose-invert prose-sm max-w-none space-y-4 text-slate-300">
               <div>
-                <h4 className="text-cyan-400 font-bold mb-1">১. গ্রাহামের ব্যাপন সূত্র (Graham's Law)</h4>
+                <h4 className="text-cyan-400 font-bold mb-1">
+                  ১. গ্রাহামের ব্যাপন সূত্র (Graham's Law)
+                </h4>
                 <p className="text-xs text-slate-400">
-                  নির্দিষ্ট তাপমাত্রা ও চাপে কোনো গ্যাসের ব্যাপনের হার (r) তার আণবিক ভর (M) বা ঘনত্বের (d) বর্গমূলের ব্যস্তানুপাতিক:
+                  নির্দিষ্ট তাপমাত্রা ও চাপে কোনো গ্যাসের ব্যাপনের হার (r) তার আণবিক ভর (M) বা
+                  ঘনত্বের (d) বর্গমূলের ব্যস্তানুপাতিক:
                 </p>
                 <p className="font-mono bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-cyan-300 text-xs my-2">
                   r₁ / r₂ = √(M₂ / M₁)
@@ -141,27 +150,38 @@ export default function DiffusionLab({ onBack }: { onBack: () => void }) {
                   <li>গতিবেগের অনুপাত = √(৩৬.৫ / ১৭) ≈ ১.৪৬৬ গুণ</li>
                 </ul>
                 <p className="text-xs mt-1 text-slate-400">
-                  যেহেতু NH₃ হালকা, তাই এটি একই সময়ে বেশি দূরত্ব অতিক্রম করে এবং ভারী HCl-এর তুলোর মুখের কাছাকাছি এসে মিলিত হয়ে ঘন সাদা ধোঁয়ার বলয় (NH₄Cl) তৈরি করে।
+                  যেহেতু NH₃ হালকা, তাই এটি একই সময়ে বেশি দূরত্ব অতিক্রম করে এবং ভারী HCl-এর তুলোর
+                  মুখের কাছাকাছি এসে মিলিত হয়ে ঘন সাদা ধোঁয়ার বলয় (NH₄Cl) তৈরি করে।
                 </p>
               </div>
 
               <div>
-                <h4 className="text-cyan-400 font-bold mb-1">২. রাসায়নিক বিক্রিয়া (Chemical Equation)</h4>
+                <h4 className="text-cyan-400 font-bold mb-1">
+                  ২. রাসায়নিক বিক্রিয়া (Chemical Equation)
+                </h4>
                 <p className="font-mono bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-cyan-300 text-xs my-2">
                   NH₃ (g) + HCl (g) → NH₄Cl (s) [কঠিন সাদা ধোঁয়া]
                 </p>
               </div>
 
               <div>
-                <h4 className="text-cyan-400 font-bold mb-1">৩. ব্যাপনে তাপমাত্রার প্রভাব (Effect of Temperature)</h4>
+                <h4 className="text-cyan-400 font-bold mb-1">
+                  ৩. ব্যাপনে তাপমাত্রার প্রভাব (Effect of Temperature)
+                </h4>
                 <p className="text-xs text-slate-400">
-                  তাপমাত্রা বৃদ্ধি করলে কণার গতিশক্তি ($E_k = \frac{3}{2}kT$) বৃদ্ধি পায়। ফলে তরলে বা গ্যাসে কণাগুলো দ্রুত গতিতে চতুর্দিকে ছড়িয়ে পড়ে। গরম পানিতে KMnO₄-এর ব্যাপন ঠান্ডা পানির চেয়ে প্রায় ৩ গুণ দ্রুত ঘটে।
+                  তাপমাত্রা বৃদ্ধি করলে কণার গতিশক্তি ($E_k = \frac{3}
+                  {2}kT$) বৃদ্ধি পায়। ফলে তরলে বা গ্যাসে কণাগুলো দ্রুত গতিতে চতুর্দিকে ছড়িয়ে
+                  পড়ে। গরম পানিতে KMnO₄-এর ব্যাপন ঠান্ডা পানির চেয়ে প্রায় ৩ গুণ দ্রুত ঘটে।
                 </p>
               </div>
             </div>
           </ScrollArea>
           <DrawerClose asChild>
-            <Button variant="outline" size="sm" className="mx-4 mb-3 border-slate-700 bg-slate-800 text-slate-200">
+            <Button
+              variant="outline"
+              size="sm"
+              className="mx-4 mb-3 border-slate-700 bg-slate-800 text-slate-200"
+            >
               বন্ধ করুন
             </Button>
           </DrawerClose>
@@ -196,7 +216,9 @@ function GasDiffusion() {
     if (running) return;
     const slot = id === "nh3" ? "left" : "right";
     setPlaced((p) => ({ ...p, [id]: slot }));
-    toast.success(id === "nh3" ? "নলের বাম মুখে NH₃ তুলো রাখা হয়েছে" : "নলের ডান মুখে HCl তুলো রাখা হয়েছে");
+    toast.success(
+      id === "nh3" ? "নলের বাম মুখে NH₃ তুলো রাখা হয়েছে" : "নলের ডান মুখে HCl তুলো রাখা হয়েছে",
+    );
   };
 
   const onDrop = (slot: Exclude<Slot, null>) => (e: React.DragEvent) => {
@@ -260,7 +282,9 @@ function GasDiffusion() {
   const TubeVisual = (
     <div className="w-full flex flex-col items-center justify-center p-2">
       <div className="mb-4 flex flex-wrap items-center justify-center gap-2">
-        <span className="text-[11px] font-semibold text-slate-400">তুলো যোগ করো (ক্লিক বা ড্র্যাগ):</span>
+        <span className="text-[11px] font-semibold text-slate-400">
+          তুলো যোগ করো (ক্লিক বা ড্র্যাগ):
+        </span>
         <CottonChip
           id="nh3"
           label="অ্যামোনিয়া (NH₃)"
@@ -382,201 +406,211 @@ function GasDiffusion() {
       {/* ── Desktop Layout (2 columns, 100dvh locked) ── */}
       {!isMobile ? (
         <div className="grid md:grid-cols-[1fr_320px] h-full min-h-0 gap-3 overflow-hidden p-1">
-        <Card className="relative flex flex-col items-center justify-center border-slate-800 bg-slate-950/70 p-4 shadow-inner overflow-hidden">
-          {TubeVisual}
+          <Card className="relative flex flex-col items-center justify-center border-slate-800 bg-slate-950/70 p-4 shadow-inner overflow-hidden">
+            {TubeVisual}
 
-          {finished && (
-            <div className="mx-auto mt-4 max-w-xl rounded-xl border border-emerald-500/30 bg-emerald-950/30 p-3 text-xs text-emerald-200">
-              <div className="flex items-start gap-2">
-                <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
-                <div>
-                  <div className="font-bold text-emerald-300">সাদা ধোঁয়ার বলয় গঠিত হয়েছে!</div>
-                  <p className="mt-0.5 leading-relaxed text-slate-300 text-[11px]">
-                    অ্যামোনিয়ার ভর কম (১৭) হওয়ায় এটি দ্রুত ব্যাপিত হয়েছে এবং ভারী HCl-এর (৩৬.৫) কাছাকাছি সাদা ধোঁয়া (NH₄Cl) তৈরি করেছে:
-                    <span className="font-mono text-cyan-300 ml-1">v(NH₃)/v(HCl) = √(36.5/17) ≈ 1.466</span>
-                  </p>
+            {finished && (
+              <div className="mx-auto mt-4 max-w-xl rounded-xl border border-emerald-500/30 bg-emerald-950/30 p-3 text-xs text-emerald-200">
+                <div className="flex items-start gap-2">
+                  <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
+                  <div>
+                    <div className="font-bold text-emerald-300">সাদা ধোঁয়ার বলয় গঠিত হয়েছে!</div>
+                    <p className="mt-0.5 leading-relaxed text-slate-300 text-[11px]">
+                      অ্যামোনিয়ার ভর কম (১৭) হওয়ায় এটি দ্রুত ব্যাপিত হয়েছে এবং ভারী HCl-এর
+                      (৩৬.৫) কাছাকাছি সাদা ধোঁয়া (NH₄Cl) তৈরি করেছে:
+                      <span className="font-mono text-cyan-300 ml-1">
+                        v(NH₃)/v(HCl) = √(36.5/17) ≈ 1.466
+                      </span>
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-        </Card>
-
-        {/* Side panel */}
-        <aside className="lab-scroll flex flex-col gap-3 overflow-y-auto pr-1">
-          <Card className="border-slate-800 bg-slate-900/80 p-4 space-y-3">
-            <div className="text-xs font-bold uppercase text-slate-300">পরীক্ষার ধাপসমূহ</div>
-            <ul className="space-y-1.5">
-              {STEPS_BN.map((s, i) => {
-                const done =
-                  (i === 0 && !!placed.nh3) ||
-                  (i === 1 && !!placed.hcl) ||
-                  (i === 2 && (running || finished)) ||
-                  (i === 3 && finished);
-                return (
-                  <li
-                    key={i}
-                    className={`rounded-lg border px-2.5 py-2 text-xs leading-relaxed transition ${
-                      done
-                        ? "border-emerald-500/40 bg-emerald-950/40 text-emerald-300 font-medium"
-                        : "border-slate-800 bg-slate-950/40 text-slate-400"
-                    }`}
-                  >
-                    {s}
-                  </li>
-                );
-              })}
-            </ul>
+            )}
           </Card>
 
-          <Card className="border-slate-800 bg-slate-900/80 p-4 space-y-2 text-xs">
-            <div className="flex items-center gap-1.5 font-bold text-cyan-400">
-              <FlaskConical className="h-4 w-4" /> গ্রাহামের সূত্র হিসাব
-            </div>
-            <p className="text-slate-300 leading-relaxed text-[11px]">
-              r₁ / r₂ = √(M₂ / M₁) = √(৩৬.৫ / ১৭) ≈ ১.৪৬৬ গুণ।
-            </p>
-            <div className="rounded border border-slate-800 bg-slate-950 p-2 font-mono text-[11px] text-emerald-300">
-              NH₃ অতিক্রান্ত দূরত্ব: ~৫৯.৪%
-              <br />
-              HCl অতিক্রান্ত দূরত্ব: ~৪০.৬%
-            </div>
-          </Card>
-        </aside>
-      </div>
-      ) : (
-      /* ── Mobile Split Screen (< md) ── */
-      <div className="flex flex-1 flex-col min-h-0 overflow-hidden">
-        {/* Top 46% Viewport */}
-        <div className="relative h-[46dvh] shrink-0 border-b border-slate-800/80 bg-slate-950/70 p-2 flex flex-col items-center justify-center overflow-hidden">
-          {TubeVisual}
+          {/* Side panel */}
+          <aside className="lab-scroll flex flex-col gap-3 overflow-y-auto pr-1">
+            <Card className="border-slate-800 bg-slate-900/80 p-4 space-y-3">
+              <div className="text-xs font-bold uppercase text-slate-300">পরীক্ষার ধাপসমূহ</div>
+              <ul className="space-y-1.5">
+                {STEPS_BN.map((s, i) => {
+                  const done =
+                    (i === 0 && !!placed.nh3) ||
+                    (i === 1 && !!placed.hcl) ||
+                    (i === 2 && (running || finished)) ||
+                    (i === 3 && finished);
+                  return (
+                    <li
+                      key={i}
+                      className={`rounded-lg border px-2.5 py-2 text-xs leading-relaxed transition ${
+                        done
+                          ? "border-emerald-500/40 bg-emerald-950/40 text-emerald-300 font-medium"
+                          : "border-slate-800 bg-slate-950/40 text-slate-400"
+                      }`}
+                    >
+                      {s}
+                    </li>
+                  );
+                })}
+              </ul>
+            </Card>
+
+            <Card className="border-slate-800 bg-slate-900/80 p-4 space-y-2 text-xs">
+              <div className="flex items-center gap-1.5 font-bold text-cyan-400">
+                <FlaskConical className="h-4 w-4" /> গ্রাহামের সূত্র হিসাব
+              </div>
+              <p className="text-slate-300 leading-relaxed text-[11px]">
+                r₁ / r₂ = √(M₂ / M₁) = √(৩৬.৫ / ১৭) ≈ ১.৪৬৬ গুণ।
+              </p>
+              <div className="rounded border border-slate-800 bg-slate-950 p-2 font-mono text-[11px] text-emerald-300">
+                NH₃ অতিক্রান্ত দূরত্ব: ~৫৯.৪%
+                <br />
+                HCl অতিক্রান্ত দূরত্ব: ~৪০.৬%
+              </div>
+            </Card>
+          </aside>
         </div>
-
-        {/* Bottom 54% Tabbed Tray */}
-        <div className="flex flex-1 flex-col min-h-0 bg-slate-900/95 backdrop-blur">
-          <div className="grid grid-cols-3 border-b border-slate-800 bg-slate-950/60 p-1 text-[11px] font-semibold gap-1">
-            <button
-              type="button"
-              onClick={() => setMobileTab("controls")}
-              className={cn(
-                "flex items-center justify-center gap-1 rounded-md py-1.5 transition",
-                mobileTab === "controls"
-                  ? "bg-slate-800 text-cyan-400 shadow-sm font-bold"
-                  : "text-slate-400 hover:text-slate-200"
-              )}
-            >
-              <Sliders className="h-3 w-3" />
-              <span>কন্ট্রোলস</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setMobileTab("info")}
-              className={cn(
-                "flex items-center justify-center gap-1 rounded-md py-1.5 transition",
-                mobileTab === "info"
-                  ? "bg-slate-800 text-cyan-400 shadow-sm font-bold"
-                  : "text-slate-400 hover:text-slate-200"
-              )}
-            >
-              <BarChart3 className="h-3 w-3" />
-              <span>হিসাব ও ফলাফল</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setMobileTab("guide")}
-              className={cn(
-                "flex items-center justify-center gap-1 rounded-md py-1.5 transition",
-                mobileTab === "guide"
-                  ? "bg-slate-800 text-cyan-400 shadow-sm font-bold"
-                  : "text-slate-400 hover:text-slate-200"
-              )}
-            >
-              <CheckSquare className="h-3 w-3" />
-              <span>গাইড</span>
-            </button>
+      ) : (
+        /* ── Mobile Split Screen (< md) ── */
+        <div className="flex flex-1 flex-col min-h-0 overflow-hidden">
+          {/* Top 46% Viewport */}
+          <div className="relative h-[46dvh] shrink-0 border-b border-slate-800/80 bg-slate-950/70 p-2 flex flex-col items-center justify-center overflow-hidden">
+            {TubeVisual}
           </div>
 
-          <div className="lab-scroll flex-1 min-h-0 overflow-y-auto p-3">
-            {mobileTab === "controls" && (
-              <div className="space-y-3">
-                <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3 space-y-2">
-                  <div className="text-xs font-bold text-slate-200">তুলো প্লেসমেন্ট (ট্যাপ করুন)</div>
+          {/* Bottom 54% Tabbed Tray */}
+          <div className="flex flex-1 flex-col min-h-0 bg-slate-900/95 backdrop-blur">
+            <div className="grid grid-cols-3 border-b border-slate-800 bg-slate-950/60 p-1 text-[11px] font-semibold gap-1">
+              <button
+                type="button"
+                onClick={() => setMobileTab("controls")}
+                className={cn(
+                  "flex items-center justify-center gap-1 rounded-md py-1.5 transition",
+                  mobileTab === "controls"
+                    ? "bg-slate-800 text-cyan-400 shadow-sm font-bold"
+                    : "text-slate-400 hover:text-slate-200",
+                )}
+              >
+                <Sliders className="h-3 w-3" />
+                <span>কন্ট্রোলস</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setMobileTab("info")}
+                className={cn(
+                  "flex items-center justify-center gap-1 rounded-md py-1.5 transition",
+                  mobileTab === "info"
+                    ? "bg-slate-800 text-cyan-400 shadow-sm font-bold"
+                    : "text-slate-400 hover:text-slate-200",
+                )}
+              >
+                <BarChart3 className="h-3 w-3" />
+                <span>হিসাব ও ফলাফল</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setMobileTab("guide")}
+                className={cn(
+                  "flex items-center justify-center gap-1 rounded-md py-1.5 transition",
+                  mobileTab === "guide"
+                    ? "bg-slate-800 text-cyan-400 shadow-sm font-bold"
+                    : "text-slate-400 hover:text-slate-200",
+                )}
+              >
+                <CheckSquare className="h-3 w-3" />
+                <span>গাইড</span>
+              </button>
+            </div>
+
+            <div className="lab-scroll flex-1 min-h-0 overflow-y-auto p-3">
+              {mobileTab === "controls" && (
+                <div className="space-y-3">
+                  <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3 space-y-2">
+                    <div className="text-xs font-bold text-slate-200">
+                      তুলো প্লেসমেন্ট (ট্যাপ করুন)
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handlePlaceCotton("nh3")}
+                        disabled={!!placed.nh3 || running}
+                        className="h-9 text-xs border-emerald-500/30 bg-emerald-500/10 text-emerald-300"
+                      >
+                        {placed.nh3 ? "✓ NH₃ বসানো হয়েছে" : "+ NH₃ তুলো বসাও"}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handlePlaceCotton("hcl")}
+                        disabled={!!placed.hcl || running}
+                        className="h-9 text-xs border-amber-500/30 bg-amber-500/10 text-amber-300"
+                      >
+                        {placed.hcl ? "✓ HCl বসানো হয়েছে" : "+ HCl তুলো বসাও"}
+                      </Button>
+                    </div>
+                  </div>
+
                   <div className="grid grid-cols-2 gap-2">
                     <Button
                       size="sm"
-                      variant="outline"
-                      onClick={() => handlePlaceCotton("nh3")}
-                      disabled={!!placed.nh3 || running}
-                      className="h-9 text-xs border-emerald-500/30 bg-emerald-500/10 text-emerald-300"
+                      onClick={start}
+                      disabled={!ready || running}
+                      className="h-9 text-xs bg-cyan-600 hover:bg-cyan-500 text-white font-bold"
                     >
-                      {placed.nh3 ? "✓ NH₃ বসানো হয়েছে" : "+ NH₃ তুলো বসাও"}
+                      <Play className="mr-1.5 h-4 w-4" /> পরীক্ষা শুরু
                     </Button>
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => handlePlaceCotton("hcl")}
-                      disabled={!!placed.hcl || running}
-                      className="h-9 text-xs border-amber-500/30 bg-amber-500/10 text-amber-300"
+                      onClick={reset}
+                      className="h-9 text-xs border-slate-700 bg-slate-800 text-slate-300"
                     >
-                      {placed.hcl ? "✓ HCl বসানো হয়েছে" : "+ HCl তুলো বসাও"}
+                      <RotateCcw className="mr-1.5 h-4 w-4" /> রিসেট
                     </Button>
                   </div>
                 </div>
+              )}
 
-                <div className="grid grid-cols-2 gap-2">
-                  <Button
-                    size="sm"
-                    onClick={start}
-                    disabled={!ready || running}
-                    className="h-9 text-xs bg-cyan-600 hover:bg-cyan-500 text-white font-bold"
-                  >
-                    <Play className="mr-1.5 h-4 w-4" /> পরীক্ষা শুরু
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={reset}
-                    className="h-9 text-xs border-slate-700 bg-slate-800 text-slate-300"
-                  >
-                    <RotateCcw className="mr-1.5 h-4 w-4" /> রিসেট
-                  </Button>
-                </div>
-              </div>
-            )}
-
-            {mobileTab === "info" && (
-              <div className="space-y-3 text-xs">
-                <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3 space-y-2">
-                  <div className="font-bold text-cyan-400">গ্রাহামের সূত্র হিসাব</div>
-                  <div className="rounded border border-slate-800 bg-slate-900 p-2 font-mono text-emerald-300">
-                    r(NH₃) / r(HCl) = √(36.5 / 17) ≈ 1.466
+              {mobileTab === "info" && (
+                <div className="space-y-3 text-xs">
+                  <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3 space-y-2">
+                    <div className="font-bold text-cyan-400">গ্রাহামের সূত্র হিসাব</div>
+                    <div className="rounded border border-slate-800 bg-slate-900 p-2 font-mono text-emerald-300">
+                      r(NH₃) / r(HCl) = √(36.5 / 17) ≈ 1.466
+                    </div>
+                    <p className="text-slate-300 leading-relaxed text-[11px]">
+                      NH₃ গ্যাস হালকা হওয়ায় এর ব্যাপন হার বেশি, তাই সাদা রিং তৈরি হয় ডান
+                      প্রান্তের (HCl) কাছাকাছি।
+                    </p>
                   </div>
-                  <p className="text-slate-300 leading-relaxed text-[11px]">
-                    NH₃ গ্যাস হালকা হওয়ায় এর ব্যাপন হার বেশি, তাই সাদা রিং তৈরি হয় ডান প্রান্তের (HCl) কাছাকাছি।
-                  </p>
+
+                  {finished && (
+                    <div className="rounded-xl border border-emerald-500/30 bg-emerald-950/30 p-3 text-emerald-300">
+                      <span className="font-bold">ফলাফল:</span> প্রায় ৫৯.৪% দূরত্বে NH₄Cl-এর সাদা
+                      ধোঁয়া প্রত্যক্ষ করা গেছে।
+                    </div>
+                  )}
                 </div>
+              )}
 
-                {finished && (
-                  <div className="rounded-xl border border-emerald-500/30 bg-emerald-950/30 p-3 text-emerald-300">
-                    <span className="font-bold">ফলাফল:</span> প্রায় ৫৯.৪% দূরত্বে NH₄Cl-এর সাদা ধোঁয়া প্রত্যক্ষ করা গেছে।
-                  </div>
-                )}
-              </div>
-            )}
-
-            {mobileTab === "guide" && (
-              <ul className="space-y-2 text-xs">
-                {STEPS_BN.map((s, i) => (
-                  <li key={i} className="rounded-lg border border-slate-800 bg-slate-950/60 p-2.5 text-slate-300">
-                    {s}
-                  </li>
-                ))}
-              </ul>
-            )}
+              {mobileTab === "guide" && (
+                <ul className="space-y-2 text-xs">
+                  {STEPS_BN.map((s, i) => (
+                    <li
+                      key={i}
+                      className="rounded-lg border border-slate-800 bg-slate-950/60 p-2.5 text-slate-300"
+                    >
+                      {s}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
         </div>
-      </div>
       )}
     </div>
   );
@@ -606,7 +640,9 @@ function CottonChip({
       onClick={!placed ? onClick : undefined}
       data-id={id}
       className={`flex items-center gap-2 rounded-xl border-2 border-dashed px-3 py-1.5 transition ${
-        placed ? "opacity-40" : "cursor-pointer active:scale-95 hover:border-cyan-400 bg-slate-900/60"
+        placed
+          ? "opacity-40"
+          : "cursor-pointer active:scale-95 hover:border-cyan-400 bg-slate-900/60"
       }`}
     >
       <div
@@ -760,7 +796,9 @@ function LiquidDiffusion() {
 
         {dropped && hotFill >= 1 && (
           <div className="shrink-0 mt-3 rounded-xl border border-purple-500/30 bg-purple-950/30 p-2.5 text-xs text-purple-200">
-            <span className="font-bold text-purple-300">পর্যবেক্ষণ:</span> গরম পানিতে KMnO₄-এর বেগুনি রঙ ৩ গুণ দ্রুত ছড়িয়ে পড়েছে। তাপমাত্রা বাড়লে অণুর গতিশক্তি বৃদ্ধি পায় ও ব্যাপনের হার বাড়ে।
+            <span className="font-bold text-purple-300">পর্যবেক্ষণ:</span> গরম পানিতে KMnO₄-এর
+            বেগুনি রঙ ৩ গুণ দ্রুত ছড়িয়ে পড়েছে। তাপমাত্রা বাড়লে অণুর গতিশক্তি বৃদ্ধি পায় ও
+            ব্যাপনের হার বাড়ে।
           </div>
         )}
       </Card>
@@ -780,9 +818,7 @@ function Beaker({
   dropped: boolean;
 }) {
   const tint =
-    temp === "hot"
-      ? "from-rose-950/30 to-orange-950/20"
-      : "from-sky-950/30 to-cyan-950/20";
+    temp === "hot" ? "from-rose-950/30 to-orange-950/20" : "from-sky-950/30 to-cyan-950/20";
   return (
     <div className="flex flex-col items-center">
       <div className="text-xs font-bold text-slate-200">{label}</div>

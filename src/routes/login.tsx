@@ -177,7 +177,10 @@ function LoginPage() {
 
         <form onSubmit={handleLogin} className="space-y-4" noValidate>
           <div>
-            <Label htmlFor="identifier" className="flex items-center gap-1.5 text-xs font-semibold mb-1">
+            <Label
+              htmlFor="identifier"
+              className="flex items-center gap-1.5 text-xs font-semibold mb-1"
+            >
               <User className="h-3.5 w-3.5 text-primary" />
               ফোন নাম্বার বা ইমেইল <span className="text-destructive">*</span>
             </Label>
@@ -199,7 +202,9 @@ function LoginPage() {
               placeholder="01XXXXXXXXX অথবা you@example.com"
               autoComplete="username"
               className={cn(
-                touched.identifier && errors.identifier && "border-destructive focus-visible:ring-destructive",
+                touched.identifier &&
+                  errors.identifier &&
+                  "border-destructive focus-visible:ring-destructive",
               )}
             />
             {touched.identifier && errors.identifier && (
@@ -216,7 +221,10 @@ function LoginPage() {
                 <Lock className="h-3.5 w-3.5 text-primary" />
                 পাসওয়ার্ড <span className="text-destructive">*</span>
               </Label>
-              <Link to="/reset-password" className="text-xs text-primary font-medium hover:underline">
+              <Link
+                to="/reset-password"
+                className="text-xs text-primary font-medium hover:underline"
+              >
                 ভুলে গেছেন?
               </Link>
             </div>
@@ -241,7 +249,9 @@ function LoginPage() {
                 autoComplete="current-password"
                 className={cn(
                   "pr-10",
-                  touched.password && errors.password && "border-destructive focus-visible:ring-destructive",
+                  touched.password &&
+                    errors.password &&
+                    "border-destructive focus-visible:ring-destructive",
                 )}
               />
               <button

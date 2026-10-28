@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -31,15 +31,15 @@ function QuestionsList() {
   const [rows, setRows] = useState<SetRow[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const load = async () => {
+  const load = useCallback(async () => {
     setLoading(true);
     const r = await list();
     setRows(r.sets as SetRow[]);
     setLoading(false);
-  };
+  }, [list]);
   useEffect(() => {
     void load();
-  }, []);
+  }, [load]);
 
   const remove = async (id: string) => {
     if (!confirm("Delete this question set?")) return;

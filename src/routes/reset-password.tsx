@@ -1,7 +1,16 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
 import { toast, Toaster } from "sonner";
-import { AlertCircle, CheckCircle2, Eye, EyeOff, FlaskConical, Loader2, Lock, Mail } from "lucide-react";
+import {
+  AlertCircle,
+  CheckCircle2,
+  Eye,
+  EyeOff,
+  FlaskConical,
+  Loader2,
+  Lock,
+  Mail,
+} from "lucide-react";
 import { DrChemLogo } from "@/components/brand/DrChemLogo";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -135,7 +144,10 @@ function ResetPasswordPage() {
         {mode === "request" ? (
           <form onSubmit={handleRequest} className="space-y-4" noValidate>
             <div>
-              <Label htmlFor="email" className="flex items-center gap-1.5 text-xs font-semibold mb-1">
+              <Label
+                htmlFor="email"
+                className="flex items-center gap-1.5 text-xs font-semibold mb-1"
+              >
                 <Mail className="h-3.5 w-3.5 text-primary" />
                 ইমেইল ঠিকানা <span className="text-destructive">*</span>
               </Label>
@@ -161,7 +173,12 @@ function ResetPasswordPage() {
                 </p>
               )}
             </div>
-            <Button type="submit" className="w-full cursor-pointer font-semibold" size="lg" disabled={submitting}>
+            <Button
+              type="submit"
+              className="w-full cursor-pointer font-semibold"
+              size="lg"
+              disabled={submitting}
+            >
               {submitting ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin mr-2" />
@@ -175,7 +192,10 @@ function ResetPasswordPage() {
         ) : (
           <form onSubmit={handleSet} className="space-y-4" noValidate>
             <div>
-              <Label htmlFor="newPassword" className="flex items-center gap-1.5 text-xs font-semibold mb-1">
+              <Label
+                htmlFor="newPassword"
+                className="flex items-center gap-1.5 text-xs font-semibold mb-1"
+              >
                 <Lock className="h-3.5 w-3.5 text-primary" />
                 নতুন পাসওয়ার্ড <span className="text-destructive">*</span>
               </Label>
@@ -191,7 +211,10 @@ function ResetPasswordPage() {
                     if (passwordError && e.target.value.length >= 6) setPasswordError("");
                   }}
                   placeholder="কমপক্ষে ৬ অক্ষর"
-                  className={cn("pr-10", passwordError && "border-destructive focus-visible:ring-destructive")}
+                  className={cn(
+                    "pr-10",
+                    passwordError && "border-destructive focus-visible:ring-destructive",
+                  )}
                 />
                 <button
                   type="button"
@@ -211,7 +234,10 @@ function ResetPasswordPage() {
             </div>
 
             <div>
-              <Label htmlFor="confirmNewPassword" className="flex items-center gap-1.5 text-xs font-semibold mb-1">
+              <Label
+                htmlFor="confirmNewPassword"
+                className="flex items-center gap-1.5 text-xs font-semibold mb-1"
+              >
                 <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
                 পাসওয়ার্ড নিশ্চিত করুন <span className="text-destructive">*</span>
               </Label>
@@ -224,10 +250,14 @@ function ResetPasswordPage() {
                   value={confirmPassword}
                   onChange={(e) => {
                     setConfirmPassword(e.target.value);
-                    if (confirmPasswordError && e.target.value === password) setConfirmPasswordError("");
+                    if (confirmPasswordError && e.target.value === password)
+                      setConfirmPasswordError("");
                   }}
                   placeholder="একই পাসওয়ার্ড পুনরায় দিন"
-                  className={cn("pr-10", confirmPasswordError && "border-destructive focus-visible:ring-destructive")}
+                  className={cn(
+                    "pr-10",
+                    confirmPasswordError && "border-destructive focus-visible:ring-destructive",
+                  )}
                 />
                 <button
                   type="button"
@@ -235,7 +265,11 @@ function ResetPasswordPage() {
                   aria-label={showConfirmPassword ? "পাসওয়ার্ড লুকান" : "পাসওয়ার্ড দেখুন"}
                   className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground cursor-pointer"
                 >
-                  {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {showConfirmPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
                 </button>
               </div>
               {confirmPasswordError && (
@@ -246,7 +280,12 @@ function ResetPasswordPage() {
               )}
             </div>
 
-            <Button type="submit" className="w-full cursor-pointer font-semibold" size="lg" disabled={submitting}>
+            <Button
+              type="submit"
+              className="w-full cursor-pointer font-semibold"
+              size="lg"
+              disabled={submitting}
+            >
               {submitting ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin mr-2" />

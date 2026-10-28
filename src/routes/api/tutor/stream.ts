@@ -14,6 +14,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { createClient } from "@supabase/supabase-js";
+import { ALL_FREE_ACCESS_MODE } from "@/lib/subscription.functions";
 
 async function getUserIdFromRequest(req: Request): Promise<string | null> {
   const auth = req.headers.get("authorization");
@@ -35,6 +36,37 @@ async function getUserIdFromRequest(req: Request): Promise<string | null> {
 }
 
 async function checkAndConsumeQuota(userId: string): Promise<{ ok: boolean; used: number }> {
+  const now = new Date();
+  const dhaka = new Date(now.getTime() + (6 * 60 - now.getTimezoneOffset()) * 60_000);
+  const today = dhaka.toISOString().slice(0, 10);
+
+  // During ALL_FREE_ACCESS_MODE, all users get effectively unlimited AI questions (safety capped at 150/day against bot abuse)
+  if (ALL_FREE_ACCESS_MODE) {
+    const { data: usage } = await supabaseAdmin
+      .from("usage_counters")
+      .select("ai_messages_used")
+      .eq("user_id", userId)
+      .eq("usage_date", today)
+      .maybeSingle();
+    const used = usage?.ai_messages_used ?? 0;
+    if (used >= 150) return { ok: false, used };
+
+    if (usage) {
+      await supabaseAdmin
+        .from("usage_counters")
+        .update({ ai_messages_used: used + 1 })
+        .eq("user_id", userId)
+        .eq("usage_date", today);
+    } else {
+      await supabaseAdmin.from("usage_counters").insert({
+        user_id: userId,
+        usage_date: today,
+        ai_messages_used: 1,
+      });
+    }
+    return { ok: true, used: used + 1 };
+  }
+
   // Check active subscription
   const { data: sub } = await supabaseAdmin
     .from("subscriptions")
@@ -44,10 +76,6 @@ async function checkAndConsumeQuota(userId: string): Promise<{ ok: boolean; used
     .maybeSingle();
   const isPaid = !!sub && sub.plan_code !== "free";
   if (isPaid) return { ok: true, used: 0 };
-
-  const now = new Date();
-  const dhaka = new Date(now.getTime() + (6 * 60 - now.getTimezoneOffset()) * 60_000);
-  const today = dhaka.toISOString().slice(0, 10);
 
   const { data: usage } = await supabaseAdmin
     .from("usage_counters")

@@ -440,8 +440,24 @@ function InteractiveLabSimulatorPreview() {
                   className="text-foreground/40"
                 />
                 {/* Measurement Ticks */}
-                <line x1="28" y1="70" x2="35" y2="70" stroke="currentColor" strokeWidth="1.5" className="text-foreground/30" />
-                <line x1="33" y1="60" x2="40" y2="60" stroke="currentColor" strokeWidth="1.5" className="text-foreground/30" />
+                <line
+                  x1="28"
+                  y1="70"
+                  x2="35"
+                  y2="70"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  className="text-foreground/30"
+                />
+                <line
+                  x1="33"
+                  y1="60"
+                  x2="40"
+                  y2="60"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  className="text-foreground/30"
+                />
               </svg>
             </div>
           </div>
@@ -826,7 +842,8 @@ function ExperimentsShowcase() {
             NCTB কারিকুলামের প্রতিটি প্র্যাকটিক্যাল
           </h2>
           <p className="mt-3 text-base sm:text-lg text-muted-foreground">
-            নবম-দশম শ্রেণির পাঠ্যবইয়ের প্রতিটি গুরুত্বপূর্ণ বিক্রিয়া ও পরীক্ষণ এখন আপনার হাতের মুঠোয়।
+            নবম-দশম শ্রেণির পাঠ্যবইয়ের প্রতিটি গুরুত্বপূর্ণ বিক্রিয়া ও পরীক্ষণ এখন আপনার হাতের
+            মুঠোয়।
           </p>
 
           {/* Category Tabs */}
@@ -960,7 +977,8 @@ function ClassroomComparison() {
             প্রথাগত ক্লাসরুম বনাম ডক্টর কেম
           </h2>
           <p className="mt-3 text-base sm:text-lg text-muted-foreground">
-            কেন সারা দেশের শিক্ষার্থী ও শিক্ষকেরা মুখস্থবিদ্যা ছেড়ে ভিজ্যুয়াল প্র্যাকটিক্যালে ঝুঁকছেন?
+            কেন সারা দেশের শিক্ষার্থী ও শিক্ষকেরা মুখস্থবিদ্যা ছেড়ে ভিজ্যুয়াল প্র্যাকটিক্যালে
+            ঝুঁকছেন?
           </p>
         </div>
 
@@ -986,7 +1004,9 @@ function ClassroomComparison() {
                     </span>
                     <div>
                       <h4 className="font-semibold text-sm text-foreground">{pt.title}</h4>
-                      <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{pt.desc}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
+                        {pt.desc}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -1006,7 +1026,9 @@ function ClassroomComparison() {
                   ✓
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-foreground">Dr. Chem ভার্চুয়াল ল্যাবে সমাধান</h3>
+                  <h3 className="text-xl font-bold text-foreground">
+                    Dr. Chem ভার্চুয়াল ল্যাবে সমাধান
+                  </h3>
                   <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
                     আধুনিক, নিরাপদ ও আনন্দদায়ক শিক্ষা
                   </p>
@@ -1021,7 +1043,9 @@ function ClassroomComparison() {
                     </span>
                     <div>
                       <h4 className="font-semibold text-sm text-foreground">{pt.title}</h4>
-                      <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{pt.desc}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
+                        {pt.desc}
+                      </p>
                     </div>
                   </div>
                 ))}

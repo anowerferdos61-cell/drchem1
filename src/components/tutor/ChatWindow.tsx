@@ -180,7 +180,13 @@ export default function ChatWindow() {
             </p>
           </div>
         </div>
-        {!isPro && (
+        {isPro ? (
+          <div className="flex items-center gap-1.5 text-[10px]">
+            <span className="rounded-full bg-emerald-500/10 px-2.5 py-0.5 font-semibold text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
+              <Sparkles className="h-3 w-3" /> Unlimited AI
+            </span>
+          </div>
+        ) : (
           <div className="flex items-center gap-2 text-[10px]">
             <span className="rounded-full bg-amber-500/15 px-2 py-1 font-semibold text-amber-700 dark:text-amber-400">
               আজ বাকি: {Number.isFinite(aiMessagesRemaining) ? aiMessagesRemaining : "∞"} / 5

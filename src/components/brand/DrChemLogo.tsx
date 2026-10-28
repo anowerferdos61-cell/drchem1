@@ -100,11 +100,7 @@ export function DrChemLogo({
       {iconElement}
       <div className={cn("leading-tight", textClassName)}>
         <div className={cn("tracking-tight text-foreground", s.title)}>Dr. Chem</div>
-        {subtitle && (
-          <div className={cn("text-muted-foreground", s.sub)}>
-            {subtitle}
-          </div>
-        )}
+        {subtitle && <div className={cn("text-muted-foreground", s.sub)}>{subtitle}</div>}
       </div>
     </div>
   );

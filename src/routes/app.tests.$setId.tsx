@@ -37,7 +37,7 @@ function TakeTest() {
       }
       setLoading(false);
     })();
-  }, [setId]);
+  }, [setId, load]);
 
   const doSubmit = async () => {
     if (!confirm("Submit test? আর এডিট করা যাবে না।")) return;

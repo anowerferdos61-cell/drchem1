@@ -92,7 +92,9 @@ function ChaptersIndexPage() {
         ch.titleEn.toLowerCase().includes(q) ||
         ch.subtitleBn.toLowerCase().includes(q) ||
         ch.keywords.some((k) => k.toLowerCase().includes(q)) ||
-        ch.keyTopics.some((t) => t.titleBn.toLowerCase().includes(q) || t.descriptionBn.toLowerCase().includes(q)) ||
+        ch.keyTopics.some(
+          (t) => t.titleBn.toLowerCase().includes(q) || t.descriptionBn.toLowerCase().includes(q),
+        ) ||
         ch.importantFormulasOrRules.some((f) => f.titleBn.toLowerCase().includes(q))
       );
     });
@@ -126,15 +128,19 @@ function ChaptersIndexPage() {
       {/* Hero Banner */}
       <section className="bg-gradient-to-b from-primary/10 via-background to-background py-14 px-4 border-b">
         <div className="max-w-4xl mx-auto text-center space-y-4">
-          <Badge variant="outline" className="px-3.5 py-1 bg-primary/10 text-primary border-primary/20 text-xs md:text-sm font-medium">
-            <GraduationCap className="h-4 w-4 mr-1.5 inline" /> NCTB ৯ম-১০ম শ্রেণি (SSC) রসায়ন কারিকুলাম
+          <Badge
+            variant="outline"
+            className="px-3.5 py-1 bg-primary/10 text-primary border-primary/20 text-xs md:text-sm font-medium"
+          >
+            <GraduationCap className="h-4 w-4 mr-1.5 inline" /> NCTB ৯ম-১০ম শ্রেণি (SSC) রসায়ন
+            কারিকুলাম
           </Badge>
           <h1 className="text-3xl md:text-5xl font-black tracking-tight leading-tight">
             অধ্যায়ভিত্তিক রসায়ন নোট ও ল্যাব গাইড
           </h1>
           <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            রসায়ন বইয়ের ১ থেকে ১২ প্রতিটি অধ্যায়ের মূল কনসেপ্ট, প্রয়োজনীয় সূত্র, বোর্ড পরীক্ষার সৃজনশীল টিপস
-            এবং সংশ্লিষ্ট ভার্চুয়াল ল্যাব টেস্ট এক ক্লিকেই আবিষ্কার করুন।
+            রসায়ন বইয়ের ১ থেকে ১২ প্রতিটি অধ্যায়ের মূল কনসেপ্ট, প্রয়োজনীয় সূত্র, বোর্ড পরীক্ষার
+            সৃজনশীল টিপস এবং সংশ্লিষ্ট ভার্চুয়াল ল্যাব টেস্ট এক ক্লিকেই আবিষ্কার করুন।
           </p>
 
           {/* Search bar */}
@@ -155,9 +161,7 @@ function ChaptersIndexPage() {
       <main className="max-w-7xl mx-auto px-4 py-10 flex-1 w-full space-y-8">
         {/* Results Counter */}
         <div className="flex items-center justify-between text-sm text-muted-foreground border-b pb-3">
-          <span>
-            মোট {filteredChapters.length} টি অধ্যায় পাওয়া গেছে
-          </span>
+          <span>মোট {filteredChapters.length} টি অধ্যায় পাওয়া গেছে</span>
           {search && (
             <Button variant="ghost" size="sm" onClick={() => setSearch("")} className="h-7 text-xs">
               সার্চ রিসেট করুন
@@ -198,9 +202,7 @@ function ChaptersIndexPage() {
                         params={{ chapterNumber: String(chapter.chapterNumber) }}
                         className="group-hover:text-primary transition-colors block"
                       >
-                        <h2 className="text-xl font-bold tracking-tight">
-                          {chapter.titleBn}
-                        </h2>
+                        <h2 className="text-xl font-bold tracking-tight">{chapter.titleBn}</h2>
                       </Link>
                       <p className="text-xs font-medium text-muted-foreground mt-0.5">
                         {chapter.titleEn}
@@ -262,7 +264,11 @@ function ChaptersIndexPage() {
                       to="/chapters/$chapterNumber"
                       params={{ chapterNumber: String(chapter.chapterNumber) }}
                     >
-                      <Button size="sm" variant="outline" className="gap-1.5 text-xs h-8 group-hover:bg-primary group-hover:text-primary-foreground transition-all">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="gap-1.5 text-xs h-8 group-hover:bg-primary group-hover:text-primary-foreground transition-all"
+                      >
                         নোট দেখুন
                         <ArrowRight className="h-3.5 w-3.5" />
                       </Button>
@@ -284,8 +290,8 @@ function ChaptersIndexPage() {
               থিওরি পড়ার পাশাপাশি ভার্চুয়াল ল্যাবে সরাসরি বিক্রিয়া সম্পাদন করুন!
             </h2>
             <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-              Dr. Chem-এ রয়েছে বাংলাদেশের প্রথম ইন্টারেক্টিভ রসায়ন ল্যাবরেটরি। কেমিক্যাল মেশানো, গ্যাস প্রস্তুতি,
-              টাইট্রেশন এবং বিদ্যুৎ পরিবাহিতা পরীক্ষা করুন নিজের ব্রাউজার থেকেই।
+              Dr. Chem-এ রয়েছে বাংলাদেশের প্রথম ইন্টারেক্টিভ রসায়ন ল্যাবরেটরি। কেমিক্যাল মেশানো,
+              গ্যাস প্রস্তুতি, টাইট্রেশন এবং বিদ্যুৎ পরিবাহিতা পরীক্ষা করুন নিজের ব্রাউজার থেকেই।
             </p>
           </div>
           <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0">
@@ -318,10 +324,18 @@ function ChaptersIndexPage() {
             </a>
           </p>
           <div className="flex items-center gap-4">
-            <Link to="/" className="hover:underline">হোম</Link>
-            <Link to="/chapters" className="hover:underline font-semibold text-primary">অধ্যায়সমূহ</Link>
-            <Link to="/labs" className="hover:underline">ল্যাবসমূহ</Link>
-            <Link to="/pricing" className="hover:underline">প্রাইসিং</Link>
+            <Link to="/" className="hover:underline">
+              হোম
+            </Link>
+            <Link to="/chapters" className="hover:underline font-semibold text-primary">
+              অধ্যায়সমূহ
+            </Link>
+            <Link to="/labs" className="hover:underline">
+              ল্যাবসমূহ
+            </Link>
+            <Link to="/pricing" className="hover:underline">
+              প্রাইসিং
+            </Link>
           </div>
         </div>
       </footer>

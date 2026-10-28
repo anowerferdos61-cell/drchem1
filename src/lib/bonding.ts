@@ -61,10 +61,7 @@ export const BONDING_STEPS: BondingStep[] = [
 
 // ── Mistake catalog ────────────────────────────────────────
 export type BondingMistakeType =
-  | "inner_shell_electron"
-  | "wrong_drop_target"
-  | "transfer_in_covalent"
-  | "duplicate_action";
+  "inner_shell_electron" | "wrong_drop_target" | "transfer_in_covalent" | "duplicate_action";
 
 export interface BondingMistake {
   ts: number;

@@ -85,9 +85,12 @@ export function LandingNav() {
 
             <Link
               to="/pricing"
-              className="px-3 py-1.5 rounded-full font-medium text-muted-foreground hover:text-foreground hover:bg-muted/70 transition-all duration-200"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-medium text-muted-foreground hover:text-foreground hover:bg-muted/70 transition-all duration-200"
             >
               প্রাইসিং
+              <span className="rounded-full bg-emerald-500/15 border border-emerald-500/30 px-1.5 py-0.5 text-[9px] font-bold text-emerald-600 dark:text-emerald-400">
+                ফ্রি
+              </span>
             </Link>
 
             <a
@@ -163,10 +166,12 @@ export function LandingNav() {
               className="flex flex-col gap-1 rounded-2xl border border-border/70 bg-card p-3 transition-colors hover:bg-muted/50"
             >
               <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
-                <Sparkles className="h-4 w-4 text-amber-500" />
-                প্রাইসিং প্ল্যান
+                <Sparkles className="h-4 w-4 text-emerald-500" />
+                প্রাইসিং (ফ্রি অফার)
               </div>
-              <span className="text-[10px] text-muted-foreground">৭ দিন ফ্রি ট্রায়াল</span>
+              <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
+                বর্তমানে ১০০% ফ্রি
+              </span>
             </Link>
           </div>
 
@@ -185,7 +190,10 @@ export function LandingNav() {
               <a href="tel:01581553923" className="hover:text-primary transition-colors">
                 📞 01581-553923
               </a>
-              <a href="mailto:drchem.edu@gmail.com" className="hover:text-primary transition-colors">
+              <a
+                href="mailto:drchem.edu@gmail.com"
+                className="hover:text-primary transition-colors"
+              >
                 ✉️ drchem.edu@gmail.com
               </a>
             </div>

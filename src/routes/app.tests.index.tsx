@@ -42,7 +42,7 @@ function MyTests() {
       setAttempts(r.attempts as AttemptRow[]);
       setLoading(false);
     })();
-  }, []);
+  }, [load]);
 
   const attemptFor = (setId: string) => attempts.find((a) => a.set_id === setId);
 

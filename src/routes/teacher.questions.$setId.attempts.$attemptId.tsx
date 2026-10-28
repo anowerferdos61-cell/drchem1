@@ -32,7 +32,7 @@ function GradeAttempt() {
       setGrades(r.grades);
       setLoading(false);
     })();
-  }, [attemptId]);
+  }, [attemptId, load]);
 
   if (loading) return <p className="text-sm text-muted-foreground">Loading…</p>;
   if (!attempt) return <p className="text-sm">Not found</p>;

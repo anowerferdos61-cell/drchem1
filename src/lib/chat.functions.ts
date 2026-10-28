@@ -1,8 +1,8 @@
-// Chat server functions for the bilingual Lab AI Assistant.
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { chatComplete, getGeminiApiKey, type ChatTurn } from "./ai-gateway";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { ALL_FREE_ACCESS_MODE } from "./subscription.functions";
 
 const SYSTEM_PROMPT = `You are an expert Chemistry professor for the Bangladeshi curriculum (Class 9–10/HSC).
 
@@ -87,36 +87,39 @@ export const chatWithAssistant = createServerFn({ method: "POST" })
     const { supabase, userId } = context;
 
     // ─── Quota check for Free tier ─────────────────────────────
-    const { data: sub } = await supabase
-      .from("subscriptions")
-      .select("plan_code, status")
-      .eq("user_id", userId)
-      .in("status", ["trialing", "active"])
-      .maybeSingle();
-
-    const isPaid = !!sub && sub.plan_code !== "free";
-
-    if (!isPaid) {
-      // Free tier: 5 messages/day in Asia/Dhaka
-      const now = new Date();
-      const dhaka = new Date(now.getTime() + (6 * 60 - now.getTimezoneOffset()) * 60_000);
-      const today = dhaka.toISOString().slice(0, 10);
-
-      const { data: usage } = await supabase
-        .from("usage_counters")
-        .select("ai_messages_used")
+    let isPaid = ALL_FREE_ACCESS_MODE;
+    if (!ALL_FREE_ACCESS_MODE) {
+      const { data: sub } = await supabase
+        .from("subscriptions")
+        .select("plan_code, status")
         .eq("user_id", userId)
-        .eq("usage_date", today)
+        .in("status", ["trialing", "active"])
         .maybeSingle();
 
-      const used = usage?.ai_messages_used ?? 0;
-      if (used >= 5) {
-        return {
-          reply: "",
-          error:
-            "আজকের ৫টি free AI message শেষ হয়ে গেছে। Unlimited access এর জন্য Pro upgrade করো।",
-          quotaExceeded: true as const,
-        };
+      isPaid = !!sub && sub.plan_code !== "free";
+
+      if (!isPaid) {
+        // Free tier: 5 messages/day in Asia/Dhaka
+        const now = new Date();
+        const dhaka = new Date(now.getTime() + (6 * 60 - now.getTimezoneOffset()) * 60_000);
+        const today = dhaka.toISOString().slice(0, 10);
+
+        const { data: usage } = await supabase
+          .from("usage_counters")
+          .select("ai_messages_used")
+          .eq("user_id", userId)
+          .eq("usage_date", today)
+          .maybeSingle();
+
+        const used = usage?.ai_messages_used ?? 0;
+        if (used >= 5) {
+          return {
+            reply: "",
+            error:
+              "আজকের ৫টি free AI message শেষ হয়ে গেছে। Unlimited access এর জন্য Pro upgrade করো।",
+            quotaExceeded: true as const,
+          };
+        }
       }
     }
 

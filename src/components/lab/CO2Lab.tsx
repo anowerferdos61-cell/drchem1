@@ -181,7 +181,9 @@ export default function CO2Lab({ onBack }: Props) {
   const [splintExtinguished, setSplintExtinguished] = useState(false);
   const [mgReacted, setMgReacted] = useState(false);
   const [litmusReacted, setLitmusReacted] = useState(false);
-  const [mobileTab, setMobileTab] = useState<"equipment" | "controls" | "info" | "guide">("equipment");
+  const [mobileTab, setMobileTab] = useState<"equipment" | "controls" | "info" | "guide">(
+    "equipment",
+  );
   const [showTheory, setShowTheory] = useState(false);
   const workspaceRef = useRef<HTMLElement>(null);
   const startedAtRef = useRef<number | null>(null);
@@ -578,52 +580,161 @@ export default function CO2Lab({ onBack }: Props) {
         {/* ── Desktop Layout: 3-Column Fixed 100dvh (Zero outer scrollbar) ── */}
         {!isMobile ? (
           <main className="flex-1 min-h-0 overflow-hidden p-2.5 grid md:grid-cols-[minmax(250px,270px)_minmax(0,1fr)_minmax(270px,300px)] lg:grid-cols-[minmax(270px,290px)_minmax(0,1fr)_minmax(290px,320px)] md:gap-2.5">
-          {/* LEFT: Equipment & Configuration */}
-          <aside className="lab-scroll flex h-full min-h-0 flex-col gap-2.5 overflow-y-auto pr-1">
-            <EquipmentPanel
-              items={CO2_ITEMS}
-              onSelect={handleSelect}
-              highlight={guide ? nextHighlight : null}
-              disabled={() => submitted}
-            />
-            <CO2ConfigPanel config={cfg} onChange={setCfg} />
-          </aside>
+            {/* LEFT: Equipment & Configuration */}
+            <aside className="lab-scroll flex h-full min-h-0 flex-col gap-2.5 overflow-y-auto pr-1">
+              <EquipmentPanel
+                items={CO2_ITEMS}
+                onSelect={handleSelect}
+                highlight={guide ? nextHighlight : null}
+                disabled={() => submitted}
+              />
+              <CO2ConfigPanel config={cfg} onChange={setCfg} />
+            </aside>
 
-          {/* CENTER: Workspace & Action Bar */}
-          <section
-            ref={workspaceRef}
-            className="relative flex h-full min-h-0 min-w-0 items-center justify-center overflow-hidden rounded-2xl border border-slate-800 bg-slate-950/60 shadow-inner"
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={(e) => {
-              const id = e.dataTransfer.getData("text/equipment") as EquipmentId;
-              if (id) handleSelect(id);
-            }}
-            onMouseMove={(e) => {
-              if (!activeIdTool) return;
-              const rect = e.currentTarget.getBoundingClientRect();
-              setCursor({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-            }}
-            onMouseLeave={() => setCursor(null)}
-            onClick={(e) => {
-              if (!activeIdTool) return;
-              const rect = e.currentTarget.getBoundingClientRect();
-              const px = e.clientX - rect.left;
-              const py = e.clientY - rect.top;
-              const scale = Math.min(rect.width / 640, rect.height / 500);
-              const offX = (rect.width - 640 * scale) / 2;
-              const offY = (rect.height - 500 * scale) / 2;
-              const left = offX + (470 - 55) * scale;
-              const right = offX + (470 + 55) * scale;
-              const top = offY + (200 - 40) * scale;
-              const bottom = offY + (200 + 30) * scale;
-              const overMouth = px >= left && px <= right && py >= top && py <= bottom;
-              if (!overMouth) return;
-              runDirectTest(activeIdTool);
-              setActiveIdTool(null);
-              setCursor(null);
-            }}
-          >
-            <div className="absolute inset-0 overflow-hidden rounded-2xl">
+            {/* CENTER: Workspace & Action Bar */}
+            <section
+              ref={workspaceRef}
+              className="relative flex h-full min-h-0 min-w-0 items-center justify-center overflow-hidden rounded-2xl border border-slate-800 bg-slate-950/60 shadow-inner"
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => {
+                const id = e.dataTransfer.getData("text/equipment") as EquipmentId;
+                if (id) handleSelect(id);
+              }}
+              onMouseMove={(e) => {
+                if (!activeIdTool) return;
+                const rect = e.currentTarget.getBoundingClientRect();
+                setCursor({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+              }}
+              onMouseLeave={() => setCursor(null)}
+              onClick={(e) => {
+                if (!activeIdTool) return;
+                const rect = e.currentTarget.getBoundingClientRect();
+                const px = e.clientX - rect.left;
+                const py = e.clientY - rect.top;
+                const scale = Math.min(rect.width / 640, rect.height / 500);
+                const offX = (rect.width - 640 * scale) / 2;
+                const offY = (rect.height - 500 * scale) / 2;
+                const left = offX + (470 - 55) * scale;
+                const right = offX + (470 + 55) * scale;
+                const top = offY + (200 - 40) * scale;
+                const bottom = offY + (200 + 30) * scale;
+                const overMouth = px >= left && px <= right && py >= top && py <= bottom;
+                if (!overMouth) return;
+                runDirectTest(activeIdTool);
+                setActiveIdTool(null);
+                setCursor(null);
+              }}
+            >
+              <div className="absolute inset-0 overflow-hidden rounded-2xl">
+                <CO2Workspace
+                  placed={placed}
+                  collectedMl={collectedMl}
+                  jarCapacityMl={JAR_CAPACITY_ML}
+                  reacting={reacting}
+                  funnelSubmerged={funnelSubmerged}
+                  jarUpright={jarUpright}
+                  limewaterActive={showLimewater}
+                  limewaterPhase={limewaterPhase(collectedMl)}
+                  activeIdTool={activeIdTool}
+                  cursor={cursor}
+                  splintExtinguished={splintExtinguished}
+                  mgReacted={mgReacted}
+                  litmusReacted={litmusReacted}
+                />
+              </div>
+
+              {/* Desktop Action Pill Bar */}
+              <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 flex-wrap items-center justify-center gap-1.5 rounded-full border border-slate-700/80 bg-slate-900/90 p-1.5 shadow-xl backdrop-blur">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={addPrimingWater}
+                  disabled={waterAdded || !placed.thistle_funnel || submitted}
+                  className="h-7 text-xs border-slate-700 bg-slate-800/80 text-slate-200 hover:bg-slate-700"
+                >
+                  <Beaker className="mr-1 h-3.5 w-3.5 text-sky-400" /> পানি দাও
+                </Button>
+                <Button
+                  size="sm"
+                  variant={reacting ? "destructive" : "default"}
+                  onClick={() => setReacting((v) => !v)}
+                  disabled={!placed.acid_poured || submitted}
+                  className={cn(
+                    "h-7 text-xs font-semibold",
+                    !reacting && "bg-emerald-600 hover:bg-emerald-500 text-white",
+                  )}
+                >
+                  {reacting ? (
+                    <Pause className="mr-1 h-3.5 w-3.5" />
+                  ) : (
+                    <Play className="mr-1 h-3.5 w-3.5" />
+                  )}
+                  {reacting ? "Pause" : "বিক্রিয়া শুরু"}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => runDirectTest("splint")}
+                  disabled={!placed.gas_jar || submitted}
+                  className="h-7 text-xs border-amber-500/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20"
+                >
+                  <Flame className="mr-1 h-3.5 w-3.5 text-amber-400" /> কাঠি পরীক্ষা
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => runDirectTest("limewater")}
+                  disabled={!placed.delivery_tube || submitted}
+                  className="h-7 text-xs border-sky-500/30 bg-sky-500/10 text-sky-300 hover:bg-sky-500/20"
+                >
+                  <TestTube2 className="mr-1 h-3.5 w-3.5 text-sky-400" /> চুনের পানি
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={reset}
+                  className="h-7 text-xs border-slate-700 bg-slate-800/80 text-slate-300 hover:bg-slate-700"
+                >
+                  <RotateCcw className="mr-1 h-3.5 w-3.5" /> Reset
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={submit}
+                  disabled={submitted}
+                  className="h-7 text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-semibold"
+                >
+                  <Trophy className="mr-1 h-3.5 w-3.5" /> Submit
+                </Button>
+              </div>
+            </section>
+
+            {/* RIGHT: Status & Checklist */}
+            <aside className="lab-scroll flex h-full min-h-0 flex-col gap-2.5 overflow-y-auto pl-1">
+              <CO2StatusPanel
+                rate={rateMlPerSec}
+                generated={generatedMl}
+                collected={collectedMl}
+                target={targetMl}
+                pct={pct}
+                jarUpright={jarUpright}
+                setJarUpright={setJarUpright}
+                tests={tests}
+              />
+              {mode !== "student" && (
+                <StepsPanel
+                  steps={steps}
+                  mistakes={mistakes}
+                  guideMode={guide}
+                  nextHint={guide ? nextHint : undefined}
+                />
+              )}
+            </aside>
+          </main>
+        ) : (
+          /* ── Mobile Split View (< md) ── */
+          <div className="flex flex-1 flex-col min-h-0 overflow-hidden">
+            {/* Top 46%: Pinned Visual Workspace */}
+            <div className="relative h-[46dvh] shrink-0 border-b border-slate-800/80 bg-slate-950/70 p-1 flex items-center justify-center overflow-hidden">
               <CO2Workspace
                 placed={placed}
                 collectedMl={collectedMl}
@@ -641,315 +752,216 @@ export default function CO2Lab({ onBack }: Props) {
               />
             </div>
 
-            {/* Desktop Action Pill Bar */}
-            <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 flex-wrap items-center justify-center gap-1.5 rounded-full border border-slate-700/80 bg-slate-900/90 p-1.5 shadow-xl backdrop-blur">
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={addPrimingWater}
-                disabled={waterAdded || !placed.thistle_funnel || submitted}
-                className="h-7 text-xs border-slate-700 bg-slate-800/80 text-slate-200 hover:bg-slate-700"
-              >
-                <Beaker className="mr-1 h-3.5 w-3.5 text-sky-400" /> পানি দাও
-              </Button>
-              <Button
-                size="sm"
-                variant={reacting ? "destructive" : "default"}
-                onClick={() => setReacting((v) => !v)}
-                disabled={!placed.acid_poured || submitted}
-                className={cn(
-                  "h-7 text-xs font-semibold",
-                  !reacting && "bg-emerald-600 hover:bg-emerald-500 text-white"
-                )}
-              >
-                {reacting ? <Pause className="mr-1 h-3.5 w-3.5" /> : <Play className="mr-1 h-3.5 w-3.5" />}
-                {reacting ? "Pause" : "বিক্রিয়া শুরু"}
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => runDirectTest("splint")}
-                disabled={!placed.gas_jar || submitted}
-                className="h-7 text-xs border-amber-500/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20"
-              >
-                <Flame className="mr-1 h-3.5 w-3.5 text-amber-400" /> কাঠি পরীক্ষা
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => runDirectTest("limewater")}
-                disabled={!placed.delivery_tube || submitted}
-                className="h-7 text-xs border-sky-500/30 bg-sky-500/10 text-sky-300 hover:bg-sky-500/20"
-              >
-                <TestTube2 className="mr-1 h-3.5 w-3.5 text-sky-400" /> চুনের পানি
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={reset}
-                className="h-7 text-xs border-slate-700 bg-slate-800/80 text-slate-300 hover:bg-slate-700"
-              >
-                <RotateCcw className="mr-1 h-3.5 w-3.5" /> Reset
-              </Button>
-              <Button
-                size="sm"
-                onClick={submit}
-                disabled={submitted}
-                className="h-7 text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-semibold"
-              >
-                <Trophy className="mr-1 h-3.5 w-3.5" /> Submit
-              </Button>
-            </div>
-          </section>
-
-          {/* RIGHT: Status & Checklist */}
-          <aside className="lab-scroll flex h-full min-h-0 flex-col gap-2.5 overflow-y-auto pl-1">
-            <CO2StatusPanel
-              rate={rateMlPerSec}
-              generated={generatedMl}
-              collected={collectedMl}
-              target={targetMl}
-              pct={pct}
-              jarUpright={jarUpright}
-              setJarUpright={setJarUpright}
-              tests={tests}
-            />
-            {mode !== "student" && (
-              <StepsPanel
-                steps={steps}
-                mistakes={mistakes}
-                guideMode={guide}
-                nextHint={guide ? nextHint : undefined}
-              />
-            )}
-          </aside>
-        </main>
-        ) : (
-        /* ── Mobile Split View (< md) ── */
-        <div className="flex flex-1 flex-col min-h-0 overflow-hidden">
-          {/* Top 46%: Pinned Visual Workspace */}
-          <div className="relative h-[46dvh] shrink-0 border-b border-slate-800/80 bg-slate-950/70 p-1 flex items-center justify-center overflow-hidden">
-            <CO2Workspace
-              placed={placed}
-              collectedMl={collectedMl}
-              jarCapacityMl={JAR_CAPACITY_ML}
-              reacting={reacting}
-              funnelSubmerged={funnelSubmerged}
-              jarUpright={jarUpright}
-              limewaterActive={showLimewater}
-              limewaterPhase={limewaterPhase(collectedMl)}
-              activeIdTool={activeIdTool}
-              cursor={cursor}
-              splintExtinguished={splintExtinguished}
-              mgReacted={mgReacted}
-              litmusReacted={litmusReacted}
-            />
-          </div>
-
-          {/* Bottom 54%: Interactive Tabbed Tray */}
-          <div className="flex flex-1 flex-col min-h-0 bg-slate-900/95 backdrop-blur">
-            {/* Tab Selection */}
-            <div className="grid grid-cols-4 border-b border-slate-800 bg-slate-950/60 p-1 text-[11px] font-semibold gap-1">
-              <button
-                type="button"
-                onClick={() => setMobileTab("equipment")}
-                className={cn(
-                  "flex items-center justify-center gap-1 rounded-md py-1.5 transition",
-                  mobileTab === "equipment"
-                    ? "bg-slate-800 text-emerald-400 shadow-sm font-bold"
-                    : "text-slate-400 hover:text-slate-200"
-                )}
-              >
-                <Sliders className="h-3 w-3" />
-                <span>যন্ত্রপাতি</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setMobileTab("controls")}
-                className={cn(
-                  "flex items-center justify-center gap-1 rounded-md py-1.5 transition",
-                  mobileTab === "controls"
-                    ? "bg-slate-800 text-emerald-400 shadow-sm font-bold"
-                    : "text-slate-400 hover:text-slate-200"
-                )}
-              >
-                <Play className="h-3 w-3" />
-                <span>কন্ট্রোলস</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setMobileTab("info")}
-                className={cn(
-                  "flex items-center justify-center gap-1 rounded-md py-1.5 transition",
-                  mobileTab === "info"
-                    ? "bg-slate-800 text-emerald-400 shadow-sm font-bold"
-                    : "text-slate-400 hover:text-slate-200"
-                )}
-              >
-                <BarChart3 className="h-3 w-3" />
-                <span>তথ্য ও টেস্ট</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setMobileTab("guide")}
-                className={cn(
-                  "flex items-center justify-center gap-1 rounded-md py-1.5 transition",
-                  mobileTab === "guide"
-                    ? "bg-slate-800 text-emerald-400 shadow-sm font-bold"
-                    : "text-slate-400 hover:text-slate-200"
-                )}
-              >
-                <CheckSquare className="h-3 w-3" />
-                <span>গাইড</span>
-              </button>
-            </div>
-
-            {/* Tab Panel Content */}
-            <div className="lab-scroll flex-1 min-h-0 overflow-y-auto p-2.5">
-              {mobileTab === "equipment" && (
-                <div className="space-y-2.5">
-                  <EquipmentPanel
-                    items={CO2_ITEMS}
-                    onSelect={handleSelect}
-                    highlight={guide ? nextHighlight : null}
-                    disabled={() => submitted}
-                  />
-                  <CO2ConfigPanel config={cfg} onChange={setCfg} />
-                </div>
-              )}
-
-              {mobileTab === "controls" && (
-                <div className="space-y-3">
-                  <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3 space-y-2">
-                    <div className="text-xs font-bold text-slate-200">ল্যাব অ্যাকশন</div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={addPrimingWater}
-                        disabled={waterAdded || !placed.thistle_funnel || submitted}
-                        className="h-9 text-xs border-slate-700 bg-slate-800/80 text-slate-200"
-                      >
-                        <Beaker className="mr-1.5 h-4 w-4 text-sky-400" /> পানি যোগ করো
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant={reacting ? "destructive" : "default"}
-                        onClick={() => setReacting((v) => !v)}
-                        disabled={!placed.acid_poured || submitted}
-                        className={cn(
-                          "h-9 text-xs font-semibold",
-                          !reacting && "bg-emerald-600 hover:bg-emerald-500 text-white"
-                        )}
-                      >
-                        {reacting ? <Pause className="mr-1.5 h-4 w-4" /> : <Play className="mr-1.5 h-4 w-4" />}
-                        {reacting ? "Pause" : "বিক্রিয়া শুরু"}
-                      </Button>
-                    </div>
-                  </div>
-
-                  <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3 space-y-2">
-                    <div className="text-xs font-bold text-slate-200">শনাক্তকরণ পরীক্ষা (Direct Test Triggers)</div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => runDirectTest("splint")}
-                        disabled={!placed.gas_jar || submitted}
-                        className="h-9 text-xs justify-start border-amber-500/30 bg-amber-500/10 text-amber-300"
-                      >
-                        <Flame className="mr-1.5 h-4 w-4 text-amber-400 shrink-0" /> জ্বলন্ত কাঠি
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => runDirectTest("limewater")}
-                        disabled={!placed.delivery_tube || submitted}
-                        className="h-9 text-xs justify-start border-sky-500/30 bg-sky-500/10 text-sky-300"
-                      >
-                        <TestTube2 className="mr-1.5 h-4 w-4 text-sky-400 shrink-0" /> চুনের পানি
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => runDirectTest("mg")}
-                        disabled={!placed.gas_jar || submitted}
-                        className="h-9 text-xs justify-start border-slate-600 bg-slate-800/80 text-slate-200"
-                      >
-                        <Sparkles className="mr-1.5 h-4 w-4 text-yellow-300 shrink-0" /> Mg ফিতা
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => runDirectTest("litmus")}
-                        disabled={!placed.gas_jar || submitted}
-                        className="h-9 text-xs justify-start border-blue-500/30 bg-blue-500/10 text-blue-300"
-                      >
-                        <Beaker className="mr-1.5 h-4 w-4 text-blue-400 shrink-0" /> নীল লিটমাস
-                      </Button>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2 pt-1">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={reset}
-                      className="h-9 text-xs border-slate-700 bg-slate-800 text-slate-300"
-                    >
-                      <RotateCcw className="mr-1.5 h-4 w-4" /> রিসেট
-                    </Button>
-                    <Button
-                      size="sm"
-                      onClick={submit}
-                      disabled={submitted}
-                      className="h-9 text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold"
-                    >
-                      <Trophy className="mr-1.5 h-4 w-4" /> রিপোর্ট জমা
-                    </Button>
-                  </div>
-                </div>
-              )}
-
-              {mobileTab === "info" && (
-                <CO2StatusPanel
-                  rate={rateMlPerSec}
-                  generated={generatedMl}
-                  collected={collectedMl}
-                  target={targetMl}
-                  pct={pct}
-                  jarUpright={jarUpright}
-                  setJarUpright={setJarUpright}
-                  tests={tests}
-                />
-              )}
-
-              {mobileTab === "guide" && (
-                <div className="space-y-3">
-                  <StepsPanel
-                    steps={steps}
-                    mistakes={mistakes}
-                    guideMode={guide}
-                    nextHint={guide ? nextHint : undefined}
-                  />
-                  {showViva && (
-                    <div className="space-y-3 pt-2">
-                      <TeacherViva
-                        onPublish={setVivaQuestions}
-                        experiment="co2_prep"
-                        defaultTopic="Laboratory preparation of CO₂ from CaCO₃ and dilute HCl"
-                      />
-                      <StudentViva />
-                    </div>
+            {/* Bottom 54%: Interactive Tabbed Tray */}
+            <div className="flex flex-1 flex-col min-h-0 bg-slate-900/95 backdrop-blur">
+              {/* Tab Selection */}
+              <div className="grid grid-cols-4 border-b border-slate-800 bg-slate-950/60 p-1 text-[11px] font-semibold gap-1">
+                <button
+                  type="button"
+                  onClick={() => setMobileTab("equipment")}
+                  className={cn(
+                    "flex items-center justify-center gap-1 rounded-md py-1.5 transition",
+                    mobileTab === "equipment"
+                      ? "bg-slate-800 text-emerald-400 shadow-sm font-bold"
+                      : "text-slate-400 hover:text-slate-200",
                   )}
-                </div>
-              )}
+                >
+                  <Sliders className="h-3 w-3" />
+                  <span>যন্ত্রপাতি</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setMobileTab("controls")}
+                  className={cn(
+                    "flex items-center justify-center gap-1 rounded-md py-1.5 transition",
+                    mobileTab === "controls"
+                      ? "bg-slate-800 text-emerald-400 shadow-sm font-bold"
+                      : "text-slate-400 hover:text-slate-200",
+                  )}
+                >
+                  <Play className="h-3 w-3" />
+                  <span>কন্ট্রোলস</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setMobileTab("info")}
+                  className={cn(
+                    "flex items-center justify-center gap-1 rounded-md py-1.5 transition",
+                    mobileTab === "info"
+                      ? "bg-slate-800 text-emerald-400 shadow-sm font-bold"
+                      : "text-slate-400 hover:text-slate-200",
+                  )}
+                >
+                  <BarChart3 className="h-3 w-3" />
+                  <span>তথ্য ও টেস্ট</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setMobileTab("guide")}
+                  className={cn(
+                    "flex items-center justify-center gap-1 rounded-md py-1.5 transition",
+                    mobileTab === "guide"
+                      ? "bg-slate-800 text-emerald-400 shadow-sm font-bold"
+                      : "text-slate-400 hover:text-slate-200",
+                  )}
+                >
+                  <CheckSquare className="h-3 w-3" />
+                  <span>গাইড</span>
+                </button>
+              </div>
+
+              {/* Tab Panel Content */}
+              <div className="lab-scroll flex-1 min-h-0 overflow-y-auto p-2.5">
+                {mobileTab === "equipment" && (
+                  <div className="space-y-2.5">
+                    <EquipmentPanel
+                      items={CO2_ITEMS}
+                      onSelect={handleSelect}
+                      highlight={guide ? nextHighlight : null}
+                      disabled={() => submitted}
+                    />
+                    <CO2ConfigPanel config={cfg} onChange={setCfg} />
+                  </div>
+                )}
+
+                {mobileTab === "controls" && (
+                  <div className="space-y-3">
+                    <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3 space-y-2">
+                      <div className="text-xs font-bold text-slate-200">ল্যাব অ্যাকশন</div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={addPrimingWater}
+                          disabled={waterAdded || !placed.thistle_funnel || submitted}
+                          className="h-9 text-xs border-slate-700 bg-slate-800/80 text-slate-200"
+                        >
+                          <Beaker className="mr-1.5 h-4 w-4 text-sky-400" /> পানি যোগ করো
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant={reacting ? "destructive" : "default"}
+                          onClick={() => setReacting((v) => !v)}
+                          disabled={!placed.acid_poured || submitted}
+                          className={cn(
+                            "h-9 text-xs font-semibold",
+                            !reacting && "bg-emerald-600 hover:bg-emerald-500 text-white",
+                          )}
+                        >
+                          {reacting ? (
+                            <Pause className="mr-1.5 h-4 w-4" />
+                          ) : (
+                            <Play className="mr-1.5 h-4 w-4" />
+                          )}
+                          {reacting ? "Pause" : "বিক্রিয়া শুরু"}
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3 space-y-2">
+                      <div className="text-xs font-bold text-slate-200">
+                        শনাক্তকরণ পরীক্ষা (Direct Test Triggers)
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => runDirectTest("splint")}
+                          disabled={!placed.gas_jar || submitted}
+                          className="h-9 text-xs justify-start border-amber-500/30 bg-amber-500/10 text-amber-300"
+                        >
+                          <Flame className="mr-1.5 h-4 w-4 text-amber-400 shrink-0" /> জ্বলন্ত কাঠি
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => runDirectTest("limewater")}
+                          disabled={!placed.delivery_tube || submitted}
+                          className="h-9 text-xs justify-start border-sky-500/30 bg-sky-500/10 text-sky-300"
+                        >
+                          <TestTube2 className="mr-1.5 h-4 w-4 text-sky-400 shrink-0" /> চুনের পানি
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => runDirectTest("mg")}
+                          disabled={!placed.gas_jar || submitted}
+                          className="h-9 text-xs justify-start border-slate-600 bg-slate-800/80 text-slate-200"
+                        >
+                          <Sparkles className="mr-1.5 h-4 w-4 text-yellow-300 shrink-0" /> Mg ফিতা
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => runDirectTest("litmus")}
+                          disabled={!placed.gas_jar || submitted}
+                          className="h-9 text-xs justify-start border-blue-500/30 bg-blue-500/10 text-blue-300"
+                        >
+                          <Beaker className="mr-1.5 h-4 w-4 text-blue-400 shrink-0" /> নীল লিটমাস
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 pt-1">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={reset}
+                        className="h-9 text-xs border-slate-700 bg-slate-800 text-slate-300"
+                      >
+                        <RotateCcw className="mr-1.5 h-4 w-4" /> রিসেট
+                      </Button>
+                      <Button
+                        size="sm"
+                        onClick={submit}
+                        disabled={submitted}
+                        className="h-9 text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold"
+                      >
+                        <Trophy className="mr-1.5 h-4 w-4" /> রিপোর্ট জমা
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {mobileTab === "info" && (
+                  <CO2StatusPanel
+                    rate={rateMlPerSec}
+                    generated={generatedMl}
+                    collected={collectedMl}
+                    target={targetMl}
+                    pct={pct}
+                    jarUpright={jarUpright}
+                    setJarUpright={setJarUpright}
+                    tests={tests}
+                  />
+                )}
+
+                {mobileTab === "guide" && (
+                  <div className="space-y-3">
+                    <StepsPanel
+                      steps={steps}
+                      mistakes={mistakes}
+                      guideMode={guide}
+                      nextHint={guide ? nextHint : undefined}
+                    />
+                    {showViva && (
+                      <div className="space-y-3 pt-2">
+                        <TeacherViva
+                          onPublish={setVivaQuestions}
+                          experiment="co2_prep"
+                          defaultTopic="Laboratory preparation of CO₂ from CaCO₃ and dilute HCl"
+                        />
+                        <StudentViva />
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
         )}
 
         {/* ── Report Modal Overlay ── */}
@@ -972,38 +984,69 @@ export default function CO2Lab({ onBack }: Props) {
             <ScrollArea className="px-4 py-4 max-h-[70dvh]">
               <div className="prose prose-invert prose-sm max-w-none space-y-4 text-slate-300">
                 <div>
-                  <h4 className="text-emerald-400 font-bold mb-1">১. মূল বিক্রিয়া (Chemical Equation)</h4>
+                  <h4 className="text-emerald-400 font-bold mb-1">
+                    ১. মূল বিক্রিয়া (Chemical Equation)
+                  </h4>
                   <p className="font-mono bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-emerald-300 text-xs">
                     CaCO₃ (s) + 2 HCl (aq) → CaCl₂ (aq) + H₂O (l) + CO₂ (g) ↑
                   </p>
                   <p className="text-xs mt-1 text-slate-400">
-                    গোলতলী ফ্লাস্কে মার্বেল কুচি (CaCO₃) নিয়ে থিসল ফানেল দিয়ে লঘু হাইড্রোক্লোরিক এসিড যোগ করলে তীব্র বুদবুদসহ কার্বন ডাইঅক্সাইড গ্যাস উৎপন্ন হয়।
+                    গোলতলী ফ্লাস্কে মার্বেল কুচি (CaCO₃) নিয়ে থিসল ফানেল দিয়ে লঘু হাইড্রোক্লোরিক
+                    এসিড যোগ করলে তীব্র বুদবুদসহ কার্বন ডাইঅক্সাইড গ্যাস উৎপন্ন হয়।
                   </p>
                 </div>
 
                 <div>
-                  <h4 className="text-emerald-400 font-bold mb-1">২. গ্যাস সংগ্রহ পদ্ধতি (Upward Displacement of Air)</h4>
+                  <h4 className="text-emerald-400 font-bold mb-1">
+                    ২. গ্যাস সংগ্রহ পদ্ধতি (Upward Displacement of Air)
+                  </h4>
                   <p className="text-xs text-slate-400">
-                    CO₂ বাতাসের চেয়ে ভারী (বাষ্প ঘনত্ব ২২, বাতাসের গড় ঘনত্ব প্রায় ১৪.৪)। তাই গ্যাস জারকে সোজা মুখ উপরে রেখে বাতাসের ঊর্ধ্ব অপসারণ (Upward displacement of air) দ্বারা গ্যাসটি জারের তলায় জমা করা হয়।
+                    CO₂ বাতাসের চেয়ে ভারী (বাষ্প ঘনত্ব ২২, বাতাসের গড় ঘনত্ব প্রায় ১৪.৪)। তাই
+                    গ্যাস জারকে সোজা মুখ উপরে রেখে বাতাসের ঊর্ধ্ব অপসারণ (Upward displacement of
+                    air) দ্বারা গ্যাসটি জারের তলায় জমা করা হয়।
                   </p>
                 </div>
 
                 <div>
-                  <h4 className="text-emerald-400 font-bold mb-1">৩. শনাক্তকরণ পরীক্ষা (Identification Tests)</h4>
+                  <h4 className="text-emerald-400 font-bold mb-1">
+                    ৩. শনাক্তকরণ পরীক্ষা (Identification Tests)
+                  </h4>
                   <ul className="text-xs space-y-1.5 list-disc pl-4 text-slate-300">
-                    <li><strong className="text-slate-100">জ্বলন্ত কাঠি:</strong> CO₂ নিজে জ্বলে না এবং দহনে সহায়তা করে না, তাই জারের মুখে জ্বলন্ত কাঠি ধরলে সাথে সাথে নিভে যায়।</li>
-                    <li><strong className="text-slate-100">চুনের পানি:</strong> CO₂ চুনের পানিতে চালনা করলে অদ্রবণীয় ক্যালসিয়াম কার্বনেট তৈরির কারণে পানি ঘোলা হয়। অতিরিক্ত চালনা করলে দ্রবণীয় ক্যালসিয়াম বাইকার্বনেট গঠিত হয়ে আবার স্বচ্ছ হয়ে যায়:
-                      <div className="font-mono text-[11px] text-emerald-300 my-1">Ca(OH)₂ + CO₂ → CaCO₃ ↓ + H₂O (ঘোলা)</div>
-                      <div className="font-mono text-[11px] text-emerald-300">CaCO₃ + H₂O + CO₂ → Ca(HCO₃)₂ (স্বচ্ছ)</div>
+                    <li>
+                      <strong className="text-slate-100">জ্বলন্ত কাঠি:</strong> CO₂ নিজে জ্বলে না
+                      এবং দহনে সহায়তা করে না, তাই জারের মুখে জ্বলন্ত কাঠি ধরলে সাথে সাথে নিভে যায়।
                     </li>
-                    <li><strong className="text-slate-100">ম্যাগনেসিয়াম ফিতা:</strong> জ্বলন্ত ম্যাগনেসিয়াম ফিতা প্রবেশ করালে তা সাদা শিখায় জ্বলতে থাকে এবং কালো কার্বন ও সাদা MgO অধঃক্ষেপ পড়ে।</li>
-                    <li><strong className="text-slate-100">নীল লিটমাস:</strong> আর্দ্র নীল লিটমাস পেপার ধরলে তা মৃদু লাল বর্ণ ধারণ করে, কারণ CO₂ পানিতে দ্রবীভূত হয়ে মৃদু কার্বনিক এসিড (H₂CO₃) তৈরি করে।</li>
+                    <li>
+                      <strong className="text-slate-100">চুনের পানি:</strong> CO₂ চুনের পানিতে চালনা
+                      করলে অদ্রবণীয় ক্যালসিয়াম কার্বনেট তৈরির কারণে পানি ঘোলা হয়। অতিরিক্ত চালনা
+                      করলে দ্রবণীয় ক্যালসিয়াম বাইকার্বনেট গঠিত হয়ে আবার স্বচ্ছ হয়ে যায়:
+                      <div className="font-mono text-[11px] text-emerald-300 my-1">
+                        Ca(OH)₂ + CO₂ → CaCO₃ ↓ + H₂O (ঘোলা)
+                      </div>
+                      <div className="font-mono text-[11px] text-emerald-300">
+                        CaCO₃ + H₂O + CO₂ → Ca(HCO₃)₂ (স্বচ্ছ)
+                      </div>
+                    </li>
+                    <li>
+                      <strong className="text-slate-100">ম্যাগনেসিয়াম ফিতা:</strong> জ্বলন্ত
+                      ম্যাগনেসিয়াম ফিতা প্রবেশ করালে তা সাদা শিখায় জ্বলতে থাকে এবং কালো কার্বন ও
+                      সাদা MgO অধঃক্ষেপ পড়ে।
+                    </li>
+                    <li>
+                      <strong className="text-slate-100">নীল লিটমাস:</strong> আর্দ্র নীল লিটমাস
+                      পেপার ধরলে তা মৃদু লাল বর্ণ ধারণ করে, কারণ CO₂ পানিতে দ্রবীভূত হয়ে মৃদু
+                      কার্বনিক এসিড (H₂CO₃) তৈরি করে।
+                    </li>
                   </ul>
                 </div>
               </div>
             </ScrollArea>
             <DrawerClose asChild>
-              <Button variant="outline" size="sm" className="mx-4 mb-3 border-slate-700 bg-slate-800 text-slate-200">
+              <Button
+                variant="outline"
+                size="sm"
+                className="mx-4 mb-3 border-slate-700 bg-slate-800 text-slate-200"
+              >
                 বন্ধ করুন
               </Button>
             </DrawerClose>
