@@ -36,9 +36,9 @@ export const LAB_TOPICS: LabTopic[] = [
     chapterNumber: 7,
     chapterNameBn: "রাসায়নিক বিক্রিয়া",
     chapterNameEn: "Chemical Reactions",
-    metaTitle: "অক্সিজেন গ্যাস প্রস্তুতি ল্যাব ও সমীকরণ (Class 9-10) · Dr. Chem",
+    metaTitle: "অক্সিজেন গ্যাস প্রস্তুতি ল্যাব, সমীকরণ ও শনাক্তকরণ (Class 9-10) · Dr. Chem",
     metaDescription:
-      "NCTB ৯ম-১০ম শ্রেণির রসায়ন ব্যবহারিক: হাইড্রোজেন পারক্সাইড ও ম্যাঙ্গানিজ ডাই অক্সাইড দ্বারা অক্সিজেন গ্যাস প্রস্তুতি, চিত্র, সমীকরণ ও সাবধানতা।",
+      "NCTB ৯ম-১০ম শ্রেণির রসায়ন ব্যবহারিক: H₂O₂ ও MnO₂ দ্বারা অক্সিজেন গ্যাস প্রস্তুতি কাকে বলে, চিত্র, সমীকরণ, সাবধানতা ও ভার্চুয়াল ল্যাব সিমুলেশন।",
     keywords: [
       "অক্সিজেন গ্যাস প্রস্তুতি",
       "Preparation of Oxygen",
@@ -104,9 +104,9 @@ export const LAB_TOPICS: LabTopic[] = [
     chapterNumber: 10,
     chapterNameBn: "এসিড, ক্ষারক ও লবণ",
     chapterNameEn: "Acids, Bases & Salts",
-    metaTitle: "অ্যাসিড-ক্ষার টাইট্রেশন পদ্ধতি ও হিসাব (HCl + NaOH) · Dr. Chem",
+    metaTitle: "অ্যাসিড-ক্ষার টাইট্রেশন কাকে বলে? পদ্ধতি ও হিসাব (HCl + NaOH) · Dr. Chem",
     metaDescription:
-      "Class 9-10 এসএসসি রসায়ন ব্যবহারিক: ফেনলফথ্যালিন নির্দেশক ব্যবহার করে হাইড্রোক্লোরিক এসিড ও সোডিয়াম হাইড্রোক্সাইডের প্রশমন টাইট্রেশন পদ্ধতি।",
+      "Class 9-10 এসএসসি রসায়ন ব্যবহারিক: টাইট্রেশন কাকে বলে, ফেনলফথ্যালিন নির্দেশকের রঙ পরিবর্তন, HCl ও NaOH প্রশমন পদ্ধতি ও V₁S₁ = V₂S₂ হিসাব।",
     keywords: [
       "অ্যাসিড ক্ষার টাইট্রেশন",
       "Acid Base Titration HCl NaOH",
@@ -174,10 +174,12 @@ export const LAB_TOPICS: LabTopic[] = [
     chapterNumber: 8,
     chapterNameBn: "রসায়ন ও শক্তি",
     chapterNameEn: "Chemistry & Energy",
-    metaTitle: "ড্যানিয়েল সেল গঠন ও কার্যপ্রণালী (Class 9-10) · Dr. Chem",
+    metaTitle: "ডেনিয়েল কোষ কাকে বলে? ড্যানিয়েল সেল গঠন ও কার্যপ্রণালী · Dr. Chem",
     metaDescription:
-      "NCTB ৯ম-১০ম রসায়ন: ড্যানিয়েল সেলের গঠন, অ্যানোড-ক্যাথোড অর্ধবিক্রিয়া, লবণ সেতু (Salt Bridge) ও ভোল্টেজ (+1.10 V) গণনা।",
+      "ডেনিয়েল কোষ (ড্যানিয়েল সেল) কাকে বলে? NCTB ৯ম-১০ম রসায়ন: Zn-Cu তড়িৎদ্বার, অ্যানোড-ক্যাথোড অর্ধবিক্রিয়া, লবণ সেতু (Salt Bridge) ও +1.10V ব্যাখ্যা।",
     keywords: [
+      "ডেনিয়েল কোষ",
+      "ডেনিয়েল কোষ কাকে বলে",
       "ড্যানিয়েল সেল গঠন",
       "Daniel Cell Galvanic Cell",
       "লবণ সেতু salt bridge",
@@ -240,9 +242,9 @@ export const LAB_TOPICS: LabTopic[] = [
     chapterNumber: 7,
     chapterNameBn: "রাসায়নিক বিক্রিয়া",
     chapterNameEn: "Chemical Reactions",
-    metaTitle: "কার্বন ডাইঅক্সাইড গ্যাস প্রস্তুতি ল্যাব ও পরীক্ষা · Dr. Chem",
+    metaTitle: "কার্বন ডাইঅক্সাইড গ্যাস প্রস্তুতি ল্যাব, সমীকরণ ও পরীক্ষা · Dr. Chem",
     metaDescription:
-      "NCTB Class 9-10 রসায়ন: চুনাপাথর ও লঘু হাইড্রোক্লোরিক এসিড থেকে কার্বন ডাইঅক্সাইড গ্যাস প্রস্তুত, চুনের পানি ঘোলা করার পরীক্ষা।",
+      "NCTB Class 9-10 রসায়ন ব্যবহারিক: চুনাপাথর ও লঘু HCl থেকে কার্বন ডাইঅক্সাইড (CO₂) গ্যাস প্রস্তুতি, সমীকরণ ও চুনের পানি ঘোলা করার পরীক্ষা।",
     keywords: [
       "কার্বন ডাইঅক্সাইড প্রস্তুতি",
       "CO2 gas preparation lab",
@@ -300,9 +302,9 @@ export const LAB_TOPICS: LabTopic[] = [
     chapterNumber: 10,
     chapterNameBn: "এসিড, ক্ষারক ও লবণ",
     chapterNameEn: "Acids, Bases & Salts",
-    metaTitle: "pH স্কেল ও নির্দেশকের বর্ণ পরিবর্তন (Class 9-10) · Dr. Chem",
+    metaTitle: "pH স্কেল কাকে বলে? সূত্র ও নির্দেশকের বর্ণ পরিবর্তন · Dr. Chem",
     metaDescription:
-      "pH = -log[H+] সূত্র, অম্লীয়-ক্ষারীয় দ্রবণের pH মান নির্ণয় এবং ইউনিভার্সাল ইন্ডিকেটরের রঙিন বর্ণ পরিবর্তনের ইন্টারঅ্যাক্টিভ ল্যাব।",
+      "pH স্কেল কাকে বলে? pH = -log[H⁺] সূত্র, অম্লীয়-ক্ষারীয় দ্রবণের pH মান নির্ণয়, মানুষের রক্তের pH ও ইউনিভার্সাল ইন্ডিকেটরের ভার্চুয়াল ল্যাব।",
     keywords: [
       "pH স্কেল",
       "pH scale universal indicator",
@@ -355,9 +357,9 @@ export const LAB_TOPICS: LabTopic[] = [
     chapterNumber: 6,
     chapterNameBn: "মোল ও রাসায়নিক গণনা",
     chapterNameEn: "Mole & Calculations",
-    metaTitle: "মোল ও রাসায়নিক গণনা সূত্র ও হিসাব (Class 9-10) · Dr. Chem",
+    metaTitle: "মোল কাকে বলে? মোলের ধারণা ও রাসায়নিক গণনা সূত্র (Class 9-10) · Dr. Chem",
     metaDescription:
-      "মোল সংখ্যা (n = W/M = V/22.4 = N/6.023x10^23) সূত্র, মোলার ভর ও অ্যাভোগাড্রো সংখ্যার বিস্তারিত গাণিতিক ব্যাখ্যা ও ল্যাব।",
+      "মোল কাকে বলে ও অ্যাভোগাড্রো সংখ্যা কী? মোল সংখ্যা (n = W/M = V/22.4 = N/6.023×10²³) সূত্র, মোলার ভর ও গাণিতিক হিসাবের সহজ নোট ও ল্যাব।",
     keywords: [
       "মোল ধারণা সূত্র",
       "অ্যাভোগাড্রো সংখ্যা",
@@ -407,9 +409,9 @@ export const LAB_TOPICS: LabTopic[] = [
     chapterNumber: 11,
     chapterNameBn: "খনিজ সম্পদ",
     chapterNameEn: "Mineral Resources",
-    metaTitle: "হাইড্রোকার্বনের অসম্পৃক্ততা পরীক্ষা (ব্রোমিন ও বেয়ার টেস্ট) · Dr. Chem",
+    metaTitle: "হাইড্রোকার্বনের অসম্পৃক্ততা পরীক্ষা: ব্রোমিন ও বেয়ার টেস্ট নোট · Dr. Chem",
     metaDescription:
-      "অ্যালকিন ও অ্যালকাইনের দ্বিবন্ধন/ত্রিবন্ধন শনাক্তকরণে লাল ব্রোমিন দ্রবণ ও ক্ষারীয় পটাশিয়াম পারম্যাঙ্গানেট (বেয়ার টেস্ট) বর্ণহীন হওয়ার পরীক্ষা।",
+      "অ্যালকিন ও অ্যালকাইনের অসম্পৃক্ততা পরীক্ষা কীভাবে করে? লাল ব্রোমিন দ্রবণ ও বেয়ার বিকারক (KMnO₄) বর্ণহীন হওয়ার সমীকরণ, নোট ও ভার্চুয়াল ল্যাব।",
     keywords: [
       "অসম্পৃক্ততা পরীক্ষা",
       "ব্রোমিন দ্রবণ পরীক্ষা",
@@ -462,9 +464,9 @@ export const LAB_TOPICS: LabTopic[] = [
     chapterNumber: 3,
     chapterNameBn: "পদার্থের গঠন",
     chapterNameEn: "Structure of Matter",
-    metaTitle: "ইলেকট্রন বিন্যাস ও আউফবাউ নীতি (মৌল ১-৩০) · Dr. Chem",
+    metaTitle: "ইলেকট্রন বিন্যাস ও আউফবাউ নীতি (১-৩০ মৌল ও Cr, Cu ব্যতিক্রম) · Dr. Chem",
     metaDescription:
-      "আউফবাউ নীতি (1s, 2s, 2p, 3s, 3p, 4s, 3d) অনুসারে ১ম থেকে ৩০তম মৌলের ইলেকট্রন বিন্যাস, ক্রোমিয়াম (Cr) ও কপারের (Cu) ব্যতিক্রমী নিয়ম।",
+      "আউফবাউ নীতি কাকে বলে? 1s, 2s, 2p, 3s, 3p, 4s, 3d ক্রম অনুসারে ১ থেকে ৩০তম মৌলের ইলেকট্রন বিন্যাস এবং ক্রোমিয়াম (Cr) ও কপারের (Cu) ব্যতিক্রম।",
     keywords: [
       "ইলেকট্রন বিন্যাস",
       "আউফবাউ নীতি Aufbau principle",
@@ -510,9 +512,9 @@ export const LAB_TOPICS: LabTopic[] = [
     chapterNumber: 8,
     chapterNameBn: "রসায়ন ও শক্তি",
     chapterNameEn: "Chemistry & Energy",
-    metaTitle: "মরিচা পড়ার রাসায়নিক সমীকরণ ও প্রতিরোধ পদ্ধতি · Dr. Chem",
+    metaTitle: "লোহায় মরিচা ধরার কারণ, রাসায়নিক সংকেত ও প্রতিরোধ পদ্ধতি · Dr. Chem",
     metaDescription:
-      "মরিচা কী? লোহার সাথে পানি ও অক্সিজেনের প্রাকৃতিক তড়িৎ-রাসায়নিক বিক্রিয়ায় আর্দ্র ফেরিক অক্সাইড Fe2O3·nH2O গঠন এবং গ্যালভানাইজিং পদ্ধতি।",
+      "মরিচা কী ও এর সংকেত (Fe₂O₃·nH₂O) কীভাবে হয়? লোহার সাথে পানি ও অক্সিজেনের তড়িৎ-রাসায়নিক বিক্রিয়া, সমীকরণ এবং গ্যালভানাইজিং পদ্ধতি।",
     keywords: [
       "মরিচা পড়ার সমীকরণ",
       "মরিচার সংকেত Fe2O3.nH2O",
@@ -565,9 +567,9 @@ export const LAB_TOPICS: LabTopic[] = [
     chapterNumber: 11,
     chapterNameBn: "খনিজ সম্পদ",
     chapterNameEn: "Mineral Resources",
-    metaTitle: "পেট্রোলিয়ামের আংশিক পাতন ও বিভিন্ন অংশ · Dr. Chem",
+    metaTitle: "পেট্রোলিয়ামের আংশিক পাতন কাকে বলে? বিভিন্ন অংশ ও স্ফুটনাঙ্ক · Dr. Chem",
     metaDescription:
-      "অপরিশোধিত খনিজ তেল (Crude Oil) থেকে বিভিন্ন স্ফুটনাঙ্কে এলপিজি, পেট্রোল, কেরোসিন, ডিজেল ও পিচ পৃথকীকরণের ইন্টারঅ্যাক্টিভ ফ্র্যাকশন কলাম।",
+      "পেট্রোলিয়ামের আংশিক পাতন পদ্ধতিতে খনিজ তেল (Crude Oil) থেকে এলপিজি, পেট্রোল, কেরোসিন, ডিজেল ও বিটুমিন পৃথকীকরণের ধাপ ও ব্যবহার।",
     keywords: [
       "পেট্রোলিয়ামের আংশিক পাতন",
       "Fractional Distillation Petroleum",

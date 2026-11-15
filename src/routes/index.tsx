@@ -45,11 +45,11 @@ export const Route = createFileRoute("/")({
   component: Landing,
   head: () => ({
     meta: [
-      { title: "Dr. Chem — AI-Powered Virtual Chemistry Lab for Class 9-10 (NCTB)" },
+      { title: "Dr. Chem — SSC Class 9-10 ভার্চুয়াল কেমিস্ট্রি ল্যাব ও AI টিউটর (NCTB)" },
       {
         name: "description",
         content:
-          "Perform chemistry experiments safely, learn visually, and get instant help from the Dr. Chem AI tutor. Built for Bangladeshi Class 9-10 students and teachers.",
+          "Dr. Chem (drchemedu.com) — বাংলাদেশের ৯ম-১০ম শ্রেণির (SSC) রসায়ন ল্যাব, অধ্যায় ১-১২ নোট, pH স্কেল, টাইট্রেশন, ডেনিয়েল কোষ সিমুলেশন ও ২৪/৭ AI কেমিস্ট্রি টিউটর।",
       },
       {
         name: "keywords",
