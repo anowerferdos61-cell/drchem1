@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import {
   FlaskConical,
   Sparkles,
@@ -33,7 +33,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { DrChemLogo } from "@/components/brand/DrChemLogo";
 import { useAuth } from "@/lib/auth-store";
-import { useState } from "react";
+import { useIsStandaloneApp } from "@/lib/app-mode";
+import { useEffect, useState } from "react";
 import { DemoVideoSection } from "@/components/landing/DemoVideoSection";
 import { VideoModal } from "@/components/landing/VideoModal";
 import { FaqSection, GuideFaqButton, faqs } from "@/components/landing/FaqSection";
@@ -107,6 +108,26 @@ export const Route = createFileRoute("/")({
 
 function Landing() {
   const [demoOpen, setDemoOpen] = useState(false);
+  const isStandalone = useIsStandaloneApp();
+  const { isAuthenticated, loading } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isStandalone || loading) return;
+    void navigate({ to: isAuthenticated ? "/app" : "/login", replace: true });
+  }, [isStandalone, loading, isAuthenticated, navigate]);
+
+  if (isStandalone) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
+        <div className="flex flex-col items-center gap-3">
+          <DrChemLogo size="lg" showText />
+          <div className="h-5 w-5 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground antialiased selection:bg-emerald-500/20 selection:text-emerald-400">
       <LandingNav />

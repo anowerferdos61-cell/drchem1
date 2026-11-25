@@ -5,6 +5,7 @@ import { AlertCircle, Eye, EyeOff, FlaskConical, Loader2, Lock, User } from "luc
 
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-store";
+import { useIsStandaloneApp } from "@/lib/app-mode";
 import { Button } from "@/components/ui/button";
 import { DrChemLogo } from "@/components/brand/DrChemLogo";
 import { Input } from "@/components/ui/input";
@@ -74,6 +75,7 @@ function LoginPage() {
   const navigate = useNavigate();
   const { redirect = "/app" } = useSearch({ from: "/login" });
   const { isAuthenticated, loading } = useAuth();
+  const isStandalone = useIsStandaloneApp();
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -167,7 +169,10 @@ function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5 px-4">
       <Toaster richColors position="top-center" />
       <div className="w-full max-w-md bg-card border border-border rounded-2xl shadow-xl p-8">
-        <Link to="/" className="flex items-center gap-2 justify-center mb-6">
+        <Link
+          to={isStandalone ? "/login" : "/"}
+          className="flex items-center gap-2 justify-center mb-6"
+        >
           <DrChemLogo size="md" showText />
         </Link>
         <h1 className="text-2xl font-bold text-center mb-1">আবার স্বাগতম 👋</h1>
@@ -296,6 +301,11 @@ function LoginPage() {
           নতুন এখানে?{" "}
           <Link to="/signup" className="text-primary font-semibold hover:underline">
             সাইনআপ করুন
+          </Link>
+        </p>
+        <p className="text-xs text-center mt-3 text-muted-foreground">
+          <Link to="/privacy" className="hover:underline">
+            প্রাইভেসি পলিসি
           </Link>
         </p>
       </div>

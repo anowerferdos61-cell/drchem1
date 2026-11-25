@@ -75,7 +75,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
+      { name: "theme-color", content: "#10b981" },
       { name: "google-site-verification", content: "FY0QeeBgnQTSIl-Yo2liyQ8QKOZ6llJgXWJm4OGOMNw" },
       { title: "Dr. Chem — AI-Powered Virtual Chemistry Lab for Class 9-10" },
       {
@@ -150,6 +151,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         rel: "apple-touch-icon",
         href: "/apple-touch-icon.png",
+      },
+      {
+        rel: "manifest",
+        href: "/manifest.json",
       },
       {
         rel: "stylesheet",
@@ -234,6 +239,14 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && "serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js").catch(() => {
+        // Ignore service worker registration failures in unsupported contexts.
+      });
+    }
+  }, []);
 
   useEffect(() => {
     const {

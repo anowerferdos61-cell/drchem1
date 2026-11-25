@@ -7,6 +7,7 @@ import {
   LogOut,
   ShieldCheck,
   Sparkles,
+  Trash2,
   User as UserIcon,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-store";
@@ -118,6 +119,17 @@ export default function UserMenu() {
           </>
         )}
 
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link to="/privacy">
+            <ShieldCheck className="h-4 w-4" /> Privacy Policy
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild className="text-destructive focus:text-destructive">
+          <Link to="/delete-account">
+            <Trash2 className="h-4 w-4" /> Delete Account
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={() => void signOut()}>
           <LogOut className="h-4 w-4" /> লগআউট

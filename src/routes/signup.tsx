@@ -19,6 +19,7 @@ import {
 
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-store";
+import { useIsStandaloneApp } from "@/lib/app-mode";
 import { Button } from "@/components/ui/button";
 import { DrChemLogo } from "@/components/brand/DrChemLogo";
 import { Input } from "@/components/ui/input";
@@ -66,6 +67,7 @@ interface FormErrors {
 function SignupPage() {
   const navigate = useNavigate();
   const { isAuthenticated, loading } = useAuth();
+  const isStandalone = useIsStandaloneApp();
 
   const [role, setRole] = useState<"student" | "teacher" | null>(null);
   const [displayName, setDisplayName] = useState("");
@@ -308,7 +310,10 @@ function SignupPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5 px-4 py-10">
       <Toaster richColors position="top-center" />
       <div className="w-full max-w-lg bg-card border border-border rounded-2xl shadow-xl p-6 sm:p-8">
-        <Link to="/" className="flex items-center gap-2 justify-center mb-6">
+        <Link
+          to={isStandalone ? "/signup" : "/"}
+          className="flex items-center gap-2 justify-center mb-6"
+        >
           <DrChemLogo size="md" showText />
         </Link>
         <h1 className="text-2xl font-bold text-center mb-1">নতুন অ্যাকাউন্ট তৈরি করুন</h1>
@@ -722,6 +727,13 @@ function SignupPage() {
           <Link to="/login" className="text-primary font-semibold hover:underline">
             লগইন করুন
           </Link>
+        </p>
+        <p className="text-xs text-center mt-3 text-muted-foreground">
+          অ্যাকাউন্ট তৈরি করলে আপনি আমাদের{" "}
+          <Link to="/privacy" className="text-primary hover:underline">
+            প্রাইভেসি পলিসি
+          </Link>
+          -তে সম্মতি দিচ্ছেন।
         </p>
       </div>
     </div>
