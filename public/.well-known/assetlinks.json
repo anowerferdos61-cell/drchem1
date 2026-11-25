@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.drchemedu.app",
+      "sha256_cert_fingerprints": [
+        "F7:41:BD:DB:2B:9D:B8:56:D6:2E:77:F7:BC:36:A5:DE:A0:91:61:61:9E:E1:34:D6:BF:AC:9C:78:88:4A:96:67"
+      ]
+    }
+  }
+]
